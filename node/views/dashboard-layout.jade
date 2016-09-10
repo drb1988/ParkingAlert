@@ -1,0 +1,37 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(content="width=device-width, initial-scale=1", name="viewport")
+    meta(name="description" content="Moneparti dashboard")
+
+    title= title
+
+    link(rel="stylesheet" href="/stylesheets/dashboard/bootstrap.min.css" media="all" charset="utf-8")
+    link(rel="stylesheet" href="/stylesheets/dashboard/metisMenu.css" charset="utf-8")
+    link(rel="stylesheet" href="/stylesheets/dashboard/sb-admin-2.css" charset="utf-8")
+    link(rel="stylesheet" href="/stylesheets/dashboard/font-awesome.min.css" charset="utf-8")
+    link(rel="stylesheet" href="https://code.jquery.com/ui/1.12.0-rc.2/themes/smoothness/jquery-ui.css" charset="utf-8")
+  body
+    #wrapper
+      include ./dashboard/header
+      #page-wrapper
+        block content
+    // jQuery
+    script(src='/js/jquery.min.js')
+    // Bootstrap Core JavaScript
+    script(src='/js/bootstrap.min.js')
+    // Metis Menu Plugin JavaScript
+    script(src='/js/metisMenu.js')
+    // Custom Theme JavaScript
+    script(src='/js/sb-admin-2.js')
+    // JQueryUI
+    script(src='https://code.jquery.com/ui/1.12.0-rc.2/jquery-ui.js')
+    // TinyMCE
+    script(src='/js/tinymce/tinymce.min.js')
+    // DataTables
+    script(src='/js/datatables/jquery.dataTables.min.js' type="text/javascript")
+    script(src='/js/datatables/dataTables.bootstrap.min.js' type="text/javascript")
+    // MainJS
+    script(src='/js/main.js')
+    block scripts
