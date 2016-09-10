@@ -1,0 +1,9 @@
+.idea/
+### node excludes ###
+node_modules
+dbConfig.js
+*.bak
+npm-debug.log
+media_downloads
+media_uploads
+### end node excludes ###
