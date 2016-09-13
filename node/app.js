@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-var dbConfig = require('./dbConfig');
+var dbConfig = require('./db');
 var mongoose = require('mongoose');
 
 mongoose.connect(dbConfig.url);//ORM for Schema data like users
