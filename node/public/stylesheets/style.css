@@ -17,3 +17,12 @@ a {
   transform: translate(-50%, -50%);
 /*@include box-shadow(0 px 2 px 2 px rgba(0, 0, 0, 0.3));*/
 }
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#map {
+  padding-top:20px;
+  height: 100%;
+}

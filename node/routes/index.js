@@ -4,18 +4,32 @@ var assert = require('assert');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	/**
+  /**
     * Base route,
     * @name /
     */
-    describe('Array', function() {
-    describe('#indexOf()', function() {
-    it('should return -1 when the value is not present', function() {
-      assert.equal(-1, [1,2,3].indexOf(4));
-    });
-  });
-});
+//     describe('Array', function() {
+//     describe('#indexOf()', function() {
+//     it('should return -1 when the value is not present', function() {
+//       assert.equal(-1, [1,2,3].indexOf(4));
+//     });
+//   });
+// });
   res.render('index', { title: 'Express' });
+});
+router.get('/login', function(req, res, next) {
+  /**
+    * Base route,
+    * @name /
+    */
+//     describe('Array', function() {
+//     describe('#indexOf()', function() {
+//     it('should return -1 when the value is not present', function() {
+//       assert.equal(-1, [1,2,3].indexOf(4));
+//     });
+//   });
+// });
+  res.render('login', { title: 'Express' });
 });
 
 router.get('/users', function(req, res, next) {

@@ -1,47 +1,23 @@
 // Navigation
-nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
-  .navbar-header
-    button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
-      span.sr-only Toggle navigation
-      span.icon-bar
-      span.icon-bar
-      span.icon-bar
-    a.navbar-brand(href='index.html') Parking alert
-  // /.navbar-header
-  ul.nav.navbar-top-links.navbar-right
-    li.dropdown
-      a.dropdown-toggle(data-toggle='dropdown', href='#')
-        i.fa.fa-user.fa-fw
-        i.fa.fa-caret-down
-      ul.dropdown-menu.dropdown-user
+nav.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+  .container
+    // Brand and toggle get grouped for better mobile display
+    .navbar-header
+      button.navbar-toggle(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.navbar-brand(href='#####') Parking Alert 
+      //img(src="../../../img/stemaBuc.gif" width='30px' height='40px' style='margin:10px')
+    // Collect the nav links, forms, and other content for toggling
+    #bs-example-navbar-collapse-1.collapse.navbar-collapse
+      ul.nav.navbar-nav.navbar-right
         li
-          a(href='/admin-eparti-030616/user-profile')
-            i.fa.fa-user.fa-fw
-            |  User Profile
+          a(href='#####') About
         li
-          a(href='#')
-            i.fa.fa-gear.fa-fw
-            |  Settings
-        li.divider
+          a(href='#####') Services
         li
-          a(href='/admin-eparti-030616/logout/')
-            i.fa.fa-sign-out.fa-fw
-            |  Logout
-      // /.dropdown-user
-    // /.dropdown
-  // /.navbar-top-links
-  .navbar-default.sidebar(role='navigation')
-    .sidebar-nav.navbar-collapse
-      ul#side-menu.nav
-        li
-          a(href='/users/')
-            i.fa.fa-files-o.fa-fw
-            |  Users
-        li
-          a(href='/users/0')
-            i.fa.fa-files-o.fa-fw
-            |  Add user
-
-          // /.nav-second-level
-    // /.sidebar-collapse
-  // /.navbar-top-links
+          a(href='#####') Contact
+    // /.navbar-collapse
+  // /.container

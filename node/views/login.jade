@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  div.background-login
+    div.account-wall-container
+      div.account-wall
+        div
+          img.profile-img(src="../../img/parking-alert-eparti-logo.png", alt="E-parti logo")
+        form.form-login(action="./login", method="POST")
+          if (message && message.length > 0)
+            div.alert.alert-danger #{message}
+          input.form-input(type="email", name="username", value="", placeholder="Email Adress", required=true)
+          input.form-input(type="password", name="password", value="", placeholder="Password", required=true)
+          //input.form-input(type="text", name="phone_number", value="", placeholder="Phone Number", required=true)
+          button(class='btn btn-lg btn-primary btn-block btn-login', type='submit') Sign in
