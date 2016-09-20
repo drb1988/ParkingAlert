@@ -214,4 +214,37 @@ router.post('/updateUser/:userID', function(req, res, next) {
 			});
 });
 
+router.post('/editCar/:userID&:plates', function(req, res, next) {
+    /**
+    * Route to get users by ID,
+    * @name /users/:userId
+    * @param {String} :userId
+    */
+    var deleteCar = function(db, callback) {   
+ 	var o_id = new ObjectId(req.params.userID);
+    db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+             {$set: { 
+                         "cars":{ 	
+                        			"plates": req.body.plates,
+      								"given_name": req.body.given_name,
+      								"make": req.body.make,
+      								"model": req.body.model,
+      								"year": req.body.year 
+      							}  
+                      }
+             },function(err, result) {
+				    assert.equal(err, null);
+				    console.log("Inserted a car for the user "+req.params.userID);
+				    callback();
+			});            
+	}
+	MongoClient.connect(dbConfig.url, function(err, db) {
+		  assert.equal(null, err);
+		  deleteCar(db, function() {
+		      db.close();
+		      res.status(200).send(req.params.userID)
+		  });
+		});
+})
+
 module.exports = router;
