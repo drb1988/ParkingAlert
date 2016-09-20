@@ -89,9 +89,6 @@ block content
 
  #map-content
   #floating-panel
-      input(type='text' onchange='reinit(this.value)') 
-      button(onclick='reinit(2)') Toggle 2
-      button(onclick='toggleHeatmap()') Toggle Heatmap
       button(onclick='changeGradient()') Change gradient
       button(onclick='changeRadius()') Change radius
       button(onclick='changeOpacity()') Change opacity
@@ -119,10 +116,6 @@ block scripts
       data: getPoints(1, 24),
       map: map
       });
-      }
-
-      function toggleHeatmap() {
-      heatmap.setMap(heatmap.getMap() ? null : map);
       }
       function changeGradient() {
       var gradient = [

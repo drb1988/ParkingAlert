@@ -7,20 +7,22 @@ html
     meta(charset='utf-8')
     title Heatmaps
     style.
-      html, body, #map-content {
+      html, body {
       height: 100%;
-      margin-top: 60px;
+      padding: 0;
+      }
+      #map-content {
+      height: 70%;
       padding: 0;
       }
       #map {
-      height: 100%;
-      padding-top: 30px;
+      height: 70%;
       }
       
       .range-slider {
       position: relative;
       height: 80px;
-      margin-top:70px
+      margin-top:55px
       }
       .extra-controls {
       position: relative;
@@ -39,10 +41,13 @@ html
   body
     #wrapper
       include ./dashboard/header
-    script(src='/js/jquery.min.js')
-    // Bootstrap Core JavaScript
-    script(src='/js/bootstrap.min.js')
-    // Custom Theme JavaScript
-    script(src='/js/jquery.js')
-    // MainJS js/jquery.js
-    script(src='/js/main.js')
+      script(src='/js/highcarts/jquery.min.js')
+      // Bootstrap Core JavaScript
+      script(src='/js/bootstrap.min.js')
+      // Custom Theme JavaScript
+      script(src='/js/jquery.js')
+      // MainJS js/jquery.js
+      script(src='/js/main.js')
+      #page-wrapper
+        block content
+  block scripts
