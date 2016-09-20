@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/blue_dark"
+        android:gravity="center_vertical">
+
+        <RelativeLayout
+            android:id="@+id/inapoi_vizualizare_masina"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inapoi"
+                android:textColor="@color/alb"
+                android:textSize="17dp" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/titlu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Vizualizare masina"
+            android:textColor="@android:color/white"
+            android:textSize="18dp" />
+
+        <RelativeLayout
+            android:id="@+id/gata_vizualizare_masina"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Salvare"
+                android:textColor="@android:color/white"
+                android:textSize="17dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@color/lista_masini_conduci"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <RelativeLayout
+                    android:id="@+id/rel_poza"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:id="@+id/poza_masina"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/default_image_profile_round" />
+
+                    <EditText
+                        android:id="@+id/et_numele_masina"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/poza_masina"
+                        android:background="@android:color/transparent"
+                        android:hint="Numele masinii"
+                        android:textSize="@dimen/txt_size" />
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/et_nr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rel_poza"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@android:color/transparent"
+                    android:hint="Numar de inmatriculare"
+                    android:padding="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/txt_size" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@color/lista_masini_conduci"></RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_producator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@android:color/transparent"
+                android:hint="Producator"
+                android:padding="20dp"
+                android:textColor="@color/blue_white"
+                android:textSize="@dimen/txt_size" />
+
+            <EditText
+                android:id="@+id/et_model"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@android:color/transparent"
+                android:hint="Model"
+                android:padding="20dp"
+                android:textColor="@color/blue_white"
+                android:textSize="@dimen/txt_size" />
+
+            <EditText
+                android:id="@+id/et_an_productie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@android:color/transparent"
+                android:hint="An de productie"
+                android:padding="20dp"
+                android:textColor="@color/blue_white"
+                android:textSize="@dimen/txt_size" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:background="@color/lista_masini_conduci"></RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

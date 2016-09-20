@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/relative_3chestii"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/back_linear_unique">
+
+        <TextView
+            android:id="@+id/take_photo"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Fa o poza"
+            android:textAllCaps="false"
+            android:textColor="@color/blue_white"
+            android:textSize="@dimen/txt_size_bigger" />
+
+        <TextView
+            android:id="@+id/txtprenom"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/take_photo"
+            android:background="#cccccc" />
+
+
+        <TextView
+            android:id="@+id/biblioteca"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/take_photo"
+            android:text="Galerie"
+            android:textAllCaps="false"
+            android:textColor="@color/blue_white"
+            android:textSize="@dimen/txt_size_bigger" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/anuler"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative_3chestii"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/back_linear_unique"
+        android:text="Anulare"
+        android:textAllCaps="false"
+        android:textColor="@color/blue_white"
+        android:textSize="@dimen/txt_size_bigger" />
+</RelativeLayout>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/blue_dark"
+        android:gravity="center_vertical">
+
+        <RelativeLayout
+            android:id="@+id/inapoi"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inapoi"
+                android:textColor="@color/alb"
+                android:textSize="17dp" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/titlu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Notificari"
+            android:textColor="@android:color/white"
+            android:textSize="18dp" />
+
+        <RelativeLayout
+            android:id="@+id/istoric"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Istoric"
+                android:textColor="@android:color/white"
+                android:textSize="17dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/frag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
+
+
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@color/blue_white"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:padding="8dp"
+            android:paddingBottom="5dp"
+            android:singleLine="true"></SearchView>
+
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/listview_notificari"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/blue_white"
+        android:dividerHeight="0.5dp"></ListView>
+</LinearLayout>

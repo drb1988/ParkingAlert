@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="color_red1">#D0021B</color>
+    <color name="colorAccent">#FF80AB</color>
+    <color name="color_red">#C51162</color>
+    <color name="blue_dark">#3358B1</color>
+    <color name="blue_white">#3570BD</color>
+    <color name="color_notifica_autoritati">#5387CB</color>
+    <color name="gri">#999999</color>
+    <color name="gri_timer">#F0F1F5</color>
+    <color name="alb">#ffffff</color>
+    <color name="lista_masini_conduci">#EFEFF4</color>
+
+</resources>

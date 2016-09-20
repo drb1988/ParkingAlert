@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <ImageView
+                android:id="@+id/poza_listview"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/default_image_profile_round" />
+
+            <ImageView
+                android:id="@+id/badge_listview"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/table" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/title_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:text="Ai primit un raspuns"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/mesaj_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title_listview"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="Scuzama, vin cate de repede pot"
+                android:textColor="@color/gri"
+                android:textSize="15dp" />
+
+            <TextView
+                android:textColor="@android:color/black"
+                android:id="@+id/detalii_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mesaj_listview"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="Astepti: 3 minute si 22 secunde"
+                android:textSize="18dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center">
+
+            <TextView
+                android:textColor="@android:color/black"
+                android:id="@+id/ora_listview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:42" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_toRightOf="@+id/ora_listview"
+                android:src="@drawable/sageata_dreapta" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

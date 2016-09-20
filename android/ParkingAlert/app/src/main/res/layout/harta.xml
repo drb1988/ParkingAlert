@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/table_list_dialog"
+    android:orientation="vertical">
+
+    <fragment
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.MapFragment"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/adresa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/map"
+        android:layout_alignLeft="@+id/map"
+        android:layout_alignRight="@+id/map"
+        android:layout_alignStart="@+id/map"
+        android:layout_below="@+id/map"
+        android:text="adresa"
+        android:textSize="20dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/adresa"
+        android:layout_alignLeft="@+id/adresa"
+        android:layout_alignRight="@+id/adresa"
+        android:layout_alignStart="@+id/adresa"
+        android:layout_below="@+id/adresa"
+        android:text="Notificat daniel la data de"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/txtprenom"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/relative_ok"
+        android:layout_marginLeft="31dp"
+        android:layout_marginRight="31dp"
+        android:background="#cccccc" />
+
+    <RelativeLayout
+        android:id="@+id/relative_ok_harta"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="31dp"
+        android:layout_marginRight="31dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="OK"
+            android:textColor="@color/blue_white"
+            android:textSize="20dp" />
+    </RelativeLayout>
+</RelativeLayout>
