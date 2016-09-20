@@ -184,4 +184,34 @@ router.post('/removeCar/:userID', function(req, res, next) {
 		});
 })
 
+router.post('/updateUser/:userID', function(req, res, next) {
+	   var findUser = function(db, callback) {   
+	 var o_id = new ObjectId(req.params.userID);
+	    db.collection('parking').update({"_id": o_id},
+	    	 {$set: { 
+                      "first_name": req.body.first_name,
+      				  "last_name": req.body.last_name,
+				      "nickname": req.body.nickname,
+				      "email": req.body.email,
+				      "driver_license": req.body.driver_license,
+				      "photo": req.body.photo,
+				      "platform": req.body.platform,
+				      "user_city": req.body.user_city
+                      }
+             },
+	    	function(err, result) {
+					    assert.equal(err, null);
+					    console.log("Found user "+req.params.userID);
+					    res.status(200).send(result)
+					    callback();
+				});            
+		}
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findUser(db, function() {
+			      db.close();
+			  });
+			});
+});
+
 module.exports = router;
