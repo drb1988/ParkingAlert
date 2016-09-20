@@ -117,4 +117,71 @@ router.post('/addSecurity/:userID', function(req, res, next) {
 		});
 })
 
+router.get('/getUser/:userID', function(req, res, next) {
+	   var findUser = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	    db.collection('parking').findOne({"_id": o_id},
+	    	function(err, result) {
+					    assert.equal(err, null);
+					    console.log("Found user "+req.params.userID);
+					    res.status(200).send(result)
+					    callback();
+				});            
+		}
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findUser(db, function() {
+			      db.close();
+			  });
+			});
+});
+
+router.get('/getCars/:userID', function(req, res, next) {
+	   var findUser = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	    db.collection('parking').findOne({"_id": o_id},
+	    	function(err, result) {
+					    assert.equal(err, null);
+					    console.log("Found user "+req.params.userID);
+					    res.status(200).send(result.cars)
+					    callback();
+				});            
+		}
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findUser(db, function() {
+			      db.close();
+			  });
+			});
+});
+
+router.post('/removeCar/:userID', function(req, res, next) {
+    /**
+    * Route to get users by ID,
+    * @name /users/:userId
+    * @param {String} :userId
+    */
+    var deleteCar = function(db, callback) {   
+ 	var o_id = new ObjectId(req.params.userID);
+    db.collection('parking').update({"_id": o_id}, 
+             {$pull: { 
+                         "cars":{ 	
+                        			"plates": req.body.plates,
+      							} 
+                      }
+             },function(err, result) {
+				    assert.equal(err, null);
+				    console.log("Inserted a car for the user "+req.params.userID);
+				    callback();
+			});            
+	}
+	MongoClient.connect(dbConfig.url, function(err, db) {
+		  assert.equal(null, err);
+		  deleteCar(db, function() {
+		      db.close();
+		      res.status(200).send(req.params.userID)
+		  });
+		});
+})
+
 module.exports = router;
