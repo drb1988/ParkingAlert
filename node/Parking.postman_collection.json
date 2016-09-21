@@ -1,0 +1,151 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Parking",
+		"_postman_id": "4a772a1e-135a-552a-b9a8-14935c8da3d2",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:3000/users/user",
+			"request": {
+				"url": "localhost:3000/users/updateUser/57e11909853b0122ac974e23",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/addCar/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/addCar/57e11909853b0122ac974e23",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plates\": \"BH69SEX\",\n    \"given_name\": \"Furia Gri\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"year\": \"1991\" \n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/addSecurity/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/addSecurity/57e11909853b0122ac974e23",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_token\": \"cQ9ReZKzxDw:APA91bGAY3RDMtG6J8lnjvdaXYsTwYXoEbnZDKO9yeAfW0Q5tBqH0GONAwVPhESH-NwBa9r0Qrtd9r0BN3tvGcK4J73Ae9LoeXNWshdoJXOsPnvjTTpM_zn0caxR8Fvx7aJ-NDSEvswp\",\n    \"password\": \"MataAreCapDeBou\",\n    \"reg_ip\": \"192.168.1.1\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/getUser/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/getUser/57e11909853b0122ac974e23",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/getCars/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/getCars/57e11909853b0122ac974e23",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/removeCar/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/removeCar/57e11909853b0122ac974e23",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plates\": \"BH69SEX\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/updateUser/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/updateUser/57e11909853b0122ac974e23",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		}
+	]
+}

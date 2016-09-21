@@ -8,6 +8,13 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+var dbConfig = require('./db');
+var mongoose = require('mongoose');
+
+mongoose.connect(dbConfig.url);//ORM for Schema data like users
+var parkingCollection = dbConfig.collection;
+var app = express();
+
 var app = express();
 
 // view engine setup
@@ -56,8 +63,8 @@ app.use(function(err, req, res, next) {
   });
 });
 
-app.listen( 3000 , function () {
+app.listen(3000, function() {
   console.log("App listening on port " + 3000 );
-  });
+});
 
 module.exports = app;
