@@ -170,7 +170,6 @@
                 android:layout_height="60dp"
                 android:layout_marginLeft="10dp"
                 android:background="@null"
-                android:focusable="false"
                 android:hint=" driver license"
                 android:maxLines="1" />
 

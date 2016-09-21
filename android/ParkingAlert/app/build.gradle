@@ -27,4 +27,6 @@ dependencies {
     compile 'me.dm7.barcodescanner:zxing:1.9'
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
+    compile 'com.android.volley:volley:1.0.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }

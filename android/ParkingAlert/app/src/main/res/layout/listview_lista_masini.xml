@@ -2,21 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:orientation="vertical"
     android:weightSum="1">
 
     <LinearLayout
-        android:paddingBottom="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="5"
-        android:layout_weight="0.05">
+        android:weightSum="5">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="2">
 
             <ImageView
@@ -43,7 +40,7 @@
                 android:singleLine="true"
                 android:textColor="@android:color/black"
                 android:text="Lane's car"
-                android:textSize="18dp" />
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/nr"
@@ -54,7 +51,7 @@
                 android:singleLine="true"
                 android:text="BH89FSU"
                 android:textColor="@color/gri"
-                android:textSize="15dp" />
+                android:textSize="18dp" />
         </RelativeLayout>
 
         <RelativeLayout

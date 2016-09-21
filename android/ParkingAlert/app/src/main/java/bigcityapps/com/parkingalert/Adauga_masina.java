@@ -31,11 +31,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
+import Util.Constants;
 import Util.GetFilePathFromDevice;
 
 /**
@@ -52,10 +62,12 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
     String realPath;
     final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
     final int ACTIVITY_SELECT_IMAGE = 1234;
+    RequestQueue queue;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.adauga_masina);
         ctx = this;
+        queue = Volley.newRequestQueue(this);
         act=this;
         initComponents();
     }
@@ -76,13 +88,13 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
 
     public void onClick(View view) {
         switch (view.getId()){
-            case bigcityapps.com.parkingalert.R.id.inapoi_adauga_masina:
+            case R.id.inapoi_adauga_masina:
                 finish();
                 break;
-            case bigcityapps.com.parkingalert.R.id.gata_adauga_masina:
-
+            case R.id.gata_adauga_masina:
+                postUser("57e11909853b0122ac974e23");
                 break;
-            case bigcityapps.com.parkingalert.R.id.poza_masina:
+            case R.id.poza_masina:
                 final Dialog dialog = new Dialog(ctx);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -176,6 +188,46 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
                 break;
         }
     }
+
+    public void postUser(final String id){
+        String url = Constants.URL+"users/addCar/"+id;
+        if(nume.getText().length()==0 || nr.getText().length()==0 || producator.getText().length()==0 || model.getText().length()==0 || an.getText().length()==0)
+            Toast.makeText(ctx,"Completati toate campurile",Toast.LENGTH_LONG).show();
+        else{
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        public void onResponse(String response) {
+                            String json = response;
+                            Log.w("meniuu", "response:post user" + response);
+                            finish();
+                        }
+                    }, ErrorListener) {
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("plates", nr.getText().toString());
+                    params.put("given_name", nume.getText().toString());
+                    params.put("make", producator.getText().toString());
+                    params.put("model", model.getText().toString());
+                    params.put("year", an.getText().toString());
+                    return params;
+                }
+
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+////                String auth_token_string = prefs.getString("token1", "");
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("Authorization", auth_token_string);
+//                return params;
+//            }
+            };
+            queue.add(stringRequest);
+        }
+    }
+    Response.ErrorListener ErrorListener = new Response.ErrorListener() {
+        public void onErrorResponse(VolleyError error) {
+            Log.w("meniuu", "error: errorlistener:" + error);
+            Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
+        }
+    };
     protected void onActivityResult( int requestCode, int resultCode, Intent data) {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
