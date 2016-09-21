@@ -33,13 +33,37 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(bigcityapps.com.parkingalert.R.layout.activity_main);
+
+
+        setContentView(R.layout.activity_main);
         mTitle = mDrawerTitle = getTitle();
         mNavigationDrawerItemTitles= getResources().getStringArray(bigcityapps.com.parkingalert.R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(bigcityapps.com.parkingalert.R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(bigcityapps.com.parkingalert.R.id.left_drawer);
 
         setupToolbar();
+
+//        PackageInfo info;
+//        try {
+//          String  PACKAGE_NAME = getApplicationContext().getPackageName();
+//            Log.w("meniuu","package name"+PACKAGE_NAME);
+//            info = getPackageManager().getPackageInfo(PACKAGE_NAME, PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md;
+//                md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                String something = new String(Base64.encode(md.digest(), 0));
+//                //String something = new String(Base64.encodeBytes(md.digest()));
+//                Log.e("meniuu","hash key:"+ something);
+//            }
+//        } catch (PackageManager.NameNotFoundException e1) {
+//            Log.e("meniuu","name not found"+ e1.toString());
+//        } catch (NoSuchAlgorithmException e) {
+//            Log.e("meniuu","no such an algorithm"+ e.toString());
+//        } catch (Exception e) {
+//            Log.e("exception", e.toString());
+//        }
+
 
         DataModel[] drawerItem = new DataModel[10];
         drawerItem[0] = new DataModel(1, "NOTIFICARI");

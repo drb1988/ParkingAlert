@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:textSize="@dimen/txt_size_bigger1"
+        android:id="@+id/titlu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="Parkin alert" />
+
+    <EditText
+        android:id="@+id/user"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/titlu"
+        android:layout_marginTop="30dp"
+        android:background="@null"
+        android:gravity="center"
+        android:hint="user" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/user"
+        android:layout_marginTop="10dp"
+        android:background="@null"
+        android:gravity="center"
+        android:hint="password" />
+
+    <Button
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/password"
+        android:layout_marginLeft="20dp"
+        android:background="@color/blue_white"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/alb"
+        android:text="Login" />
+
+    <com.facebook.login.widget.LoginButton xmlns:fb="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        fb:login_text="Login"
+        fb:logout_text="Logout" />
+</RelativeLayout>
