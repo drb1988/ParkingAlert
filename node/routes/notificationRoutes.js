@@ -74,6 +74,60 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
     });
 })
 
+router.post('/receiverDeleted/:notificationID', function(req, res, next) {
+    /**
+    * Route to get users by ID,
+    * @name /users/:userId
+    * @param {String} :userId
+    */
+    var deleteCar = function(db, callback) {   
+  var o_id = new ObjectId(req.params.notificationID);
+    db.collection('notifications').update({"_id": o_id}, 
+             {$set: { 
+                         "receiver_deleted": true 
+                      }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Receiver has deleted "+req.params.notificationID);
+            callback();
+      });            
+  }
+  MongoClient.connect(dbConfig.url, function(err, db) {
+      assert.equal(null, err);
+      deleteCar(db, function() {
+          db.close();
+          res.status(200).send(req.params.notificationID)
+      });
+    });
+})
+
+router.post('/senderDeleted/:notificationID', function(req, res, next) {
+    /**
+    * Route to get users by ID,
+    * @name /users/:userId
+    * @param {String} :userId
+    */
+    var deleteCar = function(db, callback) {   
+  var o_id = new ObjectId(req.params.notificationID);
+    db.collection('notifications').update({"_id": o_id}, 
+             {$set: { 
+                         "sender_deleted": true 
+                      }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Sender has deleted "+req.params.notificationID);
+            callback();
+      });            
+  }
+  MongoClient.connect(dbConfig.url, function(err, db) {
+      assert.equal(null, err);
+      deleteCar(db, function() {
+          db.close();
+          res.status(200).send(req.params.notificationID)
+      });
+    });
+})
+
 
 
 module.exports = router;

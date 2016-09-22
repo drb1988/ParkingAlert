@@ -186,6 +186,48 @@
 				"description": "post phone number, get response with validation code"
 			},
 			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/receiverRead/57e381679b5e33272485a918",
+			"request": {
+				"url": "localhost:3000/notifications/receiverRead/57e381679b5e33272485a918",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/receiverDeleted/57e381679b5e33272485a918",
+			"request": {
+				"url": "localhost:3000/notifications/receiverDeleted/57e381679b5e33272485a918",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/senderDeleted/57e381679b5e33272485a918",
+			"request": {
+				"url": "localhost:3000/notifications/senderDeleted/57e381679b5e33272485a918",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
