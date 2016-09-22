@@ -40,8 +40,6 @@ block content
   var updateValues = function () {
   $from.prop("value", from);
   $to.prop("value", to);
-  console.log("from: "+from);
-  console.log("to: "+to);
   reinit(from,to);
   };
   $range.ionRangeSlider({
@@ -95,8 +93,6 @@ block content
   #map
 block scripts
     script.
-      
-      console.log("resources hour_1 exists");
       function reinit(startpointvalue, endpointvalue) {
       //getPoints
       heatmap.set('data' ,getPoints(startpointvalue, endpointvalue));
@@ -318,13 +314,10 @@ block scripts
 
       var result=[];
       var qq = "";
-      console.log("startpointvalue: "+startpointvalue+" endpointvalue: "+endpointvalue);
       for(var i=startpointvalue; i<=endpointvalue; i++){
-      console.log("i: "+i);
       qq= result.concat(hour[i]);
       result = qq;
       }
-      console.log("result",result);
       return result;
       }
     script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')
