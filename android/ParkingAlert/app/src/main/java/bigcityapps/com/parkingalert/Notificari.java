@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -62,6 +63,13 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                     e.printStackTrace();
                 }
                 return false;
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            Intent vizualizare= new Intent(Notificari.this,Vizualizare_masina.class);
+                vizualizare.putExtra("detalii",modelNotificationArrayList.get(i).getMesaj());
+                startActivity(vizualizare);
             }
         });
     }
