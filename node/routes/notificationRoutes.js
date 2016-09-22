@@ -107,7 +107,7 @@ router.post('/senderDeleted/:notificationID', function(req, res, next) {
     * @name /users/:userId
     * @param {String} :userId
     */
-    var deleteCar = function(db, callback) {   
+  var deleteCar = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
@@ -127,6 +127,25 @@ router.post('/senderDeleted/:notificationID', function(req, res, next) {
       });
     });
 })
+
+router.get('/getNotification/:userID', function(req, res, next) {
+     var findNotification = function(db, callback) {   
+    var o_id = new ObjectId(req.params.userID);
+      db.collection('notifications').findOne({"_id": o_id},
+        function(err, result) {
+              assert.equal(err, null);
+              console.log("Found notification "+req.params.userID);
+              res.status(200).send(result)
+              callback();
+        });            
+    }
+    MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findNotification(db, function() {
+            db.close();
+        });
+      });
+});
 
 
 
