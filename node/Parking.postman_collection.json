@@ -192,10 +192,16 @@
 			"request": {
 				"url": "localhost:3000/notifications/receiverRead/57e381679b5e33272485a918",
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": []
+					"mode": "raw",
+					"raw": "{\n\t\"type\" : \"Point\",\n\t\"coordinates\" : [\n\t\t24.0992,\n\t\t44.8384\n\t\t]\n}"
 				},
 				"description": ""
 			},

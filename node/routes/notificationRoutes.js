@@ -27,6 +27,9 @@ router.post('/notification', function(req, res, next) {
       "create_date": new Date(),
       "vehicle": req.body.vehicle,
       "sender_id": req.body.sender_id,
+      "estimations": [
+        {"sender": req.body.location}
+      ],
       "sender_nickname": req.body.sender_nickname,
       "receiver_id": req.body.receiver_id,
       "receiver_nickname": req.body.receiver_nickname,
@@ -57,8 +60,14 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
-                         "receiver_read": true 
-                      }
+                         "receiver_read": true
+
+                    },
+              $push:{
+                    "estimations": {
+                      "receiver": req.body
+                    }   
+              }
              },function(err, result) {
             assert.equal(err, null);
             console.log("Receiver has read "+req.params.notificationID);
@@ -146,7 +155,5 @@ router.get('/getNotification/:userID', function(req, res, next) {
         });
       });
 });
-
-
 
 module.exports = router;
