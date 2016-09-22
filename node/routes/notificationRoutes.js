@@ -34,7 +34,7 @@ router.post('/notification', function(req, res, next) {
    }, function(err, result) {
     assert.equal(err, null);
     notificationID = result.insertedId;
-    console.log("Inserted a user in the users collection. "+result.insertedId);
+    console.log("Sent a notification "+result.insertedId);
     callback();
   });
 };
@@ -47,6 +47,32 @@ MongoClient.connect(dbConfig.url, function(err, db) {
 });
 });
 
+router.post('/receiverRead/:notificationID', function(req, res, next) {
+    /**
+    * Route to get users by ID,
+    * @name /users/:userId
+    * @param {String} :userId
+    */
+    var deleteCar = function(db, callback) {   
+  var o_id = new ObjectId(req.params.notificationID);
+    db.collection('notifications').update({"_id": o_id}, 
+             {$set: { 
+                         "receiver_read": true 
+                      }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Receiver has read "+req.params.notificationID);
+            callback();
+      });            
+  }
+  MongoClient.connect(dbConfig.url, function(err, db) {
+      assert.equal(null, err);
+      deleteCar(db, function() {
+          db.close();
+          res.status(200).send(req.params.notificationID)
+      });
+    });
+})
 
 
 
