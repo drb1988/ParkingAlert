@@ -146,6 +146,102 @@
 				"description": "post phone number, get response with validation code"
 			},
 			"response": []
+		},
+		{
+			"name": "localhost:3000/users/editCar/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/editCar/57e11909853b0122ac974e23&BH69SEX",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plates\": \"BH71SEX\",\n    \"given_name\": \"Furia Gri\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"year\": \"1991\" \n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/notification",
+			"request": {
+				"url": "localhost:3000/notifications/notification",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"3\",\n    \"is_active\": false,\n    \"location\": {\n\t\t\"type\" : \"Point\",\n\t\t\"coordinates\" : [\n\t\t\t24.0992,\n\t\t\t44.8384\n\t\t]\n\t},\n\t\"reverse_geocode\" : {\n\t\t\"address\" : \"soseaua vergului\",\n\t\t\"city\" : \"bucuresti\",\n\t\t\"country\" : \"romania\",\n\t\t\"zip\" : null\n\t},\n    \"vehicle\": \"plates\",\n    \"sender_id\": \"57b9c655b3d4e618515d39ac\",\n    \"sender_nickname\": \"Cristi\",\n    \"receiver_id\": \"57b9c655b3d4e618515d39ac\",\n    \"receiver_nickname\": \"Vasile\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/receiverRead/57e381679b5e33272485a918",
+			"request": {
+				"url": "localhost:3000/notifications/receiverRead/57e381679b5e33272485a918",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/receiverDeleted/57e381679b5e33272485a918",
+			"request": {
+				"url": "localhost:3000/notifications/receiverDeleted/57e381679b5e33272485a918",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/senderDeleted/57e381679b5e33272485a918",
+			"request": {
+				"url": "localhost:3000/notifications/senderDeleted/57e381679b5e33272485a918",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/getNotification/57e381679b5e33272485a918",
+			"request": {
+				"url": "localhost:3000/notifications/getNotification/57e381679b5e33272485a918",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
