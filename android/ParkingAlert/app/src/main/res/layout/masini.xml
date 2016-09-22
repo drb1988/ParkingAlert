@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/blue_dark"
@@ -53,8 +54,10 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/titlu1"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_below="@+id/header"
         android:background="@color/lista_masini_conduci">
 
         <TextView
@@ -66,6 +69,8 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:layout_below="@+id/titlu1"
+        android:id="@+id/detalii1"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -84,13 +89,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"
+            android:layout_marginLeft="10dp"
             android:text="Trebuie sa ai cel putin o masina adaugata"
-            android:textSize="@dimen/txt_size"
-            android:layout_marginLeft="10dp"/>
+            android:textSize="@dimen/txt_size" />
 
-        <ListView
-            android:id="@+id/listview_masini"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_masini"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></ListView>
+            android:layout_height="match_parent" />
     </RelativeLayout>
-</LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_add"
+        android:layout_marginRight="10dp"/>
+</RelativeLayout>
