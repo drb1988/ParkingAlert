@@ -15,41 +15,6 @@ router.get('/chart', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.post('/user', function(req, res, next) {
-    /**
-    * Route to get users by ID,
-    * @name /users/:userId
-    * @param {String} :userId
-    */
-  var userID ="";
-  var insertDocument = function(db, callback) {
-   db.collection('parking').insertOne( {
-      "first_name": req.body.first_name,
-      "last_name": req.body.last_name,
-      "nickname": req.body.nickname,
-      "email": req.body.email,
-      "cars": [],
-      "security": [],
-      "driver_license": req.body.driver_license,
-      "photo": req.body.photo,
-      "platform": req.body.platform,
-      "user_city": req.body.user_city
-   }, function(err, result) {
-    assert.equal(err, null);
-    userID = result.insertedId;
-    console.log("Inserted a user in the users collection. "+result.insertedId);
-    callback();
-  });
-};
-MongoClient.connect(dbConfig.url, function(err, db) {
-  assert.equal(null, err);
-  insertDocument(db, function() {
-      db.close();
-      res.status(200).send(userID)
-  });
-});
-});
-
 router.post('/addCar/:userID', function(req, res, next) {
     /**
     * Route to get users by ID,
