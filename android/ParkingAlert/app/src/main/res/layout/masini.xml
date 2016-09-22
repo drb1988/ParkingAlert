@@ -37,6 +37,7 @@
             android:textSize="18dp" />
 
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/adauga_masini"
             style="?android:borderlessButtonStyle"
             android:layout_width="wrap_content"
@@ -75,6 +76,7 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:visibility="invisible"
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
