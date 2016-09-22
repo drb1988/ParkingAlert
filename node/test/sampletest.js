@@ -6,10 +6,10 @@ Browser.localhost('localhost', 3000);
 
 describe('Loads pages', function(){
     it('Heatmaps', function(done){
+    	this.timeout(7000);
+    	setTimeout(done, 15000);
         browser.visit('/', function () {
-        	this.timeout(15000);
-    		setTimeout(done, 15000);
-            expect(browser.text("title")).to.equal('Heatmapss');
+            expect(browser.text("title")).to.equal('Heatmaps');
             done();
         });
     });
