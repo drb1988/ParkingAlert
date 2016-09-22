@@ -28,6 +28,8 @@ router.post('/notification', function(req, res, next) {
       "vehicle": req.body.vehicle,
       "sender_id": req.body.sender_id,
       "sender_nickname": req.body.sender_nickname,
+      "receiver_id": req.body.receiver_id,
+      "receiver_nickname": req.body.receiver_nickname,
       "is_ontime": true
    }, function(err, result) {
     assert.equal(err, null);
