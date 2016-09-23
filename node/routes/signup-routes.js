@@ -53,4 +53,4 @@ MongoClient.connect(dbConfig.url, function(err, db) {
 });
 });
 
-module.exports = router;
+module.exports = router

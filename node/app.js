@@ -8,6 +8,8 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var signup = require('./routes/signup-routes');
 var notifications = require('./routes/notificationRoutes');
+var jwtMiddleware = require('express-jwt');
+var config = require('./config');
 
 var dbConfig = require('./db');
 var mongoose = require('mongoose');
@@ -31,8 +33,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
-app.use('/notifications', notifications);
+app.use('/users', jwtMiddleware({ secret: config.jwt.secret }), users);
+app.use('/notifications', jwtMiddleware({ secret: config.jwt.secret }), notifications);
 app.use('/signup', signup);
 
 // catch 404 and forward to error handler
