@@ -130,6 +130,139 @@ router.get('/', function(req, res, next) {
     resources: resources
   });
 });
+
+router.get('/heatmaps_ajax', function(req, res, next) {
+  /**
+    * Base route,
+    * @name /
+    */
+//     describe('Array', function() {
+//     describe('#indexOf()', function() {
+//     it('should return -1 when the value is not present', function() {
+//       assert.equal(-1, [1,2,3].indexOf(4));
+//     });
+//   });
+// });
+
+  res.render('heatmap_ajax', { title: 'Express' });
+});
+
+router.post('/heatmaps_ajax_map', function(req, res, next) {
+  /**
+    * Base route,
+    * @name /
+    */
+//     describe('Array', function() {
+//     describe('#indexOf()', function() {
+//     it('should return -1 when the value is not present', function() {
+//       assert.equal(-1, [1,2,3].indexOf(4));
+//     });
+//   });
+// });
+  console.log(req.body);
+  var resources = [
+    [
+    {lat: 37.782551, lng: -122.445368},
+    {lat: 37.782745, lng: -122.444586 }
+  ],
+  [
+    { lat: 37.782551, lng: -122.445368},
+    { lat: 37.782745, lng: -122.444586 }
+  ],
+  [
+    { lat: 37.782551, lng: -122.445368 }
+  ],
+   [
+    { lat: 37.782551, lng: -122.445368 },
+    { lat: 37.782745, lng: -122.444586 }
+  ],
+   [
+    { lat: 37.783842, lng: -122.439591 },
+    { lat: 37.784147, lng: -122.439668 }
+  ],
+   [
+    { lat: 37.784206, lng: -122.439686 },
+    { lat: 37.784386, lng: -122.439790 }
+  ],
+   [
+    { lat: 37.785010, lng: -122.439947 },
+    { lat: 37.785360, lng: -122.439952 }
+  ],
+   [
+    { lat: 37.786905, lng: -122.440270 },
+    { lat: 37.786956, lng: -122.440279 }
+  ],
+   [
+    { lat: 37.800938, lng: -122.434650 },
+    { lat: 37.801024, lng: -122.434889 }
+  ],
+   [
+    { lat: 37.784437, lng: -122.422924 },
+    { lat: 37.784746, lng: -122.422818 }
+  ],
+  [
+    { lat: 37.787282, lng: -122.394426 },
+    { lat: 37.787783, lng: -122.393767 }
+  ],
+  [
+    { lat: 37.778160, lng: -122.438442 },
+    { lat: 37.778414, lng: -122.438508 }
+  ],
+  [
+    { lat: 37.782286, lng: -122.439266 },
+    { lat: 37.797847, lng: -122.429388 }
+  ],
+  [
+    { lat: 37.799320, lng: -122.429251 },
+    { lat: 37.799590, lng: -122.429309 }
+  ],
+  [
+    { lat: 37.801242, lng: -122.429685 },
+    { lat: 37.801375, lng: -122.429702 }
+  ],
+  [
+    { lat: 37.763115, lng: -122.415196 },
+    { lat: 37.762967, lng: -122.415183 }
+  ],
+  [
+    { lat: 37.795203, lng: -122.400304 },
+    { lat: 37.778738, lng: -122.415584 }
+  ],
+  [
+    { lat: 37.764768, lng: -122.426089 },
+    { lat: 37.764766, lng: -122.426117 }
+  ],
+  [
+    { lat: 37.778409, lng: -122.408839 },
+    { lat: 37.777842, lng: -122.409501 }
+  ],
+  [
+    { lat: 37.773533, lng: -122.413636 },
+    { lat: 37.773021, lng: -122.413009 },
+  ],
+  [
+    { lat: 37.768564, lng: -122.406469 },
+    { lat: 37.767980, lng: -122.405745 }
+  ],
+  [
+    { lat: 37.761344, lng: -122.406215 },
+    { lat: 37.760556, lng: -122.406495 }
+  ],
+  [
+    { lat: 37.757676, lng: -122.405118 },
+  ],
+  [
+    { lat: 37.754665, lng: -122.403242 },
+    { lat: 37.753837, lng: -122.403172 }
+  ]
+  ];
+  var result = [];
+  for(var i=parseInt(req.body.start_hour)-1; i<parseInt(req.body.end_hour); i++)
+    result = result.concat(resources[i]);
+
+  res.status(200).send(result);
+});
+
 router.get('/login', function(req, res, next) {
   /**
     * Base route,
