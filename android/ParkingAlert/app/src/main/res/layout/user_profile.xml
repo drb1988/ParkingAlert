@@ -137,7 +137,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:background="@null"
-                android:hint="0743954877"
+                android:hint="nr tel"
                 android:inputType="number"
                 android:maxLines="1" />
 
@@ -186,7 +186,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:background="@null"
-                android:hint="oradea"
+                android:hint="oras"
                 android:maxLines="1" />
 
             <TextView
@@ -195,21 +195,6 @@
                 android:layout_height="1dp"
                 android:background="#cccccc" />
 
-            <EditText
-                android:id="@+id/country_user_profile"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:background="@null"
-                android:hint="Romanica"
-                android:maxLines="1" />
-
-            <TextView
-                android:id="@+id/txtnationalite"
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="#cccccc" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

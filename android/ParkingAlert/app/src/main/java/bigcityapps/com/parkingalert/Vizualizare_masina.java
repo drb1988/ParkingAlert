@@ -3,6 +3,7 @@ package bigcityapps.com.parkingalert;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Util.Constants;
+import Util.SecurePreferences;
 
 /**
  * Created by fasu on 19/09/2016.
@@ -30,11 +33,13 @@ public class Vizualizare_masina extends Activity implements View.OnClickListener
     EditText tv_numele_masina, tv_nr, tv_producator, tv_model, tv_an_producti;
     RelativeLayout inapoi, salvare;
     RequestQueue queue;
+    SharedPreferences prefs;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.vizualizare_masina);
         initcomponents();
         ctx = this;
+        prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
@@ -67,7 +72,7 @@ public class Vizualizare_masina extends Activity implements View.OnClickListener
         break;
 
         case R.id.gata_vizualizare_masina:
-            updateCars("57e11909853b0122ac974e23");
+            updateCars(prefs.getString("user_id",""));
 
 //        Intent salvare= new Intent(Vizualizare_masina.this, MainActivity.class);
 //        startActivity(salvare);
@@ -98,12 +103,12 @@ public class Vizualizare_masina extends Activity implements View.OnClickListener
                     return params;
                 }
 
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-////                String auth_token_string = prefs.getString("token1", "");
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("Authorization", auth_token_string);
-//                return params;
-//            }
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ auth_token_string);
+                return params;
+            }
             };
             queue.add(stringRequest);
         }

@@ -1,7 +1,10 @@
 package bigcityapps.com.parkingalert;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,7 +24,7 @@ import android.widget.Toast;
 import Model.DataModel;
 
 public class MainActivity extends AppCompatActivity {
-
+    static boolean active = false;
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -30,10 +33,25 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mTitle;
     TextView badge_count;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
-
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            Bundle x = getIntent().getExtras();
+            if(x!=null){
+                Log.w("meniuu",":"+x.getString("meniuu"));
+            }
+            else
+            Log.w("meniuu","x este null");
+            updateUi();
+        }
+    };
+    public void updateUi(){
+        badge_count.setText("13");
+        Log.w("meniuu","ai primit un sms");
+    }
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ///firebase receiver
+        registerReceiver(myReceiver, new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER));
 
         setContentView(R.layout.activity_main);
         mTitle = mDrawerTitle = getTitle();
@@ -102,6 +120,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        active = false;
+        super.onStop();
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(myReceiver);
+        super.onDestroy();
+    }
+
     private void selectItem(int position) {
         Log.w("meniuu","a intrat in selectitem");
         Fragment fragment = null;
@@ -143,29 +177,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        if (mDrawerToggle.onOptionsItemSelected(item)) {
-//            return true;
-//        }
-//
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
-    @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
         getSupportActionBar().setTitle(mTitle);
     }
 
-    @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_menu, menu);
@@ -177,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case bigcityapps.com.parkingalert.R.id.clopot:
+            case R.id.clopot:
                 Toast.makeText(this,"clopot",Toast.LENGTH_LONG).show();
                 return true;
         }

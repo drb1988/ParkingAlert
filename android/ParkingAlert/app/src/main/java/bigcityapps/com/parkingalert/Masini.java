@@ -3,6 +3,7 @@ package bigcityapps.com.parkingalert;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -41,12 +43,14 @@ import java.util.Map;
 
 import Model.MasiniModel;
 import Util.Constants;
+import Util.SecurePreferences;
 
 /**
  * Created by fasu on 19/09/2016.
  */
 public class Masini extends Activity implements View.OnClickListener{
     RelativeLayout inapoi, adauga;
+    SharedPreferences prefs;
     Context ctx;
     NotificareAdapter adapter;
     TextView title, mesaj;
@@ -60,6 +64,7 @@ public class Masini extends Activity implements View.OnClickListener{
         setContentView(R.layout.masini);
         initcomponents();
         ctx=this;
+        prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
         getCars("57e11909853b0122ac974e23");
 //        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -249,13 +254,13 @@ switch (view.getId()){
                 }
             }
         }, ErrorListener) {
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                String auth_token_string = prefs.getString("token1", "");
-//                Log.w("meniuu", "token:" + auth_token_string);
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("Authorization", auth_token_string);
-//                return params;
-//            }
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Log.w("meniuu", "token:" + auth_token_string);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ auth_token_string);
+                return params;
+            }
         };
         queue.add(stringRequest);
     }

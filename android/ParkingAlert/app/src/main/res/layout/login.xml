@@ -4,57 +4,170 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <TextView
-        android:textSize="@dimen/txt_size_bigger1"
-        android:id="@+id/titlu"
+    <RelativeLayout
+        android:id="@+id/hedear"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:text="Parkin alert" />
+        android:layout_height="60dp"
+        android:background="@color/blue_dark"
+        android:gravity="center_vertical">
 
-    <EditText
-        android:id="@+id/user"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/titlu"
-        android:layout_marginTop="30dp"
-        android:background="@null"
-        android:gravity="center"
-        android:hint="user" />
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/inapoi_user_profile"-->
+        <!--style="?android:borderlessButtonStyle"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center">-->
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/user"
-        android:layout_marginTop="10dp"
-        android:background="@null"
-        android:gravity="center"
-        android:hint="password" />
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Inapoi"-->
+        <!--android:textColor="@color/alb"-->
+        <!--android:textSize="17dp" />-->
+        <!--</RelativeLayout>-->
 
-    <Button
-        android:id="@+id/login"
+        <TextView
+            android:id="@+id/titlu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Login"
+            android:textColor="@android:color/white"
+            android:textSize="18dp" />
+
+        <RelativeLayout
+            android:id="@+id/continuare"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Continuare"
+                android:textColor="@android:color/white"
+                android:textSize="17dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <ScrollView
+        android:layout_above="@+id/login_button"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/password"
-        android:layout_marginLeft="20dp"
-        android:background="@color/blue_white"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/alb"
-        android:text="Login" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/hedear">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <EditText
+                android:id="@+id/nume_login"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:hint="nume"
+                android:maxLines="1" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#cccccc" />
+
+            <EditText
+                android:id="@+id/nick_name_login"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:hint="nickname"
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/txtcodepostal"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="#cccccc" />
+
+            <EditText
+                android:id="@+id/mobile_login"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:hint="0743954877"
+                android:inputType="number"
+                android:maxLines="1" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="#cccccc" />
+
+            <EditText
+                android:id="@+id/email_login"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:hint="email"
+                android:maxLines="1"
+                android:spinnerMode="dialog" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="#cccccc" />
+
+            <EditText
+                android:id="@+id/driver_license_login"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:hint=" driver license"
+                android:maxLines="1" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="#cccccc" />
+
+            <EditText
+                android:id="@+id/city_login"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:hint="oradea"
+                android:maxLines="1" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="#cccccc" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <com.facebook.login.widget.LoginButton xmlns:fb="http://schemas.android.com/apk/res-auto"
         android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginBottom="10dp"
-        android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         fb:login_text="Login"

@@ -1,9 +1,11 @@
 package bigcityapps.com.parkingalert;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +27,39 @@ import java.util.Locale;
  * Created by fasu on 14/09/2016.
  */
 public class Notificari extends AppCompatActivity implements View.OnClickListener{
+    static boolean active = false;
     ListView listView;
     Context ctx;
     NotificareAdapter adapter;
     RelativeLayout inapoi, istoric;
     ArrayList<ModelNotification> modelNotificationArrayList= new ArrayList<>();
     SearchView search;
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            Bundle x = getIntent().getExtras();
+            if(x!=null){
+                Log.w("meniuu",":"+x.getString("meniuu"));
+            }
+            else
+                Log.w("meniuu","x este null");
+            updateUi();
+        }
+    };
+    public void updateUi(){
+        Log.w("meniuu","ai primit un sms");
+
+    }
+    @Override
+    protected void onStop() {
+        active = false;
+        super.onStop();
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.notificari);

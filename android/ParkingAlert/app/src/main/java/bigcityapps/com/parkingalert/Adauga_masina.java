@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -31,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,12 +49,14 @@ import java.util.Map;
 
 import Util.Constants;
 import Util.GetFilePathFromDevice;
+import Util.SecurePreferences;
 
 /**
  * Created by fasu on 19/09/2016.
  */
 public class Adauga_masina extends Activity implements View.OnClickListener{
     Context ctx;
+    SharedPreferences prefs;
     RelativeLayout inapoi, gata;
     EditText nume, nr, producator, model, an;
     ImageView poza_masina;
@@ -67,6 +71,7 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.adauga_masina);
         ctx = this;
+        prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
         act=this;
         initComponents();
@@ -92,7 +97,7 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
                 finish();
                 break;
             case R.id.gata_adauga_masina:
-                postUser("57e11909853b0122ac974e23");
+                addCar("57e11909853b0122ac974e23");
                 break;
             case R.id.poza_masina:
                 final Dialog dialog = new Dialog(ctx);
@@ -189,7 +194,7 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
         }
     }
 
-    public void postUser(final String id){
+    public void addCar(final String id){
         String url = Constants.URL+"users/addCar/"+id;
         if(nume.getText().length()==0 || nr.getText().length()==0 || producator.getText().length()==0 || model.getText().length()==0 || an.getText().length()==0)
             Toast.makeText(ctx,"Completati toate campurile",Toast.LENGTH_LONG).show();
@@ -212,12 +217,12 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
                     return params;
                 }
 
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-////                String auth_token_string = prefs.getString("token1", "");
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("Authorization", auth_token_string);
-//                return params;
-//            }
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ auth_token_string);
+                return params;
+            }
             };
             queue.add(stringRequest);
         }
