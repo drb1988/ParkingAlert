@@ -1,10 +1,8 @@
 package bigcityapps.com.parkingalert;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -32,11 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mTitle;
     TextView badge_count;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(newBase);
-        MultiDex.install(this);
-    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -51,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
 //        PackageInfo info;
 //        try {
-          String  PACKAGE_NAME = getApplicationContext().getPackageName();
-            Log.w("meniuu","package name"+PACKAGE_NAME);
+//          String  PACKAGE_NAME = getApplicationContext().getPackageName();
+//            Log.w("meniuu","package name"+PACKAGE_NAME);
 //            info = getPackageManager().getPackageInfo(PACKAGE_NAME, PackageManager.GET_SIGNATURES);
 //            for (Signature signature : info.signatures) {
 //                MessageDigest md;
