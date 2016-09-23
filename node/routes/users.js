@@ -101,6 +101,25 @@ router.get('/getUser/:userID', function(req, res, next) {
 			});
 });
 
+router.get('/getNotifications/:userID', function(req, res, next) {
+	   var findUser = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	    db.collection('notifications').find({"receiver_id": o_id},
+	    	function(err, result) {
+					    assert.equal(err, null);
+					    console.log(result)
+					//    res.status(200).send(result)
+					    callback();
+				});            
+		}
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findUser(db, function() {
+			      db.close();
+			  });
+			});
+});
+
 router.get('/getCars/:userID', function(req, res, next) {
 	   var findUser = function(db, callback) {   
 	 	var o_id = new ObjectId(req.params.userID);

@@ -5,7 +5,6 @@ var db = require('mongoskin').db(dbConfig.url);
 var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId; 
-var jwtCo
 
 function distance(lat1, lon1, lat2, lon2, unit) {
   var radlat1 = Math.PI * lat1/180
@@ -20,6 +19,30 @@ function distance(lat1, lon1, lat2, lon2, unit) {
   if (unit=="N") { dist = dist * 0.8684 }
   return dist
 }
+var response;
+var findUsersByNotification = function(db, callback, notificationID) {   
+    var o_id = new ObjectId(notificationID);
+      db.collection('notifications').findOne({"_id": o_id},
+        function(err, result) {
+            assert.equal(err, null);
+            response = {
+              "sender_id": result.sender_id,
+              "receiver_id": result.receiver_id
+            }
+            callback(response);
+        });           
+    }
+
+var findUserToken = function(db, callback, userID) { 
+    console.log("aici "+userID);  
+    var o_id = new ObjectId(userID);
+      db.collection('parking').findOne({"_id": o_id},
+        function(err, result) {
+              assert.equal(err, null);
+              console.log(result)
+              callback(result.security[0].device_token);
+        });            
+    }
 
 /* GET home page. */
 router.post('/notification', function(req, res, next) {
@@ -41,12 +64,12 @@ router.post('/notification', function(req, res, next) {
       "reverse_geocode": req.body.reverse_geocode,
       "create_date": new Date(),
       "vehicle": req.body.vehicle,
-      "sender_id": req.body.sender_id,
+      "sender_id": new ObjectId(req.body.sender_id),
       "estimations": [
         {"sender": req.body.location}
       ],
       "sender_nickname": req.body.sender_nickname,
-      "receiver_id": req.body.receiver_id,
+      "receiver_id": new ObjectId(req.body.receiver_id),
       "receiver_nickname": req.body.receiver_nickname,
       "is_ontime": true
    }, function(err, result) {
@@ -59,6 +82,7 @@ router.post('/notification', function(req, res, next) {
 MongoClient.connect(dbConfig.url, function(err, db) {
   assert.equal(null, err);
   insertDocument(db, function() {
+      findUserToken(db, function(){}, req.body.receiver_id);
       db.close();
       res.status(200).send(notificationID)
   });
@@ -71,7 +95,7 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
     * @name /users/:userId
     * @param {String} :userId
     */
-    var deleteCar = function(db, callback) {   
+  var deleteCar = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
@@ -92,6 +116,11 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
   MongoClient.connect(dbConfig.url, function(err, db) {
       assert.equal(null, err);
       deleteCar(db, function() {
+          var senderID;
+          findUsersByNotification(db, function(notificationSenderID){
+            senderID = notificationSenderID.sender_id;
+            findUserToken(db, function(notificationToken){console.log(notificationToken)}, senderID)
+          }, req.params.notificationID);
           db.close();
           res.status(200).send(req.params.notificationID)
       });
