@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -50,6 +51,13 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
         listView=(ListView)findViewById(bigcityapps.com.parkingalert.R.id.listview_notificari);
         adapter= new NotificareAdapter(modelNotificationArrayList,ctx);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent view_notification= new Intent(Notificari.this, ViewNotification.class);
+                view_notification.putExtra("detalii", modelNotificationArrayList.get(i).getDetalii());
+                startActivity(view_notification);
+            }
+        });
         initComponents();
          search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             public boolean onQueryTextSubmit(String query) {

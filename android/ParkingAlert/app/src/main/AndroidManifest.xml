@@ -31,6 +31,7 @@
     <activity android:name="bigcityapps.com.parkingalert.Vizualizare_masina"></activity>
     <activity android:name="bigcityapps.com.parkingalert.User_profile"></activity>
     <activity android:name="bigcityapps.com.parkingalert.Istoric"></activity>
+    <activity android:name="bigcityapps.com.parkingalert.ViewNotification"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

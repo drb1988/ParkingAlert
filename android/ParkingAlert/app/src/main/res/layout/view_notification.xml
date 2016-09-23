@@ -60,6 +60,7 @@
         android:textSize="@dimen/txt_size_bigger1" />
 
     <TextView
+        style="?android:borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -68,6 +69,7 @@
         android:textSize="@dimen/txt_size_bigger1" />
 
     <TextView
+        style="?android:borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -76,6 +78,7 @@
         android:textSize="@dimen/txt_size_bigger1" />
 
     <TextView
+        style="?android:borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -84,6 +87,7 @@
         android:textSize="@dimen/txt_size_bigger1" />
 
     <TextView
+        style="?android:borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

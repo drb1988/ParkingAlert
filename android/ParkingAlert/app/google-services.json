@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "487367087885",
+    "firebase_url": "https://parking-alert.firebaseio.com",
+    "project_id": "parking-alert",
+    "storage_bucket": "parking-alert.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487367087885:android:f4207cdd1e51d1f3",
+        "android_client_info": {
+          "package_name": "eparti.com.parkingalert"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487367087885-5svrrsocroufij2kfg0j4c4l74154qia.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eparti.com.parkingalert",
+            "certificate_hash": "F33F7946FE57F31B6257A06056F8ABB03176C2FE"
+          }
+        },
+        {
+          "client_id": "487367087885-3s9ssl6cqs295rlkrmcd7vfmk902jqlj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9dZsk_dwsMH396bBgx29YpSLVHTbehyA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "487367087885-3s9ssl6cqs295rlkrmcd7vfmk902jqlj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
