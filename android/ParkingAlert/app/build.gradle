@@ -10,12 +10,16 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 }
 
@@ -27,7 +31,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     /// for qrcode scan
     compile 'me.dm7.barcodescanner:zxing:1.9'
-    compile 'com.google.android.gms:play-services:6.5.87'
+    compile 'com.google.android.gms:play-services:9.4.0'
     ///facebook login
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     ///comunication with server
@@ -39,6 +43,9 @@ dependencies {
     //recyclerview
     compile 'com.android.support:recyclerview-v7:23.1.1'
     //firebase
-//    compile 'com.google.firebase:firebase-core:9.4.0'
-//    compile 'com.google.firebase:firebase-messaging:9.4.0'
+    compile 'com.google.firebase:firebase-core:9.4.0'
+    compile 'com.google.firebase:firebase-messaging:9.4.0'
+    /// MULTIDEX SUPPORT
+    compile 'com.android.support:multidex:1.0.0'
 }
+apply plugin: 'com.google.gms.google-services'

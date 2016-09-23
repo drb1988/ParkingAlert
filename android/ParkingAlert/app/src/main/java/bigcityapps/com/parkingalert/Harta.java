@@ -45,9 +45,12 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback, Loca
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.harta);
         initComponents();
-        mMap = ((MapFragment) getFragmentManager().findFragmentById(bigcityapps.com.parkingalert.R.id.map)).getMap();
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+//        mMap = ((MapFragment) getFragmentManager().findFragmentById(bigcityapps.com.parkingalert.R.id.map)).getMap();
+//        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, false);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
