@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.zxing.Result;
 
@@ -17,10 +19,12 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
     private GoogleMap mMap;
     private ZXingScannerView mScannerView;
     ImageView mesaj_preintampinare;
+    RequestQueue queue;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.scan);
+        queue = Volley.newRequestQueue(this);
         mesaj_preintampinare=(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.mesaj_preintampinare);
         new Handler().postDelayed(new Runnable() {
             public void run() {
@@ -59,4 +63,5 @@ Log.w("meniuu","scanezi");
         Intent harta= new Intent(Scan.this, Harta.class);
         startActivity(harta);
     }
+
 }
