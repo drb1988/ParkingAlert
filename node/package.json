@@ -16,6 +16,8 @@
     "jade": "~1.11.0",
     "morgan": "~1.7.0",
     "jsdoc": "~3.4.1",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "json-web-token": "~2.0.3",
+    "express-jwt": "5.0.0"
   }
 }
