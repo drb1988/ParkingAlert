@@ -2,7 +2,7 @@ extends dashboard-layout
 block content
  #map-content(style='height:400px')
   #floating-panel(style='margin-top:80px')
-    button(id='reinitMarker' onclick='') Reinit with markers
+    button(id='reinitMarker' onclick='') Heatmaps / Markers
     button(id='changeGradient' onclick='changeGradient()') Change gradient
     button(onclick='changeRadius()') Change radius
     button(onclick='changeOpacity()') Change opacity
@@ -10,25 +10,19 @@ block content
 block scripts
     script.
       function reinit(json) {
-      //getPoints
       heatmap.setOptions({ data: []});
       heatmap.setOptions({ data: getPointsNew(json)});
-      
-            //initMap(pointvalue);
       }
       function reinitMarker(json) {
       heatmap.setOptions({ data: []});
-      setMarkers(json);
+      return setMarkers(json);
       }
-      // This example requires the Visualization library. Include the libraries=visualization
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
       var map, heatmap;
       function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
       zoom: 13,
       center: {lat: 37.775, lng: -122.434},
-      mapTypeId: 'satellite'
+      mapTypeId: 'terrain'
       });
       heatmap = new google.maps.visualization.HeatmapLayer({
       data: getPoints(1, 24),
@@ -77,22 +71,10 @@ block scripts
       json.forEach(function(pointheatmap) {
       var marker = new google.maps.Marker({
         position: { lat: pointheatmap.lat, lng: pointheatmap.lng },
-        map: map,
-        title: 'Hello World!'
+        map: map
       });
       markers.push(marker);
       });
       return markers;
-      }
-      function setMapOnAllMarkersNull(markers) {
-        for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(map);
-        }
-      }
-      function clearMarkerMap(markers) {
-      console.log("intra clear");
-        for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(null);
-        }
       }
     script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')

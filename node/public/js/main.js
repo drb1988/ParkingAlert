@@ -20,63 +20,65 @@ function togleIsMultiple() {
 }
 
 function activeAjaxMap()  {
-  var prevArrMarkers = '';
-  var theArrMarkers = '';
-  var prevArr = '';
-  var theArr = '';
-  var typeOfMap = false;
+  var prevArrMarkers = '',
+      prevArr = '',
+      theArr = '',
+      typeOfMap = false;
+
   $( "#reinitMarker" ).click(function() {
-    console.log("clisk");
-    console.log(typeOfMap);
     typeOfMap = !typeOfMap;
-    if(typeOfMap){
-      if(prevArrMarkers) clearMarkerMap(prevArrMarkers);
-      if(theArr && prevArr)
-        reinitMarker(theArr);
-      else
-        reinitMarker(prevArr);
-    }
+
+    if(prevArrMarkers) 
+      for (var i = 0; i < prevArrMarkers.length; i++) 
+        prevArrMarkers[i].setMap(null);
+  
+    if(typeOfMap) prevArrMarkers = theArr==''? reinitMarker(prevArr) : reinitMarker(theArr);
     else
-      if(theArr && theArr)
-        reinit(theArr);
-      else
-        reinit(prevArr);
+      if(theArr && prevArr) reinit(theArr);
+      else reinit(prevArr);
+
   });
 
   $("input#ajaxDate").change(function(){
-  var selectedDate = $("input[name=date]").val() ? $("input[name=date]").val() : false;
-  var selectedStartHour = $("input[name=start_hour]").val() ? $("input[name=start_hour]").val() : false;
-  var selectedEndHour = $("input[name=end_hour]").val() ? $("input[name=end_hour]").val() : false;
-  if(selectedDate && selectedStartHour && selectedEndHour) {
-  var data0 = {date: selectedDate, start_hour : selectedStartHour, end_hour: selectedEndHour};
-  json = data0;//JSON.stringify(data0 ); 
-  console.log(json);
+    var selectedDate = $("input[name=date]").val() ? $("input[name=date]").val() : false,
+        selectedStartHour = $("select[name=start_hour]").val() ? $("select[name=start_hour]").val() : false,
+        selectedEndHour = $("select[name=end_hour]").val() ? $("select[name=end_hour]").val() : false;
 
-  $.ajax({
-  async: true,
-  type: "POST",
-  url: "/heatmaps_ajax_map", 
-  data: json,
-  success: function(result){
-  $("#div1").text("The map has changed");
-  if(typeOfMap)
-    if(prevArrMarkers) {
-      prevArrMarkers = theArrMarkers;
-      theArrMarkers = reinitMarker(result)
+    if(selectedDate && selectedStartHour && selectedEndHour) {
+      var json = {
+        date: selectedDate, 
+        start_hour : selectedStartHour, 
+        end_hour: selectedEndHour
+      };
+      // make ajax call to the server
+      $.ajax({
+        async: true,
+        type: "POST",
+        url: "/heatmaps_ajax_map", 
+        data: json,
+        success: function(result) {
+          $("#div1").text("The map has changed"); // alert user 
+
+          if(prevArrMarkers) {
+            for (var i = 0; i < prevArrMarkers.length; i++) 
+              prevArrMarkers[i].setMap(null);
+            prevArrMarkers= '';
+          }
+
+          if(typeOfMap)
+            prevArrMarkers = reinitMarker(result);
+          else
+            reinit(result);
+
+          if(prevArr) {
+            prevArr = theArr;
+            theArr = result;
+          }
+          else {
+            prevArr = result;
+          }
+       }
+      });
     }
-    else
-      prevArrMarkers = reinitMarker(result);
-  else
-    if(prevArr) {
-      prevArr = theArr;
-      reinit(result);
-      theArr = result;
-    }
-    else {
-      prevArr = result;
-      reinit(result);
-    }
-  }});
-  }
   });
 }
