@@ -1,23 +1,7 @@
 $(document).ready(function() {
-  togleIsDaily();
-  togleIsMultiple();
   activeAjaxMap();
+  activeAjaxChart();
 });
-
-
-
-function togleIsDaily() {
-  $('.js_isDaily').on('click', function(){
-    console.log('test');
-    $('#js_daily-start-date').toggleClass('hidden');
-  });
-}
-function togleIsMultiple() {
-  $('.js_isMultiple').on('click', function(){
-    console.log('test is multiple');
-    $('#js_multiple').toggleClass('hidden');
-  });
-}
 
 function activeAjaxMap()  {
   var prevArrMarkers = '',
@@ -39,7 +23,8 @@ function activeAjaxMap()  {
 
   });
 
-  $("input#ajaxDate").change(function(){
+  $("select#ajaxDate, input#ajaxDate").change(function(){
+    console.log('changed');
     var selectedDate = $("input[name=date]").val() ? $("input[name=date]").val() : false,
         selectedStartHour = $("select[name=start_hour]").val() ? $("select[name=start_hour]").val() : false,
         selectedEndHour = $("select[name=end_hour]").val() ? $("select[name=end_hour]").val() : false;
@@ -81,4 +66,8 @@ function activeAjaxMap()  {
       });
     }
   });
+}
+
+function activeAjaxChart()  {
+  
 }

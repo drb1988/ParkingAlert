@@ -284,6 +284,25 @@ router.get('/chart', function(req, res, next) {
     resources: "aa"
   });
 });
+
+router.post('/chart_ajax', function(req, res, next) {
+  var resources;
+  var positive_feedback=[],
+      negative_feedback=[];
+  var randP, randN;
+  for(var i=0; i<24; i++) {
+    randP = Math.round(Math.random()*10) + 1;
+    randN = Math.round(Math.random()*10) + 1;
+    positive_feedback.push(randP);
+    negative_feedback.push(randN);
+  }
+  resources = {
+    positive_feedback: positive_feedback,
+    negative_feedback: negative_feedback
+  }
+  res.status(200).send(resources); 
+});
+
 router.get('/users', function(req, res, next) {
 	/**
     * Route to get all users,

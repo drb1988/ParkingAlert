@@ -1,80 +1,12 @@
 extends dashboard-layout
 block content
- #map-content(style='height:400px')
-  #floating-panel(style='margin-top:80px')
-    button(id='reinitMarker' onclick='') Heatmaps / Markers
-    button(id='changeGradient' onclick='changeGradient()') Change gradient
-    button(onclick='changeRadius()') Change radius
-    button(onclick='changeOpacity()') Change opacity
+ #map-content
+  #floating-panel
+    button.btn.btn-info(id='reinitMarker' onclick='') Heatmaps / Markers
+    button.btn.btn-info(id='changeGradient' onclick='changeGradient()') Change gradient
+    button.btn.btn-info(onclick='changeRadius()') Change radius
+    button.btn.btn-info(onclick='changeOpacity()') Change opacity
   #map
 block scripts
-    script.
-      function reinit(json) {
-      heatmap.setOptions({ data: []});
-      heatmap.setOptions({ data: getPointsNew(json)});
-      }
-      function reinitMarker(json) {
-      heatmap.setOptions({ data: []});
-      return setMarkers(json);
-      }
-      var map, heatmap;
-      function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 13,
-      center: {lat: 37.775, lng: -122.434},
-      mapTypeId: 'terrain'
-      });
-      heatmap = new google.maps.visualization.HeatmapLayer({
-      data: getPoints(1, 24),
-      map: map
-      });
-      }
-      function changeGradient() {
-      var gradient = [
-      'rgba(0, 255, 255, 0)',
-      'rgba(0, 255, 255, 1)',
-      'rgba(0, 191, 255, 1)',
-      'rgba(0, 127, 255, 1)',
-      'rgba(0, 63, 255, 1)',
-      'rgba(0, 0, 255, 1)',
-      'rgba(0, 0, 223, 1)',
-      'rgba(0, 0, 191, 1)',
-      'rgba(0, 0, 159, 1)',
-      'rgba(0, 0, 127, 1)',
-      'rgba(63, 0, 91, 1)',
-      'rgba(127, 0, 63, 1)',
-      'rgba(191, 0, 31, 1)',
-      'rgba(255, 0, 0, 1)'
-      ]
-      heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-      }
-      function changeRadius() {
-      heatmap.set('radius', heatmap.get('radius') ? null : 20);
-      }
-      function changeOpacity() {
-      heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
-      }
-      // Heatmap data: 500 Points
-      function getPoints(startpointvalue, endpointvalue) {
-      	return []
-      }
-      function getPointsNew(json) {
-      var result = [];
-      json.forEach(function(pointheatmap){
-      result.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      })
-      return result;
-      }
-
-      function setMarkers(json) {
-      var markers=[];
-      json.forEach(function(pointheatmap) {
-      var marker = new google.maps.Marker({
-        position: { lat: pointheatmap.lat, lng: pointheatmap.lng },
-        map: map
-      });
-      markers.push(marker);
-      });
-      return markers;
-      }
+    script(src='/js/map.js')
     script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')

@@ -76,6 +76,7 @@ body {
   margin-left: -10px;
   height: 100%; }
   .background-login .account-wall-container {
+    opacity: 0.8;
     width: 400px;
     padding: 70px 35px 50px;
     background-color: #ffffff;
