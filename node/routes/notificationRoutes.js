@@ -81,6 +81,11 @@ router.post('/notification', function(req, res, next) {
       "create_date": new Date(),
       "vehicle": req.body.vehicle,
       "sender_id": new ObjectId(req.body.sender_id),
+      "answer": {
+        "read_at": null,
+        "answered_at": null,
+        "estimated": null
+      },
       "estimations": [
         {"sender": {
           "type": "Point",
@@ -120,8 +125,10 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
-                      "receiver_read": true
-
+                      "receiver_read": true,
+                      "answer.read_at": new Date(),
+                      "answer.answered_at": new Date(),
+                      "answer.estimated": req.body.estimated
                     },
               $push:{
                     "estimations": {

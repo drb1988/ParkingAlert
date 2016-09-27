@@ -210,7 +210,7 @@
 		{
 			"name": "localhost:3000/notifications/receiverRead/57e381679b5e33272485a918",
 			"request": {
-				"url": "localhost:3000/notifications/receiverRead/57e381679b5e33272485a918",
+				"url": "localhost:3000/notifications/receiverRead/57ea59deeec0a9156c328733",
 				"method": "POST",
 				"header": [
 					{
@@ -226,7 +226,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"latitude\": 24.0992,\n    \"longitude\": 44.8384\n}"
+					"raw": "{\n\t\"latitude\": 24.0992,\n    \"longitude\": 44.8384,\n    \"estimated\": 5\n}"
 				},
 				"description": ""
 			},
