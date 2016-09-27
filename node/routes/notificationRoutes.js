@@ -87,7 +87,7 @@ router.post('/notification', function(req, res, next) {
           "coordinates": [
             req.body.latitude,
             req.body.longitude
-          ]}
+          ]}}
       ],
       "sender_nickname": req.body.sender_nickname,
       "receiver_id": new ObjectId(req.body.receiver_id),
@@ -103,7 +103,7 @@ router.post('/notification', function(req, res, next) {
 MongoClient.connect(dbConfig.url, function(err, db) {
   assert.equal(null, err);
   insertDocument(db, function() {
-      findUserToken(db, function(){}, req.body.receiver_id);
+   //   findUserToken(db, function(){}, req.body.receiver_id);
       db.close();
       res.status(200).send(notificationID)
   });
@@ -125,7 +125,12 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
                     },
               $push:{
                     "estimations": {
-                      "receiver": req.body
+                      "receiver": {
+                          "type": "Point",
+                          "coordinates": [
+                            req.body.latitude,
+                            req.body.longitude
+                          ]}
                     }   
               }
              },function(err, result) {
