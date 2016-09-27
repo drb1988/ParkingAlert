@@ -9,6 +9,7 @@ import android.os.Handler;
 import Util.SecurePreferences;
 
 /**
+ * just a splashscreen
  * Created by fasu on 23/09/2016.
  */
 public class SplashScreen extends Activity {

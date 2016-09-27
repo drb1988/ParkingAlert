@@ -55,9 +55,9 @@
 
 
     <ScrollView
-        android:layout_above="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/login_button"
         android:layout_below="@+id/hedear">
 
         <LinearLayout
@@ -121,7 +121,7 @@
                 android:background="@null"
                 android:hint="email"
                 android:maxLines="1"
-                android:spinnerMode="dialog" />
+                />
 
             <TextView
                 android:layout_width="fill_parent"
@@ -132,9 +132,10 @@
                 android:id="@+id/driver_license_login"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:background="@null"
-                android:hint=" driver license"
+                android:hint="driver license"
                 android:maxLines="1" />
 
             <TextView

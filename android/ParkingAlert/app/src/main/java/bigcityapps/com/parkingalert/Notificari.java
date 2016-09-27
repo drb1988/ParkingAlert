@@ -60,6 +60,10 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
         active = true;
     }
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.notificari);
@@ -110,6 +114,10 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
         istoric.setOnClickListener(this);
     }
 
+    /**
+     * onclick method
+     * @param view
+     */
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.inapoi:
@@ -128,6 +136,9 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
         }
     }
 
+    /**
+     * notificareAdapter class for listview notificari
+     */
     class NotificareAdapter extends ArrayAdapter<ModelNotification> {
         private ArrayList<ModelNotification> itemList;
         public List<ModelNotification> _data;
@@ -141,9 +152,6 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
             this.context = ctx;
         }
         public int getCount() {
-            return _data.size();
-        }
-        public int getSize(){
             return _data.size();
         }
         public View getView(final int position, View convertView, ViewGroup parent) {

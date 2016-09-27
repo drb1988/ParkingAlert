@@ -48,6 +48,11 @@ public class MainActivity extends AppCompatActivity {
         badge_count.setText("13");
         Log.w("meniuu","ai primit un sms");
     }
+
+    /**
+     *
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ///firebase receiver
@@ -113,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
+    /**
+     * onitemclick drawer
+     */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if(position!=0 && position!=3 && position!=7)
@@ -120,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * onstop method
+     */
     @Override
     protected void onStop() {
         active = false;
@@ -136,6 +147,10 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    /**
+     * select item from drawer
+     * @param position
+     */
     private void selectItem(int position) {
         Log.w("meniuu","a intrat in selectitem");
         Fragment fragment = null;
@@ -177,6 +192,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * set title
+     * @param title
+     */
     public void setTitle(CharSequence title) {
         mTitle = title;
         getSupportActionBar().setTitle(mTitle);

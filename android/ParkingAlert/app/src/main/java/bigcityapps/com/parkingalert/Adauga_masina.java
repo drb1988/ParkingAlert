@@ -67,6 +67,11 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
     final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
     final int ACTIVITY_SELECT_IMAGE = 1234;
     RequestQueue queue;
+
+    /**
+     *
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.adauga_masina);
@@ -77,6 +82,9 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
         initComponents();
     }
 
+    /**
+     * initializing components
+     */
     public void initComponents(){
         inapoi=(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_adauga_masina);
         gata=(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.gata_adauga_masina);
@@ -91,6 +99,10 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
         poza_masina.setOnClickListener(this);
     }
 
+    /**
+     *
+     * @param view
+     */
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.inapoi_adauga_masina:
@@ -194,6 +206,10 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
         }
     }
 
+    /**
+     *  add car method
+     * @param id
+     */
     public void addCar(final String id){
         String url = Constants.URL+"users/addCar/"+id;
         if(nume.getText().length()==0 || nr.getText().length()==0 || producator.getText().length()==0 || model.getText().length()==0 || an.getText().length()==0)
@@ -227,12 +243,23 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
             queue.add(stringRequest);
         }
     }
+
+    /**
+     * error listener at volley library
+     */
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);
             Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
         }
     };
+
+    /**
+     * on activity result, when we want to upload a picture
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     protected void onActivityResult( int requestCode, int resultCode, Intent data) {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -244,7 +271,7 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
                     realPath = cursor.getString(column_index_data);
                     Bitmap img = rotateBitmap(realPath);
                     poza_masina.setImageBitmap(img);
-                    persistImage(img, "eparti");
+                    persistImage(img, "parkingalert");
                     ///dupa ce este ceva facut
 //                    uplloadImageFile(persistImage(img, "eparti"));
                 } catch (Exception e) {
@@ -292,6 +319,12 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
         }
         return imageFile;
     }
+
+    /**
+     *  rotate image if si necessary
+     * @param src
+     * @return
+     */
     public static Bitmap rotateBitmap(String src) {
         Bitmap bitmap = BitmapFactory.decodeFile(src);
         try {

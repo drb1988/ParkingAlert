@@ -29,6 +29,11 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
     RelativeLayout inapoi;
     ArrayList<ModelNotification> modelNotificationArrayList= new ArrayList<>();
     SearchView search;
+
+    /**
+     *  oncreate method
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.istoric);
@@ -64,6 +69,10 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
             }
         });
     }
+
+    /**
+     * initializing components
+     */
     public void initComponents(){
         search=(SearchView)findViewById(R.id.searchView_istoric);
         inapoi=(RelativeLayout)findViewById(R.id.inapoi_istoric);
@@ -78,6 +87,9 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
         }
     }
 
+    /**
+     * listview adapter class
+     */
     class IstoricAdapter extends ArrayAdapter<ModelNotification> {
         private ArrayList<ModelNotification> itemList;
         public List<ModelNotification> _data;
@@ -141,6 +153,10 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
             notifyDataSetChanged();
         }
     }
+
+    /**
+     * viewholder class for listview adapter
+     */
     static class ViewHolder {
         TextView titlu, detalii, mesaj,ora;
         ImageView poza,bagde;

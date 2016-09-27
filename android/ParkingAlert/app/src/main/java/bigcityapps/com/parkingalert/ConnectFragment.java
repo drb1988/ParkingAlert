@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 /**
- * Created by anupamchugh on 10/12/15.
+ *
+ * Created by fasu on 1 19/09/2016.
  */
 public class ConnectFragment extends Fragment {
 RelativeLayout notificaProprietar;

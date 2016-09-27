@@ -82,6 +82,10 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback, Loca
         }
         locationManager.removeUpdates(this);
     }
+
+    /**
+     *
+     */
     public void initComponents() {
         ok = (RelativeLayout) findViewById(bigcityapps.com.parkingalert.R.id.relative_ok_harta);
         adresaTextview = (TextView) findViewById(bigcityapps.com.parkingalert.R.id.adresa);
@@ -103,6 +107,12 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback, Loca
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
+    /**
+     * get adress from lat and lng
+     * @param lat
+     * @param lng
+     * @return
+     */
     public String getAddress(double lat, double lng) {
         Log.w("meniuu","lat:"+lat+" lng:"+lng);
         String adresa = "";

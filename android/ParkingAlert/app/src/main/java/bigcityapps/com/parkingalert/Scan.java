@@ -21,6 +21,10 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
     ImageView mesaj_preintampinare;
     RequestQueue queue;
 
+    /**
+     * oncreate method
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.scan);
@@ -33,6 +37,10 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
         }, 3000);
 
     }
+
+    /**
+     * start qrscan
+     */
     public void QrScanner(){
         mScannerView = new ZXingScannerView(this);   // Programmatically initialize the scanner view
         setContentView(mScannerView);
@@ -46,6 +54,11 @@ Log.w("meniuu","scanezi");
         if(mScannerView!=null)
             mScannerView.stopCamera();           // Stop camera on pause
     }
+
+    /**
+     * result qrcode scan
+     * @param rawResult
+     */
     public void handleResult(Result rawResult) {
         // Do something with the result here
         mScannerView.stopCamera();

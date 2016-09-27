@@ -102,6 +102,10 @@ public class Login extends Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
+    /**
+     *initializing components
+     */
     public void initComponents(){
         nume=(EditText)findViewById(R.id.nume_login);
         nickname=(EditText)findViewById(R.id.nick_name_login);
@@ -112,13 +116,21 @@ public class Login extends Activity implements View.OnClickListener {
         continuare.setOnClickListener(this);
     }
 
+    /**
+     *  onclick method
+     * @param view
+     */
     public void onClick(View view) {
     switch (view.getId()){
         case R.id.continuare:
-       postUser();
+            postUser();
             break;
-}
+        }
     }
+
+    /**
+     * post user method
+     */
     public void postUser(){
         final SharedPreferences prefs = new SecurePreferences(ctx);
         String url = Constants.URL+"signup/user";
