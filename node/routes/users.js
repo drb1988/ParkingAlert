@@ -5,6 +5,7 @@ var db = require('mongoskin').db(dbConfig.url);
 var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId; 
+var pretty = require('pretty');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -92,6 +93,7 @@ router.get('/getUser/:userID', function(req, res, next) {
 	 	var o_id = new ObjectId(req.params.userID);
 	    db.collection('parking').findOne({"_id": o_id},
 	    	function(err, result) {
+	    				console.log(result.pretty())
 					    assert.equal(err, null);
 					    console.log("Found user "+req.params.userID);
 					    res.status(200).send(result)
@@ -112,18 +114,26 @@ router.get('/getNotifications/:userID', function(req, res, next) {
     	* @name /getNotifications/:userID
     	* @param {String} :userId
     	*/
-	   var findUser = function(db, callback) {   
+
+    	var findNotifications = function(db, callback) {   
 	 	var o_id = new ObjectId(req.params.userID);
-	    db.collection('notifications').find({"receiver_id": o_id},
-	    	function(err, result) {
-					    assert.equal(err, null);
-					    res.status(200).send(result)
-					    callback();
-				});            
-		}
+	 		var result = [];
+		    var cursor =db.collection('notifications').find({"receiver_id": o_id});
+		    cursor.each(function(err, doc) {
+		      assert.equal(err, null);
+		      if (doc != null) {
+		         console.log("doc "+doc);
+		         result.push(doc);
+		      } else {
+		         callback();
+		         res.status(200).send(result)
+		      }
+		   });
+		};	
+
 		MongoClient.connect(dbConfig.url, function(err, db) {
 			  assert.equal(null, err);
-			  findUser(db, function() {
+			  findNotifications(db, function() {
 			      db.close();
 			  });
 			});
