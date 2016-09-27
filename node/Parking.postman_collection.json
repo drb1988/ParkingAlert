@@ -201,7 +201,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"status\": \"3\",\n    \"is_active\": false,\n    \"location\": {\n\t\t\"type\" : \"Point\",\n\t\t\"coordinates\" : [\n\t\t\t24.0992,\n\t\t\t44.8384\n\t\t]\n\t},\n\t\"reverse_geocode\" : {\n\t\t\"address\" : \"soseaua vergului\",\n\t\t\"city\" : \"bucuresti\",\n\t\t\"country\" : \"romania\",\n\t\t\"zip\" : null\n\t},\n    \"vehicle\": \"plates\",\n    \"sender_id\": \"57e381679b5e33272485a918\",\n    \"sender_nickname\": \"Cristi\",\n    \"receiver_id\": \"57e381679b5e33272485a918\",\n    \"receiver_nickname\": \"Vasile\"\n}"
+					"raw": "{\n    \"status\": \"3\",\n    \"is_active\": false,\n    \"latitude\": 24.0992,\n    \"longitude\": 44.8384,\n\t\"reverse_geocode\" : {\n\t\t\"address\" : \"soseaua vergului\",\n\t\t\"city\" : \"bucuresti\",\n\t\t\"country\" : \"romania\",\n\t\t\"zip\" : null\n\t},\n    \"vehicle\": \"plates\",\n    \"sender_id\": \"57e381679b5e33272485a918\",\n    \"sender_nickname\": \"Cristi\",\n    \"receiver_id\": \"57e381679b5e33272485a918\",\n    \"receiver_nickname\": \"Vasile\"\n}"
 				},
 				"description": "post phone number, get response with validation code"
 			},
