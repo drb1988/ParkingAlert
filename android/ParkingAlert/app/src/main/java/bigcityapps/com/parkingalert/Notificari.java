@@ -147,9 +147,9 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.inapoi:
-//                Intent mainactivity= new Intent(Notificari.this, MainActivity.class);
-//                mainactivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(mainactivity);
+                Intent mainactivity= new Intent(Notificari.this, MainActivity.class);
+                mainactivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(mainactivity);
                 finish();
                 break;
 
@@ -231,11 +231,11 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
     }
 
     public void getNotifications(final String id){
-        String url = Constants.URL+"users/getCars/"+id;
+        String url = Constants.URL+"users/getNotifications/"+id;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             public void onResponse(String response) {
                 String json = response;
-                Log.w("meniuu", "response: getcar" + response);
+                Log.w("meniuu", "response: getnotifications" + response);
                 modelNotificationArrayList.clear();
                 try {
                     JSONArray obj = new JSONArray(json);
@@ -243,12 +243,13 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
                         ModelNotification modelNotification= new ModelNotification();
                         JSONObject c = obj.getJSONObject(i);
                         if(c.getString("sender_id").equals(id))
-                        {
+                        {Log.w("meniuu","notificare_id:"+c.getString("_id"));
                             modelNotification.setTitlu("Ai trimis notificare");
                             modelNotification.setMesaj("M-ai blocat");
+                            modelNotification.setTip(1);
                         }else
                         if(c.getString("receiver_id").equals(id))
-                        {
+                        {   modelNotification.setTip(2);
                             modelNotification.setTitlu("Ai primit notificare");
                             modelNotification.setMesaj("Vino la masina pt ca m-ai blocat");
                         }

@@ -9,6 +9,7 @@ public class ModelNotification {
     String detalii;
     String mesaj;
     String ora;
+    int tip;
 
     public int getTip() {
         return tip;
@@ -18,7 +19,7 @@ public class ModelNotification {
         this.tip = tip;
     }
 
-    int tip;
+
 
     public String getBadge() {
         return badge;

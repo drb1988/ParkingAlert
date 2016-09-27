@@ -93,6 +93,7 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback, Loca
             public void onClick(View view) {
                 Intent notificari= new Intent(Harta.this, Notificari.class);
                 startActivity(notificari);
+                finish();
 //                Timer make = new Timer(Harta.this, 3);
 //                make.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 //                make.show();

@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -50,6 +52,7 @@ public class Login extends Activity implements View.OnClickListener {
     EditText nume,email, nickname,driver_license, city;
     RelativeLayout continuare;
     RequestQueue queue;
+    SharedPreferences prefs;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -123,11 +126,37 @@ public class Login extends Activity implements View.OnClickListener {
     public void onClick(View view) {
     switch (view.getId()){
         case R.id.continuare:
-            postUser();
+            postToken();
+
             break;
         }
     }
 
+    /**
+     * post token, password and device ip
+     */
+    public void postToken() {
+    prefs = new SecurePreferences(ctx);
+    WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+    final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+    String url = Constants.URL + "signup/user";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        postUser();
+                    }
+                }, ErrorListener) {
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("device_token", prefs.getString("phone_token", ""));
+                params.put("password", "nuamideecepltrebeaici");
+                params.put("reg_ip", ip);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+}
     /**
      * post user method
      */
