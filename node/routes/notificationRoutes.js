@@ -70,13 +70,24 @@ router.post('/notification', function(req, res, next) {
       "sender_deleted": false,
       "receiver_read": false,
       "receiver_deleted": false,
-      "location": req.body.location,
+      "location": {
+          "type": "Point",
+          "coordinates": [
+            req.body.latitude,
+            req.body.longitude
+          ]
+      },
       "reverse_geocode": req.body.reverse_geocode,
       "create_date": new Date(),
       "vehicle": req.body.vehicle,
       "sender_id": new ObjectId(req.body.sender_id),
       "estimations": [
-        {"sender": req.body.location}
+        {"sender": {
+          "type": "Point",
+          "coordinates": [
+            req.body.latitude,
+            req.body.longitude
+          ]}
       ],
       "sender_nickname": req.body.sender_nickname,
       "receiver_id": new ObjectId(req.body.receiver_id),
