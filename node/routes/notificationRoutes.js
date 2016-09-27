@@ -81,13 +81,18 @@ router.post('/notification', function(req, res, next) {
       "create_date": new Date(),
       "vehicle": req.body.vehicle,
       "sender_id": new ObjectId(req.body.sender_id),
+      "answer": {
+        "read_at": null,
+        "answered_at": null,
+        "estimated": null
+      },
       "estimations": [
         {"sender": {
           "type": "Point",
           "coordinates": [
             req.body.latitude,
             req.body.longitude
-          ]}
+          ]}}
       ],
       "sender_nickname": req.body.sender_nickname,
       "receiver_id": new ObjectId(req.body.receiver_id),
@@ -103,7 +108,7 @@ router.post('/notification', function(req, res, next) {
 MongoClient.connect(dbConfig.url, function(err, db) {
   assert.equal(null, err);
   insertDocument(db, function() {
-      findUserToken(db, function(){}, req.body.receiver_id);
+   //   findUserToken(db, function(){}, req.body.receiver_id);
       db.close();
       res.status(200).send(notificationID)
   });
@@ -120,12 +125,19 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
-                      "receiver_read": true
-
+                      "receiver_read": true,
+                      "answer.read_at": new Date(),
+                      "answer.answered_at": new Date(),
+                      "answer.estimated": req.body.estimated
                     },
               $push:{
                     "estimations": {
-                      "receiver": req.body
+                      "receiver": {
+                          "type": "Point",
+                          "coordinates": [
+                            req.body.latitude,
+                            req.body.longitude
+                          ]}
                     }   
               }
              },function(err, result) {
