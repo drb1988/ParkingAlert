@@ -5,7 +5,6 @@ var db = require('mongoskin').db(dbConfig.url);
 var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId; 
-var pretty = require('pretty');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
