@@ -38,7 +38,7 @@ link(rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2
 p(style='margin-left:10px;')
  .col-md-12
    .col-md-12
-     label.daterange-text Alege intervalul dorit:
+     label.daterange-text Alege intervalul dorit: // san francisco
    .col-md-3
      input.form-control#ajaxDate(type='text', name='daterange')
 br
@@ -50,33 +50,6 @@ br
   .col-md-2 
     i.fa.fa-bar-chart-o.chart-cosen Statistica
   .col-md-4
-script.
-  $( "input[name='daterange']" ).change(function() {
-  // Check input( $( this ).val() ) for validity here
-  console.log($( "input[name='daterange']" ).val());
-  });
-  $(function() {
-  $('input[name="daterange"]').daterangepicker({
-  timePicker: true,
-  timePickerIncrement: 30,
-  locale: {
-  format: 'YYYY-MM-DD HH:mm:00'
-  },
-  ranges: {
-  'Azi': [moment(), moment()],
-  'Ieri': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-  'Ultimele 7 zile': [moment().subtract(6, 'days'), moment()],
-  'Ultimele 30 de zile': [moment().subtract(29, 'days'), moment()],
-  'Aceasta luna': [moment().startOf('month'), moment().endOf('month')],
-  'Luna trecuta': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-  }
-  });
-  $(window).scroll(function() {
-  if ($('input[name="daterange"]').length) {
-  $('input[name="daterange"]').daterangepicker("close");
-  }
-  });
-  });
 
 
 script(src='/js/date-selector.js')
