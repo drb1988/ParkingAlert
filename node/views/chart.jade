@@ -1,23 +1,12 @@
-extends dashboard-layout
 block content
- script(src='/js/highcarts/jquery.min.js')
- script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
  script(src='/js/highcarts/highcharts.js')
  script(src='/js/highcarts/exporting.js')
  script(src='/js/highcarts/main.js')
- script(src='/js/frontend_unit_test/qunit-2.0.1.js')
 
  .row
   .col-md-12
-   p Pick one date: 
-    input#ajaxDateChart.datepicker(type='date' name='date' style='margin-top: 70px')
-  .col-md-12
-   #container(style='min-width: 0px; height: 400px; margin: 0 auto; max-width:1000px; margin-top: 70px')
+   #container.chart-container.content-hidden(style='min-width: 0px; height: 400px; margin: 0 auto; max-width:1000px;')
 
 block scripts
- script.
-  QUnit.test( "hello test", function( assert ) {
-  assert.ok( 1 == "1", console.log("Passed!") );
-  });
 
 

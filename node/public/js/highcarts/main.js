@@ -74,18 +74,23 @@ $(document).ready(function () {
     }]
   });
 
-  $("input#ajaxDateChart").change(function(){
-    var selectedDate = $("input[name=date]").val() ? $("input[name=date]").val() : false;
+  $("input#ajaxDate").change(function(){
+    var selectedDate = $("input[name=daterange]").val() ? $("input[name=daterange]").val() : false;
+    console.log("data daterange val: "+selectedDate);
     if(selectedDate) {
+      var date = selectedDate.split(" - ");
+      var startDateTime = date[0],
+          endDateTime = date[1];
       var json = {
-        date: selectedDate
+        selectedDate: selectedDate, 
+        endDateTime : endDateTime
       };
       chart.setTitle({text: "Statistica din data: "+selectedDate});
       $.ajax({
         async: true,
         type: "POST",
         url: "/chart_ajax", 
-        data: JSON.stringify(json),
+        data: json,
         success: function(result) {
           chart.series[0].setData(result.positive_feedback);
           chart.series[1].setData(result.negative_feedback);

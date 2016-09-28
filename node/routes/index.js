@@ -257,7 +257,11 @@ router.post('/heatmaps_ajax_map', function(req, res, next) {
   ]
   ];
   var result = [];
-  for(var i=parseInt(req.body.start_hour)-1; i<parseInt(req.body.end_hour); i++)
+  var start_hour = Math.round(Math.random()*10) + 1,
+      end_hour = Math.round(Math.random()*10) + 1;
+  while(end_hour<start_hour)
+    end_hour = Math.round(Math.random()*10) + 1;
+  for(var i=parseInt(start_hour)-1; i<parseInt(end_hour); i++)
     result = result.concat(resources[i]);
 
   res.status(200).send(result);

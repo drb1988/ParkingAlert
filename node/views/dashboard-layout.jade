@@ -6,9 +6,7 @@ html
     meta(name="description" content="Moneparti dashboard")
     meta(charset='utf-8')
     title Heatmaps
-   
-      
-    
+    link(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Indie+Flower" )
     link(rel="stylesheet" href="/css/bootstrap.min.css" media="all" charset="utf-8")
     link(rel="stylesheet" href="/css/modern-business.css" media="all" charset="utf-8")
     link(rel="stylesheet" href="/stylesheets/style.css" media="all" charset="utf-8")
@@ -17,7 +15,7 @@ html
 
   body
     #wrapper
-      include ./dashboard/header
+      script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
       script(src='/js/highcarts/jquery.min.js')
       // Bootstrap Core JavaScript
       script(src='/js/bootstrap.min.js')
@@ -25,6 +23,7 @@ html
       script(src='/js/jquery.js')
       // MainJS js/jquery.js
       script(src='/js/main.js')
+      include ./dashboard/header
       #page-wrapper
         block content
   block scripts
