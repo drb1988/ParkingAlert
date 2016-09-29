@@ -2,6 +2,7 @@ html, body {
   height: 100%;
   padding: 0;
   overflow-x: hidden;
+  overflow-y: hidden; 
   // background: url('/img/large-background.jpg') no-repeat fixed center;
 }
 #map-content {
@@ -48,18 +49,22 @@ html, body {
 }
 
 .map-cosen , .chart-cosen {
-  border: 0px solid #3570BD;
-  padding: 5px 40px;
-  border-radius: 25px 25px 0px 0px;
-  background-color: #3570BD;
-  zoom: 1.5;
+  text-align: center;
+  margin: 12px auto;
+  border: 1px solid #3570BD;
+  max-width: 400px;
+  width: 100%;
+  padding: 5px;
+  border-radius: 2px 2px 2px 2px;
+  //background-color: #3570BD;
+  zoom: 1.8;
 }
 
 .map-cosen:hover , .chart-cosen:hover {
   background-color: #3358B1;
 }
 .active {
-  background-color: #3358B1;
+  background-color: #3570BD;
 }
 .row.hidden#chart-container > .col-md-12 > #container {
   min-width: 0px; height: 400px; margin: 0 auto; max-width:1000px;

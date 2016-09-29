@@ -12,7 +12,7 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bot
   ul.nav.navbar-top-links.navbar-right
     li.dropdown
       a.dropdown-toggle(data-toggle='dropdown', href='#')
-        span Anonymous
+        span Neindentificat
         i.fa.fa-user.fa-fw
         i.fa.fa-caret-down
       ul.dropdown-menu.dropdown-user
@@ -35,21 +35,19 @@ link(rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/latest/css/bootst
 script(src='https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js')
 link(rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" )
 
-p(style='margin-left:10px;')
+.col-md-12(style='border-bottom: 1px solid #e7e7e7;')
  .col-md-12
-   .col-md-12
-     label.daterange-text Alege intervalul dorit: // san francisco
-   .col-md-3
-     input.form-control#ajaxDate(type='text', name='daterange')
-br
-br
-.row.map-chart-selector
-  .col-md-4
-  .col-md-2 
-    i.fa.fa-map-marker.map-cosen.active Harta
-  .col-md-2 
-    i.fa.fa-bar-chart-o.chart-cosen Statistica
-  .col-md-4
+   .col-md-6
+     .col-md-12
+      label.daterange-text Alege intervalul dorit: // san francisco
+     .col-md-12
+      input.form-control#ajaxDate(type='text', name='daterange')
+   .col-md-6
+    .col-md-6
+     i.fa.fa-map-marker.map-cosen.active Harta
+    .col-md-6
+     i.fa.fa-bar-chart-o.chart-cosen Statistica
+hr
 
 
 script(src='/js/date-selector.js')

@@ -1,5 +1,9 @@
+$.getScript("/./js/global-needs.js", function(){
+  console.log("qWERTY: "+qWERTY);
+
+  var chart;
 $(document).ready(function () {
-  var chart = new Highcharts.Chart({
+  chart = new Highcharts.Chart({
     chart: {
       zoomType: 'xy',
       renderTo: 'container'
@@ -18,6 +22,21 @@ $(document).ready(function () {
     }],
     yAxis: [{ // Primary yAxis
       labels: {
+          format: '{value}',
+          style: {
+              color: Highcharts.getOptions().colors[2]
+          }
+      },
+      title: {
+          text: 'Notificari fara raspuns.',
+          style: {
+              color: Highcharts.getOptions().colors[2]
+          }
+      },
+      opposite: true
+    },
+    { // Primary yAxis
+      labels: {
         format: '{value}',
         style: {
           color: Highcharts.getOptions().colors[1]
@@ -29,20 +48,21 @@ $(document).ready(function () {
           color: Highcharts.getOptions().colors[1]
         }
       }
-    }, { // Secondary yAxis
-    title: {
-      text: 'Persoane care au ajuns la timp.',
-      style: {
-        color: Highcharts.getOptions().colors[0]
-      }
-    },
-    labels: {
-      format: '{value}',
-      style: {
-        color: Highcharts.getOptions().colors[0]
-      }
-    },
-    opposite: true
+    }, 
+    { // Secondary yAxis
+      title: {
+        text: 'Persoane care au ajuns la timp.',
+        style: {
+          color: Highcharts.getOptions().colors[0]
+        }
+      },
+      labels: {
+        format: '{value}',
+        style: {
+          color: Highcharts.getOptions().colors[0]
+        }
+      },
+      opposite: true
     }],
     tooltip: {
       shared: true
@@ -50,42 +70,79 @@ $(document).ready(function () {
     legend: {
       layout: 'vertical',
       align: 'left',
-      x: 120,
+      x: 50,
       verticalAlign: 'top',
-      y: 100,
+      y: 20,
       floating: true,
       backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
     },
     series: [{
-      name: 'Au ajuns',
-      type: 'column',
+      name: 'Notificari fara raspuns',
+      type: 'spline',
+      yAxis: 0,
+      data: [],
+      tooltip: {
+        valueSuffix: ''
+      },
+      backgroundColor: 'red'
+
+      },{
+      name: 'Nu au ajuns',
+      type: 'spline',
       yAxis: 1,
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      data: [],
       tooltip: {
         valueSuffix: ''
       }
-    }, {
-      name: 'Nu au ajuns',
-      type: 'spline',
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      tooltip: {
-      valueSuffix: ''
-      }
-    }]
+      }, {
+        name: 'Au ajuns',
+        type: 'spline',
+        data: [],
+        yAxis: 2,
+        tooltip: {
+          valueSuffix: '',
+          
+        }
+      }]
   });
 
   $("input#ajaxDate").change(function(){
     var selectedDate = $("input[name=daterange]").val() ? $("input[name=daterange]").val() : false;
     console.log("data daterange val: "+selectedDate);
+    qWERTY=5;
     if(selectedDate) {
       var date = selectedDate.split(" - ");
       var startDateTime = date[0],
           endDateTime = date[1];
       var json = {
         selectedDate: selectedDate, 
-        endDateTime : endDateTime
+        endDateTime : endDateTime,
+        circle: {
+          is_defined: circle ? true : false,
+          value: {
+            radius: circle ? circle.getRadius() : null,
+            center: {
+              lat: circle ? circle.getCenter().lat() : null,
+              lng: circle ? circle.getCenter().lng() : null
+            }
+          }
+        },
+        rectangle: {
+          is_defined: rectangle ? true : false,
+          value: {
+            NorthEast: {
+              lat: rectangle ? rectangle.getBounds().getNorthEast().lat() : null,
+              lng: rectangle ? rectangle.getBounds().getNorthEast().lng() : null
+            },
+            SouthWest: {
+              lat: rectangle ? rectangle.getBounds().getSouthWest().lat() : null,
+              lng: rectangle ? rectangle.getBounds().getSouthWest().lng() : null
+            }
+          }
+        }
       };
-      chart.setTitle({text: "Statistica din data: "+selectedDate});
+      console.log("json pentru stat",json);
+      chart.setTitle({text: "Statistica pentru perioada : "+selectedDate});
       $.ajax({
         async: true,
         type: "POST",
@@ -94,15 +151,31 @@ $(document).ready(function () {
         success: function(result) {
           chart.series[0].setData(result.positive_feedback);
           chart.series[1].setData(result.negative_feedback);
+          chart.series[2].setData(result.without_feedback);
        },
        failure: function (errMsg) {
         alert(errMsg);
       }
       });
     }
-
-    //chart.series[0].setData([129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4, 29.9, 71.5, 106.4] ); // Persoane care au ajuns la timp
-    //chart.series[1].setData([129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4, 29.9, 71.5, 106.4] ); // Persoane care nu au ajuns la timp
   })
+
+  $("input[name='checkbox_1']").change(function () {
+    showHideSerie(0);
+  });
+  $("input[name='checkbox_2']").change(function () {
+    showHideSerie(1);
+  });
+  $("input[name='checkbox_3']").change(function () {
+    showHideSerie(2);
+  });
+  function showHideSerie(orderNumber) {
+    if(chart.series[orderNumber].visible) 
+      chart.series[orderNumber].hide();
+    else
+      chart.series[orderNumber].show();
+  }
+
+});
 
 });

@@ -16,6 +16,8 @@ $( ".chart-cosen" ).click(function() {
 	$( "#map-content" ).addClass(' content-hidden hidden');
 });
 
+
+
 $( "input[name='daterange']" ).change(function() {
   // Check input( $( this ).val() ) for validity here
   console.log($( "input[name='daterange']" ).val());
@@ -42,3 +44,5 @@ $( "input[name='daterange']" ).change(function() {
   }
   });
   });
+
+

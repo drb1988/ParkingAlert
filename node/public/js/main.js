@@ -1,3 +1,4 @@
+$.getScript("/./js/global-needs.js", function(){
 $(document).ready(function() {
   activeAjaxMap();
   activeAjaxChart();
@@ -33,9 +34,33 @@ function activeAjaxMap()  {
           endDateTime = date[1];
       var json = {
         selectedDate: selectedDate, 
-        endDateTime : endDateTime
+        endDateTime : endDateTime,
+        circle: {
+          is_defined: circle ? true : false,
+          value: {
+            radius: circle ? circle.getRadius() : null,
+            center: {
+              lat: circle ? circle.getCenter().lat() : null,
+              lng: circle ? circle.getCenter().lng() : null
+            }
+          }
+        },
+        rectangle: {
+          is_defined: rectangle ? true : false,
+          value: {
+            NorthEast: {
+              lat: rectangle ? rectangle.getBounds().getNorthEast().lat() : null,
+              lng: rectangle ? rectangle.getBounds().getNorthEast().lng() : null
+            },
+            SouthWest: {
+              lat: rectangle ? rectangle.getBounds().getSouthWest().lat() : null,
+              lng: rectangle ? rectangle.getBounds().getSouthWest().lng() : null
+            }
+          }
+        }
       };
       // make ajax call to the server
+      console.log("map in ajax ",json);
       $.ajax({
         async: true,
         type: "POST",
@@ -67,7 +92,7 @@ function activeAjaxMap()  {
     }
   });
 }
-
+});
 function activeAjaxChart()  {
   
 }
