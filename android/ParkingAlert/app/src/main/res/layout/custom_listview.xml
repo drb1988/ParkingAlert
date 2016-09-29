@@ -42,8 +42,8 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textColor="@android:color/black"
                 android:text="Ai primit un raspuns"
+                android:textColor="@android:color/black"
                 android:textSize="18dp" />
 
             <TextView
@@ -58,7 +58,6 @@
                 android:textSize="15dp" />
 
             <TextView
-                android:textColor="@android:color/black"
                 android:id="@+id/detalii_listview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,6 +65,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="Astepti: 3 minute si 22 secunde"
+                android:textColor="@android:color/black"
                 android:textSize="18dp" />
         </RelativeLayout>
 
@@ -76,11 +76,11 @@
             android:gravity="center">
 
             <TextView
-                android:textColor="@android:color/black"
                 android:id="@+id/ora_listview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10:42" />
+                android:text="10:42"
+                android:textColor="@color/gri" />
 
             <ImageView
                 android:layout_width="30dp"

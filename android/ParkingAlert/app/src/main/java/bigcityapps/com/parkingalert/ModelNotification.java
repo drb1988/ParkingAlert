@@ -11,6 +11,35 @@ public class ModelNotification {
     String ora;
     int tip;
 
+    public String getNr_car() {
+        return nr_car;
+    }
+
+    public void setNr_car(String nr_car) {
+        this.nr_car = nr_car;
+    }
+
+    String nr_car;
+
+    public String getEstimeted_time() {
+        return estimeted_time;
+    }
+
+    public void setEstimeted_time(String estimeted_time) {
+        this.estimeted_time = estimeted_time;
+    }
+
+    String estimeted_time;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    String id;
+
     public int getTip() {
         return tip;
     }

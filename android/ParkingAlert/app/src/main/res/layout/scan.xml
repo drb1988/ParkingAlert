@@ -8,5 +8,5 @@
         android:id="@+id/mesaj_preintampinare"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/mesaj_preintampinare" />
+        />
 </LinearLayout>

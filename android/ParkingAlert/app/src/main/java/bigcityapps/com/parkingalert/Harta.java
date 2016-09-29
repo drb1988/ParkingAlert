@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,15 +35,29 @@ import java.util.Locale;
 public class Harta extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
     RelativeLayout ok;
     private GoogleMap mMap;
-    TextView adresaTextview;
+    TextView adresaTextview, txt_nr_car, txt_time;
     private String provider;
     private LocationManager locationManager;
-
+    int timer, ora;
+    String nr_car;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(bigcityapps.com.parkingalert.R.layout.harta);
+        setContentView(R.layout.harta);
         initComponents();
+        Intent iin= getIntent();
+        Bundle b = iin.getExtras();
+        if(b!=null) {
+            try {
+                ora = Integer.parseInt((String) b.get("ora"));
+                timer = Integer.parseInt((String) b.get("timer"));
+                txt_time.setText("Raspuns la "+timer);
+                nr_car = (String) b.get("time");
+                txt_nr_car.setText(nr_car+" Vine in "+timer);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
 //        mMap = ((MapFragment) getFragmentManager().findFragmentById(bigcityapps.com.parkingalert.R.id.map)).getMap();
 //        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
@@ -87,18 +100,8 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback, Loca
      *
      */
     public void initComponents() {
-        ok = (RelativeLayout) findViewById(bigcityapps.com.parkingalert.R.id.relative_ok_harta);
-        adresaTextview = (TextView) findViewById(bigcityapps.com.parkingalert.R.id.adresa);
-        ok.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Intent notificari= new Intent(Harta.this, Notificari.class);
-                startActivity(notificari);
-                finish();
-//                Timer make = new Timer(Harta.this, 3);
-//                make.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//                make.show();
-            }
-        });
+        txt_nr_car=(TextView)findViewById(R.id.nr_masina);
+        txt_time=(TextView)findViewById(R.id.timp);
     }
 
     public void onMapReady(GoogleMap googleMap) {
@@ -131,8 +134,6 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback, Loca
         }
         return adresa;
     }
-
-    @Override
     public void onLocationChanged(Location location) {
         int lat = (int) (location.getLatitude());
         int lng = (int) (location.getLongitude());
@@ -147,12 +148,10 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback, Loca
     }
 
     public void onProviderEnabled(String s) {
-        Toast.makeText(this, "Enabled new provider " + s,
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Enabled new provider " + s, Toast.LENGTH_SHORT).show();
     }
 
     public void onProviderDisabled(String s) {
-        Toast.makeText(this, "Disabled provider " + s,
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Disabled provider " + s, Toast.LENGTH_SHORT).show();
     }
 }

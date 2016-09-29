@@ -52,6 +52,8 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:9.4.0'
     /// MULTIDEX SUPPORT
     compile 'com.android.support:multidex:1.0.0'
+    compile 'com.google.android.gms:play-services:9.4.0'
+    compile 'com.google.android.gms:play-services-location:9.4.0'
     ////test
     // Android runner and rules support
     androidTestCompile ('com.android.support.test:runner:0.5') {

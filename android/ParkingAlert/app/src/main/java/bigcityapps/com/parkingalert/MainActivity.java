@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     public void updateUi(){
-        badge_count.setText("13");
+        badge_count.setVisibility(View.VISIBLE);
+        badge_count.setText("1");
         Log.w("meniuu","ai primit un sms");
     }
 
@@ -210,7 +211,8 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.main_activity_menu, menu);
         final View notificaitons = menu.findItem(R.id.clopot).getActionView();
         badge_count = (TextView) notificaitons.findViewById(R.id.hotlist_hot);
-        badge_count.setText("3");
+        badge_count.setVisibility(View.INVISIBLE);
+//        badge_count.setText("3");
         return true;
     }
     @Override

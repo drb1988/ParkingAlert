@@ -2,87 +2,105 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/table_list_dialog"
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/back"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="43dp"
-        android:background="@drawable/background_timer"
-        android:gravity="center">
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/blue_dark"
+        android:gravity="center_vertical">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="320dp"
-            android:layout_height="320dp"
-            android:layout_alignParentTop="true"
-            android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress_bar" />
+        <RelativeLayout
+            android:id="@+id/back_timer"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inapoi"
+                android:textColor="@color/alb"
+                android:textSize="17dp" />
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/titlu"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="35dp" />
+            android:text="Notificari"
+            android:textColor="@android:color/white"
+            android:textSize="18dp" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/adresa"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/back"
-        android:layout_alignLeft="@+id/back"
-        android:layout_alignRight="@+id/back"
-        android:layout_alignStart="@+id/back"
-        android:layout_below="@+id/back"
-        android:text="adresa"
-        android:textSize="20dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="false"
+        android:progressDrawable="@drawable/circular_progress_bar" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/adresa"
-        android:layout_alignLeft="@+id/adresa"
-        android:layout_alignRight="@+id/adresa"
-        android:layout_alignStart="@+id/adresa"
-        android:layout_below="@+id/adresa"
-        android:text="Notificat daniel la data de"
-        android:textSize="18dp" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="35dp" />
 
-    <TextView
-        android:layout_above="@+id/relative_ok"
-        android:id="@+id/txtprenom"
-        android:layout_marginLeft="31dp"
-        android:layout_marginRight="31dp"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#cccccc" />
 
     <RelativeLayout
-        android:id="@+id/relative_ok"
-        style="?android:borderlessButtonStyle"
+        android:id="@+id/bottom"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginLeft="31dp"
-        android:layout_marginRight="31dp">
+        android:background="@color/blue_dark">
 
-        <TextView
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/com_facebook_profile_picture_blank_square" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="OK"
-            android:textColor="@color/blue_white"
-            android:textSize="20dp" />
+            android:layout_toRightOf="@+id/image"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/nr_masina"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="BH12ABC vine in 10 minute"
+                android:textColor="@color/alb"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/timp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nr_masina"
+                android:text="Raspns la 10 :22"
+                android:textColor="@color/alb"
+                android:textSize="17dp" />
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

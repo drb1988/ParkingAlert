@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,12 +26,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -50,6 +53,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
     NotificareAdapter adapter;
     RelativeLayout inapoi, istoric;
     SharedPreferences prefs;
+    private Handler mHandler = new Handler();
     ArrayList<ModelNotification> modelNotificationArrayList= new ArrayList<>();
     SearchView search;
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
@@ -64,9 +68,9 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
         }
     };
     public void updateUi(){
+        getNotifications(prefs.getString("user_id",""));
         Log.w("meniuu","ai primit un sms");
-
-    }
+     }
     @Override
     protected void onStop() {
         active = false;
@@ -108,12 +112,28 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
 //        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent view_notification= new Intent(Notificari.this, ViewNotification.class);
-                view_notification.putExtra("detalii", modelNotificationArrayList.get(i).getDetalii());
-                startActivity(view_notification);
+                if(modelNotificationArrayList.get(i).getTip()==3) {
+                    Intent view_notification = new Intent(Notificari.this, ViewNotification.class);
+                    view_notification.putExtra("detalii", modelNotificationArrayList.get(i).getDetalii());
+                    view_notification.putExtra("notification_id", modelNotificationArrayList.get(i).getId());
+                    startActivity(view_notification);
+                } else
+                if(modelNotificationArrayList.get(i).getTip()==2) {
+                    Intent timer = new Intent(Notificari.this, Timer.class);
+                    timer.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
+                    timer.putExtra("ora", modelNotificationArrayList.get(i).getOra());
+                    Log.w("meniuu","ora:"+modelNotificationArrayList.get(i).getOra());
+                    startActivity(timer);
+                }else
+                    if(modelNotificationArrayList.get(i).getTip()==1){
+                        Intent harta = new Intent(Notificari.this, Harta.class);
+                        harta.putExtra("ora", modelNotificationArrayList.get(i).getOra());
+                        harta.putExtra("nr_car", modelNotificationArrayList.get(i).getNr_car());
+                        harta.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
+                        startActivity(harta);
+                    }
             }
         });
-///  user_id=57ea497a1a195829e4444279 ///
 Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
         getNotifications(prefs.getString("user_id",""));
 //        getNotifications(" ");
@@ -202,11 +222,64 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
             holder.titlu.setText(item.getTitlu());
             holder.detalii.setText(item.getDetalii());
             holder.mesaj.setText(item.getMesaj());
-            holder.ora.setText(item.getOra());
-            if(item.tip==1)
-                Picasso.with(ctx).load(bigcityapps.com.parkingalert.R.drawable.ic_back).into(holder.bagde);
-            else
-                Picasso.with(ctx).load(bigcityapps.com.parkingalert.R.drawable.ic_back).into(holder.bagde);
+
+            if(item.getTip()==2) {
+                holder.bagde.setImageResource(R.drawable.cerculet_notif);
+//                new Thread(new Runnable() {
+//                    public void run() {
+//                        while (mProgressStatus < min * 60) {
+//                            mProgressStatus += 1;
+//                            // Update the progress bar
+//                            mHandler.post(new Runnable() {
+//                                public void run() {
+//                                    progBar.setProgress(mProgressStatus);
+//                                    int minutes = (mProgressStatus % 3600) / 60;
+//                                    int sec = mProgressStatus % 60;
+//                                    if (minutes < 10) {
+//                                        if (sec < 10)
+//                                            text.setText("0" + minutes + ":0" + sec);
+//                                        else
+//                                            text.setText("0" + minutes + ":" + sec);
+//                                    } else {
+//                                        if (sec < 10)
+//                                            text.setText(minutes + ":0" + sec);
+//                                        else
+//                                            text.setText("0" + minutes + ":" + sec);
+//                                    }
+//                                }
+//                            });
+//                            try {
+//                                Thread.sleep(1000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }).start();
+            }
+            if(item.getTip()==3)
+                holder.bagde.setImageResource(R.drawable.cerculet_notif);
+            if(item.getTip()==1)
+                holder.bagde.setImageResource(android.R.color.transparent);
+            if(item.getTip()==4)
+                holder.bagde.setImageResource(R.drawable.ic_back);
+            Log.w("meniu","item.getora:"+item.getOra());
+            String [] split= item.getOra().split("T");
+            Log.w("meniuu","split:"+split.length);
+            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat format2 = new SimpleDateFormat("HH:mm");
+            Date date = null;
+            try {
+                date = format1.parse(split[1]);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            holder.ora.setText(format2.format(date));
+
+//            if(item.tip==1)
+//                Picasso.with(ctx).load(bigcityapps.com.parkingalert.R.drawable.ic_back).into(holder.bagde);
+//            else
+//                Picasso.with(ctx).load(bigcityapps.com.parkingalert.R.drawable.ic_back).into(holder.bagde);
             return v;
 
         }
@@ -239,19 +312,46 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
                 modelNotificationArrayList.clear();
                 try {
                     JSONArray obj = new JSONArray(json);
-                    for (int i = 0; i < obj.length(); i++) {
+                    for (int i = 0; i < obj.length(); i++)
+                    {
                         ModelNotification modelNotification= new ModelNotification();
                         JSONObject c = obj.getJSONObject(i);
+                        modelNotification.setId(c.getString("_id"));
+                        JSONObject answer= new JSONObject(c.getString("answer"));
+                        modelNotification.setNr_car(c.getString("vehicle"));
+
                         if(c.getString("sender_id").equals(id))
-                        {Log.w("meniuu","notificare_id:"+c.getString("_id"));
-                            modelNotification.setTitlu("Ai trimis notificare");
-                            modelNotification.setMesaj("M-ai blocat");
-                            modelNotification.setTip(1);
+                        {
+
+                            if(answer.getString("read_at").equals("null"))
+                            {    Log.w("meniuu","este null notificare_id:"+c.getString("_id"));
+                                modelNotification.setTitlu("Ai trimis notificare");
+                                modelNotification.setMesaj("M-ai blocat");
+                                modelNotification.setTip(1);
+                                modelNotification.setOra(c.getString("create_date"));
+                            }else
+                            {   Log.w("meniuu","este diferit de null");
+                                modelNotification.setTitlu("Ai primit raspuns");
+                                modelNotification.setMesaj("Vin in aprox "+answer.getString("estimated")+" minute");
+                                Log.w("meniuu","");
+                                modelNotification.setOra(answer.getString("answered_at"));
+                                modelNotification.setEstimeted_time(answer.getString("estimated"));
+                                modelNotification.setTip(2);
+                            }
                         }else
                         if(c.getString("receiver_id").equals(id))
-                        {   modelNotification.setTip(2);
+                        {   if(answer.getString("read_at")==null) {
+                            modelNotification.setTip(3);
                             modelNotification.setTitlu("Ai primit notificare");
                             modelNotification.setMesaj("Vino la masina pt ca m-ai blocat");
+                            modelNotification.setOra(c.getString("create_date"));
+                        }else
+                        {
+                            modelNotification.setTip(4);
+                            modelNotification.setTitlu("Ai trimis raspuns");
+                            modelNotification.setMesaj("Vin in aprox "+answer.getString("estimated")+" minute");
+                            modelNotification.setOra(answer.getString("answered_at"));
+                        }
                         }
                         modelNotificationArrayList.add(modelNotification);
                     }
