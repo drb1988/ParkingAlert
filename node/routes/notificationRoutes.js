@@ -21,6 +21,15 @@ function distance(lat1, lon1, lat2, lon2, unit) {
 }
 var response;
 
+var toLocalTime = function(time) {
+  //console.log(time)
+  var d = new Date(time);
+  var offset = (new Date().getTimezoneOffset() / 60) * -1;
+  var n = new Date(d.getTime() + offset);
+  console.log(n)
+  return n;
+};
+
 var findUsersByNotification = function(db, callback, notificationID) {
     /**
     * Function to get users by notificationID,
@@ -50,7 +59,6 @@ var findUserToken = function(db, callback, userID) {
       db.collection('parking').findOne({"_id": o_id},
         function(err, result) {
               assert.equal(err, null);
-              console.log(result)
               callback(result.security[0].device_token);
         });            
     }
@@ -61,6 +69,8 @@ router.post('/notification', function(req, res, next) {
     * Route to insert notifications,
     * @name /notification
     */
+  var notificationReceiverToken = "";
+  var notificationSenderToken = "";
   var notificationID ="";
   var insertDocument = function(db, callback) {
    db.collection('notifications').insertOne( {
@@ -78,7 +88,7 @@ router.post('/notification', function(req, res, next) {
           ]
       },
       "reverse_geocode": req.body.reverse_geocode,
-      "create_date": new Date(),
+      "create_date": toLocalTime(new Date()),
       "vehicle": req.body.vehicle,
       "sender_id": new ObjectId(req.body.sender_id),
       "answer": {
@@ -94,11 +104,14 @@ router.post('/notification', function(req, res, next) {
             req.body.longitude
           ]}}
       ],
+      "receiver_token": notificationReceiverToken,
+      "sender_token": notificationSenderToken,
       "sender_nickname": req.body.sender_nickname,
       "receiver_id": new ObjectId(req.body.receiver_id),
       "receiver_nickname": req.body.receiver_nickname,
       "is_ontime": true
    }, function(err, result) {
+
     assert.equal(err, null);
     notificationID = result.insertedId;
     console.log("Sent a notification "+result.insertedId);
@@ -107,11 +120,13 @@ router.post('/notification', function(req, res, next) {
 };
 MongoClient.connect(dbConfig.url, function(err, db) {
   assert.equal(null, err);
-  insertDocument(db, function() {
-   //   findUserToken(db, function(){}, req.body.receiver_id);
+  findUserToken(db, function(receiver){console.log(receiver); notificationReceiverToken=receiver;}, req.body.receiver_id);
+  findUserToken(db, function(sender){console.log(sender); notificationSenderToken=sender;
+    insertDocument(db, function() {
       db.close();
       res.status(200).send(notificationID)
-  });
+    });
+  }, req.body.sender_id);
 });
 });
 
@@ -126,8 +141,8 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
                       "receiver_read": true,
-                      "answer.read_at": new Date(),
-                      "answer.answered_at": new Date(),
+                      "answer.read_at": toLocalTime(new Date()),
+                      "answer.answered_at": toLocalTime(new Date()),
                       "answer.estimated": req.body.estimated
                     },
               $push:{
@@ -221,7 +236,7 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
     * @param {String} :notificationID
     */
     var findNotification = function(db, callback) {   
-    var o_id = new ObjectId(req.params.userID);
+    var o_id = new ObjectId(req.params.notificationID);
       db.collection('notifications').findOne({"_id": o_id},
         function(err, result) {
               assert.equal(err, null);
@@ -230,9 +245,14 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
               callback();
         });            
     }
+    var senderID;
     MongoClient.connect(dbConfig.url, function(err, db) {
         assert.equal(null, err);
         findNotification(db, function() {
+            var senderID;
+            findUsersByNotification(db, function(notificationSenderID){
+            senderID = notificationSenderID.sender_id;
+            }, req.params.notificationID);
             db.close();
         });
       });
