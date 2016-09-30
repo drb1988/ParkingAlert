@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue_dark"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -31,71 +32,109 @@
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="Vizualizare notificare"
+            android:text="Raspunde"
             android:textColor="@android:color/white"
             android:textSize="18dp" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/txtprenom"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#cccccc" />
+
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@color/lista_masini_conduci"
-        android:gravity="center">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="In cat timp poti veni la masina?"
+        android:textColor="@color/alb"
+        android:textSize="@dimen/txt_size_bigger1" />
+
+    <TextView
+        android:id="@+id/car_nr_view_notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="BH!@ ABC \n creaza o  problema"
+        android:textColor="@color/alb"
+        android:textSize="@dimen/txt_size" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/gradient_time"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/detalii_vizualizare_notificare"
+            android:id="@+id/zece"
+            style="?android:borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Hai te rog la masina."
-            android:textSize="@dimen/txt_size_bigger" />
-    </RelativeLayout>
+            android:padding="15dp"
+            android:text="3 minute"
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="Vin in"
-        android:textSize="@dimen/txt_size_bigger1" />
+            android:textAllCaps="false"
+            android:textColor="@color/alb"
+            android:textSize="@dimen/txt_size" />
 
-    <TextView
-        android:id="@+id/zece"
-        style="?android:borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="10 min"
-        android:textSize="@dimen/txt_size_bigger1" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#cccccc" />
 
-    <TextView
-        android:id="@+id/cinci"
-        style="?android:borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="5 min"
-        android:textSize="@dimen/txt_size_bigger1" />
+        <TextView
+            android:id="@+id/cinci"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="5 minute"
+            android:textAllCaps="false"
+            android:textColor="@color/alb"
+            android:textSize="@dimen/txt_size" />
 
-    <TextView
-        android:id="@+id/trei"
-        style="?android:borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="3 min"
-        android:textSize="@dimen/txt_size_bigger1" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#cccccc" />
 
-    <TextView
-        android:id="@+id/nupot"
-        style="?android:borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="nu pot"
-        android:textSize="@dimen/txt_size_bigger1" />
+        <TextView
+            android:id="@+id/trei"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="7 minute"
+            android:textAllCaps="false"
+            android:textColor="@color/alb"
+            android:textSize="@dimen/txt_size" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#cccccc" />
+
+        <TextView
+            android:id="@+id/nupot"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="Nu pot veni la masina"
+            android:textAllCaps="false"
+            android:textColor="@color/alb"
+            android:textSize="@dimen/txt_size" />
+    </LinearLayout>
 </LinearLayout>

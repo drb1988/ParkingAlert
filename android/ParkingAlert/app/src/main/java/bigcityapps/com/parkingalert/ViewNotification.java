@@ -29,7 +29,7 @@ import Util.SecurePreferences;
  * Created by fasu on 22/09/2016.
  */
 public class ViewNotification extends Activity implements View.OnClickListener{
-    TextView detalii, zece, cinci, trei, nupot;
+    TextView detalii, zece, cinci, trei, nupot, car_nr_view_notification;
     RelativeLayout inapoi;
     RequestQueue queue;
     SharedPreferences prefs;
@@ -45,12 +45,12 @@ public class ViewNotification extends Activity implements View.OnClickListener{
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
-            detalii.setText((String) b.get("detalii"));
-            notification_id=(String) b.get("detalii");
+//            detalii.setText((String) b.get("detalii"));
+            car_nr_view_notification.setText((String) b.get("nr_car")+" \n creaza o problema");
         }
+        notification_id=prefs.getString("user_id","");
     }
     public void initComponents(){
-        detalii=(TextView)findViewById(R.id.detalii_vizualizare_notificare);
         zece=(TextView)findViewById(R.id.zece);
         zece.setOnClickListener(this);
         cinci=(TextView)findViewById(R.id.cinci);
@@ -61,6 +61,7 @@ public class ViewNotification extends Activity implements View.OnClickListener{
         nupot.setOnClickListener(this);
         inapoi=(RelativeLayout) findViewById(R.id.inapoi_notificare);
         inapoi.setOnClickListener(this);
+        car_nr_view_notification=(TextView)findViewById(R.id.car_nr_view_notification);
     }
 
     public void onClick(View view) {
@@ -69,20 +70,20 @@ public class ViewNotification extends Activity implements View.OnClickListener{
             finish();
             break;
         case R.id.zece:
-            postAnswer("10");
+            postAnswer("3");
             break;
         case R.id.cinci:
-            postAnswer("cinci");
+            postAnswer("5");
             break;
 
         case R.id.trei:
-            postAnswer("trei");
+            postAnswer("7");
             break;
 
         case R.id.nupot:
             postAnswer("nu pot");
             break;
-    }
+        }
     }
 
     public void postAnswer(final String time){

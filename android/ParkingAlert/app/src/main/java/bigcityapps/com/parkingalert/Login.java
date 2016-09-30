@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -126,7 +127,7 @@ public class Login extends Activity implements View.OnClickListener {
     public void onClick(View view) {
     switch (view.getId()){
         case R.id.continuare:
-            postToken();
+            postUser();
 
             break;
         }
@@ -135,16 +136,16 @@ public class Login extends Activity implements View.OnClickListener {
     /**
      * post token, password and device ip
      */
-    public void postToken() {
+    public void postToken(String user_id, final String token) {
     prefs = new SecurePreferences(ctx);
     WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
     final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-    String url = Constants.URL + "signup/user";
+    String url = Constants.URL + "users/addSecurity/"+user_id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
-                        postUser();
+//                        postUser();
                     }
                 }, ErrorListener) {
             protected Map<String, String> getParams() {
@@ -152,6 +153,12 @@ public class Login extends Activity implements View.OnClickListener {
                 params.put("device_token", prefs.getString("phone_token", ""));
                 params.put("password", "nuamideecepltrebeaici");
                 params.put("reg_ip", ip);
+                return params;
+            }
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ token);
                 return params;
             }
         };
@@ -175,6 +182,7 @@ public class Login extends Activity implements View.OnClickListener {
                                 JSONObject token= new JSONObject(obj.getString("token"));
                                 prefs.edit().putString("user_id", obj.getString("userID")).commit();
                                 prefs.edit().putString("token", token.getString("value")).commit();
+                                postToken( obj.getString("userID"),token.getString("value"));
                                 Intent continuare= new Intent(Login.this, MainActivity.class);
                                 startActivity(continuare);
                                 finish();

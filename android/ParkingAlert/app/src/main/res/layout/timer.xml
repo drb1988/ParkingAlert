@@ -83,7 +83,7 @@
             android:gravity="center">
 
             <TextView
-                android:id="@+id/nr_masina"
+                android:id="@+id/car_nr_timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -94,10 +94,10 @@
                 android:textSize="19dp" />
 
             <TextView
-                android:id="@+id/timp"
+                android:id="@+id/answer_timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/nr_masina"
+                android:layout_below="@+id/car_nr_timer"
                 android:text="Raspns la 10 :22"
                 android:textColor="@color/alb"
                 android:textSize="17dp" />

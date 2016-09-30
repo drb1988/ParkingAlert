@@ -3,6 +3,7 @@ package bigcityapps.com.parkingalert;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,7 +31,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import Util.Constants;
 import Util.SecurePreferences;
@@ -56,6 +57,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
     private Handler mHandler = new Handler();
     ArrayList<ModelNotification> modelNotificationArrayList= new ArrayList<>();
     SearchView search;
+
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             Bundle x = getIntent().getExtras();
@@ -63,13 +65,13 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                 Log.w("meniuu",":"+x.getString("meniuu"));
             }
             else
-                Log.w("meniuu","x este null");
             updateUi();
         }
     };
     public void updateUi(){
+        Log.w("meniuu","user_id in updateUi:"+prefs.getString("user_id",""));
         getNotifications(prefs.getString("user_id",""));
-        Log.w("meniuu","ai primit un sms");
+        Log.w("meniuu","ai primit un sms in notificari");
      }
     @Override
     protected void onStop() {
@@ -89,6 +91,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.notificari);
+        registerReceiver(myReceiver, new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_Notificari));
         ctx=this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
@@ -116,13 +119,14 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                     Intent view_notification = new Intent(Notificari.this, ViewNotification.class);
                     view_notification.putExtra("detalii", modelNotificationArrayList.get(i).getDetalii());
                     view_notification.putExtra("notification_id", modelNotificationArrayList.get(i).getId());
+                    view_notification.putExtra("nr_car", modelNotificationArrayList.get(i).getNr_car());
                     startActivity(view_notification);
                 } else
                 if(modelNotificationArrayList.get(i).getTip()==2) {
                     Intent timer = new Intent(Notificari.this, Timer.class);
                     timer.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
                     timer.putExtra("ora", modelNotificationArrayList.get(i).getOra());
-                    Log.w("meniuu","ora:"+modelNotificationArrayList.get(i).getOra());
+                    timer.putExtra("nr_car", modelNotificationArrayList.get(i).getNr_car());
                     startActivity(timer);
                 }else
                     if(modelNotificationArrayList.get(i).getTip()==1){
@@ -130,6 +134,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                         harta.putExtra("ora", modelNotificationArrayList.get(i).getOra());
                         harta.putExtra("nr_car", modelNotificationArrayList.get(i).getNr_car());
                         harta.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
+                        Log.w("meniuu","ora in notificari:"+modelNotificationArrayList.get(i).getOra());
                         startActivity(harta);
                     }
             }
@@ -264,17 +269,17 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
             if(item.getTip()==4)
                 holder.bagde.setImageResource(R.drawable.ic_back);
             Log.w("meniu","item.getora:"+item.getOra());
-            String [] split= item.getOra().split("T");
-            Log.w("meniuu","split:"+split.length);
-            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
-            SimpleDateFormat format2 = new SimpleDateFormat("HH:mm");
-            Date date = null;
+//            String [] split= item.getOra().split("T");
+//            Log.w("meniuu","split:"+split.length);
+//            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
+//            SimpleDateFormat format2 = new SimpleDateFormat("HH:mm");
+//            Date date = null;
             try {
-                date = format1.parse(split[1]);
-            } catch (ParseException e) {
+//                date = format1.parse(split[1]);
+                holder.ora.setText(item.getOra());
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            holder.ora.setText(format2.format(date));
 
 //            if(item.tip==1)
 //                Picasso.with(ctx).load(bigcityapps.com.parkingalert.R.drawable.ic_back).into(holder.bagde);
@@ -322,35 +327,59 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
 
                         if(c.getString("sender_id").equals(id))
                         {
-
                             if(answer.getString("read_at").equals("null"))
                             {    Log.w("meniuu","este null notificare_id:"+c.getString("_id"));
                                 modelNotification.setTitlu("Ai trimis notificare");
                                 modelNotification.setMesaj("M-ai blocat");
                                 modelNotification.setTip(1);
-                                modelNotification.setOra(c.getString("create_date"));
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                                Date myDate = simpleDateFormat.parse(c.getString("create_date"));
+                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                                String data=format1.format(myDate);
+                                modelNotification.setOra(data);
+                                Log.w("meniuu","ora noua:"+data);
                             }else
                             {   Log.w("meniuu","este diferit de null");
                                 modelNotification.setTitlu("Ai primit raspuns");
                                 modelNotification.setMesaj("Vin in aprox "+answer.getString("estimated")+" minute");
                                 Log.w("meniuu","");
-                                modelNotification.setOra(answer.getString("answered_at"));
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                                Date myDate = simpleDateFormat.parse(c.getString("create_date"));
+
+                                Log.w("meniuu","myDate:"+myDate);
                                 modelNotification.setEstimeted_time(answer.getString("estimated"));
                                 modelNotification.setTip(2);
+                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                                String data=format1.format(myDate);
+                                modelNotification.setOra(data);
                             }
                         }else
                         if(c.getString("receiver_id").equals(id))
-                        {   if(answer.getString("read_at")==null) {
+                        {   if(answer.getString("read_at").equals("null")) {
                             modelNotification.setTip(3);
                             modelNotification.setTitlu("Ai primit notificare");
                             modelNotification.setMesaj("Vino la masina pt ca m-ai blocat");
-                            modelNotification.setOra(c.getString("create_date"));
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                            Date myDate = simpleDateFormat.parse(c.getString("create_date"));
+                            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                            String data=format1.format(myDate);
+                            modelNotification.setOra(data);
+                            Log.w("meniuu","ora noua:"+data);
                         }else
                         {
                             modelNotification.setTip(4);
                             modelNotification.setTitlu("Ai trimis raspuns");
                             modelNotification.setMesaj("Vin in aprox "+answer.getString("estimated")+" minute");
-                            modelNotification.setOra(answer.getString("answered_at"));
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                            Date myDate = simpleDateFormat.parse(answer.getString("answered_at"));
+                            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                            String data=format1.format(myDate);
+                            Log.w("meniuu","ora noua:"+data);
+                            modelNotification.setOra(data);
                         }
                         }
                         modelNotificationArrayList.add(modelNotification);
@@ -358,6 +387,7 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
                     if(modelNotificationArrayList.size()>0) {
                         adapter= new NotificareAdapter(modelNotificationArrayList,ctx);
                         listView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                     }else {
                         Log.w("meniuu","se pune pe invisible");
                         listView.setVisibility(View.INVISIBLE);

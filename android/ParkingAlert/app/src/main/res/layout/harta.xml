@@ -12,7 +12,7 @@
         android:gravity="center_vertical">
 
         <RelativeLayout
-            android:id="@+id/back_timer"
+            android:id="@+id/back_maps"
             style="?android:borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -34,60 +34,58 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom"
-        android:layout_alignParentTop="true"
-        android:layout_below="@+id/header"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="43dp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_below="@+id/header" />
 
     <LinearLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
         <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:background="@color/blue_dark">-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:background="@color/blue_dark">-->
 
-            <!--<ImageView-->
-                <!--android:id="@+id/image"-->
-                <!--android:layout_width="40dp"-->
-                <!--android:layout_height="40dp"-->
-                <!--android:layout_alignParentLeft="true"-->
-                <!--android:layout_alignParentStart="true"-->
-                <!--android:layout_centerVertical="true"-->
-                <!--android:layout_marginLeft="10dp"-->
-                <!--android:src="@drawable/com_facebook_profile_picture_blank_square" />-->
+        <!--<ImageView-->
+        <!--android:id="@+id/image"-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:src="@drawable/com_facebook_profile_picture_blank_square" />-->
 
-            <!--<RelativeLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_toRightOf="@+id/image"-->
-                <!--android:gravity="center">-->
+        <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_toRightOf="@+id/image"-->
+        <!--android:gravity="center">-->
 
-                <!--<TextView-->
-                    <!--android:id="@+id/nr_masina"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentLeft="true"-->
-                    <!--android:layout_alignParentStart="true"-->
-                    <!--android:layout_centerVertical="true"-->
-                    <!--android:text="BH12ABC vine in 10 minute"-->
-                    <!--android:textColor="@color/alb"-->
-                    <!--android:textSize="19dp" />-->
+        <!--<TextView-->
+        <!--android:id="@+id/nr_masina"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:text="BH12ABC vine in 10 minute"-->
+        <!--android:textColor="@color/alb"-->
+        <!--android:textSize="19dp" />-->
 
-                <!--<TextView-->
-                    <!--android:id="@+id/timp"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_below="@+id/nr_masina"-->
-                    <!--android:text="Raspns la 10 :22"-->
-                    <!--android:textColor="@color/alb"-->
-                    <!--android:textSize="17dp" />-->
-            <!--</RelativeLayout>-->
+        <!--<TextView-->
+        <!--android:id="@+id/timp"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/nr_masina"-->
+        <!--android:text="Raspns la 10 :22"-->
+        <!--android:textColor="@color/alb"-->
+        <!--android:textSize="17dp" />-->
+        <!--</RelativeLayout>-->
 
         <!--</RelativeLayout>-->
 
@@ -99,7 +97,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:background="@color/blue_dark">
 
             <TextView
@@ -107,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="Locatia"
+                android:text="Locatia:"
                 android:textColor="@color/alb"
                 android:textSize="17dp" />
 
@@ -117,7 +115,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/locatia"
                 android:layout_marginLeft="10dp"
-                android:text="adresa"
                 android:textColor="@color/alb"
                 android:textSize="19dp" />
 

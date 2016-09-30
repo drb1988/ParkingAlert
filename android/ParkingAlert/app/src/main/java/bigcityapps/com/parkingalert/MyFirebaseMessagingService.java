@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -16,13 +17,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "meniuu";
     public static final String INTENT_FILTER = "INTENT_FILTER";
+    public static final String INTENT_FILTER_Notificari = "INTENT_FILTER_NOTIFICARI";
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        if(MainActivity.active) {
-            Intent intent = new Intent(INTENT_FILTER);
+        Log.w("meniuu","notificari:"+Notificari.active+" mainactivity:"+MainActivity.active);
+        if(Notificari.active) {
+            Intent intent = new Intent(INTENT_FILTER_Notificari);
             intent.putExtra("meniuu", remoteMessage);
             sendBroadcast(intent);
         }else
-          if(Notificari.active){
+          if(MainActivity.active){
               Intent intent = new Intent(INTENT_FILTER);
               intent.putExtra("meniuu", remoteMessage);
               sendBroadcast(intent);

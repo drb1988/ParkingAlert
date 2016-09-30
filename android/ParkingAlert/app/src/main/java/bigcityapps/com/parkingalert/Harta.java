@@ -2,6 +2,7 @@ package bigcityapps.com.parkingalert;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -11,9 +12,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +28,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -32,28 +38,63 @@ import java.util.Locale;
 /**
  * Created by fasu on 19/09/2016.
  */
-public class Harta extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
-    RelativeLayout ok;
+public class Harta extends AppCompatActivity implements OnMapReadyCallback {
+    RelativeLayout back_maps;
     private GoogleMap mMap;
-    TextView adresaTextview, txt_nr_car, txt_time;
+    TextView adress;
     private String provider;
     private LocationManager locationManager;
     int timer, ora;
     String nr_car;
-    @Override
+    double longitude,latitude;
+    protected void onStop() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager.removeUpdates(locationListenerNetwork);
+        super.onStop();
+    }
+
+    class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+        private final View myContentsView;
+        MyInfoWindowAdapter(){
+            myContentsView = getLayoutInflater().inflate(R.layout.infoview, null);
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            ImageView image=(ImageView)myContentsView.findViewById(R.id.image_info_view);
+            TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.nr_masina_infoview));
+            tvTitle.setText(marker.getTitle());
+            TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.time_info_view));
+            tvSnippet.setText(marker.getSnippet());
+
+            return myContentsView;
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+    }
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.harta);
         initComponents();
+
         Intent iin= getIntent();
         Bundle b = iin.getExtras();
         if(b!=null) {
             try {
                 ora = Integer.parseInt((String) b.get("ora"));
-                timer = Integer.parseInt((String) b.get("timer"));
-                txt_time.setText("Raspuns la "+timer);
+//                txt_time.setText("Raspuns la "+timer);
+                Log.w("meniuu","ora in harta:"+ora);
                 nr_car = (String) b.get("time");
-                txt_nr_car.setText(nr_car+" Vine in "+timer);
+//                txt_nr_car.setText(nr_car+" Vine in "+timer);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -69,46 +110,76 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback, Loca
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        Location location = locationManager.getLastKnownLocation(provider);
-
-        if (location != null) {
-            System.out.println("Provider " + provider + " has been selected.");
-            onLocationChanged(location);
-
-        } else {
-            Toast.makeText(this, "Not avaible", Toast.LENGTH_LONG).show();
-        }
     }
-
+    private final LocationListener locationListenerNetwork = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+            adress.setText(getAddress(latitude,longitude));
+            final LatLng CIU = new LatLng(latitude,longitude);
+            LatLng sydney = new LatLng(latitude, longitude);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 12.0f));
+            mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(ora+""));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        }
+        public void onStatusChanged(String s, int i, Bundle bundle) {}
+        public void onProviderEnabled(String s) {}
+        public void onProviderDisabled(String s) {}
+    };
+    private void showAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Enable Location")
+                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " + "use this app")
+                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    }
+                });
+        dialog.show();
+    }
+    private boolean isLocationEnabled() {
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+    private boolean checkLocation() {
+        if (!isLocationEnabled())
+            showAlert();
+        return isLocationEnabled();
+    }
+    @Override
     protected void onResume() {
-        super.onResume();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        locationManager.requestLocationUpdates(provider, 400, 1, this);
-    }
 
-    protected void onPause() {
-        super.onPause();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (!checkLocation())
+            return;
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager.removeUpdates(this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2 * 60 * 1000, 10, locationListenerNetwork);
+        super.onResume();
     }
 
     /**
      *
      */
     public void initComponents() {
-        txt_nr_car=(TextView)findViewById(R.id.nr_masina);
-        txt_time=(TextView)findViewById(R.id.timp);
+        adress=(TextView)findViewById(R.id.adress);
+        back_maps=(RelativeLayout)findViewById(R.id.back_maps);
+        back_maps.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng sydney = new LatLng(47.070605, 21.929072);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Bun Venit Acasa!"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.setInfoWindowAdapter(new MyInfoWindowAdapter());
     }
 
     /**
@@ -123,6 +194,8 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback, Loca
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            for(int i=0;i<addresses.size();i++)
+            Log.w("meniuu","adress:"+addresses.get(i));
             Address obj = addresses.get(0);
             String add = obj.getAddressLine(0);
             adresa = add + ", \n" + obj.getLocality();
@@ -134,24 +207,5 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback, Loca
         }
         return adresa;
     }
-    public void onLocationChanged(Location location) {
-        int lat = (int) (location.getLatitude());
-        int lng = (int) (location.getLongitude());
 
-        final LatLng CIU = new LatLng(lat,lng);
-        adresaTextview.setText(getAddress(lat, lng));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat,lng), 12.0f));
-        mMap.addMarker(new MarkerOptions().position(CIU).title("My Office"));
-    }
-
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-    }
-
-    public void onProviderEnabled(String s) {
-        Toast.makeText(this, "Enabled new provider " + s, Toast.LENGTH_SHORT).show();
-    }
-
-    public void onProviderDisabled(String s) {
-        Toast.makeText(this, "Disabled provider " + s, Toast.LENGTH_SHORT).show();
-    }
 }

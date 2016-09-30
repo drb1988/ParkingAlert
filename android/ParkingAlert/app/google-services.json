@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "487367087885",
-    "firebase_url": "https://parking-alert.firebaseio.com",
-    "project_id": "parking-alert",
-    "storage_bucket": "parking-alert.appspot.com"
+    "project_number": "940352114466",
+    "firebase_url": "https://parking-alert-ios-5a509.firebaseio.com",
+    "project_id": "parking-alert-ios-5a509",
+    "storage_bucket": "parking-alert-ios-5a509.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:487367087885:android:f4207cdd1e51d1f3",
+        "mobilesdk_app_id": "1:940352114466:android:f4207cdd1e51d1f3",
         "android_client_info": {
           "package_name": "eparti.com.parkingalert"
         }
       },
       "oauth_client": [
         {
-          "client_id": "487367087885-5svrrsocroufij2kfg0j4c4l74154qia.apps.googleusercontent.com",
+          "client_id": "940352114466-07khuq5355koc683baud504vhpplcr4q.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "eparti.com.parkingalert",
@@ -23,13 +23,13 @@
           }
         },
         {
-          "client_id": "487367087885-3s9ssl6cqs295rlkrmcd7vfmk902jqlj.apps.googleusercontent.com",
+          "client_id": "940352114466-s90tut7mscls1s6ah5edf1k2e68pnber.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB9dZsk_dwsMH396bBgx29YpSLVHTbehyA"
+          "current_key": "AIzaSyDA_sQ_q8viEBWDUj5t3Ost2D1lIcrkk8E"
         }
       ],
       "services": {
@@ -40,8 +40,15 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "487367087885-3s9ssl6cqs295rlkrmcd7vfmk902jqlj.apps.googleusercontent.com",
+              "client_id": "940352114466-s90tut7mscls1s6ah5edf1k2e68pnber.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "940352114466-q4s5o1hb25pugs51f3t52hfi842oictj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bigcityapps.notificationCars"
+              }
             }
           ]
         },

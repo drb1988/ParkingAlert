@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mTitle;
     TextView badge_count;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             Bundle x = getIntent().getExtras();
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateUi(){
         badge_count.setVisibility(View.VISIBLE);
         badge_count.setText("1");
-        Log.w("meniuu","ai primit un sms");
+        Log.w("meniuu","ai primit un sms in main");
     }
 
     /**
@@ -129,9 +130,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        active = false;
+        super.onPause();
+    }
+
     /**
      * onstop method
      */
+
     @Override
     protected void onStop() {
         active = false;
