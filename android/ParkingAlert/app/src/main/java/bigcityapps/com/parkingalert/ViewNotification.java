@@ -29,7 +29,7 @@ import Util.SecurePreferences;
  * Created by fasu on 22/09/2016.
  */
 public class ViewNotification extends Activity implements View.OnClickListener{
-    TextView detalii, zece, cinci, trei, nupot, car_nr_view_notification;
+    TextView  zece, cinci, trei, nupot, car_nr_view_notification;
     RelativeLayout inapoi;
     RequestQueue queue;
     SharedPreferences prefs;
@@ -45,10 +45,11 @@ public class ViewNotification extends Activity implements View.OnClickListener{
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
-//            detalii.setText((String) b.get("detalii"));
             car_nr_view_notification.setText((String) b.get("nr_car")+" \n creaza o problema");
+            notification_id=(String) b.get("notification_id");
+            Log.w("meniuu","notification_id"+notification_id);
         }
-        notification_id=prefs.getString("user_id","");
+
     }
     public void initComponents(){
         zece=(TextView)findViewById(R.id.zece);

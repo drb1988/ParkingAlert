@@ -57,6 +57,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
     private Handler mHandler = new Handler();
     ArrayList<ModelNotification> modelNotificationArrayList= new ArrayList<>();
     SearchView search;
+    String TAG="meniuu";
 
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -116,6 +117,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(modelNotificationArrayList.get(i).getTip()==3) {
+                    Log.w(TAG,"intra in view, tip:"+modelNotificationArrayList.get(i).getTip());
                     Intent view_notification = new Intent(Notificari.this, ViewNotification.class);
                     view_notification.putExtra("detalii", modelNotificationArrayList.get(i).getDetalii());
                     view_notification.putExtra("notification_id", modelNotificationArrayList.get(i).getId());
@@ -134,8 +136,14 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                         harta.putExtra("ora", modelNotificationArrayList.get(i).getOra());
                         harta.putExtra("nr_car", modelNotificationArrayList.get(i).getNr_car());
                         harta.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
-                        Log.w("meniuu","ora in notificari:"+modelNotificationArrayList.get(i).getOra());
                         startActivity(harta);
+                    }else
+                    if(modelNotificationArrayList.get(i).getTip()==4) {
+                        Intent timer = new Intent(Notificari.this, TimerSender.class);
+                        timer.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
+                        timer.putExtra("ora", modelNotificationArrayList.get(i).getOra());
+                        timer.putExtra("nr_car", modelNotificationArrayList.get(i).getNr_car());
+                        startActivity(timer);
                     }
             }
         });
@@ -185,6 +193,12 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
 //                finish();
                 break;
         }
+    }
+
+    @Override
+    protected void onPostResume() {
+        getNotifications(prefs.getString("user_id",""));
+        super.onPostResume();
     }
 
     /**
@@ -328,7 +342,7 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
                         if(c.getString("sender_id").equals(id))
                         {
                             if(answer.getString("read_at").equals("null"))
-                            {    Log.w("meniuu","este null notificare_id:"+c.getString("_id"));
+                            {   Log.w("meniuu","este null notificare_id:"+c.getString("_id"));
                                 modelNotification.setTitlu("Ai trimis notificare");
                                 modelNotification.setMesaj("M-ai blocat");
                                 modelNotification.setTip(1);
@@ -338,17 +352,13 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
                                 SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
                                 String data=format1.format(myDate);
                                 modelNotification.setOra(data);
-                                Log.w("meniuu","ora noua:"+data);
                             }else
-                            {   Log.w("meniuu","este diferit de null");
+                            {
                                 modelNotification.setTitlu("Ai primit raspuns");
                                 modelNotification.setMesaj("Vin in aprox "+answer.getString("estimated")+" minute");
-                                Log.w("meniuu","");
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
-                                Date myDate = simpleDateFormat.parse(c.getString("create_date"));
-
-                                Log.w("meniuu","myDate:"+myDate);
+                                Date myDate = simpleDateFormat.parse(answer.getString("answered_at"));
                                 modelNotification.setEstimeted_time(answer.getString("estimated"));
                                 modelNotification.setTip(2);
                                 SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
@@ -357,17 +367,18 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
                             }
                         }else
                         if(c.getString("receiver_id").equals(id))
-                        {   if(answer.getString("read_at").equals("null")) {
+                        {
+                            if(answer.getString("read_at").equals("null")) {
                             modelNotification.setTip(3);
                             modelNotification.setTitlu("Ai primit notificare");
                             modelNotification.setMesaj("Vino la masina pt ca m-ai blocat");
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+
                             Date myDate = simpleDateFormat.parse(c.getString("create_date"));
                             SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
                             String data=format1.format(myDate);
                             modelNotification.setOra(data);
-                            Log.w("meniuu","ora noua:"+data);
                         }else
                         {
                             modelNotification.setTip(4);
@@ -378,8 +389,9 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
                             Date myDate = simpleDateFormat.parse(answer.getString("answered_at"));
                             SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
                             String data=format1.format(myDate);
-                            Log.w("meniuu","ora noua:"+data);
+                            modelNotification.setEstimeted_time(answer.getString("estimated"));
                             modelNotification.setOra(data);
+                            Log.w(TAG,"asnwertime:"+answer.getString("answered_at"));
                         }
                         }
                         modelNotificationArrayList.add(modelNotification);
@@ -389,7 +401,6 @@ Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
                         listView.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
                     }else {
-                        Log.w("meniuu","se pune pe invisible");
                         listView.setVisibility(View.INVISIBLE);
                     }
                 } catch (Throwable t) {

@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -41,10 +42,12 @@ import java.util.Map;
 
 import Util.Constants;
 import Util.SecurePreferences;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by fasu on 21/09/2016.
  */
+/// ram- 57ef7f2103473a2a80e9a039
 public class Login extends Activity implements View.OnClickListener {
     Context ctx;
     private LoginButton loginButton;
@@ -57,6 +60,7 @@ public class Login extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        Fabric.with(this, new Crashlytics());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.login);
         queue = Volley.newRequestQueue(this);

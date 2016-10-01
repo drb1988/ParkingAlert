@@ -36,6 +36,7 @@
     <activity android:name="bigcityapps.com.parkingalert.ViewNotification"></activity>
     <activity android:name="bigcityapps.com.parkingalert.MainActivity"></activity>
     <activity android:name="bigcityapps.com.parkingalert.Login"></activity>
+    <activity android:name="bigcityapps.com.parkingalert.TimerSender"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
@@ -86,6 +87,10 @@
                 <!--<action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>-->
             <!--</intent-filter>-->
         <!--</service>-->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="2b67b26b05789b1b39d4fc3b2505ba3588f3a667"
+            />
     </application>
 
 </manifest>

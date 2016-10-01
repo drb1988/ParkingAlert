@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,33 +15,21 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by fasu on 15/09/2016.
+ * Created by Sistem1 on 01/10/2016.
  */
-public class Timer  extends Activity implements View.OnClickListener{
-    ImageView image;
-    private ProgressBar progBar;
-    private TextView text;
-    private Handler mHandler = new Handler();
-    private int mProgressStatus=0;
-    TextView nr_car, time;
+public class TimerSender extends Activity implements View.OnClickListener {
     RelativeLayout back;
     int timer;
-    String TAG="meniuu";
-    String ora, nr_carString;
-    boolean run=true;
-    TextView car_nr, time_answer;
-
-
-    @Override
-    protected void onStop() {
-        run=false;
-        super.onStop();
-    }
-
+    boolean run;
+    String ora,nr_carString;
+    private Handler mHandler = new Handler();
+    private ProgressBar progBar;
+    private int mProgressStatus=0;
+    TextView text;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(bigcityapps.com.parkingalert.R.layout.timer);
-        initcComponents();
+        setContentView(R.layout.timer_sender);
+        initComponents();
         Intent iin= getIntent();
         Bundle b = iin.getExtras();
         if(b!=null) {
@@ -50,9 +37,7 @@ public class Timer  extends Activity implements View.OnClickListener{
                 timer = Integer.parseInt((String) b.get("time"));
                 ora = (String) b.get("ora");
                 nr_carString = (String) b.get("nr_car");
-                String [] split= ora.split("T");
                 Log.w("meniuu","ora:"+ora);
-                time_answer.setText("Raspuns la "+ora);
                 try {
                     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                     Date d = df.parse(ora);
@@ -67,7 +52,7 @@ public class Timer  extends Activity implements View.OnClickListener{
                     Date date_plus=df.parse(newTime);
 
 
-                 Log.w("meniuu","diff:"+ getDateDiff(date_actual,date_plus));
+                    Log.w("meniuu","diff:"+ getDateDiff(date_actual,date_plus));
                     long diff=getDateDiff(date_plus,date_actual);
                     diff=diff/1000;
                     Log.w("meniuu","diff inainte:"+diff);
@@ -78,7 +63,7 @@ public class Timer  extends Activity implements View.OnClickListener{
                         Log.w("meniuu","start");
                         dosomething();
                     }else {
-                        Intent harta = new Intent(Timer.this, Harta.class);
+                        Intent harta = new Intent(TimerSender.this, Harta.class);
                         harta.putExtra("ora", ora);
                         harta.putExtra("nr_car", nr_carString);
                         harta.putExtra("time", timer);
@@ -92,25 +77,10 @@ public class Timer  extends Activity implements View.OnClickListener{
                 }
             }catch (Exception e){
                 e.printStackTrace();
+                Log.w("meniuu","catch");
             }
         }
     }
-    public static long getDateDiff(Date date1, Date date2) {
-        Log.w("meniuu","date2:"+date2+" date1:"+date1);
-
-        long diffInMillies = date1.getTime() - date2.getTime();
-        return diffInMillies;
-    }
-public void initcComponents(){
-    car_nr=(TextView)findViewById(R.id.car_nr_timer);
-    time_answer=(TextView)findViewById(R.id.answer_timer);
-    back=(RelativeLayout)findViewById(R.id.back_timer);
-    back.setOnClickListener(this);
-    image=(ImageView)findViewById(R.id.image);
-    progBar= (ProgressBar)findViewById(R.id.progressBar);
-    text = (TextView)findViewById(R.id.textView1);
-}
-
     public void dosomething() {
         new Thread(new Runnable() {
             public void run() {
@@ -127,13 +97,11 @@ public void initcComponents(){
                             int minutes=(mProgressStatus%3600)/60;
                             int sec=mProgressStatus%60;
                             if(minutes<10) {
-                                car_nr.setText(nr_carString+" vine in "+minutes+" minute");
                                 if (sec < 10)
                                     text.setText("0" + minutes + ":0" + sec);
                                 else
                                     text.setText("0" + minutes + ":" + sec);
                             } else {
-                                car_nr.setText(nr_carString+" vine in "+minutes+" minute");
                                 if(sec<10)
                                     text.setText(minutes + ":0" + sec);
                                 else
@@ -151,11 +119,26 @@ public void initcComponents(){
             }
         }).start();
     }
+    public static long getDateDiff(Date date1, Date date2) {
+        Log.w("meniuu","date2:"+date2+" date1:"+date1);
 
-    @Override
+        long diffInMillies = date1.getTime() - date2.getTime();
+        return diffInMillies;
+    }
+    public void initComponents(){
+        back=(RelativeLayout)findViewById(R.id.back_timer_sender);
+        back.setOnClickListener(this);
+        progBar= (ProgressBar)findViewById(R.id.progressBar);
+        text = (TextView)findViewById(R.id.textView1);
+    }
+
+    /**
+     * onclick method
+     * @param view
+     */
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.back_timer:
+            case R.id.back_timer_sender:
                 finish();
                 break;
         }

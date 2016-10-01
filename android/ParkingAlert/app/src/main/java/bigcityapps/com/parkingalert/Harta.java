@@ -32,6 +32,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,9 +46,10 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
     TextView adress;
     private String provider;
     private LocationManager locationManager;
-    int timer, ora;
-    String nr_car;
+    String ora;
+    String text;
     double longitude,latitude;
+    String TAG="meniuu";
     protected void onStop() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -79,23 +82,51 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
         }
 
     }
-
+    public static long getDateDiff(Date date1, Date date2) {
+        long diffInMillies = date1.getTime() - date2.getTime();
+        return diffInMillies;
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.harta);
         initComponents();
-
         Intent iin= getIntent();
         Bundle b = iin.getExtras();
         if(b!=null) {
             try {
-                ora = Integer.parseInt((String) b.get("ora"));
+                ora = (String) b.get("ora");
 //                txt_time.setText("Raspuns la "+timer);
                 Log.w("meniuu","ora in harta:"+ora);
-                nr_car = (String) b.get("time");
+//                nr_car = (String) b.get("time");
+
+                SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+                Date d = df.parse(ora);
+                Date date2= new Date();
+                String actual_date=df.format(date2);
+                Log.w("meniuu","data_actuala:"+actual_date);
+                Date date_actual=df.parse(actual_date);
+                long diff=getDateDiff(date_actual,d);
+                diff=diff/1000;
+                int sec=(int)diff%60;
+                int minutes=((int)diff%3600)/60;
+                if(minutes<10) {
+                    if (sec < 10)
+                        text=("0" + minutes + ":0" + sec);
+                    else
+                        text=("0" + minutes + ":" + sec);
+                } else {
+                    if(sec<10)
+                        text=(minutes + ":0" + sec);
+                    else
+                        text=(minutes + ":" + sec);
+                }
+              Log.w("meniuu","diff in harta:"+getDateDiff(date_actual,d));
+
+
 //                txt_nr_car.setText(nr_car+" Vine in "+timer);
             }catch (Exception e){
+                Log.w("meniuu","catch la lueare putextra in harta");
                 e.printStackTrace();
             }
         }
@@ -119,7 +150,7 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
             final LatLng CIU = new LatLng(latitude,longitude);
             LatLng sydney = new LatLng(latitude, longitude);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 12.0f));
-            mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(ora+""));
+            mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(text+""));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         }
         public void onStatusChanged(String s, int i, Bundle bundle) {}
@@ -160,7 +191,7 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2 * 60 * 1000, 10, locationListenerNetwork);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,  1000, 10, locationListenerNetwork);
         super.onResume();
     }
 

@@ -12,6 +12,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -19,7 +22,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final String INTENT_FILTER = "INTENT_FILTER";
     public static final String INTENT_FILTER_Notificari = "INTENT_FILTER_NOTIFICARI";
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.w("meniuu","notificari:"+Notificari.active+" mainactivity:"+MainActivity.active);
+        String nr_car = null,notification_id = null;
+        int type_of_notification=0;
+        JSONObject question= new JSONObject(remoteMessage.getData());
+        try {
+            nr_car=question.getString("car_id");
+            notification_id=question.getString("notification_id");
+        } catch (JSONException e) {
+            Log.w("meniuu","catch la firebase");
+            e.printStackTrace();
+        }
+        Log.w(TAG,"notificari:"+Notificari.active+" mainactivity:"+MainActivity.active);
         if(Notificari.active) {
             Intent intent = new Intent(INTENT_FILTER_Notificari);
             intent.putExtra("meniuu", remoteMessage);
@@ -29,16 +42,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
               Intent intent = new Intent(INTENT_FILTER);
               intent.putExtra("meniuu", remoteMessage);
               sendBroadcast(intent);
-          }else
-              sendNotification(remoteMessage.getNotification().getBody(),remoteMessage.getNotification().getTitle() );
+          }else {
+              sendNotification(remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(),notification_id,nr_car);
+          Log.w("meniuu","se trimite notificare");
+          }
     }
 
-    private void sendNotification(String messageBody, String title) {
+    private void sendNotification(String messageBody, String title, String notification_id, String nr_car) {
         Intent intent = new Intent(this, ViewNotification.class);
-//        intent.putExtra("question_id",id);
+        intent.putExtra("notification_id",notification_id);
+        intent.putExtra("nr_car",nr_car);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
+        Log.w(TAG,"intent"+intent);
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.com_facebook_button_icon)
@@ -47,43 +63,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
-
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         notificationManager.notify(0, notificationBuilder.build());
     }
-
-//    private void sendNotification(String messageBody, String id,String title, int type_of_notification) {
-//        Intent intent = null;
-//        if(type_of_notification==1) {
-//            intent = new Intent(this, Vote_new.class);
-//            Log.w("meniuu","a intrat in Vote vew:"+type_of_notification);
-//        }
-//        else
-//        if(type_of_notification==2)
-//        {   intent = new Intent(this, Resume.class);
-//            Log.w("meniuu","a intrat in Resume:"+type_of_notification);
-//        }
-//        else
-//        if(type_of_notification==3)
-//        {   intent = new Intent(this, QuestionActivity.class);
-//            Log.w("meniuu","a intrat in QuestionActivity:"+type_of_notification);
-//        }
-//        intent.putExtra("question_id",id);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-//
-//        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-//                .setSmallIcon(R.mipmap.logo_app)
-//                .setContentTitle(title)
-//                .setContentText(messageBody)
-//                .setAutoCancel(true)
-//                .setSound(defaultSoundUri)
-//                .setContentIntent(pendingIntent);
-//
-//        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        notificationManager.notify(0, notificationBuilder.build());
-//    }
 }

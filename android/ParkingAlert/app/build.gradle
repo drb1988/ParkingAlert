@@ -1,4 +1,15 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 24
@@ -27,7 +38,11 @@ android {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
     }
 }
-
+repositories {
+    maven { url 'https://dl.bintray.com/sj/maven/' }
+    mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
@@ -70,6 +85,9 @@ dependencies {
     }
     androidTestCompile ('com.android.support.test.espresso:espresso-intents:2.2.2') {
         exclude group: 'com.android.support'
+    }
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.4@aar') {
+        transitive = true;
     }
 }
 apply plugin: 'com.google.gms.google-services'
