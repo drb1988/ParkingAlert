@@ -5,6 +5,8 @@ var db = require('mongoskin').db(dbConfig.url);
 var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId; 
+var FCM = require('fcm-push');
+
 
 function distance(lat1, lon1, lat2, lon2, unit) {
   var radlat1 = Math.PI * lat1/180
@@ -30,6 +32,29 @@ var toLocalTime = function(time) {
   return n;
 };
 
+var sendNotification = function(token, notification){
+        var serverKey = 'AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4';
+        var fcm = new FCM("AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4");
+        var message = {
+          to: token, 
+          data: {
+            notification_id: notification
+          },
+          notification: {
+            title: 'Parking-Alert',
+            body: 'Ati primit norificare'
+          }
+        };
+        fcm.send(message, function(err, response){
+          if (err) {
+              console.log("Something has gone wrong!");
+              console.log(err);
+          } else {
+              console.log("Successfully sent with response: ", response);
+          }
+        });
+      }
+
 var findUsersByNotification = function(db, callback, notificationID) {
     /**
     * Function to get users by notificationID,
@@ -40,10 +65,14 @@ var findUsersByNotification = function(db, callback, notificationID) {
       db.collection('notifications').findOne({"_id": o_id},
         function(err, result) {
             assert.equal(err, null);
-            response = {
-              "sender_id": result.sender_id,
-              "receiver_id": result.receiver_id
-            }
+            if(result)
+              response = {
+                "sender_id": result.sender_id,
+                "receiver_id": result.receiver_id
+              }
+            else
+              response = null;  
+
             callback(response);
         });           
     }
@@ -125,6 +154,7 @@ MongoClient.connect(dbConfig.url, function(err, db) {
     insertDocument(db, function() {
       db.close();
       res.status(200).send(notificationID)
+      sendNotification(notificationReceiverToken, notificationID)
     });
   }, req.body.sender_id);
 });
@@ -230,6 +260,7 @@ router.post('/senderDeleted/:notificationID', function(req, res, next) {
 })
 
 router.get('/getNotification/:notificationID', function(req, res, next) {
+  console.log("aici");
     /**
     * Route to get a notification,
     * @name /getNotification/:notificationID
@@ -251,7 +282,8 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
         findNotification(db, function() {
             var senderID;
             findUsersByNotification(db, function(notificationSenderID){
-            senderID = notificationSenderID.sender_id;
+              console.log("notificationSenderID.sender_id: "+notificationSenderID);
+            senderID = null;
             }, req.params.notificationID);
             db.close();
         });

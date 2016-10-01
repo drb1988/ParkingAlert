@@ -9,8 +9,8 @@ var ObjectId = require('mongodb').ObjectId;
 
 router.get('/getNotifications', function(req, res, next) {
 		/**
-    	* Route to get all notifications for a user ID,
-    	* @name /getNotifications/:userID
+    	* Route to get all notification points,
+    	* @name /getNotifications
     	* @param {String} :userId
     	*/
 
