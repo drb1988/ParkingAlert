@@ -32,17 +32,19 @@ var toLocalTime = function(time) {
   return n;
 };
 
-var sendNotification = function(token, notification){
+var sendNotification = function(token, notification, car){
         var serverKey = 'AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4';
         var fcm = new FCM("AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4");
         var message = {
           to: token, 
           data: {
-            notification_id: notification
+            notification_id: notification,
+            car_id: car
           },
           notification: {
             title: 'Parking-Alert',
-            body: 'Ati primit norificare'
+            body: 'Ati primit norificare', 
+            sound: 'enabled'
           }
         };
         fcm.send(message, function(err, response){
@@ -101,6 +103,7 @@ router.post('/notification', function(req, res, next) {
   var notificationReceiverToken = "";
   var notificationSenderToken = "";
   var notificationID ="";
+  var car_id ="";
   var insertDocument = function(db, callback) {
    db.collection('notifications').insertOne( {
       "status": req.body.status,
@@ -140,7 +143,7 @@ router.post('/notification', function(req, res, next) {
       "receiver_nickname": req.body.receiver_nickname,
       "is_ontime": true
    }, function(err, result) {
-
+    car_id = req.body.vehicle;
     assert.equal(err, null);
     notificationID = result.insertedId;
     console.log("Sent a notification "+result.insertedId);
@@ -154,7 +157,7 @@ MongoClient.connect(dbConfig.url, function(err, db) {
     insertDocument(db, function() {
       db.close();
       res.status(200).send(notificationID)
-      sendNotification(notificationReceiverToken, notificationID)
+      sendNotification(notificationReceiverToken, notificationID, car_id)
     });
   }, req.body.sender_id);
 });
