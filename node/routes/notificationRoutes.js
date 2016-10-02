@@ -70,7 +70,10 @@ var findUsersByNotification = function(db, callback, notificationID) {
             if(result)
               response = {
                 "sender_id": result.sender_id,
-                "receiver_id": result.receiver_id
+                "receiver_id": result.receiver_id,
+                "sender_token": result.sender_token,
+                "vehicle": result.vehicle,
+                "receiver_token": result.sender_token
               }
             else
               response = null;  
@@ -169,12 +172,45 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
     * @name /receiverRead/:notificationID
     * @param {String} :notificationID
     */
+  var vehicle = "";
+  var sender_token = "";
   var deleteCar = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
                       "receiver_read": true,
-                      "answer.read_at": toLocalTime(new Date()),
+                      "answer.read_at": toLocalTime(new Date())
+                    }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Receiver has read "+req.params.notificationID);
+            callback();
+      });            
+  }
+  MongoClient.connect(dbConfig.url, function(err, db) {
+      assert.equal(null, err);
+      deleteCar(db, function() {
+          var senderID;
+          findUsersByNotification(db, function(notificationSenderID){
+            var sender_token = notificationSenderID.sender_token;
+            }, senderID)
+          }, req.params.notificationID);
+          db.close();
+          res.status(200).send(req.params.notificationID);
+          sendNotification(sender_token, req.params.notificationID, vehicle);
+      });
+    });
+
+router.post('/receiverAnswered/:notificationID', function(req, res, next) {
+    /**
+    * Route to set answers,
+    * @name /receiverRead/:notificationID
+    * @param {String} :notificationID
+    */
+  var deleteCar = function(db, callback) {   
+  var o_id = new ObjectId(req.params.notificationID);
+    db.collection('notifications').update({"_id": o_id}, 
+             {$set: { 
                       "answer.answered_at": toLocalTime(new Date()),
                       "answer.estimated": req.body.estimated
                     },
@@ -207,6 +243,7 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
       });
     });
 })
+
 
 router.post('/receiverDeleted/:notificationID', function(req, res, next) {
     /**
