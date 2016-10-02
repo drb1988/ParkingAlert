@@ -246,6 +246,44 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
       });
 })
 
+router.post('/receiverExtended/:notificationID', function(req, res, next) {
+    /**
+    * Route to extend timers,
+    * @name /receiverRead/:notificationID
+    * @param {String} :notificationID
+    */
+  var vehicle = "";
+  var sender_token = "";
+  var deleteCar = function(db, callback) {   
+  var o_id = new ObjectId(req.params.notificationID);
+    db.collection('notifications').update({"_id": o_id}, 
+             {
+              $push:{
+                    "extesions": {
+                      "extended": true,
+                      "extended_at": new Date(),
+                      "extension_time": req.body.extension_time
+                    }   
+              }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Receiver has read "+req.params.notificationID);
+            callback();
+      });            
+  }
+   MongoClient.connect(dbConfig.url, function(err, db) {
+      assert.equal(null, err);
+      deleteCar(db, function() {
+          var senderID;
+          findUsersByNotification(db, function(notificationSenderID){
+            var sender_token = notificationSenderID.sender_token;
+            }, senderID)
+          }, req.params.notificationID);
+          db.close();
+          res.status(200).send(req.params.notificationID);
+          sendNotification(sender_token, req.params.notificationID, vehicle);
+      });
+})
 
 router.post('/receiverDeleted/:notificationID', function(req, res, next) {
     /**
