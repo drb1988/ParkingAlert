@@ -39,17 +39,17 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
         setContentView(R.layout.istoric);
         ctx=this;
         ModelNotification modelNotification= new ModelNotification();
-        modelNotification.setTitlu("titlu1");
-        modelNotification.setMesaj("mesaj1 care ar trebui sa incapa pe un singur rand, in caz contrar sa puna punctte puncte");
-        modelNotification.setDetalii("detalii 1");
-        modelNotification.setTip(1);
-        modelNotification.setOra("10:30");
+        modelNotification.setTitle("titlu1");
+        modelNotification.setMessage("mesaj1 care ar trebui sa incapa pe un singur rand, in caz contrar sa puna punctte puncte");
+        modelNotification.setDetails("details 1");
+        modelNotification.setType(1);
+        modelNotification.setHour("10:30");
         modelNotificationArrayList.add(modelNotification);
-        modelNotification.setTitlu("titlu1");
-        modelNotification.setMesaj("mesaj1 care ar trebui sa incapa pe un singur rand, in caz contrar sa puna punctte puncte");
-        modelNotification.setDetalii("detalii 1");
-        modelNotification.setTip(2);
-        modelNotification.setOra("10:30");
+        modelNotification.setTitle("titlu1");
+        modelNotification.setMessage("mesaj1 care ar trebui sa incapa pe un singur rand, in caz contrar sa puna punctte puncte");
+        modelNotification.setDetails("details 1");
+        modelNotification.setType(2);
+        modelNotification.setHour("10:30");
         modelNotificationArrayList.add(modelNotification);
         listView=(ListView)findViewById(R.id.listview_istoric);
         adapter= new IstoricAdapter(modelNotificationArrayList,ctx);
@@ -127,11 +127,11 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
                 holder =(ViewHolder)convertView.getTag();
             }
             final ModelNotification item = _data.get(position);
-            holder.titlu.setText(item.getTitlu());
-            holder.detalii.setText(item.getDetalii());
-            holder.mesaj.setText(item.getMesaj());
-            holder.ora.setText(item.getOra());
-            if(item.tip==1)
+            holder.titlu.setText(item.getTitle());
+            holder.detalii.setText(item.getDetails());
+            holder.mesaj.setText(item.getMessage());
+            holder.ora.setText(item.getHour());
+            if(item.type ==1)
                 Picasso.with(ctx).load(bigcityapps.com.parkingalert.R.drawable.ic_back).into(holder.bagde);
             else
                 Picasso.with(ctx).load(bigcityapps.com.parkingalert.R.drawable.ic_back).into(holder.bagde);
@@ -145,7 +145,7 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
                 _data.addAll(itemList);
             } else {
                 for (ModelNotification wp : itemList) {
-                    if (wp.getMesaj().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    if (wp.getMessage().toLowerCase(Locale.getDefault()).contains(charText)) {
                         _data.add(wp);
                     }
                 }

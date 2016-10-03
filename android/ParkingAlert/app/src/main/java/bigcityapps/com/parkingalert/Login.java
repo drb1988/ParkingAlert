@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.format.Formatter;
@@ -12,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -52,7 +50,6 @@ public class Login extends Activity implements View.OnClickListener {
     Context ctx;
     private LoginButton loginButton;
     private CallbackManager callbackManager;
-    TextView titlu;
     EditText nume,email, nickname,driver_license, city;
     RelativeLayout continuare;
     RequestQueue queue;
@@ -64,9 +61,6 @@ public class Login extends Activity implements View.OnClickListener {
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.login);
         queue = Volley.newRequestQueue(this);
-        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/Fun Raiser.ttf");
-        titlu=(TextView)findViewById(R.id.titlu);
-        titlu.setTypeface(type);
         loginButton = (LoginButton) findViewById(R.id.login_button);
 //        loginButton.setBackgroundResource(R.drawable.facebook);
 //        loginButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);

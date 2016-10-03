@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -48,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     public void updateUi(){
         badge_count.setVisibility(View.VISIBLE);
         badge_count.setText("1");
+//        ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+//        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+        MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification_sound);
+        mp.start();
         Log.w("meniuu","ai primit un sms in main");
     }
 
@@ -92,15 +97,15 @@ public class MainActivity extends AppCompatActivity {
 
         DataModel[] drawerItem = new DataModel[10];
         drawerItem[0] = new DataModel(1, "NOTIFICARI");
-        drawerItem[1] = new DataModel(bigcityapps.com.parkingalert.R.drawable.connect, "Notificari");
-        drawerItem[2] = new DataModel(bigcityapps.com.parkingalert.R.drawable.fixtures, "Trimite notificari");
+        drawerItem[1] = new DataModel(R.drawable.notif, "Notificari");
+        drawerItem[2] = new DataModel(R.drawable.send_notif, "Trimite notificari");
         drawerItem[3] = new DataModel(1, "SETARI");
-        drawerItem[4] = new DataModel(bigcityapps.com.parkingalert.R.drawable.fixtures, "Profil personal");
-        drawerItem[5] = new DataModel(bigcityapps.com.parkingalert.R.drawable.fixtures, "Masini inregistrate");
-        drawerItem[6] = new DataModel(bigcityapps.com.parkingalert.R.drawable.fixtures, "Optiuni configurare");
+        drawerItem[4] = new DataModel(R.drawable.profil, "Profil personal");
+        drawerItem[5] = new DataModel(R.drawable.masini_inregistrate, "Masini inregistrate");
+        drawerItem[6] = new DataModel(R.drawable.opt_configurare, "Optiuni configurare");
         drawerItem[7] = new DataModel(1, "AJUTOR");
-        drawerItem[8] = new DataModel(bigcityapps.com.parkingalert.R.drawable.fixtures, "Instructiuni de folosire");
-        drawerItem[9] = new DataModel(bigcityapps.com.parkingalert.R.drawable.fixtures, "Raporteaza un bug");
+        drawerItem[8] = new DataModel(R.drawable.instructiuni_folosire, "Instructiuni de folosire");
+        drawerItem[9] = new DataModel(R.drawable.report_bug, "Raporteaza un bug");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
 

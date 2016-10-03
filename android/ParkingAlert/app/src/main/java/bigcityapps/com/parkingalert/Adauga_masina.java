@@ -109,7 +109,7 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
                 finish();
                 break;
             case R.id.gata_adauga_masina:
-                addCar("57e11909853b0122ac974e23");
+                addCar(prefs.getString("user_id",""));
                 break;
             case R.id.poza_masina:
                 final Dialog dialog = new Dialog(ctx);

@@ -16,7 +16,9 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -48,6 +50,7 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
     private LocationManager locationManager;
     String ora;
     String text;
+    String nr_car;
     double longitude,latitude;
     String TAG="meniuu";
     protected void onStop() {
@@ -59,26 +62,38 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-        private final View myContentsView;
-        MyInfoWindowAdapter(){
-            myContentsView = getLayoutInflater().inflate(R.layout.infoview, null);
-        }
+//        private final View myContentsView;
+        LayoutInflater inflater = null;
+//        public MyInfoWindowAdapter(LayoutInflater inflater) {
+//            this.inflater = inflater;
+//        }
 
         @Override
         public View getInfoContents(Marker marker) {
-            ImageView image=(ImageView)myContentsView.findViewById(R.id.image_info_view);
-            TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.nr_masina_infoview));
-            tvTitle.setText(marker.getTitle());
-            TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.time_info_view));
-            tvSnippet.setText(marker.getSnippet());
+//            ImageView image=(ImageView)myContentsView.findViewById(R.id.image_info_view);
+//            TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.nr_masina_infoview));
+//            tvTitle.setText("Notificat "+nr_car);
+//            TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.time_info_view));
+//            tvSnippet.setText(marker.getSnippet());
 
-            return myContentsView;
+            return (null);
         }
 
         @Override
         public View getInfoWindow(Marker marker) {
             // TODO Auto-generated method stub
-            return null;
+            ContextThemeWrapper cw = new ContextThemeWrapper(getApplicationContext(), R.style.Transparent);
+            // AlertDialog.Builder b = new AlertDialog.Builder(cw);
+            LayoutInflater inflater = (LayoutInflater) cw.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View v = inflater.inflate(R.layout.infoview, null);
+            if (marker != null) {
+                ImageView image=(ImageView)v.findViewById(R.id.image_info_view);
+                TextView tvTitle = ((TextView)v.findViewById(R.id.nr_masina_infoview));
+                tvTitle.setText("Notificat "+nr_car);
+                TextView tvSnippet = ((TextView)v.findViewById(R.id.time_info_view));
+                tvSnippet.setText(marker.getSnippet());
+            }
+            return v;
         }
 
     }
@@ -95,10 +110,10 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
         Bundle b = iin.getExtras();
         if(b!=null) {
             try {
-                ora = (String) b.get("ora");
+                ora = (String) b.get("hour");
 //                txt_time.setText("Raspuns la "+timer);
-                Log.w("meniuu","ora in harta:"+ora);
-//                nr_car = (String) b.get("time");
+                Log.w("meniuu","hour in harta:"+ora);
+                nr_car = (String) b.get("nr_car");
 
                 SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                 Date d = df.parse(ora);
@@ -108,23 +123,24 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
                 Date date_actual=df.parse(actual_date);
                 long diff=getDateDiff(date_actual,d);
                 diff=diff/1000;
-                int sec=(int)diff%60;
-                int minutes=((int)diff%3600)/60;
-                if(minutes<10) {
-                    if (sec < 10)
-                        text=("0" + minutes + ":0" + sec);
+                Log.w("meniuu","diff in harta:"+diff);
+                int minutes = 0;
+                if(diff<3600) {
+                    minutes = ((int) diff % 3600) / 60;
+                    text = "Acum " + minutes + " minute";
+                }else
+                if(diff<86400) {
+                    minutes=(int)diff/60/60;
+                    if(minutes==1)
+                    text = "Acum " +minutes+" ora";
                     else
-                        text=("0" + minutes + ":" + sec);
-                } else {
-                    if(sec<10)
-                        text=(minutes + ":0" + sec);
-                    else
-                        text=(minutes + ":" + sec);
+                        text = "Acum " +minutes+" ore";
+                }else
+                if(diff>86400){
+                    minutes=(int)60/60/24;
+                    text = "Acum " +minutes+" zile";
                 }
-              Log.w("meniuu","diff in harta:"+getDateDiff(date_actual,d));
 
-
-//                txt_nr_car.setText(nr_car+" Vine in "+timer);
             }catch (Exception e){
                 Log.w("meniuu","catch la lueare putextra in harta");
                 e.printStackTrace();
@@ -150,7 +166,9 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
             final LatLng CIU = new LatLng(latitude,longitude);
             LatLng sydney = new LatLng(latitude, longitude);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 12.0f));
-            mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(text+""));
+            Marker marker=mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(text+""));
+//            mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(text+""));
+                marker.showInfoWindow();
             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         }
         public void onStatusChanged(String s, int i, Bundle bundle) {}

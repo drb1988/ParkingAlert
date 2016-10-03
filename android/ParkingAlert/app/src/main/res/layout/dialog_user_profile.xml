@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="Fa o poza"
+            android:text="Fa o image"
             android:textAllCaps="false"
             android:textColor="@color/blue_white"
             android:textSize="@dimen/txt_size_bigger" />

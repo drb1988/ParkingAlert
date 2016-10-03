@@ -4,15 +4,15 @@
     android:background="@color/blue_white"
     android:id="@+id/relative_listview"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:padding="10dp" >
+    >
 
     <ImageView
         android:id="@+id/imageViewIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:paddingRight="10dp" />
+        />
 
     <TextView
         android:id="@+id/textViewName"

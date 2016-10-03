@@ -27,7 +27,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/titlu"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
@@ -66,7 +66,7 @@
 
 
             <RelativeLayout
-                android:id="@+id/detalii"
+                android:id="@+id/details"
                 android:layout_width="match_parent"
                 android:layout_height="200dp">
 

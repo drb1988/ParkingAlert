@@ -35,9 +35,9 @@ public class TimerSender extends Activity implements View.OnClickListener {
         if(b!=null) {
             try {
                 timer = Integer.parseInt((String) b.get("time"));
-                ora = (String) b.get("ora");
+                ora = (String) b.get("hour");
                 nr_carString = (String) b.get("nr_car");
-                Log.w("meniuu","ora:"+ora);
+                Log.w("meniuu","hour:"+ora);
                 try {
                     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                     Date d = df.parse(ora);
@@ -64,13 +64,13 @@ public class TimerSender extends Activity implements View.OnClickListener {
                         dosomething();
                     }else {
                         Intent harta = new Intent(TimerSender.this, Harta.class);
-                        harta.putExtra("ora", ora);
+                        harta.putExtra("hour", ora);
                         harta.putExtra("nr_car", nr_carString);
                         harta.putExtra("time", timer);
                         startActivity(harta);
                         finish();
                     }
-                    Log.w("meniuu","data ora:"+ora);
+                    Log.w("meniuu","data hour:"+ora);
                 }catch (Exception e){
                     e.printStackTrace();
                     Log.w("meniuu0","cahct");

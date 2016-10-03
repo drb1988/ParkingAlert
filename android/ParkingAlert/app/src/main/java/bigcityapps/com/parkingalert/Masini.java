@@ -66,7 +66,7 @@ public class Masini extends Activity implements View.OnClickListener{
         ctx=this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
-        getCars("57e11909853b0122ac974e23");
+        getCars(prefs.getString("user_id",""));
 //        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //            Intent vizualizare= new Intent(Masini.this,Vizualizare_masina.class);
@@ -76,7 +76,7 @@ public class Masini extends Activity implements View.OnClickListener{
 //                vizualizare.putExtra("producator",masiniModelArrayList.get(i).getProducator());
 //                vizualizare.putExtra("model",masiniModelArrayList.get(i).getModel());
 //                vizualizare.putExtra("an",masiniModelArrayList.get(i).getAn());
-//                vizualizare.putExtra("poza",masiniModelArrayList.get(i).getPoza());
+//                vizualizare.putExtra("image",masiniModelArrayList.get(i).getImage());
 //                Log.w("meniuu","toate"+masiniModelArrayList.get(i).getAn());
 //                startActivity(vizualizare);
 //            }
@@ -85,7 +85,7 @@ public class Masini extends Activity implements View.OnClickListener{
 
     @Override
     protected void onResume() {
-        getCars("57e11909853b0122ac974e23");
+        getCars(prefs.getString("user_id",""));
         super.onResume();
     }
 
@@ -93,7 +93,7 @@ public class Masini extends Activity implements View.OnClickListener{
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
         title=(TextView)findViewById(bigcityapps.com.parkingalert.R.id.title);
-        mesaj=(TextView)findViewById(bigcityapps.com.parkingalert.R.id.mesaj);
+        mesaj=(TextView)findViewById(R.id.message);
 //        listViewMasini=(ListView)findViewById(bigcityapps.com.parkingalert.R.id.listview_masini);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_masini);
         inapoi=(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_lista_masini);
@@ -194,7 +194,7 @@ switch (view.getId()){
 //                holder = new ViewHolder();
 //                holder.proprietar=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.proprietar);
 //                holder.nr=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.nr);
-//                holder.poza=(ImageView) v.findViewById(bigcityapps.com.parkingalert.R.id.poza_lista_masini);
+//                holder.image=(ImageView) v.findViewById(bigcityapps.com.parkingalert.R.id.poza_lista_masini);
 //                v.setTag(holder);
 //            }else
 //            {
@@ -204,14 +204,14 @@ switch (view.getId()){
 //
 //            holder.proprietar.setText(item.getNume_masina());
 //            holder.nr.setText(item.getNr());
-//            Picasso.with(ctx).load(item.getPoza()).into(holder.poza);
+//            Picasso.with(ctx).load(item.getImage()).into(holder.image);
 //            return v;
 //
 //        }
 //    }
 //    static class ViewHolder {
 //        TextView proprietar, nr;
-//        ImageView poza;
+//        ImageView image;
 //    }
     public void getCars(String id){
         String url = Constants.URL+"users/getCars/"+id;
@@ -310,7 +310,7 @@ switch (view.getId()){
                     vizualizare.putExtra("producator",masiniModelArrayList.get(position).getProducator());
                     vizualizare.putExtra("model",masiniModelArrayList.get(position).getModel());
                     vizualizare.putExtra("an",masiniModelArrayList.get(position).getAn());
-                    vizualizare.putExtra("poza",masiniModelArrayList.get(position).getPoza());
+                    vizualizare.putExtra("image",masiniModelArrayList.get(position).getPoza());
                     Log.w("meniuu","toate"+masiniModelArrayList.get(position).getAn());
                     startActivity(vizualizare);
                 }
@@ -322,7 +322,7 @@ switch (view.getId()){
 
         }
         public void removeItem(int position) {
-            deleteCar("57e11909853b0122ac974e23",moviesList.get(position).getNr());
+            deleteCar(prefs.getString("user_id",""),moviesList.get(position).getNr());
             moviesList.remove(position);
             if(moviesList.size()==0){
                 recyclerView.setVisibility(View.INVISIBLE);
@@ -354,12 +354,12 @@ switch (view.getId()){
                     return params;
                 }
 
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-////                String auth_token_string = prefs.getString("token1", "");
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("Authorization", auth_token_string);
-//                return params;
-//            }
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+  auth_token_string);
+                return params;
+            }
             };
             queue.add(stringRequest);
     }

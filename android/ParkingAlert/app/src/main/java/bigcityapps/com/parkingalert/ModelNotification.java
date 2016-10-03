@@ -4,12 +4,22 @@ package bigcityapps.com.parkingalert;
  * Created by Sistem1 on 14/09/2016.
  */
 public class ModelNotification {
-    String poza;
-    String titlu;
-    String detalii;
-    String mesaj;
-    String ora;
-    int tip;
+    String image;
+    String title;
+    String details;
+    String message;
+    String hour;
+    int type;
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
+    boolean read;
 
     public String getNr_car() {
         return nr_car;
@@ -40,12 +50,12 @@ public class ModelNotification {
 
     String id;
 
-    public int getTip() {
-        return tip;
+    public int getType() {
+        return type;
     }
 
-    public void setTip(int tip) {
-        this.tip = tip;
+    public void setType(int type) {
+        this.type = type;
     }
 
 
@@ -58,44 +68,44 @@ public class ModelNotification {
         this.badge = badge;
     }
 
-    public String getPoza() {
-        return poza;
+    public String getImage() {
+        return image;
     }
 
-    public void setPoza(String poza) {
-        this.poza = poza;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public String getTitlu() {
-        return titlu;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTitlu(String titlu) {
-        this.titlu = titlu;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getDetalii() {
-        return detalii;
+    public String getDetails() {
+        return details;
     }
 
-    public void setDetalii(String detalii) {
-        this.detalii = detalii;
+    public void setDetails(String details) {
+        this.details = details;
     }
 
-    public String getMesaj() {
-        return mesaj;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMesaj(String mesaj) {
-        this.mesaj = mesaj;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public String getOra() {
-        return ora;
+    public String getHour() {
+        return hour;
     }
 
-    public void setOra(String ora) {
-        this.ora = ora;
+    public void setHour(String hour) {
+        this.hour = hour;
     }
 
     String badge;

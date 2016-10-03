@@ -88,7 +88,7 @@ public class ViewNotification extends Activity implements View.OnClickListener{
     }
 
     public void postAnswer(final String time){
-        String url = Constants.URL+"notifications/receiverRead/"+notification_id;
+        String url = Constants.URL+"notifications/receiverAnswered/"+notification_id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
