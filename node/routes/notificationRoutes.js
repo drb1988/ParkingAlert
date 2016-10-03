@@ -5,6 +5,8 @@ var db = require('mongoskin').db(dbConfig.url);
 var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId; 
+var FCM = require('fcm-push');
+
 
 function distance(lat1, lon1, lat2, lon2, unit) {
   var radlat1 = Math.PI * lat1/180
@@ -21,6 +23,40 @@ function distance(lat1, lon1, lat2, lon2, unit) {
 }
 var response;
 
+var toLocalTime = function(time) {
+  //console.log(time)
+  var d = new Date(time);
+  var offset = (new Date().getTimezoneOffset() / 60) * -1;
+  var n = new Date(d.getTime() + offset);
+  console.log(n)
+  return n;
+};
+
+var sendNotification = function(token, notification, car){
+        var serverKey = 'AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4';
+        var fcm = new FCM("AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4");
+        var message = {
+          to: token, 
+          data: {
+            notification_id: notification,
+            car_id: car
+          },
+          notification: {
+            title: 'Parking-Alert',
+            body: 'Ati primit norificare', 
+            sound: 'enabled'
+          }
+        };
+        fcm.send(message, function(err, response){
+          if (err) {
+              console.log("Something has gone wrong!");
+              console.log(err);
+          } else {
+              console.log("Successfully sent with response: ", response);
+          }
+        });
+      }
+
 var findUsersByNotification = function(db, callback, notificationID) {
     /**
     * Function to get users by notificationID,
@@ -31,10 +67,17 @@ var findUsersByNotification = function(db, callback, notificationID) {
       db.collection('notifications').findOne({"_id": o_id},
         function(err, result) {
             assert.equal(err, null);
-            response = {
-              "sender_id": result.sender_id,
-              "receiver_id": result.receiver_id
-            }
+            if(result)
+              response = {
+                "sender_id": result.sender_id,
+                "receiver_id": result.receiver_id,
+                "sender_token": result.sender_token,
+                "vehicle": result.vehicle,
+                "receiver_token": result.sender_token
+              }
+            else
+              response = null;  
+
             callback(response);
         });           
     }
@@ -50,7 +93,6 @@ var findUserToken = function(db, callback, userID) {
       db.collection('parking').findOne({"_id": o_id},
         function(err, result) {
               assert.equal(err, null);
-              console.log(result)
               callback(result.security[0].device_token);
         });            
     }
@@ -61,7 +103,10 @@ router.post('/notification', function(req, res, next) {
     * Route to insert notifications,
     * @name /notification
     */
+  var notificationReceiverToken = "";
+  var notificationSenderToken = "";
   var notificationID ="";
+  var car_id ="";
   var insertDocument = function(db, callback) {
    db.collection('notifications').insertOne( {
       "status": req.body.status,
@@ -78,7 +123,7 @@ router.post('/notification', function(req, res, next) {
           ]
       },
       "reverse_geocode": req.body.reverse_geocode,
-      "create_date": new Date(),
+      "create_date": toLocalTime(new Date()),
       "vehicle": req.body.vehicle,
       "sender_id": new ObjectId(req.body.sender_id),
       "answer": {
@@ -94,11 +139,14 @@ router.post('/notification', function(req, res, next) {
             req.body.longitude
           ]}}
       ],
+      "receiver_token": notificationReceiverToken,
+      "sender_token": notificationSenderToken,
       "sender_nickname": req.body.sender_nickname,
       "receiver_id": new ObjectId(req.body.receiver_id),
       "receiver_nickname": req.body.receiver_nickname,
       "is_ontime": true
    }, function(err, result) {
+    car_id = req.body.vehicle;
     assert.equal(err, null);
     notificationID = result.insertedId;
     console.log("Sent a notification "+result.insertedId);
@@ -107,11 +155,14 @@ router.post('/notification', function(req, res, next) {
 };
 MongoClient.connect(dbConfig.url, function(err, db) {
   assert.equal(null, err);
-  insertDocument(db, function() {
-   //   findUserToken(db, function(){}, req.body.receiver_id);
+  findUserToken(db, function(receiver){console.log(receiver); notificationReceiverToken=receiver;}, req.body.receiver_id);
+  findUserToken(db, function(sender){console.log(sender); notificationSenderToken=sender;
+    insertDocument(db, function() {
       db.close();
       res.status(200).send(notificationID)
-  });
+      sendNotification(notificationReceiverToken, notificationID, car_id)
+    });
+  }, req.body.sender_id);
 });
 });
 
@@ -121,13 +172,48 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
     * @name /receiverRead/:notificationID
     * @param {String} :notificationID
     */
+  var vehicle = "";
+  var sender_token = "";
   var deleteCar = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
                       "receiver_read": true,
-                      "answer.read_at": new Date(),
-                      "answer.answered_at": new Date(),
+                      "answer.read_at": toLocalTime(new Date())
+                    }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Receiver has read "+req.params.notificationID);
+            callback();
+      });            
+  }
+  MongoClient.connect(dbConfig.url, function(err, db) {
+      assert.equal(null, err);
+      deleteCar(db, function() {
+          var senderID;
+          findUsersByNotification(db, function(notificationSenderID){
+            var sender_token = notificationSenderID.sender_token;
+            }, senderID)
+          }, req.params.notificationID);
+          db.close();
+          res.status(200).send(req.params.notificationID);
+          sendNotification(sender_token, req.params.notificationID, vehicle);
+      });
+    });
+
+router.post('/receiverAnswered/:notificationID', function(req, res, next) {
+    /**
+    * Route to set answers,
+    * @name /receiverRead/:notificationID
+    * @param {String} :notificationID
+    */
+  var vehicle = "";
+  var sender_token = "";
+  var deleteCar = function(db, callback) {   
+  var o_id = new ObjectId(req.params.notificationID);
+    db.collection('notifications').update({"_id": o_id}, 
+             {$set: { 
+                      "answer.answered_at": toLocalTime(new Date()),
                       "answer.estimated": req.body.estimated
                     },
               $push:{
@@ -146,18 +232,57 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
             callback();
       });            
   }
-  MongoClient.connect(dbConfig.url, function(err, db) {
+   MongoClient.connect(dbConfig.url, function(err, db) {
       assert.equal(null, err);
       deleteCar(db, function() {
           var senderID;
           findUsersByNotification(db, function(notificationSenderID){
-            senderID = notificationSenderID.sender_id;
-            findUserToken(db, function(notificationToken){console.log(notificationToken)}, senderID)
+            var sender_token = notificationSenderID.sender_token;
+            }, senderID)
           }, req.params.notificationID);
           db.close();
-          res.status(200).send(req.params.notificationID)
+          res.status(200).send(req.params.notificationID);
+          sendNotification(sender_token, req.params.notificationID, vehicle);
       });
-    });
+})
+
+router.post('/receiverExtended/:notificationID', function(req, res, next) {
+    /**
+    * Route to extend timers,
+    * @name /receiverRead/:notificationID
+    * @param {String} :notificationID
+    */
+  var vehicle = "";
+  var sender_token = "";
+  var deleteCar = function(db, callback) {   
+  var o_id = new ObjectId(req.params.notificationID);
+    db.collection('notifications').update({"_id": o_id}, 
+             {
+              $push:{
+                    "extesions": {
+                      "extended": true,
+                      "extended_at": new Date(),
+                      "extension_time": req.body.extension_time
+                    }   
+              }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Receiver has read "+req.params.notificationID);
+            callback();
+      });            
+  }
+   MongoClient.connect(dbConfig.url, function(err, db) {
+      assert.equal(null, err);
+      deleteCar(db, function() {
+          var senderID;
+          findUsersByNotification(db, function(notificationSenderID){
+            var sender_token = notificationSenderID.sender_token;
+            }, senderID)
+          }, req.params.notificationID);
+          db.close();
+          res.status(200).send(req.params.notificationID);
+          sendNotification(sender_token, req.params.notificationID, vehicle);
+      });
 })
 
 router.post('/receiverDeleted/:notificationID', function(req, res, next) {
@@ -215,13 +340,14 @@ router.post('/senderDeleted/:notificationID', function(req, res, next) {
 })
 
 router.get('/getNotification/:notificationID', function(req, res, next) {
+  console.log("aici");
     /**
     * Route to get a notification,
     * @name /getNotification/:notificationID
     * @param {String} :notificationID
     */
     var findNotification = function(db, callback) {   
-    var o_id = new ObjectId(req.params.userID);
+    var o_id = new ObjectId(req.params.notificationID);
       db.collection('notifications').findOne({"_id": o_id},
         function(err, result) {
               assert.equal(err, null);
@@ -230,9 +356,15 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
               callback();
         });            
     }
+    var senderID;
     MongoClient.connect(dbConfig.url, function(err, db) {
         assert.equal(null, err);
         findNotification(db, function() {
+            var senderID;
+            findUsersByNotification(db, function(notificationSenderID){
+              console.log("notificationSenderID.sender_id: "+notificationSenderID);
+            senderID = null;
+            }, req.params.notificationID);
             db.close();
         });
       });

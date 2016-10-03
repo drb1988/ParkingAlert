@@ -5,7 +5,6 @@ var db = require('mongoskin').db(dbConfig.url);
 var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId; 
-var pretty = require('pretty');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -93,7 +92,7 @@ router.get('/getUser/:userID', function(req, res, next) {
 	 	var o_id = new ObjectId(req.params.userID);
 	    db.collection('parking').findOne({"_id": o_id},
 	    	function(err, result) {
-	    				console.log(result.pretty())
+	    				console.log(result)
 					    assert.equal(err, null);
 					    console.log("Found user "+req.params.userID);
 					    res.status(200).send(result)

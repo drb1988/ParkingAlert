@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var webRoutes = require('./routes/web-routes');
 var signup = require('./routes/signup-routes');
 var notifications = require('./routes/notificationRoutes');
 var jwtMiddleware = require('express-jwt');
@@ -36,6 +37,7 @@ app.use('/', routes);
 app.use('/users', jwtMiddleware({ secret: config.jwt.secret }), users);
 app.use('/notifications', jwtMiddleware({ secret: config.jwt.secret }), notifications);
 app.use('/signup', signup);
+app.use('/web-routes', webRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
