@@ -15,7 +15,7 @@ var config = require('./config');
 var dbConfig = require('./db');
 var mongoose = require('mongoose');
 
-mongoose.connect(dbConfig.url);//ORM for Schema data like users
+//mongoose.connect(dbConfig.url);//ORM for Schema data like users
 var parkingCollection = dbConfig.collection;
 var app = express();
 
@@ -26,7 +26,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public/img', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -243,6 +243,8 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
     * @name /receiverRead/:notificationID
     * @param {String} :notificationID
     */
+  console.log(req.body);
+  console.log("claudia fute "+req.params.notificationID);
   var vehicle = "";
   var sender_token = "";
   var deleteCar = function(db, callback) {   

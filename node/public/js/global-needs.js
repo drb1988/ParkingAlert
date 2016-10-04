@@ -1,0 +1,1 @@
+var qWERTY = 0;

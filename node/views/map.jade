@@ -1,0 +1,14 @@
+extends dashboard-layout
+block content
+ #map-content
+  #floating-panel
+    button.btn.btn-info(id='reinitMarker' onclick='') Hărți termice / Markere
+    button.btn.btn-info(id='changeGradient' onclick='changeGradient()') Schimba gradient
+    button.btn.btn-info(onclick='changeRadius()') Schimba radius
+    button.btn.btn-info(onclick='changeOpacity()') Schimba opacititatea
+  input#pac-input.controls(type='text', placeholder='Search Box')
+  #map
+block scripts
+    script(src='/js/map.js')
+    //script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')
+    script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization,places,drawing&callback=initMap')

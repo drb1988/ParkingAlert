@@ -6,11 +6,13 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bot
       span.icon-bar
       span.icon-bar
       span.icon-bar
-    a.navbar-brand(href='index.html') Parking alert
+    a.navbar-brand(href='#' ) Parking Alert
+    img(src="../../../img/rsz_3logo.png" )
   // /.navbar-header
   ul.nav.navbar-top-links.navbar-right
     li.dropdown
       a.dropdown-toggle(data-toggle='dropdown', href='#')
+        span Neindentificat
         i.fa.fa-user.fa-fw
         i.fa.fa-caret-down
       ul.dropdown-menu.dropdown-user
@@ -27,21 +29,25 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bot
           a(href='/admin-eparti-030616/logout/')
             i.fa.fa-sign-out.fa-fw
             |  Logout
-      // /.dropdown-user
-    // /.dropdown
-  // /.navbar-top-links
-  .navbar-default.sidebar(role='navigation')
-    .sidebar-nav.navbar-collapse
-      ul#side-menu.nav
-        li
-          a(href='/users/')
-            i.fa.fa-files-o.fa-fw
-            |  Users
-        li
-          a(href='/users/0')
-            i.fa.fa-files-o.fa-fw
-            |  Add user
+script(src='https://cdn.jsdelivr.net/jquery/1/jquery.min.js')
+script(src='https://cdn.jsdelivr.net/momentjs/latest/moment.min.js')
+link(rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" )
+script(src='https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js')
+link(rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" )
 
-          // /.nav-second-level
-    // /.sidebar-collapse
-  // /.navbar-top-links
+.col-md-12(style='border-bottom: 1px solid #e7e7e7;')
+ .col-md-12
+   .col-md-6
+     .col-md-12
+      label.daterange-text Alege intervalul dorit: // san francisco
+     .col-md-12
+      input.form-control#ajaxDate(type='text', name='daterange')
+   .col-md-6
+    .col-md-6
+     i.fa.fa-map-marker.map-cosen.active Harta
+    .col-md-6
+     i.fa.fa-bar-chart-o.chart-cosen Statistica
+hr
+
+
+script(src='/js/date-selector.js')

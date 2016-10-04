@@ -1,7 +1,323 @@
-extends dashboard-layout
+include dashboard-layout
 block content
- .row
-    .col-lg-12
-      h1.page-header
-        = title
-   
+ style(type='text/css').
+  .range-slider {
+  position: relative;
+  height: 80px;
+  }
+  .extra-controls {
+  position: relative;
+  border-top: 3px solid #000;
+  padding: 10px 0 0;
+  }
+  .inp {
+  font-size: 18px;
+  width: 40px;
+  text-align: center;
+  padding: 5px;
+  }
+  .inp + .inp {
+  float: right;
+  }
+  .irs-grid {
+  display: none !Important
+  }
+ script(src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js')
+ script(src='http://ionden.com/a/plugins/ion.rangeSlider/static/js/ion-rangeSlider/ion.rangeSlider.js')
+ link(rel='stylesheet', type='text/css', href='http://ionden.com/a/plugins/ion.rangeSlider/static/css/ion.rangeSlider.css')
+ link(rel='stylesheet', type='text/css', href='http://ionden.com/a/plugins/ion.rangeSlider/static/css/ion.rangeSlider.skinFlat.css')
+ .range-slider
+  input.js-range-slider(type='text', value='')
+ script.
+  var $range = $(".js-range-slider"),
+  $from = $(".js-from"),
+  $to = $(".js-to"),
+  range,
+  min = 1,
+  max = 24,
+  from,
+  to;
+  var updateValues = function () {
+  $from.prop("value", from);
+  $to.prop("value", to);
+  reinit(from,to);
+  };
+  $range.ionRangeSlider({
+  type: "double",
+  min: min,
+  max: max,
+  prettify_enabled: false,
+  grid: true,
+  grid_num: 10,
+  onChange: function (data) {
+  from = data.from;
+  to = data.to;
+  updateValues();
+  }
+  });
+  range = $range.data("ionRangeSlider");
+  var updateRange = function () {
+  range.update({
+  from: from,
+  to: to
+  });
+  };
+  $from.on("change", function () {
+  from = +$(this).prop("value");
+  if (from < min) {
+  from = min;
+  }
+  if (from > to) {
+  from = to;
+  }
+  updateValues();
+  updateRange();
+  });
+  $to.on("change", function () {
+  to = +$(this).prop("value");
+  if (to > max) {
+  to = max;
+  }
+  if (to < from) {
+  to = from;
+  }
+  updateValues();
+  updateRange();
+  });
+
+ #map-content
+  #floating-panel
+      button(id='changeGradient' onclick='changeGradient()') Change gradient
+      button(onclick='changeRadius()') Change radius
+      button(onclick='changeOpacity()') Change opacity
+  #map
+block scripts
+    script.
+      function reinit(startpointvalue, endpointvalue) {
+      //getPoints
+      heatmap.set('data' ,getPoints(startpointvalue, endpointvalue));
+      //initMap(pointvalue);
+      }
+      // This example requires the Visualization library. Include the libraries=visualization
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
+      var map, heatmap;
+      function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 13,
+      center: {lat: 37.775, lng: -122.434},
+      mapTypeId: 'satellite'
+      });
+      heatmap = new google.maps.visualization.HeatmapLayer({
+      data: getPoints(1, 24),
+      map: map
+      });
+      }
+      function changeGradient() {
+      var gradient = [
+      'rgba(0, 255, 255, 0)',
+      'rgba(0, 255, 255, 1)',
+      'rgba(0, 191, 255, 1)',
+      'rgba(0, 127, 255, 1)',
+      'rgba(0, 63, 255, 1)',
+      'rgba(0, 0, 255, 1)',
+      'rgba(0, 0, 223, 1)',
+      'rgba(0, 0, 191, 1)',
+      'rgba(0, 0, 159, 1)',
+      'rgba(0, 0, 127, 1)',
+      'rgba(63, 0, 91, 1)',
+      'rgba(127, 0, 63, 1)',
+      'rgba(191, 0, 31, 1)',
+      'rgba(255, 0, 0, 1)'
+      ]
+      heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+      }
+      function changeRadius() {
+      heatmap.set('radius', heatmap.get('radius') ? null : 20);
+      }
+      function changeOpacity() {
+      heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+      }
+      // Heatmap data: 500 Points
+      function getPoints(startpointvalue, endpointvalue) {
+      var hour=[];
+      var hour_1 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_1)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_1.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[1]=hour_1;
+      var hour_2 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_2)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_2.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[2]=hour_2;
+      var hour_3 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_3)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_3.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[3]=hour_3;
+      var hour_4 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_4)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_4.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[4]=hour_4;
+
+      var hour_5 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_5)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_5.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[5]=hour_5;
+
+      var hour_6 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_6)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_6.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[6]=hour_6;
+      var hour_7 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_7)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_7.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[7]=hour_7;
+      var hour_8 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_8)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_8.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[8]=hour_8;
+      var hour_9 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_9)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_9.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[9]=hour_9;
+      var hour_10 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_10)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_10.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[10]=hour_10;
+      var hour_11 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_11)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_11.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[11]=hour_11;
+      var hour_12 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_12)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_12.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[12]=hour_12;
+      var hour_13 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_13)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_13.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[13]=hour_13;
+      var hour_14 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_14)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_14.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[14]=hour_14;
+      var hour_15 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_15)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_15.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[15]=hour_15;
+      var hour_16 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_16)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_16.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[16]=hour_16;
+      var hour_17 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_17)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_17.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[17]=hour_17;
+      var hour_18 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_18)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_18.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[18]=hour_18;
+      var hour_19 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_19)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_19.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[19]=hour_19;
+      var hour_20 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_20)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_20.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[20]=hour_20;
+      var hour_21 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_21)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_21.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[21]=hour_21;
+      var hour_22 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_22)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_22.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[22]=hour_22;
+      var hour_23 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_23)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_23.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[23]=hour_23;
+      var hour_24 = [];
+      otherPlayers = {};
+      var cplayerList = !{JSON.stringify(resources.hour_24)};
+      cplayerList.forEach(function(pointheatmap){
+      hour_24.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
+      });
+      hour[24]=hour_24;
+
+      var result=[];
+      var qq = "";
+      for(var i=startpointvalue; i<=endpointvalue; i++){
+      qq= result.concat(hour[i]);
+      result = qq;
+      }
+      return result;
+      }
+    script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')
