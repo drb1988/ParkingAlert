@@ -201,7 +201,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"status\": \"3\",\n    \"is_active\": false,\n    \"latitude\": 24.0992,\n    \"longitude\": 44.8384,\n  \"reverse_geocode\" : {\n    \"address\" : \"soseaua vergului\",\n    \"city\" : \"bucuresti\",\n    \"country\" : \"romania\",\n    \"zip\" : null\n  },\n    \"vehicle\": \"plates\",\n    \"sender_id\": \"57ee2b1ba3286718482f8007\",\n    \"sender_nickname\": \"Cristi\",\n    \"receiver_id\": \"57ee16ce861974233479f3b7\",\n    \"receiver_nickname\": \"Vasile\"\n}"
+					"raw": "{\n    \"status\": \"3\",\n    \"is_active\": false,\n    \"latitude\": 24.0992,\n    \"longitude\": 44.8384,\n\t\"reverse_geocode\" : {\n\t\t\"address\" : \"soseaua vergului\",\n\t\t\"city\" : \"bucuresti\",\n\t\t\"country\" : \"romania\",\n\t\t\"zip\" : null\n\t},\n    \"vehicle\": \"plates\",\n    \"sender_id\": \"57ee2b1ba3286718482f8007\",\n    \"sender_nickname\": \"Cristi\",\n    \"receiver_id\": \"57ee16ce861974233479f3b7\",\n    \"receiver_nickname\": \"Vasile\"\n}"
 				},
 				"description": "post phone number, get response with validation code"
 			},
@@ -226,7 +226,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"latitude\": 24.0992,\n    \"longitude\": 44.8384,\n    \"estimated\": 5\n}"
+					"raw": "{\n\t\"latitude\": 24.0992,\n    \"longitude\": 44.8384,\n    \"estimated\": 5\n}"
 				},
 				"description": ""
 			},
@@ -382,6 +382,31 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"extension_time\": 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/senderRead/57f3698f1af708143c2fbb3b",
+			"request": {
+				"url": "localhost:3000/notifications/senderRead/57f3698f1af708143c2fbb3b",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n}"
 				},
 				"description": ""
 			},

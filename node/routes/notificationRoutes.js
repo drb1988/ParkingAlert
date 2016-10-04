@@ -200,6 +200,39 @@ router.post('/receiverRead/:notificationID', function(req, res, next) {
   });
   });
 
+router.post('/senderRead/:notificationID', function(req, res, next) {
+    /**
+    * Route to mark notifications as read by the sender,
+    * @name /receiverRead/:notificationID
+    * @param {String} :notificationID
+    */
+  var vehicle = "";
+  var sender_token = "";
+  var deleteCar = function(db, callback) {   
+  var o_id = new ObjectId(req.params.notificationID);
+    db.collection('notifications').update({"_id": o_id}, 
+             {$set: { 
+                      "sender_read": true
+                    }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Receiver has read "+req.params.notificationID);
+            callback();
+      });            
+  }
+  MongoClient.connect(dbConfig.url, function(err, db) {
+    assert.equal(null, err);
+    findUsersByNotification(db, function(sender){console.log(sender); notificationSenderToken=sender.receiver_token;
+      vehicle=sender.vehicle;
+      deleteCar(db, function() {
+        db.close();
+        res.status(200).send(req.params.notificationID)
+        sendNotification(notificationSenderToken, req.params.notificationID, vehicle)
+      });
+      }, req.params.notificationID);      
+  });
+  });
+
 router.post('/receiverAnswered/:notificationID', function(req, res, next) {
     /**
     * Route to set answers,
@@ -212,6 +245,7 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
+                      "sender_read": false,
                       "answer.answered_at": toLocalTime(new Date()),
                       "answer.estimated": req.body.estimated
                     },
@@ -255,7 +289,9 @@ router.post('/receiverExtended/:notificationID', function(req, res, next) {
   var deleteCar = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
-             {
+             {$set: { 
+                      "sender_read": false
+                    },
               $push:{
                     "extesions": {
                       "extended": true,
@@ -337,7 +373,6 @@ router.post('/senderDeleted/:notificationID', function(req, res, next) {
 })
 
 router.get('/getNotification/:notificationID', function(req, res, next) {
-  console.log("aici");
     /**
     * Route to get a notification,
     * @name /getNotification/:notificationID
