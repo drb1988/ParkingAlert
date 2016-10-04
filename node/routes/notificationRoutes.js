@@ -32,14 +32,17 @@ var toLocalTime = function(time) {
   return n;
 };
 
-var sendNotification = function(token, notification, car){
+var sendNotification = function(token, notification, car, type, time){
         var serverKey = 'AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4';
         var fcm = new FCM("AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4");
         var message = {
           to: token, 
           data: {
             notification_id: notification,
-            car_id: car
+            car_id: car,
+            notification_type: type,
+            answered_at: new Date,
+            estimated_time: time
           },
           notification: {
             title: 'Parking-Alert',
@@ -47,6 +50,7 @@ var sendNotification = function(token, notification, car){
             sound: 'enabled'
           }
         };
+        console.log(notification+" "+car+" "+type+" "+time);
         fcm.send(message, function(err, response){
           if (err) {
               console.log("Something has gone wrong!");
@@ -160,7 +164,7 @@ MongoClient.connect(dbConfig.url, function(err, db) {
     insertDocument(db, function() {
       db.close();
       res.status(200).send(notificationID)
-      sendNotification(notificationReceiverToken, notificationID, car_id)
+      sendNotification(notificationReceiverToken, notificationID, car_id, "sender", 0)
     });
   }, req.body.sender_id);
 });
@@ -250,6 +254,7 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
                       "answer.estimated": req.body.estimated
                     },
               $push:{
+                    "estimated": req.body.estimated,
                     "estimations": {
                       "receiver": {
                           "type": "Point",
@@ -272,7 +277,8 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
         deleteCar(db, function() {
           db.close();
           res.status(200).send(req.params.notificationID)
-          sendNotification(notificationSenderToken, req.params.notificationID, vehicle)
+          console.log("estimated "+req.body.estimated);
+          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "receiver", req.body.estimated)
         });
         }, req.params.notificationID);     
     });
@@ -312,7 +318,7 @@ router.post('/receiverExtended/:notificationID', function(req, res, next) {
         deleteCar(db, function() {
           db.close();
           res.status(200).send(req.params.notificationID)
-          sendNotification(notificationSenderToken, req.params.notificationID, vehicle)
+          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "extended", req.body.extension_time)
         });
         }, req.params.notificationID);     
       });
@@ -355,8 +361,8 @@ router.post('/senderDeleted/:notificationID', function(req, res, next) {
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
-                         "sender_deleted": true 
-                      }
+                      "sender_deleted": true 
+                    }
              },function(err, result) {
             assert.equal(err, null);
             console.log("Sender has deleted "+req.params.notificationID);
