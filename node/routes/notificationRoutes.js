@@ -170,7 +170,7 @@ MongoClient.connect(dbConfig.url, function(err, db) {
 });
 });
 
-router.post('/receiverRead/:notificationID', function(req, res, next) {
+router.get('/receiverRead/:notificationID', function(req, res, next) {
     /**
     * Route to mark notifications as read,
     * @name /receiverRead/:notificationID

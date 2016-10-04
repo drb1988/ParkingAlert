@@ -211,7 +211,7 @@
 			"name": "localhost:3000/notifications/receiverRead/57e381679b5e33272485a918",
 			"request": {
 				"url": "localhost:3000/notifications/receiverRead/57ea59deeec0a9156c328733",
-				"method": "POST",
+				"method": "GET",
 				"header": [
 					{
 						"key": "Content-Type",
