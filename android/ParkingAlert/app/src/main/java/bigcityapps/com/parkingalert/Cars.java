@@ -41,24 +41,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Model.MasiniModel;
+import Model.CarModel;
 import Util.Constants;
 import Util.SecurePreferences;
 
 /**
  * Created by fasu on 19/09/2016.
  */
-public class Masini extends Activity implements View.OnClickListener{
-    RelativeLayout inapoi, adauga;
+public class Cars extends Activity implements View.OnClickListener{
+    RelativeLayout rlBack, rlAdd;
     SharedPreferences prefs;
     Context ctx;
     NotificareAdapter adapter;
-    TextView title, mesaj;
+    TextView tvTitle, tvMessage;
     private RecyclerView recyclerView;
     RequestQueue queue;
     private Paint p = new Paint();
     FloatingActionButton fab;
-    ArrayList<MasiniModel>masiniModelArrayList= new ArrayList<>();
+    ArrayList<CarModel> carModelArrayList = new ArrayList<>();
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.masini);
@@ -69,15 +69,15 @@ public class Masini extends Activity implements View.OnClickListener{
         getCars(prefs.getString("user_id",""));
 //        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//            Intent vizualizare= new Intent(Masini.this,Vizualizare_masina.class);
-//                vizualizare.putExtra("an",masiniModelArrayList.get(i).getAn());
-//                vizualizare.putExtra("nume",masiniModelArrayList.get(i).getNume_masina());
-//                vizualizare.putExtra("nr",masiniModelArrayList.get(i).getNr());
-//                vizualizare.putExtra("producator",masiniModelArrayList.get(i).getProducator());
-//                vizualizare.putExtra("model",masiniModelArrayList.get(i).getModel());
-//                vizualizare.putExtra("an",masiniModelArrayList.get(i).getAn());
-//                vizualizare.putExtra("image",masiniModelArrayList.get(i).getImage());
-//                Log.w("meniuu","toate"+masiniModelArrayList.get(i).getAn());
+//            Intent vizualizare= new Intent(Cars.this,Vizualizare_masina.class);
+//                vizualizare.putExtra("edYear",carModelArrayList.get(i).getAn());
+//                vizualizare.putExtra("edname",carModelArrayList.get(i).getmCarName());
+//                vizualizare.putExtra("edNr",carModelArrayList.get(i).getNr());
+//                vizualizare.putExtra("edMaker",carModelArrayList.get(i).getProducator());
+//                vizualizare.putExtra("edModel",carModelArrayList.get(i).getModel());
+//                vizualizare.putExtra("edYear",carModelArrayList.get(i).getAn());
+//                vizualizare.putExtra("mImage",carModelArrayList.get(i).getmImage());
+//                Log.w("meniuu","toate"+carModelArrayList.get(i).getAn());
 //                startActivity(vizualizare);
 //            }
 //        });
@@ -92,14 +92,14 @@ public class Masini extends Activity implements View.OnClickListener{
     public void initcomponents(){
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
-        title=(TextView)findViewById(bigcityapps.com.parkingalert.R.id.title);
-        mesaj=(TextView)findViewById(R.id.message);
+        tvTitle =(TextView)findViewById(bigcityapps.com.parkingalert.R.id.title);
+        tvMessage =(TextView)findViewById(R.id.mMessage);
 //        listViewMasini=(ListView)findViewById(bigcityapps.com.parkingalert.R.id.listview_masini);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_masini);
-        inapoi=(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_lista_masini);
-        adauga=(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.adauga_masini);
-        inapoi.setOnClickListener(this);
-        adauga.setOnClickListener(this);
+        rlBack =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_lista_masini);
+        rlAdd =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.adauga_masini);
+        rlBack.setOnClickListener(this);
+        rlAdd.setOnClickListener(this);
     }
     private void initSwipe(){
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -155,26 +155,26 @@ public class Masini extends Activity implements View.OnClickListener{
             public void onClick(View view) {
 switch (view.getId()){
     case R.id.inapoi_lista_masini:
-        Intent inapoi= new Intent(Masini.this,MainActivity.class);
+        Intent inapoi= new Intent(Cars.this,MainActivity.class);
         inapoi.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(inapoi);
         break;
 
 //    case R.id.adauga_masini:
-//        Intent adauga_masina=new Intent(Masini.this, Adauga_masina.class);
+//        Intent adauga_masina=new Intent(Cars.this, AddCar.class);
 //        startActivity(adauga_masina);
 //        break;
     case R.id.fab:
-        Intent adauga_masina=new Intent(Masini.this, Adauga_masina.class);
+        Intent adauga_masina=new Intent(Cars.this, AddCar.class);
         startActivity(adauga_masina);
         break;
 }
     }
-//    class NotificareAdapter extends ArrayAdapter<MasiniModel> {
-//        private ArrayList<MasiniModel> itemList;
+//    class NotificareAdapter extends ArrayAdapter<CarModel> {
+//        private ArrayList<CarModel> itemList;
 //        private Context context;
 //
-//        public NotificareAdapter(ArrayList<MasiniModel> itemList, Context ctx) {
+//        public NotificareAdapter(ArrayList<CarModel> itemList, Context ctx) {
 //            super(ctx, android.R.layout.simple_list_item_1, itemList);
 //            this.itemList=itemList;
 //            this.context = ctx;
@@ -193,25 +193,25 @@ switch (view.getId()){
 //                v = inflater.inflate(bigcityapps.com.parkingalert.R.layout.listview_lista_masini, null);
 //                holder = new ViewHolder();
 //                holder.proprietar=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.proprietar);
-//                holder.nr=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.nr);
-//                holder.image=(ImageView) v.findViewById(bigcityapps.com.parkingalert.R.id.poza_lista_masini);
+//                holder.edNr=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.edNr);
+//                holder.mImage=(ImageView) v.findViewById(bigcityapps.com.parkingalert.R.id.poza_lista_masini);
 //                v.setTag(holder);
 //            }else
 //            {
 //                holder =(ViewHolder)convertView.getTag();
 //            }
-//            final MasiniModel item = itemList.get(position);
+//            final CarModel item = itemList.get(position);
 //
-//            holder.proprietar.setText(item.getNume_masina());
-//            holder.nr.setText(item.getNr());
-//            Picasso.with(ctx).load(item.getImage()).into(holder.image);
+//            holder.proprietar.setText(item.getmCarName());
+//            holder.edNr.setText(item.getNr());
+//            Picasso.with(ctx).load(item.getmImage()).into(holder.mImage);
 //            return v;
 //
 //        }
 //    }
 //    static class ViewHolder {
-//        TextView proprietar, nr;
-//        ImageView image;
+//        TextView proprietar, edNr;
+//        ImageView mImage;
 //    }
     public void getCars(String id){
         String url = Constants.URL+"users/getCars/"+id;
@@ -219,34 +219,34 @@ switch (view.getId()){
             public void onResponse(String response) {
                 String json = response;
                 Log.w("meniuu", "response: getcar" + response);
-                masiniModelArrayList.clear();
+                carModelArrayList.clear();
                 try {
                     JSONArray obj = new JSONArray(json);
                     for (int i = 0; i < obj.length(); i++) {
                         JSONObject c = obj.getJSONObject(i);
-                        MasiniModel masiniModel= new MasiniModel();
-                        masiniModel.setNr(c.getString("plates"));
-                        masiniModel.setNume_masina(c.getString("given_name"));
-                        masiniModel.setModel(c.getString("model"));
-                        masiniModel.setAn(c.getString("year"));
-                        masiniModel.setProducator(c.getString("make"));
-                        masiniModelArrayList.add(masiniModel);
+                        CarModel carModel = new CarModel();
+                        carModel.setNr(c.getString("plates"));
+                        carModel.setmCarName(c.getString("given_name"));
+                        carModel.setModel(c.getString("model"));
+                        carModel.setAn(c.getString("year"));
+                        carModel.setProducator(c.getString("make"));
+                        carModelArrayList.add(carModel);
                     }
-                    if(masiniModelArrayList.size()>0) {
-                        adapter = new NotificareAdapter(masiniModelArrayList);
+                    if(carModelArrayList.size()>0) {
+                        adapter = new NotificareAdapter(carModelArrayList);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                         recyclerView.setLayoutManager(mLayoutManager);
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         recyclerView.setAdapter(adapter);
-                        title.setVisibility(View.INVISIBLE);
-                        mesaj.setVisibility(View.INVISIBLE);
+                        tvTitle.setVisibility(View.INVISIBLE);
+                        tvMessage.setVisibility(View.INVISIBLE);
                         initSwipe();
                         Log.w("meniuu","se afisaza recycler");
                     }else {
                         Log.w("meniuu","se pune pe invisible");
                         recyclerView.setVisibility(View.INVISIBLE);
-                        title.setVisibility(View.VISIBLE);
-                        mesaj.setVisibility(View.VISIBLE);
+                        tvTitle.setVisibility(View.VISIBLE);
+                        tvMessage.setVisibility(View.VISIBLE);
                     }
                 } catch (Throwable t) {
                     Log.w("meniuu", "cacth get questions");
@@ -273,7 +273,7 @@ switch (view.getId()){
 
     public class NotificareAdapter extends RecyclerView.Adapter<NotificareAdapter.MyViewHolder>{
 
-        private List<MasiniModel> moviesList;
+        private List<CarModel> moviesList;
 
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -282,14 +282,14 @@ switch (view.getId()){
 
             public MyViewHolder(View view) {
                 super(view);
-                proprietar=(TextView) view.findViewById(bigcityapps.com.parkingalert.R.id.proprietar);
-                nr=(TextView) view.findViewById(bigcityapps.com.parkingalert.R.id.nr);
-                poza=(ImageView) view.findViewById(bigcityapps.com.parkingalert.R.id.poza_lista_masini);
+                proprietar=(TextView) view.findViewById(R.id.mMaker);
+                nr=(TextView) view.findViewById(R.id.nr);
+                poza=(ImageView) view.findViewById(R.id.poza_lista_masini);
             }
         }
 
 
-        public NotificareAdapter(List<MasiniModel> moviesList) {
+        public NotificareAdapter(List<CarModel> moviesList) {
             this.moviesList = moviesList;
         }
 
@@ -303,22 +303,22 @@ switch (view.getId()){
         public void onBindViewHolder(MyViewHolder holder, final int position) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    Intent vizualizare= new Intent(Masini.this,Vizualizare_masina.class);
-                    vizualizare.putExtra("an",masiniModelArrayList.get(position).getAn());
-                    vizualizare.putExtra("nume",masiniModelArrayList.get(position).getNume_masina());
-                    vizualizare.putExtra("nr",masiniModelArrayList.get(position).getNr());
-                    vizualizare.putExtra("producator",masiniModelArrayList.get(position).getProducator());
-                    vizualizare.putExtra("model",masiniModelArrayList.get(position).getModel());
-                    vizualizare.putExtra("an",masiniModelArrayList.get(position).getAn());
-                    vizualizare.putExtra("image",masiniModelArrayList.get(position).getPoza());
-                    Log.w("meniuu","toate"+masiniModelArrayList.get(position).getAn());
+                    Intent vizualizare= new Intent(Cars.this,Vizualizare_masina.class);
+                    vizualizare.putExtra("edYear", carModelArrayList.get(position).getAn());
+                    vizualizare.putExtra("edname", carModelArrayList.get(position).getmCarName());
+                    vizualizare.putExtra("edNr", carModelArrayList.get(position).getNr());
+                    vizualizare.putExtra("edMaker", carModelArrayList.get(position).getProducator());
+                    vizualizare.putExtra("edModel", carModelArrayList.get(position).getModel());
+                    vizualizare.putExtra("edYear", carModelArrayList.get(position).getAn());
+                    vizualizare.putExtra("image", carModelArrayList.get(position).getmImage());
+                    Log.w("meniuu","toate"+ carModelArrayList.get(position).getAn());
                     startActivity(vizualizare);
                 }
             });
-            MasiniModel item = moviesList.get(position);
-            holder.proprietar.setText(item.getNume_masina());
+            CarModel item = moviesList.get(position);
+            holder.proprietar.setText(item.getmCarName());
             holder.nr.setText(item.getNr());
-            Picasso.with(ctx).load(item.getPoza()).into(holder.poza);
+            Picasso.with(ctx).load(item.getmImage()).into(holder.poza);
 
         }
         public void removeItem(int position) {
@@ -326,8 +326,8 @@ switch (view.getId()){
             moviesList.remove(position);
             if(moviesList.size()==0){
                 recyclerView.setVisibility(View.INVISIBLE);
-                title.setVisibility(View.VISIBLE);
-                mesaj.setVisibility(View.VISIBLE);
+                tvTitle.setVisibility(View.VISIBLE);
+                tvMessage.setVisibility(View.VISIBLE);
             }else {
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, moviesList.size());

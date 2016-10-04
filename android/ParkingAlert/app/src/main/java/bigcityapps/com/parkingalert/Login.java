@@ -50,8 +50,8 @@ public class Login extends Activity implements View.OnClickListener {
     Context ctx;
     private LoginButton loginButton;
     private CallbackManager callbackManager;
-    EditText nume,email, nickname,driver_license, city;
-    RelativeLayout continuare;
+    EditText edName, edemail, edNickname, edDriverLicense, edCity;
+    RelativeLayout rlNext;
     RequestQueue queue;
     SharedPreferences prefs;
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class Login extends Activity implements View.OnClickListener {
 //        loginButton.setBackgroundResource(R.drawable.facebook);
 //        loginButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         initComponents();
-        loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends", "user_location", "user_about_me", "user_hometown"));
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "edemail", "user_birthday", "user_friends", "user_location", "user_about_me", "user_hometown"));
         ctx = this;
         callbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -74,10 +74,10 @@ public class Login extends Activity implements View.OnClickListener {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Log.w("meniuu", "callback:" + object);
                         try {
-                            Log.w("meniuu","obj.getemail:"+object.getString("email"));
-                            email.setText(object.getString("email"));
-                            nume.setText(object.getString("name"));
-                            city.setText(object.getString("city"));
+                            Log.w("meniuu","obj.getemail:"+object.getString("edemail"));
+                            edemail.setText(object.getString("edemail"));
+                            edName.setText(object.getString("name"));
+                            edCity.setText(object.getString("edCity"));
                         } catch (JSONException e) {
                             Log.w("meniuu","catch");
                             e.printStackTrace();
@@ -86,7 +86,7 @@ public class Login extends Activity implements View.OnClickListener {
                     }
                 });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender,birthday,location");
+                parameters.putString("fields", "id,name,edemail,gender,birthday,location");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -109,13 +109,13 @@ public class Login extends Activity implements View.OnClickListener {
      *initializing components
      */
     public void initComponents(){
-        nume=(EditText)findViewById(R.id.nume_login);
-        nickname=(EditText)findViewById(R.id.nick_name_login);
-        email=(EditText)findViewById(R.id.email_login);
-        driver_license=(EditText)findViewById(R.id.driver_license_login);
-        city=(EditText)findViewById(R.id.city_login);
-        continuare=(RelativeLayout) findViewById(R.id.continuare);
-        continuare.setOnClickListener(this);
+        edName =(EditText)findViewById(R.id.nume_login);
+        edNickname =(EditText)findViewById(R.id.nick_name_login);
+        edemail =(EditText)findViewById(R.id.email_login);
+        edDriverLicense =(EditText)findViewById(R.id.driver_license_login);
+        edCity =(EditText)findViewById(R.id.city_login);
+        rlNext =(RelativeLayout) findViewById(R.id.continuare);
+        rlNext.setOnClickListener(this);
     }
 
     /**
@@ -168,7 +168,7 @@ public class Login extends Activity implements View.OnClickListener {
     public void postUser(){
         final SharedPreferences prefs = new SecurePreferences(ctx);
         String url = Constants.URL+"signup/user";
-        if(nume.getText().length()==0 || nickname.getText().length()==0 || email.getText().length()==0 || driver_license.getText().length()==0 || city.getText().length()==0)
+        if(edName.getText().length()==0 || edNickname.getText().length()==0 || edemail.getText().length()==0 || edDriverLicense.getText().length()==0 || edCity.getText().length()==0)
             Toast.makeText(ctx,"Completati toate campurile",Toast.LENGTH_LONG).show();
         else{
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -195,14 +195,14 @@ public class Login extends Activity implements View.OnClickListener {
                     }, ErrorListener) {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("first_name", nume.getText().toString());
-                    params.put("last_name", nume.getText().toString());
-                    params.put("nickname", nickname.getText().toString());
-                    params.put("email", email.getText().toString());
-                    params.put("driver_license", driver_license.getText().toString());
+                    params.put("first_name", edName.getText().toString());
+                    params.put("last_name", edName.getText().toString());
+                    params.put("edNickname", edNickname.getText().toString());
+                    params.put("edemail", edemail.getText().toString());
+                    params.put("edDriverLicense", edDriverLicense.getText().toString());
                     params.put("photo", "photo");
                     params.put("platform", "Android");
-                    params.put("user_city", city.getText().toString());
+                    params.put("user_city", edCity.getText().toString());
                     return params;
                 }
             };

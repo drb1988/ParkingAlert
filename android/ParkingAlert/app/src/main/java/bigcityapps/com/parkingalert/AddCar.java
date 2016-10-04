@@ -54,12 +54,12 @@ import Util.SecurePreferences;
 /**
  * Created by fasu on 19/09/2016.
  */
-public class Adauga_masina extends Activity implements View.OnClickListener{
+public class AddCar extends Activity implements View.OnClickListener{
     Context ctx;
     SharedPreferences prefs;
-    RelativeLayout inapoi, gata;
-    EditText nume, nr, producator, model, an;
-    ImageView poza_masina;
+    RelativeLayout rlBack, rlOk;
+    EditText edname, edNr, edMaker, edModel, edYear;
+    ImageView ivImageCar;
     Uri imageUri;
     String imagePath;
     Activity act;
@@ -86,17 +86,17 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
      * initializing components
      */
     public void initComponents(){
-        inapoi=(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_adauga_masina);
-        gata=(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.gata_adauga_masina);
-        gata.setOnClickListener(this);
-        inapoi.setOnClickListener(this);
-        nume=(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_numele_masina);
-        nr=(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_nr);
-        producator=(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_producator);
-        model=(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_model);
-        an=(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
-        poza_masina=(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
-        poza_masina.setOnClickListener(this);
+        rlBack =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_adauga_masina);
+        rlOk =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.gata_adauga_masina);
+        rlOk.setOnClickListener(this);
+        rlBack.setOnClickListener(this);
+        edname =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_numele_masina);
+        edNr =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_nr);
+        edMaker =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_producator);
+        edModel =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_model);
+        edYear =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
+        ivImageCar =(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
+        ivImageCar.setOnClickListener(this);
     }
 
     /**
@@ -212,7 +212,7 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
      */
     public void addCar(final String id){
         String url = Constants.URL+"users/addCar/"+id;
-        if(nume.getText().length()==0 || nr.getText().length()==0 || producator.getText().length()==0 || model.getText().length()==0 || an.getText().length()==0)
+        if(edname.getText().length()==0 || edNr.getText().length()==0 || edMaker.getText().length()==0 || edModel.getText().length()==0 || edYear.getText().length()==0)
             Toast.makeText(ctx,"Completati toate campurile",Toast.LENGTH_LONG).show();
         else{
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -225,11 +225,11 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
                     }, ErrorListener) {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("plates", nr.getText().toString());
-                    params.put("given_name", nume.getText().toString());
-                    params.put("make", producator.getText().toString());
-                    params.put("model", model.getText().toString());
-                    params.put("year", an.getText().toString());
+                    params.put("plates", edNr.getText().toString());
+                    params.put("given_name", edname.getText().toString());
+                    params.put("make", edMaker.getText().toString());
+                    params.put("edModel", edModel.getText().toString());
+                    params.put("year", edYear.getText().toString());
                     return params;
                 }
 
@@ -270,7 +270,7 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
                     cursor.moveToLast();
                     realPath = cursor.getString(column_index_data);
                     Bitmap img = rotateBitmap(realPath);
-                    poza_masina.setImageBitmap(img);
+                    ivImageCar.setImageBitmap(img);
                     persistImage(img, "parkingalert");
                     ///dupa ce este ceva facut
 //                    uplloadImageFile(persistImage(img, "eparti"));
@@ -293,7 +293,7 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
                         cursor.moveToLast();
                         imagePath = cursor.getString(column_index_data);
                         realPath = GetFilePathFromDevice.getPath(this, data.getData());
-                        poza_masina.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+                        ivImageCar.setImageBitmap(BitmapFactory.decodeFile(imagePath));
                         //dupa ce este ceva facut
 //                        uplloadImage();
                     } catch (Exception e) {
@@ -321,7 +321,7 @@ public class Adauga_masina extends Activity implements View.OnClickListener{
     }
 
     /**
-     *  rotate image if si necessary
+     *  rotate mImage if si necessary
      * @param src
      * @return
      */

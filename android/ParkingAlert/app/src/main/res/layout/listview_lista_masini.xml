@@ -33,7 +33,7 @@
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/proprietar"
+                android:id="@+id/mMaker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -46,7 +46,7 @@
                 android:id="@+id/nr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/proprietar"
+                android:layout_below="@+id/mMaker"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="BH89FSU"

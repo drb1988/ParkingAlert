@@ -15,43 +15,129 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-
     private static final String TAG = "meniuu";
     public static final String INTENT_FILTER = "INTENT_FILTER";
     public static final String INTENT_FILTER_Notificari = "INTENT_FILTER_NOTIFICARI";
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        String nr_car = null,notification_id = null;
-        int type_of_notification=0;
+        String nr_car = null,notification_id = null, notification_type = null,estimated_time = null,answered_at = null, date_neformated;
         JSONObject question= new JSONObject(remoteMessage.getData());
         try {
-            nr_car=question.getString("car_id");
-            notification_id=question.getString("notification_id");
+            Log.w("meniuu","data:"+question);
+            notification_type=question.getString("notification_type");
+            date_neformated=question.getString("answered_at");
+            nr_car = question.getString("car_id");
+
+            try {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                Date myDate = simpleDateFormat.parse(date_neformated);
+                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                String data = format1.format(myDate);
+                answered_at=data;
+            }catch (Exception e){
+                e.printStackTrace();
+                Log.w("meniuu","catch la formatarea datei");
+            }
+
+            if(notification_type.equals("sender")) {
+
+                notification_id = question.getString("notification_id");
+                if(Notificari.active) {
+                    Intent intent = new Intent(INTENT_FILTER_Notificari);
+                    sendBroadcast(intent);
+                }else
+                if(MainActivity.active){
+                    Intent intent = new Intent(INTENT_FILTER);
+                    intent.putExtra("notification_id",notification_id);
+                    intent.putExtra("mPlates",nr_car);
+                    intent.putExtra("notification_type",notification_type);
+                    sendBroadcast(intent);
+                }else {
+                    sendNotification(notification_type,remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(),notification_id,nr_car,estimated_time,answered_at);
+                    Log.w("meniuu","se trimite notificare");
+                }
+            }
+
+            /////receiverul
+            else if(notification_type.equals("receiver")) {
+                estimated_time=question.getString("estimated_time");
+                notification_id = question.getString("notification_id");
+
+                if(Notificari.active) {
+                    Intent intent = new Intent(INTENT_FILTER_Notificari);
+                    sendBroadcast(intent);
+                }else
+                if(MainActivity.active){
+                    Intent intent = new Intent(INTENT_FILTER);
+                    intent.putExtra("estimated_time",estimated_time);
+                    intent.putExtra("mPlates",nr_car);
+                    intent.putExtra("notification_type",notification_type);
+                    intent.putExtra("answered_at",answered_at);
+                    intent.putExtra("notification_id",notification_id);
+                    sendBroadcast(intent);
+                }else {
+                    sendNotification(notification_type,remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(),notification_id,nr_car,estimated_time,answered_at);
+                    Log.w("meniuu","se trimite notificare");
+                }
+            }else if(notification_type.equals("extended")) {
+                estimated_time=question.getString("estimated_time");
+                notification_id = question.getString("notification_id");
+
+                if(Notificari.active) {
+                    Intent intent = new Intent(INTENT_FILTER_Notificari);
+                    sendBroadcast(intent);
+                }else
+                if(MainActivity.active){
+                    Intent intent = new Intent(INTENT_FILTER);
+                    intent.putExtra("estimated_time",estimated_time);
+                    intent.putExtra("mPlates",nr_car);
+                    intent.putExtra("notification_type",notification_type);
+                    intent.putExtra("answered_at",answered_at);
+                    intent.putExtra("notification_id",notification_id);
+                    sendBroadcast(intent);
+                }else {
+                    sendNotification(notification_type,remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(),notification_id,nr_car,estimated_time,answered_at);
+                    Log.w("meniuu","se trimite notificare");
+                }
+            }
+
+
+
         } catch (JSONException e) {
             Log.w("meniuu","catch la firebase");
             e.printStackTrace();
         }
         Log.w(TAG,"notificari:"+Notificari.active+" mainactivity:"+MainActivity.active);
-        if(Notificari.active) {
-            Intent intent = new Intent(INTENT_FILTER_Notificari);
-            intent.putExtra("meniuu", remoteMessage);
-            sendBroadcast(intent);
-        }else
-          if(MainActivity.active){
-              Intent intent = new Intent(INTENT_FILTER);
-              intent.putExtra("meniuu", remoteMessage);
-              sendBroadcast(intent);
-          }else {
-              sendNotification(remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(),notification_id,nr_car);
-          Log.w("meniuu","se trimite notificare");
-          }
     }
 
-    private void sendNotification(String messageBody, String title, String notification_id, String nr_car) {
-        Intent intent = new Intent(this, ViewNotification.class);
-        intent.putExtra("notification_id",notification_id);
-        intent.putExtra("nr_car",nr_car);
+    private void sendNotification(String notification_type,String messageBody, String title, String notification_id, String nr_car, String estimated_time, String answered_at ) {
+        Log.w("meniuu"," ora in constructia notificarii:"+answered_at);
+        Intent intent = null;
+        if(notification_type.equals("sender")) {
+            intent = new Intent(this, ViewNotification.class);
+            intent.putExtra("notification_id", notification_id);
+            intent.putExtra("mPlates", nr_car);
+        }else
+        if(notification_type.equals("receiver")) {
+            intent = new Intent(this, Timer.class);
+            intent.putExtra("time", estimated_time);
+            intent.putExtra("mHour", answered_at);
+            intent.putExtra("mPlates", nr_car);
+        }else
+        if(notification_type.equals("review")) {
+//            intent = new Intent(this, Timer.class);
+//            intent.putExtra("time", estimated_time);
+//            intent.putExtra("mHour", answered_at);
+//            intent.putExtra("mPlates", nr_car);
+            Log.w("meniuu","review");
+        }
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         Log.w(TAG,"intent"+intent);

@@ -42,16 +42,16 @@ import java.util.Locale;
 /**
  * Created by fasu on 19/09/2016.
  */
-public class Harta extends AppCompatActivity implements OnMapReadyCallback {
+public class Map extends AppCompatActivity implements OnMapReadyCallback {
     RelativeLayout back_maps;
     private GoogleMap mMap;
     TextView adress;
     private String provider;
     private LocationManager locationManager;
-    String ora;
-    String text;
-    String nr_car;
-    double longitude,latitude;
+    String mHour;
+    String mText;
+    String mPlates;
+    double mLongitude, mLatitude;
     String TAG="meniuu";
     protected void onStop() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -70,9 +70,9 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
 
         @Override
         public View getInfoContents(Marker marker) {
-//            ImageView image=(ImageView)myContentsView.findViewById(R.id.image_info_view);
+//            ImageView mImage=(ImageView)myContentsView.findViewById(R.id.image_info_view);
 //            TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.nr_masina_infoview));
-//            tvTitle.setText("Notificat "+nr_car);
+//            tvTitle.setText("Notificat "+mPlates);
 //            TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.time_info_view));
 //            tvSnippet.setText(marker.getSnippet());
 
@@ -89,13 +89,12 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
             if (marker != null) {
                 ImageView image=(ImageView)v.findViewById(R.id.image_info_view);
                 TextView tvTitle = ((TextView)v.findViewById(R.id.nr_masina_infoview));
-                tvTitle.setText("Notificat "+nr_car);
+                tvTitle.setText("Notificat "+ mPlates);
                 TextView tvSnippet = ((TextView)v.findViewById(R.id.time_info_view));
                 tvSnippet.setText(marker.getSnippet());
             }
             return v;
         }
-
     }
     public static long getDateDiff(Date date1, Date date2) {
         long diffInMillies = date1.getTime() - date2.getTime();
@@ -110,13 +109,13 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
         Bundle b = iin.getExtras();
         if(b!=null) {
             try {
-                ora = (String) b.get("hour");
+                mHour = (String) b.get("mHour");
 //                txt_time.setText("Raspuns la "+timer);
-                Log.w("meniuu","hour in harta:"+ora);
-                nr_car = (String) b.get("nr_car");
+                Log.w("meniuu","mHour in harta:"+ mHour);
+                mPlates = (String) b.get("mPlates");
 
                 SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-                Date d = df.parse(ora);
+                Date d = df.parse(mHour);
                 Date date2= new Date();
                 String actual_date=df.format(date2);
                 Log.w("meniuu","data_actuala:"+actual_date);
@@ -127,18 +126,18 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
                 int minutes = 0;
                 if(diff<3600) {
                     minutes = ((int) diff % 3600) / 60;
-                    text = "Acum " + minutes + " minute";
+                    mText = "Acum " + minutes + " minute";
                 }else
                 if(diff<86400) {
                     minutes=(int)diff/60/60;
                     if(minutes==1)
-                    text = "Acum " +minutes+" ora";
+                    mText = "Acum " +minutes+" mHour";
                     else
-                        text = "Acum " +minutes+" ore";
+                        mText = "Acum " +minutes+" ore";
                 }else
                 if(diff>86400){
                     minutes=(int)60/60/24;
-                    text = "Acum " +minutes+" zile";
+                    mText = "Acum " +minutes+" zile";
                 }
 
             }catch (Exception e){
@@ -160,14 +159,14 @@ public class Harta extends AppCompatActivity implements OnMapReadyCallback {
     }
     private final LocationListener locationListenerNetwork = new LocationListener() {
         public void onLocationChanged(Location location) {
-            longitude = location.getLongitude();
-            latitude = location.getLatitude();
-            adress.setText(getAddress(latitude,longitude));
-            final LatLng CIU = new LatLng(latitude,longitude);
-            LatLng sydney = new LatLng(latitude, longitude);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 12.0f));
-            Marker marker=mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(text+""));
-//            mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(text+""));
+            mLongitude = location.getLongitude();
+            mLatitude = location.getLatitude();
+            adress.setText(getAddress(mLatitude, mLongitude));
+            final LatLng CIU = new LatLng(mLatitude, mLongitude);
+            LatLng sydney = new LatLng(mLatitude, mLongitude);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLatitude, mLongitude), 12.0f));
+            Marker marker=mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(mText +""));
+//            mMap.addMarker(new MarkerOptions().position(CIU).tvTitle("My Office").snippet(mText+""));
                 marker.showInfoWindow();
             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         }

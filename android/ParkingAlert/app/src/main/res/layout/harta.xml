@@ -51,7 +51,7 @@
         <!--android:background="@color/blue_dark">-->
 
         <!--<ImageView-->
-        <!--android:id="@+id/image"-->
+        <!--android:id="@+id/mImage"-->
         <!--android:layout_width="40dp"-->
         <!--android:layout_height="40dp"-->
         <!--android:layout_alignParentLeft="true"-->
@@ -63,7 +63,7 @@
         <!--<RelativeLayout-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->
-        <!--android:layout_toRightOf="@+id/image"-->
+        <!--android:layout_toRightOf="@+id/mImage"-->
         <!--android:gravity="center">-->
 
         <!--<TextView-->

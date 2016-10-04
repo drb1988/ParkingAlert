@@ -45,7 +45,7 @@ public class ViewNotification extends Activity implements View.OnClickListener{
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
-            car_nr_view_notification.setText((String) b.get("nr_car")+" \n creaza o problema");
+            car_nr_view_notification.setText((String) b.get("mPlates")+" \n creaza o problema");
             notification_id=(String) b.get("notification_id");
             Log.w("meniuu","notification_id"+notification_id);
         }
@@ -94,15 +94,15 @@ public class ViewNotification extends Activity implements View.OnClickListener{
                     public void onResponse(String response) {
                         String json = response;
                         Log.w("meniuu", "response:post answer" + response);
-//                        Intent harta= new Intent(Scan.this, Harta.class);
+//                        Intent harta= new Intent(Scan.this, Map.class);
 //                        startActivity(harta);
                         finish();
                     }
                 }, ErrorListener) {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("latitude", "24");
-                params.put("longitude", "24");
+                params.put("mLatitude", "24");
+                params.put("mLongitude", "24");
                 params.put("estimated",time);
                 return params;
             }

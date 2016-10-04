@@ -44,11 +44,11 @@ public class Vizualizare_masina extends Activity implements View.OnClickListener
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
-            tv_numele_masina.setText((String) b.get("nume"));
-            tv_nr.setText((String) b.get("nr"));
-            tv_producator.setText((String) b.get("producator"));
-            tv_model.setText((String) b.get("model"));
-            tv_an_producti.setText((String) b.get("an"));
+            tv_numele_masina.setText((String) b.get("edname"));
+            tv_nr.setText((String) b.get("edNr"));
+            tv_producator.setText((String) b.get("edMaker"));
+            tv_model.setText((String) b.get("edModel"));
+            tv_an_producti.setText((String) b.get("edYear"));
         }
     }
     public void initcomponents() {
@@ -67,8 +67,8 @@ public class Vizualizare_masina extends Activity implements View.OnClickListener
     switch (view.getId()){
         case R.id.inapoi_vizualizare_masina:
             finish();
-//    Intent inapoi= new Intent(Vizualizare_masina.this, MainActivity.class);
-//        startActivity(inapoi);
+//    Intent rlBack= new Intent(Vizualizare_masina.this, MainActivity.class);
+//        startActivity(rlBack);
         break;
 
         case R.id.gata_vizualizare_masina:
@@ -98,7 +98,7 @@ public class Vizualizare_masina extends Activity implements View.OnClickListener
                     params.put("plates", tv_nr.getText().toString());
                     params.put("given_name", tv_numele_masina.getText().toString());
                     params.put("make", tv_producator.getText().toString());
-                    params.put("model", tv_model.getText().toString());
+                    params.put("edModel", tv_model.getText().toString());
                     params.put("year", tv_an_producti.getText().toString());
                     return params;
                 }

@@ -3,17 +3,17 @@ package Model;
 /**
  * Created by Sistem1 on 19/09/2016.
  */
-public class MasiniModel {
-    String poza;
-    String proprietar;
-    String nume_masina;
+public class CarModel {
+    String mImage;
+    String mMaker;
+    String mCarName;
 
-    public String getNume_masina() {
-        return nume_masina;
+    public String getmCarName() {
+        return mCarName;
     }
 
-    public void setNume_masina(String nume_masina) {
-        this.nume_masina = nume_masina;
+    public void setmCarName(String mCarName) {
+        this.mCarName = mCarName;
     }
 
     public String getProducator() {
@@ -52,20 +52,20 @@ public class MasiniModel {
         this.nr = nr;
     }
 
-    public String getPoza() {
-        return poza;
+    public String getmImage() {
+        return mImage;
     }
 
-    public void setPoza(String poza) {
-        this.poza = poza;
+    public void setmImage(String mImage) {
+        this.mImage = mImage;
     }
 
-    public String getProprietar() {
-        return proprietar;
+    public String getmMaker() {
+        return mMaker;
     }
 
-    public void setProprietar(String proprietar) {
-        this.proprietar = proprietar;
+    public void setmMaker(String mMaker) {
+        this.mMaker = mMaker;
     }
 
     String nr;

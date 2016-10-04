@@ -27,12 +27,12 @@
     <activity android:name="bigcityapps.com.parkingalert.Notificari"></activity>
     <activity android:name="bigcityapps.com.parkingalert.Scan"></activity>
     <activity android:name="bigcityapps.com.parkingalert.Timer"></activity>
-    <activity android:name="bigcityapps.com.parkingalert.Harta"></activity>
-    <activity android:name="bigcityapps.com.parkingalert.Masini"></activity>
-    <activity android:name="bigcityapps.com.parkingalert.Adauga_masina"></activity>
+    <activity android:name="bigcityapps.com.parkingalert.Map"></activity>
+    <activity android:name="bigcityapps.com.parkingalert.Cars"></activity>
+    <activity android:name="bigcityapps.com.parkingalert.AddCar"></activity>
     <activity android:name="bigcityapps.com.parkingalert.Vizualizare_masina"></activity>
     <activity android:name="bigcityapps.com.parkingalert.User_profile"></activity>
-    <activity android:name="bigcityapps.com.parkingalert.Istoric"></activity>
+    <activity android:name="bigcityapps.com.parkingalert.History"></activity>
     <activity android:name="bigcityapps.com.parkingalert.ViewNotification"></activity>
     <activity android:name="bigcityapps.com.parkingalert.MainActivity"></activity>
     <activity android:name="bigcityapps.com.parkingalert.Login"></activity>

@@ -24,22 +24,22 @@ public class MainActivityEspressoTest {
 
     @Test
     public void ensureTextChangesWork() {
-        // Type text and then press the button.
-        onView(withId(R.id.nume_login)).perform(typeText("nume"), closeSoftKeyboard());
+        // Type mText and then press the button.
+        onView(withId(R.id.nume_login)).perform(typeText("edname"), closeSoftKeyboard());
         onView(withId(R.id.driver_license_login)).perform(typeText("driverlicense"), closeSoftKeyboard());
-        onView(withId(R.id.nick_name_login)).perform(typeText("nickname"), closeSoftKeyboard());
+        onView(withId(R.id.nick_name_login)).perform(typeText("edNickname"), closeSoftKeyboard());
         onView(withId(R.id.mobile_login)).perform(typeText("0359417305"), closeSoftKeyboard());
-        onView(withId(R.id.email_login)).perform(typeText("email"), closeSoftKeyboard());
+        onView(withId(R.id.email_login)).perform(typeText("edemail"), closeSoftKeyboard());
         onView(withId(R.id.city_login)).perform(typeText("Oradea"), closeSoftKeyboard());
         onView(withId(R.id.continuare)).perform(click());
 
-        // Check that the text was changed.
+        // Check that the mText was changed.
         onView(withId(R.id.city_login)).check(matches(withText("Oradea")));
     }
 
 //    @Test
 //    public void changeText_newActivity() {
-//        // Type text and then press the button.
+//        // Type mText and then press the button.
 //        onView(withId(R.id.inputField)).perform(typeText("NewText"),
 //                closeSoftKeyboard());
 //        onView(withId(R.id.switchActivity)).perform(click());

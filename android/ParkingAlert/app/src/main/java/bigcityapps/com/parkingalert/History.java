@@ -22,11 +22,11 @@ import java.util.Locale;
 /**
  * Created by fasu on 14/09/2016.
  */
-public class Istoric extends AppCompatActivity implements View.OnClickListener{
+public class History extends AppCompatActivity implements View.OnClickListener{
     ListView listView;
     Context ctx;
     IstoricAdapter adapter;
-    RelativeLayout inapoi;
+    RelativeLayout rlBack;
     ArrayList<ModelNotification> modelNotificationArrayList= new ArrayList<>();
     SearchView search;
 
@@ -40,16 +40,16 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
         ctx=this;
         ModelNotification modelNotification= new ModelNotification();
         modelNotification.setTitle("titlu1");
-        modelNotification.setMessage("mesaj1 care ar trebui sa incapa pe un singur rand, in caz contrar sa puna punctte puncte");
-        modelNotification.setDetails("details 1");
-        modelNotification.setType(1);
-        modelNotification.setHour("10:30");
+        modelNotification.setmMessage("mesaj1 care ar trebui sa incapa pe un singur rand, in caz contrar sa puna punctte puncte");
+        modelNotification.setmDetails("mDetails 1");
+        modelNotification.setmType(1);
+        modelNotification.setmHour("10:30");
         modelNotificationArrayList.add(modelNotification);
         modelNotification.setTitle("titlu1");
-        modelNotification.setMessage("mesaj1 care ar trebui sa incapa pe un singur rand, in caz contrar sa puna punctte puncte");
-        modelNotification.setDetails("details 1");
-        modelNotification.setType(2);
-        modelNotification.setHour("10:30");
+        modelNotification.setmMessage("mesaj1 care ar trebui sa incapa pe un singur rand, in caz contrar sa puna punctte puncte");
+        modelNotification.setmDetails("mDetails 1");
+        modelNotification.setmType(2);
+        modelNotification.setmHour("10:30");
         modelNotificationArrayList.add(modelNotification);
         listView=(ListView)findViewById(R.id.listview_istoric);
         adapter= new IstoricAdapter(modelNotificationArrayList,ctx);
@@ -75,8 +75,8 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
      */
     public void initComponents(){
         search=(SearchView)findViewById(R.id.searchView_istoric);
-        inapoi=(RelativeLayout)findViewById(R.id.inapoi_istoric);
-        inapoi.setOnClickListener(this);
+        rlBack =(RelativeLayout)findViewById(R.id.inapoi_istoric);
+        rlBack.setOnClickListener(this);
     }
 
     public void onClick(View view) {
@@ -128,10 +128,10 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
             }
             final ModelNotification item = _data.get(position);
             holder.titlu.setText(item.getTitle());
-            holder.detalii.setText(item.getDetails());
-            holder.mesaj.setText(item.getMessage());
-            holder.ora.setText(item.getHour());
-            if(item.type ==1)
+            holder.detalii.setText(item.getmDetails());
+            holder.mesaj.setText(item.getmMessage());
+            holder.ora.setText(item.getmHour());
+            if(item.mType ==1)
                 Picasso.with(ctx).load(bigcityapps.com.parkingalert.R.drawable.ic_back).into(holder.bagde);
             else
                 Picasso.with(ctx).load(bigcityapps.com.parkingalert.R.drawable.ic_back).into(holder.bagde);
@@ -145,7 +145,7 @@ public class Istoric extends AppCompatActivity implements View.OnClickListener{
                 _data.addAll(itemList);
             } else {
                 for (ModelNotification wp : itemList) {
-                    if (wp.getMessage().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    if (wp.getmMessage().toLowerCase(Locale.getDefault()).contains(charText)) {
                         _data.add(wp);
                     }
                 }

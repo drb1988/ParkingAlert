@@ -45,52 +45,20 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
     SharedPreferences prefs;
     double latitude, longitude;
     LocationManager locationManager;
-    private final LocationListener locationListenerGPS = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            longitude = location.getLongitude();
-            latitude = location.getLatitude();
-//            runOnUiThread(new Runnable() {
-//                public void run() {
-//                    longitudeValueGPS.setText(longitudeGPS + "");
-//                    latitudeValueGPS.setText(latitudeGPS + "");
-//                    Toast.makeText(MainActivity.this, "GPS Provider update", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-
-        }
-    };
-
-    @Override
     protected void onResume() {
-
-        if (!checkLocation())
-            return;
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2 * 60 * 1000, 10, locationListenerNetwork);
-//        Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
-        mesaj_preintampinare = (ImageView) findViewById(bigcityapps.com.parkingalert.R.id.mesaj_preintampinare);
-        mesaj_preintampinare.setImageResource(R.drawable.mesaj_preintampinare);
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                QrScanner();
-            }
-        }, 3000);
+//        if (!checkLocation())
+//            return;
+//        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListenerNetwork);
+//        mesaj_preintampinare = (ImageView) findViewById(R.id.mesaj_preintampinare);
+//        mesaj_preintampinare.setImageResource(R.drawable.mesaj_preintampinare);
+//        new Handler().postDelayed(new Runnable() {
+//            public void run() {
+//                QrScanner();
+//            }
+//        }, 3000);
         super.onResume();
     }
 
@@ -132,6 +100,19 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Constants.ctx = this;
         // Check if GPS enabled
+        if (!checkLocation())
+            return;
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListenerNetwork);
+        mesaj_preintampinare = (ImageView) findViewById(R.id.mesaj_preintampinare);
+        mesaj_preintampinare.setImageResource(R.drawable.mesaj_preintampinare);
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                QrScanner();
+            }
+        }, 3000);
     }
 
     /**
@@ -198,16 +179,16 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
                         builder.setTitle("BH12ZEU a fost notificat cu succes");
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-//                                Intent harta= new Intent(Scan.this, Harta.class);
+//                                Intent harta= new Intent(Scan.this, Map.class);
 //                                startActivity(harta);
                                 finish();
                             }
                         });
-//                        builder.setMessage(rawResult.getText());
+//                        builder.setmMessage(rawResult.getText());
                         AlertDialog alert1 = builder.create();
                         alert1.show();
                         Log.w("meniuu", "response:post notification" + response);
-//                        Intent harta= new Intent(Scan.this, Harta.class);
+//                        Intent harta= new Intent(Scan.this, Map.class);
 //                        startActivity(harta);
 //                        finish();
                     }
@@ -216,9 +197,9 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("status", "1");
                 params.put("is_active", "false");
-                params.put("latitude",latitude+"");
-                params.put("longitude", longitude+"");
-                params.put("vehicle", "nr masina");
+                params.put("mLatitude",latitude+"");
+                params.put("mLongitude", longitude+"");
+                params.put("vehicle", "edNr masina");
                 params.put("sender_id", prefs.getString("user_id",""));
                 params.put("sender_nickname", "sender_nickname");
                 params.put("receiver_id", receiver_id);
@@ -238,6 +219,7 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
 
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
+            Log.w("meniuu","error volley:"+error.getMessage());
             Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
             final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
             builder.setTitle("A aparut o eroare" + "Va rog sa reincercati");

@@ -1,7 +1,9 @@
 package bigcityapps.com.parkingalert;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -9,10 +11,23 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+
+import Util.Constants;
+import Util.SecurePreferences;
 
 /**
  * Created by Sistem1 on 01/10/2016.
@@ -21,23 +36,32 @@ public class TimerSender extends Activity implements View.OnClickListener {
     RelativeLayout back;
     int timer;
     boolean run;
-    String ora,nr_carString;
+    String ora,nr_carString,notification_id;
     private Handler mHandler = new Handler();
     private ProgressBar progBar;
     private int mProgressStatus=0;
     TextView text;
+    Context ctx;
+    RequestQueue queue;
+    SharedPreferences prefs;
+    RelativeLayout extended;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer_sender);
+        queue = Volley.newRequestQueue(this);
+        prefs = new SecurePreferences(this);
+        ctx=this;
         initComponents();
         Intent iin= getIntent();
         Bundle b = iin.getExtras();
         if(b!=null) {
             try {
                 timer = Integer.parseInt((String) b.get("time"));
-                ora = (String) b.get("hour");
-                nr_carString = (String) b.get("nr_car");
-                Log.w("meniuu","hour:"+ora);
+                ora = (String) b.get("mHour");
+
+                nr_carString = (String) b.get("mPlates");
+                notification_id = (String) b.get("notification_id");
+                Log.w("meniuu","mHour:"+ora);
                 try {
                     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                     Date d = df.parse(ora);
@@ -63,14 +87,14 @@ public class TimerSender extends Activity implements View.OnClickListener {
                         Log.w("meniuu","start");
                         dosomething();
                     }else {
-                        Intent harta = new Intent(TimerSender.this, Harta.class);
-                        harta.putExtra("hour", ora);
-                        harta.putExtra("nr_car", nr_carString);
+                        Intent harta = new Intent(TimerSender.this, Map.class);
+                        harta.putExtra("mHour", ora);
+                        harta.putExtra("mPlates", nr_carString);
                         harta.putExtra("time", timer);
                         startActivity(harta);
                         finish();
                     }
-                    Log.w("meniuu","data hour:"+ora);
+                    Log.w("meniuu","data mHour:"+ora);
                 }catch (Exception e){
                     e.printStackTrace();
                     Log.w("meniuu0","cahct");
@@ -130,6 +154,8 @@ public class TimerSender extends Activity implements View.OnClickListener {
         back.setOnClickListener(this);
         progBar= (ProgressBar)findViewById(R.id.progressBar);
         text = (TextView)findViewById(R.id.textView1);
+        extended=(RelativeLayout)findViewById(R.id.bottom);
+        extended.setOnClickListener(this);
     }
 
     /**
@@ -141,6 +167,42 @@ public class TimerSender extends Activity implements View.OnClickListener {
             case R.id.back_timer_sender:
                 finish();
                 break;
+            case R.id.bottom:
+                postExtended();
+                break;
         }
     }
+
+    public void postExtended(){
+        String url = Constants.URL+"notifications/receiverExtended/"+notification_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        Log.w("meniuu", "response:post answer" + response);
+//                        Intent harta= new Intent(Scan.this, Map.class);
+//                        startActivity(harta);
+                        finish();
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("extension_time","5");
+                return params;
+            }
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    Response.ErrorListener ErrorListener = new Response.ErrorListener() {
+        public void onErrorResponse(VolleyError error) {
+            Log.w("meniuu", "error: errorlistener:" + error);
+            Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
+        }
+    };
 }

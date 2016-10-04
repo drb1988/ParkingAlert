@@ -4,12 +4,12 @@ package bigcityapps.com.parkingalert;
  * Created by Sistem1 on 14/09/2016.
  */
 public class ModelNotification {
-    String image;
-    String title;
-    String details;
-    String message;
-    String hour;
-    int type;
+    String mImage;
+    String mTitle;
+    String mDetails;
+    String mMessage;
+    String mHour;
+    int mType;
 
     public boolean isRead() {
         return read;
@@ -50,12 +50,12 @@ public class ModelNotification {
 
     String id;
 
-    public int getType() {
-        return type;
+    public int getmType() {
+        return mType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setmType(int mType) {
+        this.mType = mType;
     }
 
 
@@ -68,44 +68,44 @@ public class ModelNotification {
         this.badge = badge;
     }
 
-    public String getImage() {
-        return image;
+    public String getmImage() {
+        return mImage;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setmImage(String mImage) {
+        this.mImage = mImage;
     }
 
     public String getTitle() {
-        return title;
+        return mTitle;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.mTitle = title;
     }
 
-    public String getDetails() {
-        return details;
+    public String getmDetails() {
+        return mDetails;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
+    public void setmDetails(String mDetails) {
+        this.mDetails = mDetails;
     }
 
-    public String getMessage() {
-        return message;
+    public String getmMessage() {
+        return mMessage;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setmMessage(String mMessage) {
+        this.mMessage = mMessage;
     }
 
-    public String getHour() {
-        return hour;
+    public String getmHour() {
+        return mHour;
     }
 
-    public void setHour(String hour) {
-        this.hour = hour;
+    public void setmHour(String mHour) {
+        this.mHour = mHour;
     }
 
     String badge;

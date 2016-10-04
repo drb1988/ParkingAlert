@@ -24,14 +24,12 @@ public class Timer  extends Activity implements View.OnClickListener{
     private TextView text;
     private Handler mHandler = new Handler();
     private int mProgressStatus=0;
-    TextView nr_car, time;
     RelativeLayout back;
     int timer;
     String TAG="meniuu";
     String ora, nr_carString;
     boolean run=true;
     TextView car_nr, time_answer;
-
 
     @Override
     protected void onStop() {
@@ -48,10 +46,9 @@ public class Timer  extends Activity implements View.OnClickListener{
         if(b!=null) {
             try {
                 timer = Integer.parseInt((String) b.get("time"));
-                ora = (String) b.get("hour");
-                nr_carString = (String) b.get("nr_car");
-                String [] split= ora.split("T");
-                Log.w("meniuu","hour:"+ora);
+                ora = (String) b.get("mHour");
+                nr_carString = (String) b.get("mPlates");
+                Log.w("meniuu","mHour:"+ora);
                 time_answer.setText("Raspuns la "+ora);
                 try {
                     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
@@ -78,14 +75,14 @@ public class Timer  extends Activity implements View.OnClickListener{
                         Log.w("meniuu","start");
                         dosomething();
                     }else {
-                        Intent harta = new Intent(Timer.this, Harta.class);
-                        harta.putExtra("hour", ora);
-                        harta.putExtra("nr_car", nr_carString);
+                        Intent harta = new Intent(Timer.this, Map.class);
+                        harta.putExtra("mHour", ora);
+                        harta.putExtra("mPlates", nr_carString);
                         harta.putExtra("time", timer);
                         startActivity(harta);
                         finish();
                     }
-                    Log.w("meniuu","data hour:"+ora);
+                    Log.w("meniuu","data mHour:"+ora);
                 }catch (Exception e){
                     e.printStackTrace();
                     Log.w("meniuu0","cahct");
@@ -116,7 +113,6 @@ public void initcComponents(){
             public void run() {
 
                 while (mProgressStatus > 0) {
-                    Log.w("meniuu","run:"+run);
                     if(run=false)
                         mProgressStatus=0;
                     mProgressStatus -= 1;
@@ -139,7 +135,6 @@ public void initcComponents(){
                                 else
                                     text.setText(minutes + ":" + sec);
                             }
-                            Log.w("meniuu","sec:"+sec+" min:"+minutes);
                         }
                     });
                     try {

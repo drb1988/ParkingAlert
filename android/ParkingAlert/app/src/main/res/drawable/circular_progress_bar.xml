@@ -11,7 +11,6 @@
             android:innerRadiusRatio="3"
             android:shape="ring"
             android:thicknessRatio="50.0"
-            android:type="sweep"
             android:useLevel="false">
             <solid android:color="#EF3E37" />
         </shape>
@@ -25,7 +24,7 @@
                 android:innerRadiusRatio="3"
                 android:shape="ring"
                 android:thicknessRatio="50.0"
-                android:type="sweep">
+                >
                 <solid android:color="#ffffff" />
             </shape>
         </rotate>

@@ -103,7 +103,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:background="@null"
-                android:hint="0743954877"
+                android:hint="nr tel"
                 android:inputType="number"
                 android:maxLines="1" />
 
@@ -135,7 +135,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:background="@null"
-                android:hint="driver license"
+                android:hint="seria permis"
                 android:maxLines="1" />
 
             <TextView
@@ -150,7 +150,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:background="@null"
-                android:hint="oradea"
+                android:hint="Oras"
                 android:maxLines="1" />
 
             <TextView

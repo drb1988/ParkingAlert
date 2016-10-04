@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,17 +34,25 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     TextView badge_count;
+    String notification_id=null,mPlates=null,notification_type,estimated_time,answered_at;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+    Context ctx;
 
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            Bundle x = getIntent().getExtras();
-            if(x!=null){
-                Log.w("meniuu",":"+x.getString("meniuu"));
+            Bundle b = intent.getExtras();
+            try {
+                notification_type = b.getString("notification_type");
+                notification_id = b.getString("notification_id");
+                mPlates = b.getString("mNr_car");
+                estimated_time = b.getString("estimated_time");
+                answered_at = b.getString("answered_at");
+                Log.w("meniuu", "notificaion:" + notification_id);
+                updateUi();
+            }catch (Exception e){
+                e.printStackTrace();
+                Log.w("meniuu","catch la luarea de la push");
             }
-            else
-            Log.w("meniuu","x este null");
-            updateUi();
         }
     };
     public void updateUi(){
@@ -64,13 +73,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ///firebase receiver
         registerReceiver(myReceiver, new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER));
-
         setContentView(R.layout.activity_main);
         mTitle = mDrawerTitle = getTitle();
         mNavigationDrawerItemTitles= getResources().getStringArray(bigcityapps.com.parkingalert.R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(bigcityapps.com.parkingalert.R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(bigcityapps.com.parkingalert.R.id.left_drawer);
-
+        ctx=this;
         setupToolbar();
 
 //        PackageInfo info;
@@ -89,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 //        } catch (PackageManager.NameNotFoundException e1) {
 //            Log.e("meniuu","name not found"+ e1.toString());
 //        } catch (NoSuchAlgorithmException e) {
-//            Log.e("meniuu","no such an algorithm"+ e.toString());
+//            Log.e("meniuu","no such edYear algorithm"+ e.toString());
 //        } catch (Exception e) {
 //            Log.e("exception", e.toString());
 //        }
@@ -184,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(user_profile);
                 break;
             case 5:
-                Intent masini= new Intent(MainActivity.this, Masini.class);
+                Intent masini= new Intent(MainActivity.this, Cars.class);
                 startActivity(masini);
                 break;
             default:
@@ -207,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * set title
+     * set tvTitle
      * @param title
      */
     public void setTitle(CharSequence title) {
@@ -225,6 +233,31 @@ public class MainActivity extends AppCompatActivity {
         final View notificaitons = menu.findItem(R.id.clopot).getActionView();
         badge_count = (TextView) notificaitons.findViewById(R.id.hotlist_hot);
         badge_count.setVisibility(View.INVISIBLE);
+        RelativeLayout clopot_layout= (RelativeLayout)notificaitons.findViewById(R.id.clopot_layout);
+        clopot_layout.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if(notification_id!=null) {
+                    badge_count.setVisibility(View.INVISIBLE);
+                    if(notification_type.equals("sender")) {
+                        Intent viewNotification = new Intent(MainActivity.this, ViewNotification.class);
+                        viewNotification.putExtra("notification_id", notification_id);
+                        viewNotification.putExtra("mPlates", mPlates);
+                        startActivity(viewNotification);
+                    }else   if(notification_type.equals("receiver")) {
+                        Intent timer = new Intent(MainActivity.this, Timer.class);
+                        timer.putExtra("time", estimated_time);
+                        timer.putExtra("mHour", answered_at);
+                        timer.putExtra("mPlates", mPlates);
+                        startActivity(timer);
+
+                    }else if(notification_type.equals("review")) {
+                        Toast.makeText(ctx,"Review", Toast.LENGTH_LONG).show();
+                    }
+                }
+                else
+                    Log.w("meniuu","e null");
+            }
+        });
 //        badge_count.setText("3");
         return true;
     }
@@ -232,8 +265,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.clopot:
-                Toast.makeText(this,"clopot",Toast.LENGTH_LONG).show();
-                return true;
+                if(notification_id!=null) {
+                    Intent viewNotification = new Intent(MainActivity.this, ViewNotification.class);
+                    viewNotification.putExtra("notification_id", notification_id);
+                    viewNotification.putExtra("mPlates", mPlates);
+                    startActivity(viewNotification);
+                    Toast.makeText(this, "clopot", Toast.LENGTH_LONG).show();
+                }
+                else
+                Log.w("meniuu","e null");
+            return true;
         }
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
