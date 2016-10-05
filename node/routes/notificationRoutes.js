@@ -97,7 +97,12 @@ var findUserToken = function(db, callback, userID) {
       db.collection('parking').findOne({"_id": o_id},
         function(err, result) {
               assert.equal(err, null);
+              if(result.security[0]){
               callback(result.security[0].device_token);
+              }
+              else {
+                callback("")
+              }
         });            
     }
 
