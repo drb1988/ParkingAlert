@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -28,12 +29,14 @@ import Util.SecurePreferences;
 /**
  * Created by fasu on 19/09/2016.
  */
-public class Vizualizare_masina extends Activity implements View.OnClickListener{
+public class ViewCar extends Activity implements View.OnClickListener{
     Context ctx;
     EditText tv_numele_masina, tv_nr, tv_producator, tv_model, tv_an_producti;
     RelativeLayout inapoi, salvare;
     RequestQueue queue;
+    String mPlatesOriginal;
     SharedPreferences prefs;
+    Switch switch_cars;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(bigcityapps.com.parkingalert.R.layout.vizualizare_masina);
@@ -44,6 +47,7 @@ public class Vizualizare_masina extends Activity implements View.OnClickListener
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
+            mPlatesOriginal=(String) b.get("edNr");
             tv_numele_masina.setText((String) b.get("edname"));
             tv_nr.setText((String) b.get("edNr"));
             tv_producator.setText((String) b.get("edMaker"));
@@ -52,13 +56,14 @@ public class Vizualizare_masina extends Activity implements View.OnClickListener
         }
     }
     public void initcomponents() {
-        tv_numele_masina = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_numele_masina);
-        tv_nr = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_nr);
-        tv_producator = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_producator);
-        tv_model = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_model);
-        tv_an_producti = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
-        inapoi=(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_vizualizare_masina);
-        salvare=(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.gata_vizualizare_masina);
+        switch_cars=(Switch)findViewById(R.id.switch_cars);
+        tv_numele_masina = (EditText) findViewById(R.id.et_numele_masina);
+        tv_nr = (EditText) findViewById(R.id.et_nr);
+        tv_producator = (EditText) findViewById(R.id.et_producator);
+        tv_model = (EditText) findViewById(R.id.et_model);
+        tv_an_producti = (EditText) findViewById(R.id.et_an_productie);
+        inapoi=(RelativeLayout)findViewById(R.id.inapoi_vizualizare_masina);
+        salvare=(RelativeLayout)findViewById(R.id.gata_vizualizare_masina);
         inapoi.setOnClickListener(this);
         salvare.setOnClickListener(this);
     }
@@ -67,21 +72,22 @@ public class Vizualizare_masina extends Activity implements View.OnClickListener
     switch (view.getId()){
         case R.id.inapoi_vizualizare_masina:
             finish();
-//    Intent rlBack= new Intent(Vizualizare_masina.this, MainActivity.class);
+//    Intent rlBack= new Intent(ViewCar.this, MainActivity.class);
 //        startActivity(rlBack);
         break;
 
         case R.id.gata_vizualizare_masina:
             updateCars(prefs.getString("user_id",""));
 
-//        Intent salvare= new Intent(Vizualizare_masina.this, MainActivity.class);
+//        Intent salvare= new Intent(ViewCar.this, MainActivity.class);
 //        startActivity(salvare);
         break;
 }
     }
 
     public void updateCars(final String id){
-        String url = Constants.URL+"users/updateCars/"+id;
+        String url = Constants.URL+"users/editCar/"+id+"&"+mPlatesOriginal;
+        Log.w("meniuu","url:"+url);
         if(tv_numele_masina.getText().length()==0 || tv_nr.getText().length()==0 || tv_producator.getText().length()==0 || tv_model.getText().length()==0 || tv_an_producti.getText().length()==0)
             Toast.makeText(ctx,"Completati toate campurile",Toast.LENGTH_LONG).show();
         else{
@@ -100,6 +106,11 @@ public class Vizualizare_masina extends Activity implements View.OnClickListener
                     params.put("make", tv_producator.getText().toString());
                     params.put("edModel", tv_model.getText().toString());
                     params.put("year", tv_an_producti.getText().toString());
+                    if(switch_cars.isChecked())
+                    params.put("enable_notifications", "1");
+                    else
+                    params.put("enable_notifications", "2");
+
                     return params;
                 }
 

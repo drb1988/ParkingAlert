@@ -1,6 +1,5 @@
 package bigcityapps.com.parkingalert;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +10,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,11 +50,12 @@ import Util.SecurePreferences;
 /**
  * Created by fasu on 19/09/2016.
  */
-public class Cars extends Activity implements View.OnClickListener{
+public class Cars extends AppCompatActivity implements View.OnClickListener{
     RelativeLayout rlBack, rlAdd;
     SharedPreferences prefs;
     Context ctx;
     NotificareAdapter adapter;
+    private CoordinatorLayout coordinatorLayout;
     TextView tvTitle, tvMessage;
     private RecyclerView recyclerView;
     RequestQueue queue;
@@ -69,7 +72,7 @@ public class Cars extends Activity implements View.OnClickListener{
         getCars(prefs.getString("user_id",""));
 //        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//            Intent vizualizare= new Intent(Cars.this,Vizualizare_masina.class);
+//            Intent vizualizare= new Intent(Cars.this,ViewCar.class);
 //                vizualizare.putExtra("edYear",carModelArrayList.get(i).getAn());
 //                vizualizare.putExtra("edname",carModelArrayList.get(i).getmCarName());
 //                vizualizare.putExtra("edNr",carModelArrayList.get(i).getNr());
@@ -90,6 +93,7 @@ public class Cars extends Activity implements View.OnClickListener{
     }
 
     public void initcomponents(){
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
         tvTitle =(TextView)findViewById(bigcityapps.com.parkingalert.R.id.title);
@@ -230,6 +234,7 @@ switch (view.getId()){
                         carModel.setModel(c.getString("model"));
                         carModel.setAn(c.getString("year"));
                         carModel.setProducator(c.getString("make"));
+//                        carModel.setEnable_notifications(c.getInt("enable_notifications")+"");
                         carModelArrayList.add(carModel);
                     }
                     if(carModelArrayList.size()>0) {
@@ -303,7 +308,7 @@ switch (view.getId()){
         public void onBindViewHolder(MyViewHolder holder, final int position) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    Intent vizualizare= new Intent(Cars.this,Vizualizare_masina.class);
+                    Intent vizualizare= new Intent(Cars.this,ViewCar.class);
                     vizualizare.putExtra("edYear", carModelArrayList.get(position).getAn());
                     vizualizare.putExtra("edname", carModelArrayList.get(position).getmCarName());
                     vizualizare.putExtra("edNr", carModelArrayList.get(position).getNr());
@@ -311,6 +316,7 @@ switch (view.getId()){
                     vizualizare.putExtra("edModel", carModelArrayList.get(position).getModel());
                     vizualizare.putExtra("edYear", carModelArrayList.get(position).getAn());
                     vizualizare.putExtra("image", carModelArrayList.get(position).getmImage());
+                    vizualizare.putExtra("enable_notifications", carModelArrayList.get(position).getEnable_notifications());
                     Log.w("meniuu","toate"+ carModelArrayList.get(position).getAn());
                     startActivity(vizualizare);
                 }
@@ -346,6 +352,14 @@ switch (view.getId()){
                         public void onResponse(String response) {
                             String json = response;
                             Log.w("meniuu", "response:post user" + response);
+                            Snackbar snackbar = Snackbar
+                                    .make(coordinatorLayout, "Masina a fost stearsa!", Snackbar.LENGTH_LONG);
+//                                    .setAction("SETARI", new View.OnClickListener() {
+//                                        public void onClick(View view) {
+//                                            startActivityForResult(new Intent(android. provider.Settings.ACTION_SETTINGS), 0);
+//                                        }
+//                                    });
+                            snackbar.show();
                         }
                     }, ErrorListener) {
                 protected Map<String, String> getParams() {

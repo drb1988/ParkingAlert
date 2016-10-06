@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 notification_type = b.getString("notification_type");
                 notification_id = b.getString("notification_id");
-                mPlates = b.getString("mNr_car");
+                mPlates = b.getString("mPlates");
                 estimated_time = b.getString("estimated_time");
                 answered_at = b.getString("answered_at");
                 Log.w("meniuu", "notificaion:" + notification_id);

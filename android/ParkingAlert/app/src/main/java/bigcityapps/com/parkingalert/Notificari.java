@@ -13,6 +13,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,6 +57,7 @@ import Util.SecurePreferences;
 public class Notificari extends AppCompatActivity implements View.OnClickListener{
     static boolean active = false;
     ListView listView;
+    private CoordinatorLayout coordinatorLayout;
     RecyclerView notifRecyclerView;
     RequestQueue queue;
     Context ctx;
@@ -159,6 +162,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
     }
     public void initComponents(){
 //        listView=(ListView)findViewById(R.id.listview_notificari);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         notifRecyclerView=(RecyclerView)findViewById(R.id.listview_notificari);
         search=(SearchView)findViewById(R.id.searchView);
         rlBack =(RelativeLayout)findViewById(R.id.inapoi);
@@ -555,11 +559,12 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
 
         }
         public void removeItem(int position) {
-//            deleteNotification("57e11909853b0122ac974e23");
+
+            deleteNotificationSender(modelNotificationArrayList.get(position).getId());
             moviesList.remove(position);
-            if(moviesList.size()==0){
+            if (moviesList.size() == 0) {
                 notifRecyclerView.setVisibility(View.INVISIBLE);
-            }else {
+            } else {
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, moviesList.size());
             }
@@ -570,16 +575,17 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    public void deleteNotification(final String id){
-        String url = Constants.URL+"users/removeCar/"+id;
+    public void deleteNotificationSender(final String id){
+        String url = Constants.URL+"notifications/receiverDeleted/"+id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
-                        Log.w("meniuu", "response:post user" + response);
+                        Log.w("meniuu", "response:delete notificationSender" + response);
+                        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Notificarea a fost stearsa!", Snackbar.LENGTH_LONG);
+                        snackbar.show();
                     }
                 }, ErrorListener) {
-
 //            protected Map<String, String> getParams() {
 //                Map<String, String> params = new HashMap<String, String>();
 //                params.put("plates", plates);
@@ -605,7 +611,9 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                 int position = viewHolder.getAdapterPosition();
 
                 if (direction == ItemTouchHelper.LEFT){
-                    adapter.removeItem(position);
+                    if(modelNotificationArrayList.get(position).getmType()==3||modelNotificationArrayList.get(position).getmType()==4) {
+                        adapter.removeItem(position);
+                    }
                 } else {
 //                    removeView();
 //                    edit_position = position;

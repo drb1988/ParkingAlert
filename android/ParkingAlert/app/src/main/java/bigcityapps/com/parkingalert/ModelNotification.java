@@ -10,6 +10,26 @@ public class ModelNotification {
     String mMessage;
     String mHour;
     int mType;
+    boolean extended;
+
+    public String getExtension_time() {
+        return extension_time;
+    }
+
+    public void setExtension_time(String extension_time) {
+        this.extension_time = extension_time;
+    }
+
+    public boolean isExtended() {
+        return extended;
+    }
+
+    public void setExtended(boolean extended) {
+        this.extended = extended;
+    }
+
+    String extension_time;
+
 
     public boolean isRead() {
         return read;

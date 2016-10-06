@@ -145,12 +145,39 @@
                 android:background="@android:color/transparent"
                 android:hint="An de productie"
                 android:padding="20dp"
+                android:inputType="number"
                 android:textColor="@color/blue_white"
                 android:textSize="@dimen/txt_size" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="90dp"
+                android:background="@color/lista_masini_conduci"></RelativeLayout>
+
+            <RelativeLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:background="@android:color/transparent">
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/blue_white"
+                    android:textSize="@dimen/txt_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Primesti notificari" />
+
+                <Switch
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/switch_cars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
                 android:background="@color/lista_masini_conduci"></RelativeLayout>
         </LinearLayout>
     </ScrollView>

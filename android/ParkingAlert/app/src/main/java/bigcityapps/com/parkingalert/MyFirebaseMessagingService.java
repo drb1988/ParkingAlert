@@ -46,7 +46,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
 
             if(notification_type.equals("sender")) {
-
                 notification_id = question.getString("notification_id");
                 if(Notificari.active) {
                     Intent intent = new Intent(INTENT_FILTER_Notificari);
@@ -105,9 +104,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     sendNotification(notification_type,remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(),notification_id,nr_car,estimated_time,answered_at);
                     Log.w("meniuu","se trimite notificare");
                 }
+            }else if(notification_type.equals("review")) {
+                notification_id = question.getString("notification_id");
+
+                if(Notificari.active) {
+                    Intent intent = new Intent(INTENT_FILTER_Notificari);
+                    sendBroadcast(intent);
+                }else
+                if(MainActivity.active){
+                    Intent intent = new Intent(INTENT_FILTER);
+                    intent.putExtra("mPlates",nr_car);
+                    intent.putExtra("notification_type",notification_type);
+                    intent.putExtra("answered_at",answered_at);
+                    intent.putExtra("notification_id",notification_id);
+                    sendBroadcast(intent);
+                }else {
+                    sendNotification(notification_type,remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(),notification_id,nr_car,estimated_time,answered_at);
+                    Log.w("meniuu","se trimite notificare");
+                }
             }
-
-
 
         } catch (JSONException e) {
             Log.w("meniuu","catch la firebase");
@@ -130,11 +145,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent.putExtra("mHour", answered_at);
             intent.putExtra("mPlates", nr_car);
         }else
+        if(notification_type.equals("extended")) {
+            intent = new Intent(this, Timer.class);
+            intent.putExtra("time", estimated_time);
+            intent.putExtra("mHour", answered_at);
+            intent.putExtra("mPlates", nr_car);
+            Log.w("meniuu","review");
+        }else
         if(notification_type.equals("review")) {
-//            intent = new Intent(this, Timer.class);
-//            intent.putExtra("time", estimated_time);
-//            intent.putExtra("mHour", answered_at);
-//            intent.putExtra("mPlates", nr_car);
+            intent = new Intent(this, Review.class);
+            intent.putExtra("notification_id", notification_id);
+            intent.putExtra("mPlates", nr_car);
             Log.w("meniuu","review");
         }
 

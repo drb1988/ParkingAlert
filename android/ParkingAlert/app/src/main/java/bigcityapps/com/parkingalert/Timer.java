@@ -39,7 +39,7 @@ public class Timer  extends Activity implements View.OnClickListener{
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(bigcityapps.com.parkingalert.R.layout.timer);
+        setContentView(R.layout.timer);
         initcComponents();
         Intent iin= getIntent();
         Bundle b = iin.getExtras();
@@ -111,12 +111,11 @@ public void initcComponents(){
     public void dosomething() {
         new Thread(new Runnable() {
             public void run() {
-
                 while (mProgressStatus > 0) {
-                    if(run=false)
-                        mProgressStatus=0;
+                    Log.w("meniuu","in while run="+run);
+                    if(run==false)
+                        mProgressStatus=1;
                     mProgressStatus -= 1;
-                    // Update the progress bar
                     mHandler.post(new Runnable() {
                         public void run() {
                             progBar.setProgress(mProgressStatus);

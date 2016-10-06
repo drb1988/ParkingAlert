@@ -8,6 +8,16 @@ public class CarModel {
     String mMaker;
     String mCarName;
 
+    public String getEnable_notifications() {
+        return enable_notifications;
+    }
+
+    public void setEnable_notifications(String enable_notifications) {
+        this.enable_notifications = enable_notifications;
+    }
+
+    String enable_notifications;
+
     public String getmCarName() {
         return mCarName;
     }

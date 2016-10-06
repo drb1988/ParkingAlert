@@ -59,7 +59,7 @@ dependencies {
     ///for imageview
     compile 'com.github.bumptech.glide:glide:3.7.0'
     //butonu cela
-    compile 'com.android.support:design:23.2.0'
+    compile 'com.android.support:design:24.2.1'
     //recyclerview
     compile 'com.android.support:recyclerview-v7:24.2.1'
     //firebase
@@ -89,5 +89,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.4@aar') {
         transitive = true;
     }
+
+    ////mockito
+    testCompile "org.mockito:mockito-core:1.9.5"
 }
 apply plugin: 'com.google.gms.google-services'

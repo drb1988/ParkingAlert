@@ -131,7 +131,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 if(diff<86400) {
                     minutes=(int)diff/60/60;
                     if(minutes==1)
-                    mText = "Acum " +minutes+" mHour";
+                    mText = "Acum " +minutes+" ora";
                     else
                         mText = "Acum " +minutes+" ore";
                 }else

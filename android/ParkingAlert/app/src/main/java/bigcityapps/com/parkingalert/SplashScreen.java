@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import Util.SecurePreferences;
@@ -27,30 +28,37 @@ public class SplashScreen extends Activity {
         ctx=this;
 
         if(x!=null) {
-            notification_type=(String)x.getString("notification_type");
-            nr_car=(String)x.getString("car_id");
-            notification_id=(String)x.getString("notification_id");
-            estimated_time=(String)x.getString("estimated_time");
-            answered_at=(String)x.getString("answered_at");
-            mPlates=(String)x.getString("mPlates");
+            try{
+            notification_type = (String) x.getString("notification_type");
+            nr_car = (String) x.getString("car_id");
+            notification_id = (String) x.getString("notification_id");
+            estimated_time = (String) x.getString("estimated_time");
+            answered_at = (String) x.getString("answered_at");
+            mPlates = (String) x.getString("mPlates");
 
-            if(notification_type.equals("sender")) {
+            if (notification_type.equals("sender")) {
                 Intent intent = new Intent(this, ViewNotification.class);
                 intent.putExtra("mPlates", nr_car);
                 intent.putExtra("notification_id", notification_id);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
-            }else
-            if(notification_type.equals("receiver")) {
+            } else if (notification_type.equals("receiver")) {
                 Intent timer = new Intent(SplashScreen.this, Timer.class);
                 timer.putExtra("time", estimated_time);
                 timer.putExtra("mHour", answered_at);
                 timer.putExtra("mPlates", mPlates);
                 startActivity(timer);
                 finish();
-            }else  if(notification_type.equals("review")) {
-                Toast.makeText(ctx, "revieew",Toast.LENGTH_LONG).show();
+            } else if (notification_type.equals("review")) {
+                Toast.makeText(ctx, "revieew", Toast.LENGTH_LONG).show();
+            }
+        }catch (Exception e){
+                Intent i = new Intent(SplashScreen.this, MainActivity.class);
+                startActivity(i);
+                finish();
+                e.printStackTrace();
+                Log.w("meniuu","catch la notificare");
             }
 
         }else

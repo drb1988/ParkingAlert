@@ -35,7 +35,7 @@ import Util.SecurePreferences;
 public class TimerSender extends Activity implements View.OnClickListener {
     RelativeLayout back;
     int timer;
-    boolean run;
+    boolean run=true;
     String ora,nr_carString,notification_id;
     private Handler mHandler = new Handler();
     private ProgressBar progBar;
@@ -45,6 +45,11 @@ public class TimerSender extends Activity implements View.OnClickListener {
     RequestQueue queue;
     SharedPreferences prefs;
     RelativeLayout extended;
+    @Override
+    protected void onStop() {
+        run=false;
+        super.onStop();
+    }
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer_sender);
@@ -110,9 +115,9 @@ public class TimerSender extends Activity implements View.OnClickListener {
             public void run() {
 
                 while (mProgressStatus > 0) {
-                    Log.w("meniuu","run:"+run);
-                    if(run=false)
-                        mProgressStatus=0;
+                    Log.w("meniuu","run:"+run+" daca e fals ar trebui sa se opreasca:"+mProgressStatus);
+                    if(run==false)
+                        mProgressStatus=1;
                     mProgressStatus -= 1;
                     // Update the progress bar
                     mHandler.post(new Runnable() {
@@ -131,7 +136,7 @@ public class TimerSender extends Activity implements View.OnClickListener {
                                 else
                                     text.setText(minutes + ":" + sec);
                             }
-                            Log.w("meniuu","sec:"+sec+" min:"+minutes);
+                            Log.w("meniuu","sec in timersender:"+sec+" min:"+minutes);
                         }
                     });
                     try {
