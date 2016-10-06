@@ -22,7 +22,9 @@ router.get('/getNotifications', function(req, res, next) {
 		      assert.equal(err, null);
 		      if (doc != null) {
 		         console.log(doc.location.coordinates);
-		         result.push(doc.location.coordinates);
+		         console.log(doc.create_date);
+		         result.push({"coordinates": doc.location.coordinates,
+		     			"create_date": doc.create_date});
 		      } else {
 		         callback();
 		         res.status(200).send(result)
