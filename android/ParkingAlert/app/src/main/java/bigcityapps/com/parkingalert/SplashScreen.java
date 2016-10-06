@@ -51,6 +51,11 @@ public class SplashScreen extends Activity {
                 startActivity(timer);
                 finish();
             } else if (notification_type.equals("review")) {
+                Intent timer = new Intent(SplashScreen.this, Review.class);
+                timer.putExtra("mHour", answered_at);
+                timer.putExtra("mPlates", mPlates);
+                startActivity(timer);
+                finish();
                 Toast.makeText(ctx, "revieew", Toast.LENGTH_LONG).show();
             }
         }catch (Exception e){

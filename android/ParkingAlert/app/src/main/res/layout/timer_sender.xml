@@ -37,7 +37,6 @@
             android:textSize="18dp" />
     </RelativeLayout>
 
-
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -67,7 +66,8 @@
         android:layout_marginBottom="15dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/background_extinde_timpul">
+        android:background="@drawable/background_extinde_timpul"
+        android:visibility="invisible">
 
 
         <TextView

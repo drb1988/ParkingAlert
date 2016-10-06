@@ -115,6 +115,10 @@ public class TimerSender extends Activity implements View.OnClickListener {
             public void run() {
 
                 while (mProgressStatus > 0) {
+                    if(mProgressStatus<21){
+                        if(extended.getVisibility()==View.INVISIBLE)
+                            extended.setVisibility(View.VISIBLE);
+                    }
                     Log.w("meniuu","run:"+run+" daca e fals ar trebui sa se opreasca:"+mProgressStatus);
                     if(run==false)
                         mProgressStatus=1;

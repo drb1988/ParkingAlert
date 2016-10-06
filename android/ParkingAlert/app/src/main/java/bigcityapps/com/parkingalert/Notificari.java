@@ -245,7 +245,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
 //                holder.bagde.setImageResource(R.drawable.cerculet_notif);
 //            }
 //            if(item.getmType()==3) {
-//                if(item.isRead()==false) {
+//                if(item.isReceiverRead()==false) {
 //                    holder.bagde.setImageResource(R.drawable.cerculet_notif);
 //                    Log.w("meniuu","cerc");
 //                }
@@ -341,18 +341,20 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                                 SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
                                 String data=format1.format(myDate);
                                 modelNotification.setmHour(data);
+                                if(c.getBoolean("sender_read"))
+                                    modelNotification.setSenderRead(true);
+                                else
+                                    modelNotification.setSenderRead(false);
                             }
                         }else
                         if(c.getString("receiver_id").equals(id))
                         {
                             if(answer.getString("estimated").equals("null")) {
                                 modelNotification.setmType(3);
-                                if(c.getBoolean("receiver_read")) {
-                                    modelNotification.setRead(true);
-                                }
-                                else {
-                                    modelNotification.setRead(false);
-                                }
+                                if(c.getBoolean("receiver_read"))
+                                    modelNotification.setReceiverRead(true);
+                                else
+                                    modelNotification.setReceiverRead(false);
                                 modelNotification.setTitle("Ai primit notificare");
                                 modelNotification.setmMessage("Vino la masina pt ca m-ai blocat");
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -444,6 +446,32 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
             };
             queue.add(stringRequest);
     }
+    public void senderRead(String notification_id){
+        Log.w("meniuu","notification id:"+notification_id);
+        String url = Constants.URL+"notifications/senderRead/"+notification_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        Log.w("meniuu", "response: receiveranswer" + response);
+                    }
+                }, ErrorListener) {
+//                protected java.util.Map getParams() {
+//                    java.util.Map params = new HashMap<String, String>();
+//                    params.put("mLatitude", "24");
+//                    params.put("mLongitude", "24");
+//                    return params;
+//                }
+
+            public java.util.Map getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer "+auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
 
     /////recycler view adpater
     public class NotificareAdapter extends RecyclerView.Adapter<NotificareAdapter.MyViewHolder>{
@@ -492,6 +520,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                         startActivity(view_notification);
                     } else
                     if(modelNotificationArrayList.get(position).getmType()==2) {
+                        senderRead(modelNotificationArrayList.get(position).getId());
                         Intent timer = new Intent(Notificari.this, Timer.class);
                         timer.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
                         timer.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
@@ -521,10 +550,17 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
             holder.mesaj.setText(item.getmMessage());
 
             if(item.getmType()==2) {
-                holder.bagde.setImageResource(R.drawable.cerculet_notif);
+                if(item.isSenderRead()==false) {
+                    holder.bagde.setImageResource(R.drawable.cerculet_notif);
+                    Log.w("meniuu","cerc");
+                }
+                else {
+                    holder.bagde.setImageResource(android.R.color.transparent);
+                    Log.w("meniuu","transarent");
+                }
             }
             if(item.getmType()==3) {
-                if(item.isRead()==false) {
+                if(item.isReceiverRead()==false) {
                     holder.bagde.setImageResource(R.drawable.cerculet_notif);
                     Log.w("meniuu","cerc");
                 }

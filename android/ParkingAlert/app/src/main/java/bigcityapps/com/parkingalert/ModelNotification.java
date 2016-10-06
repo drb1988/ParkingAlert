@@ -11,6 +11,17 @@ public class ModelNotification {
     String mHour;
     int mType;
     boolean extended;
+    boolean receiverRead;
+
+    public boolean isSenderRead() {
+        return senderRead;
+    }
+
+    public void setSenderRead(boolean senderRead) {
+        this.senderRead = senderRead;
+    }
+
+    boolean senderRead;
 
     public String getExtension_time() {
         return extension_time;
@@ -31,15 +42,15 @@ public class ModelNotification {
     String extension_time;
 
 
-    public boolean isRead() {
-        return read;
+    public boolean isReceiverRead() {
+        return receiverRead;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setReceiverRead(boolean receiverRead) {
+        this.receiverRead = receiverRead;
     }
 
-    boolean read;
+
 
     public String getNr_car() {
         return nr_car;
