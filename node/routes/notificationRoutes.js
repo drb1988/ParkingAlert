@@ -209,7 +209,7 @@ router.get('/receiverRead/:notificationID', function(req, res, next) {
   });
   });
 
-router.post('/senderRead/:notificationID', function(req, res, next) {
+router.get('/senderRead/:notificationID', function(req, res, next) {
     /**
     * Route to mark notifications as read by the sender,
     * @name /receiverRead/:notificationID
