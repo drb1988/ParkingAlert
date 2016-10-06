@@ -3,8 +3,7 @@
     android:layout_height="wrap_content"
     android:background="@color/blue_white"
     android:id="@+id/relative_listview"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    >
+    android:minHeight="?android:attr/listPreferredItemHeightSmall">
 
     <ImageView
         android:id="@+id/imageViewIcon"
@@ -22,7 +21,7 @@
         android:layout_toRightOf="@+id/imageViewIcon"
         android:paddingRight="10dp"
         android:text="Item Name"
-        android:textColor="@android:color/black"
+        android:textColor="@color/alb"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         />
 

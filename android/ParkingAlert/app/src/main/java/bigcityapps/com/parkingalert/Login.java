@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -50,7 +52,7 @@ public class Login extends Activity implements View.OnClickListener {
     Context ctx;
     private LoginButton loginButton;
     private CallbackManager callbackManager;
-    EditText edName, edemail, edNickname, edDriverLicense, edCity;
+    EditText edName, edemail, edPrenume;
     RelativeLayout rlNext;
     RequestQueue queue;
     SharedPreferences prefs;
@@ -77,7 +79,7 @@ public class Login extends Activity implements View.OnClickListener {
                             Log.w("meniuu","obj.getemail:"+object.getString("edemail"));
                             edemail.setText(object.getString("edemail"));
                             edName.setText(object.getString("name"));
-                            edCity.setText(object.getString("edCity"));
+//                            edCity.setText(object.getString("edCity"));
                         } catch (JSONException e) {
                             Log.w("meniuu","catch");
                             e.printStackTrace();
@@ -100,6 +102,33 @@ public class Login extends Activity implements View.OnClickListener {
                 e.printStackTrace();
             }
         });
+
+        edName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }else
+                    showKeyboard(edName);
+
+            }
+        });
+        edPrenume.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }else
+                    showKeyboard(edPrenume);
+            }
+        });
+        edemail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }else
+                    showKeyboard(edemail);
+            }
+
+        });
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -110,10 +139,8 @@ public class Login extends Activity implements View.OnClickListener {
      */
     public void initComponents(){
         edName =(EditText)findViewById(R.id.nume_login);
-        edNickname =(EditText)findViewById(R.id.nick_name_login);
+        edPrenume =(EditText)findViewById(R.id.prenume_login);
         edemail =(EditText)findViewById(R.id.email_login);
-        edDriverLicense =(EditText)findViewById(R.id.driver_license_login);
-        edCity =(EditText)findViewById(R.id.city_login);
         rlNext =(RelativeLayout) findViewById(R.id.continuare);
         rlNext.setOnClickListener(this);
     }
@@ -162,13 +189,23 @@ public class Login extends Activity implements View.OnClickListener {
         };
         queue.add(stringRequest);
 }
+
+    public final static boolean isValidEmail(CharSequence target) {
+        if (TextUtils.isEmpty(target)) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
+    }
     /**
      * post user method
      */
     public void postUser(){
         final SharedPreferences prefs = new SecurePreferences(ctx);
         String url = Constants.URL+"signup/user";
-        if(edName.getText().length()==0 || edNickname.getText().length()==0 || edemail.getText().length()==0 || edDriverLicense.getText().length()==0 || edCity.getText().length()==0)
+     Log.w("meniuu","email:"+isValidEmail(edemail.getText()));
+
+        if(edName.getText().length()==0 || isValidEmail(edemail.getText())==false )
             Toast.makeText(ctx,"Completati toate campurile",Toast.LENGTH_LONG).show();
         else{
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -196,13 +233,13 @@ public class Login extends Activity implements View.OnClickListener {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("first_name", edName.getText().toString());
-                    params.put("last_name", edName.getText().toString());
-                    params.put("edNickname", edNickname.getText().toString());
+                    params.put("last_name", edPrenume.getText().toString());
+                    params.put("edNickname", edName.getText().toString()+edPrenume.getText().toString());
                     params.put("edemail", edemail.getText().toString());
-                    params.put("edDriverLicense", edDriverLicense.getText().toString());
+                    params.put("edDriverLicense", "driverlicense");
                     params.put("photo", "photo");
                     params.put("platform", "Android");
-                    params.put("user_city", edCity.getText().toString());
+                    params.put("user_city", "city");
                     return params;
                 }
             };
@@ -215,4 +252,12 @@ public class Login extends Activity implements View.OnClickListener {
             Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
         }
     };
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+    public void showKeyboard(EditText ed) {
+        InputMethodManager keyboard = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboard.showSoftInput(ed, 0);
+    }
 }

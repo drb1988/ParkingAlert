@@ -2,6 +2,7 @@ package bigcityapps.com.parkingalert;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -20,13 +21,20 @@ public class Review extends Activity implements View.OnClickListener{
     RequestQueue queue;
     SharedPreferences prefs;
     RelativeLayout inapoi,anuleaza, nu, da;
+    String mNotification_id, mPlates;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.masini);
+        setContentView(R.layout.review);
         initcomponents();
         ctx = this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
+        Intent iin= getIntent();
+        Bundle b = iin.getExtras();
+        if(b!=null) {
+            mNotification_id = (String) b.get("notification_id");
+            mPlates = (String) b.get("mPlates");
+        }
     }
     public void initcomponents(){
         inapoi=(RelativeLayout)findViewById(R.id.inapoi_review);

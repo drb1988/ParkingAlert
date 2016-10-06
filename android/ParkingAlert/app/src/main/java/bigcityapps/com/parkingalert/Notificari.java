@@ -397,7 +397,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
 //                        listView.setAdapter(adapter);
 //                        adapter.notifyDataSetChanged();
                     }else {
-                        listView.setVisibility(View.INVISIBLE);
+                        notifRecyclerView.setVisibility(View.INVISIBLE);
                     }
                 } catch (Throwable t) {
                     Log.w("meniuu", "cacth get questions");
