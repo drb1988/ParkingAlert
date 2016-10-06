@@ -237,13 +237,14 @@ router.post('/editCar/:userID&:plates', function(req, res, next) {
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
              {$set: { 
-                         "cars":{ 	
+                         "cars":[{ 	
                         			"plates": req.body.plates,
       								"given_name": req.body.given_name,
       								"make": req.body.make,
       								"model": req.body.model,
-      								"year": req.body.year 
-      							}  
+      								"year": req.body.year,
+      								"enable_notifications": req.body.enable_notifications 
+      							}]  
                       }
              },function(err, result) {
 				    assert.equal(err, null);
