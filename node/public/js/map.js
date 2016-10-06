@@ -65,7 +65,7 @@ function initMap() {
 	// For each place, get the icon, name and location.
 	var bounds = new google.maps.LatLngBounds();
 	places.forEach(function(place) {
-	if (!place.geometry) {
+	if (!place.geometry) { 
 	console.log("Returned place contains no geometry");
 	return;
 	}
@@ -86,7 +86,7 @@ function initMap() {
 	drawingControlOptions: {
 	position: google.maps.ControlPosition.TOP_CENTER,
 	drawingModes: [google.maps.drawing.OverlayType.RECTANGLE],
-	drawingModes: ['circle', 'rectangle'] // all options 'marker', 'circle', 'polygon', 'polyline', 'rectangle'
+	drawingModes: ['circle', 'rectangle', 'polygon'] // all options 'marker', 'circle', 'polygon', 'polyline', 'rectangle'
 	},
 	circleOptions: {
 		fillColor: '#ffff00',
@@ -100,6 +100,8 @@ function initMap() {
 
 	google.maps.event.addListener(drawingManager, 'circlecomplete', onCircleComplete);
 	google.maps.event.addListener(drawingManager, 'rectanglecomplete', onRectangleComplete);
+	google.maps.event.addListener(drawingManager, 'polygoncomplete', onPolygonComplete);
+
 	function onCircleComplete(shape) {
         if (shape == null || (!(shape instanceof google.maps.Circle))) return;
 
@@ -125,6 +127,19 @@ function initMap() {
         // console.log('getSouthWest lng: ',  rectangle.getBounds().getSouthWest().lng());
     }
 
+    function onPolygonComplete(shape) {
+        if (shape == null || (!(shape instanceof google.maps.Polygon))) return;
+
+        polygon = setDrowingToolNull(polygon);
+        console.log("rect " );
+        polygon = shape;
+        console.log('polygon ne lat: ',  polygon.getPath());
+        // console.log('getNorthEast lat: ',  rectangle.getBounds().getNorthEast().lat());
+        // console.log('getNorthEast lng: ',  rectangle.getBounds().getNorthEast().lng());
+        // console.log('getSouthWest lat: ',  rectangle.getBounds().getSouthWest().lat());
+        // console.log('getSouthWest lng: ',  rectangle.getBounds().getSouthWest().lng());
+    }
+
     var setDrowingToolNull = function(shape) {
     	console.log("aici");
     	if (rectangle != null) {
@@ -134,6 +149,10 @@ function initMap() {
         if (circle != null) {
             circle.setMap(null);
             circle = null;
+        }
+        if (polygon != null) {
+            polygon.setMap(null);
+            polygon = null;
         }
         return null;
     }

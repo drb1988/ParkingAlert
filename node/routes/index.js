@@ -219,7 +219,7 @@ router.get('/users', function(req, res, next) {
   res.render('users', { title: 'Express' });
 });
 
-router.get('/users/:userId', function(req, res, next) {
+router.get('/user_profile', function(req, res, next) {
     /**
     * Route to get users by ID,
     * @name /users/:userId
@@ -227,5 +227,6 @@ router.get('/users/:userId', function(req, res, next) {
     */
   res.render('user', { title: 'Express' });
 });
+
 
 module.exports = router;
