@@ -1,0 +1,30 @@
+block content
+ script(src='/js/highcarts/highcharts.js')
+ script(src='/js/highcarts/exporting.js')
+ script(src='/js/highcarts/main.js')
+
+ .row
+  .row.chart-container.content-hidden
+   .col-md-12
+    .col-md-2
+    .col-md-10
+     .form-group
+      .checkbox
+        label 
+          input(type='checkbox' value='' name='checkbox_1' checked='')
+          label Persoane care au ajuns la timp
+      .checkbox
+        label
+          input(type='checkbox' value='' name='checkbox_2' checked='')
+          label Persoane care nu au ajuns la timp
+      .checkbox
+        label
+          input(type='checkbox' value='' name='checkbox_3' checked='')
+          label Notificari fara raspuns
+
+  .col-md-12
+   #container.chart-container.content-hidden(style='min-width: 0px; height: 400px; margin: 0 auto; max-width:1000px;')
+
+block scripts
+
+

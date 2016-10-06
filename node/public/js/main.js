@@ -1,51 +1,98 @@
+$.getScript("/./js/global-needs.js", function(){
 $(document).ready(function() {
-  togleIsDaily();
-  togleIsMultiple();
-  initDatePicker();
-  initTinyMCE();
+  activeAjaxMap();
+  activeAjaxChart();
 });
 
+function activeAjaxMap()  {
+  var prevArrMarkers = '',
+      prevArr = '',
+      theArr = '',
+      typeOfMap = false;
 
+  $( "#reinitMarker" ).click(function() {
+    typeOfMap = !typeOfMap;
 
-function togleIsDaily() {
-  $('.js_isDaily').on('click', function(){
-    console.log('test');
-    $('#js_daily-start-date').toggleClass('hidden');
+    if(prevArrMarkers) 
+      for (var i = 0; i < prevArrMarkers.length; i++) 
+        prevArrMarkers[i].setMap(null);
+  
+    if(typeOfMap) prevArrMarkers = theArr==''? reinitMarker(prevArr) : reinitMarker(theArr);
+    else
+      if(theArr && prevArr) reinit(theArr);
+      else reinit(prevArr);
+
+  });
+
+  $("input#ajaxDate").change(function(){
+    console.log('changed');
+    var selectedDate = $("input[name=daterange]").val() ? $("input[name=daterange]").val() : false;
+    console.log("selected date: "+selectedDate);
+    if(selectedDate && selectedDate!="2016-01-01 01:00:00 - 2016-12-30 24:00:00") {
+      var date = selectedDate.split(" - ");
+      var startDateTime = date[0],
+          endDateTime = date[1];
+      var json = {
+        selectedDate: selectedDate, 
+        endDateTime : endDateTime,
+        circle: {
+          is_defined: circle ? true : false,
+          value: {
+            radius: circle ? circle.getRadius() : null,
+            center: {
+              lat: circle ? circle.getCenter().lat() : null,
+              lng: circle ? circle.getCenter().lng() : null
+            }
+          }
+        },
+        rectangle: {
+          is_defined: rectangle ? true : false,
+          value: {
+            NorthEast: {
+              lat: rectangle ? rectangle.getBounds().getNorthEast().lat() : null,
+              lng: rectangle ? rectangle.getBounds().getNorthEast().lng() : null
+            },
+            SouthWest: {
+              lat: rectangle ? rectangle.getBounds().getSouthWest().lat() : null,
+              lng: rectangle ? rectangle.getBounds().getSouthWest().lng() : null
+            }
+          }
+        }
+      };
+      // make ajax call to the server
+      console.log("map in ajax ",json);
+      $.ajax({
+        async: true,
+        type: "POST",
+        url: "/heatmaps_ajax_map", 
+        data: json,
+        success: function(result) {
+          $("#div1").text("The map has changed"); // alert user 
+
+          if(prevArrMarkers) {
+            for (var i = 0; i < prevArrMarkers.length; i++) 
+              prevArrMarkers[i].setMap(null);
+            prevArrMarkers= '';
+          }
+
+          if(typeOfMap)
+            prevArrMarkers = reinitMarker(result);
+          else
+            reinit(result);
+
+          if(prevArr) {
+            prevArr = theArr;
+            theArr = result;
+          }
+          else {
+            prevArr = result;
+          }
+       }
+      });
+    }
   });
 }
-function togleIsMultiple() {
-  $('.js_isMultiple').on('click', function(){
-    console.log('test is multiple');
-    $('#js_multiple').toggleClass('hidden');
-  });
-}
-
-function initDatePicker() {
-  $("#datepicker").datepicker({
-    dateFormat: "yy-mm-dd"
-  });
-  $("#datepickerStart").datepicker({
-    dateFormat: "yy-mm-dd"
-  });
-  $("#datepickerEnd").datepicker({
-    dateFormat: "yy-mm-dd"
-  });
-}
-
-function initTinyMCE() {
-  tinymce.init({
-    selector: '.tiniymce',
-    height: 500,
-    plugins: [
-      "advlist autolink lists link image charmap print preview anchor",
-      "searchreplace visualblocks code fullscreen",
-      "insertdatetime media table contextmenu paste imagetools"
-    ],
-    toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-    imagetools_cors_hosts: ['www.tinymce.com', 'codepen.io'],
-    content_css: [
-      '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
-      '//www.tinymce.com/css/codepen.min.css'
-    ]
-  });
+});
+function activeAjaxChart()  {
+  
 }

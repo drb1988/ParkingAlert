@@ -30,7 +30,8 @@ router.post('/addCar/:userID', function(req, res, next) {
       								"given_name": req.body.given_name,
       								"make": req.body.make,
       								"model": req.body.model,
-      								"year": req.body.year 
+      								"year": req.body.year,
+      								"enable_notifications": true 
       							} 
                       }
              },function(err, result) {
@@ -117,7 +118,7 @@ router.get('/getNotifications/:userID', function(req, res, next) {
     	var findNotifications = function(db, callback) {   
 	 	var o_id = new ObjectId(req.params.userID);
 	 		var result = [];
-		    var cursor =db.collection('notifications').find({$or: [{"receiver_id": o_id}, {"sender_id": o_id}]});
+		    var cursor =db.collection('notifications').find({$or: [{"receiver_id": o_id}, {"sender_id": o_id}]}).sort([['_id', -1]]);
 		    cursor.each(function(err, doc) {
 		      assert.equal(err, null);
 		      if (doc != null) {
@@ -236,12 +237,71 @@ router.post('/editCar/:userID&:plates', function(req, res, next) {
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
              {$set: { 
-                         "cars":{ 	
+                         "cars":[{ 	
                         			"plates": req.body.plates,
       								"given_name": req.body.given_name,
       								"make": req.body.make,
       								"model": req.body.model,
-      								"year": req.body.year 
+      								"year": req.body.year,
+      								"enable_notifications": req.body.enable_notifications 
+      							}]  
+                      }
+             },function(err, result) {
+				    assert.equal(err, null);
+				    console.log("Inserted a car for the user "+req.params.userID);
+				    callback();
+			});            
+	}
+	MongoClient.connect(dbConfig.url, function(err, db) {
+		  assert.equal(null, err);
+		  deleteCar(db, function() {
+		      db.close();
+		      res.status(200).send(req.params.userID)
+		  });
+		});
+})
+
+router.get('/enableNotifications/:userID&:plates', function(req, res, next) {
+    /**
+    * Route to enable notifications for a car,
+    * @name /editCar/:userID&:plates
+    * @param {String} :userID&:plates
+    */
+    var deleteCar = function(db, callback) {   
+ 	var o_id = new ObjectId(req.params.userID);
+    db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+             {$set: { 
+                         "cars":{ 	
+                        			"enable_notifications": true 
+      							}  
+                      }
+             },function(err, result) {
+				    assert.equal(err, null);
+				    console.log("Inserted a car for the user "+req.params.userID);
+				    callback();
+			});            
+	}
+	MongoClient.connect(dbConfig.url, function(err, db) {
+		  assert.equal(null, err);
+		  deleteCar(db, function() {
+		      db.close();
+		      res.status(200).send(req.params.userID)
+		  });
+		});
+})
+
+router.get('/disableNotifications/:userID&:plates', function(req, res, next) {
+    /**
+    * Route to enable notifications for a car,
+    * @name /editCar/:userID&:plates
+    * @param {String} :userID&:plates
+    */
+    var deleteCar = function(db, callback) {   
+ 	var o_id = new ObjectId(req.params.userID);
+    db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+             {$set: { 
+                         "cars":{ 	
+                        			"enable_notifications": false 
       							}  
                       }
              },function(err, result) {

@@ -1,19 +1,130 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+html, body {
+  height: 100%;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden; 
+  // background: url('/img/large-background.jpg') no-repeat fixed center;
+}
+#map-content {
+  height: 400px
+  }
+#map {
+  height: 100%;
+}
+.range-slider {
+  position: relative;
+  height: 80px;
+  margin-top: 55px
+}
+.extra-controls {
+  position: relative;
+  border-top: 3px solid #000;
+  padding: 10px 0 0;
+}
+.datepicker {
+  margin-top: 40px;
 }
 
-a {
-  color: #00B7FF;
+#floating-panel {
+  margin-top: 0px
+}
+.highcharts-legend {
+  opacity: 0.7;
+}
+.navbar-brand {
+  font-family: 'Indie Flower', cursive;
+  font-weight: bold;
+}
+.center-page {
+  min-width: 1600px;
+  margin: 0 auto;
+}
+.daterange-text {
+  font-size: 20px;
+  padding: 0 5px;
+  font-family: 'Indie Flower', cursive;
+}
+.map-chart-selector {
+  border-bottom: 6px solid #3358B1;
 }
 
-.account-wall-container {
-  width: 400px;
-  padding: 70px 35px 50px;
-  background-color: $ dark_grey;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-/*@include box-shadow(0 px 2 px 2 px rgba(0, 0, 0, 0.3));*/
+.map-cosen , .chart-cosen {
+  text-align: center;
+  margin: 12px auto;
+  border: 1px solid #3570BD;
+  max-width: 400px;
+  width: 100%;
+  padding: 5px;
+  border-radius: 2px 2px 2px 2px;
+  //background-color: #3570BD;
+  zoom: 1.8;
+}
+
+.map-cosen:hover , .chart-cosen:hover {
+  background-color: #3358B1;
+}
+.active {
+  background-color: #3570BD;
+}
+.row.hidden#chart-container > .col-md-12 > #container {
+  min-width: 0px; height: 400px; margin: 0 auto; max-width:1000px;
+}
+
+.content-hidden {
+  visibility: hidden;
+}
+
+
+
+
+
+
+
+
+
+
+
+.controls {
+  margin-top: 10px;
+  border: 1px solid transparent;
+  border-radius: 2px 0 0 2px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: 32px;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#pac-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 300px;
+}
+
+#pac-input:focus {
+  border-color: #4d90fe;
+}
+
+.pac-container {
+  font-family: Roboto;
+}
+
+#type-selector {
+  color: #fff;
+  background-color: #4d90fe;
+  padding: 5px 11px 0px 11px;
+}
+
+#type-selector label {
+  font-family: Roboto;
+  font-size: 13px;
+  font-weight: 300;
+}
+#target {
+  width: 345px;
 }
