@@ -36,7 +36,10 @@ public class Timer  extends Activity implements View.OnClickListener{
         run=false;
         super.onStop();
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer);

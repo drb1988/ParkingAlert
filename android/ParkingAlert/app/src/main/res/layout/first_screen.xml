@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/blue_dark"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Friendly"
+            android:textColor="@android:color/white"
+            android:textSize="18dp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_first_screen">
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Cu Friendly nu te mai certi cu nimeni din cauza locului de parcare." />
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout_below="@+id/text"
+                android:src="@drawable/logo" />
+
+            <TextView
+                android:id="@+id/titlu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Friendly"
+                android:textSize="@dimen/txt_size_bigger1"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/titlu1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/titlu"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:text="Pentru toti conducatorii auto" />
+
+            <TextView
+                android:id="@+id/intra_in_cont"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/titlu1"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
+                android:background="#5387CB"
+                android:gravity="center"
+                android:text="Intra in cont"
+                android:textColor="@color/alb"
+                android:textSize="@dimen/txt_size" />
+
+            <TextView
+                android:id="@+id/inregistreazate_email"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/intra_in_cont"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#5387CB"
+                android:gravity="center"
+                android:text="Inregistreaza-te cu email-ul"
+                android:textColor="@color/alb"
+                android:textSize="@dimen/txt_size" />
+
+            <com.facebook.login.widget.LoginButton xmlns:fb="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/inregistreazate_email"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                fb:login_text="Autentifica-te  cu Facebook"
+                fb:logout_text="Logout" />
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>

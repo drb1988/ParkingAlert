@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -270,8 +271,17 @@ public class AddCar extends Activity implements View.OnClickListener{
                     cursor.moveToLast();
                     realPath = cursor.getString(column_index_data);
                     Bitmap img = rotateBitmap(realPath);
+//                    saveToInternalStorage(img);
+//                    Glide.with(ctx).load(img).crossFade().override(100,100).into(ivImageCar);
+//                    Glide.with(ctx).load(img).asBitmap().centerCrop().into(new BitmapImageViewTarget(ivImageCar) {
+//                        protected void setResource(Bitmap resource) {
+//                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+//                            circularBitmapDrawable.setCircular(true);
+//                            ivImageCar.setImageDrawable(circularBitmapDrawable);
+//                        }
+//                    });
                     ivImageCar.setImageBitmap(img);
-                    persistImage(img, "parkingalert");
+//                    persistImage(img, "parkingalert");
                     ///dupa ce este ceva facut
 //                    uplloadImageFile(persistImage(img, "eparti"));
                 } catch (Exception e) {
@@ -375,5 +385,29 @@ public class AddCar extends Activity implements View.OnClickListener{
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    private String saveToInternalStorage(Bitmap bitmapImage){
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,"profile.jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath();
     }
 }

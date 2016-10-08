@@ -9,7 +9,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -45,6 +44,7 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
     SharedPreferences prefs;
     double latitude, longitude;
     LocationManager locationManager;
+
     protected void onResume() {
 //        if (!checkLocation())
 //            return;
@@ -93,26 +93,29 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(bigcityapps.com.parkingalert.R.layout.scan);
+        setContentView(R.layout.scan);
         queue = Volley.newRequestQueue(this);
         ctx = this;
         prefs = new SecurePreferences(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Constants.ctx = this;
+//        mScannerView = new ZBarScannerView(this);    // Programmatically initialize the scanner view
+//        setContentView(mScannerView);
+        QrScanner();
         // Check if GPS enabled
-        if (!checkLocation())
-            return;
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListenerNetwork);
-        mesaj_preintampinare = (ImageView) findViewById(R.id.mesaj_preintampinare);
-        mesaj_preintampinare.setImageResource(R.drawable.mesaj_preintampinare);
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                QrScanner();
-            }
-        }, 3000);
+//        if (!checkLocation())
+//            return;
+//        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListenerNetwork);
+//        mesaj_preintampinare = (ImageView) findViewById(R.id.mesaj_preintampinare);
+//        mesaj_preintampinare.setImageResource(R.drawable.mesaj_preintampinare);
+//        new Handler().postDelayed(new Runnable() {
+//            public void run() {
+//                QrScanner();
+//            }
+//        }, 3000);
     }
 
     /**

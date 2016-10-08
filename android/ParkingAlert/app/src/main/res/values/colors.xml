@@ -11,5 +11,6 @@
     <color name="gri_timer">#F0F1F5</color>
     <color name="alb">#ffffff</color>
     <color name="lista_masini_conduci">#EFEFF4</color>
+    <color name="background_first_screen">#EFEFF4</color>
 
 </resources>

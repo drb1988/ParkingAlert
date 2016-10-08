@@ -25,7 +25,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -56,7 +55,7 @@ import Util.SecurePreferences;
  */
 public class Notificari extends AppCompatActivity implements View.OnClickListener{
     static boolean active = false;
-    ListView listView;
+//    ListView listView;
     private CoordinatorLayout coordinatorLayout;
     RecyclerView notifRecyclerView;
     RequestQueue queue;
