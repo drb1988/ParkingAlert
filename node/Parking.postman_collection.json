@@ -519,7 +519,7 @@
 		{
 			"name": "localhost:3000/signup/verifyEmail/57fb72b99089430c90a53643",
 			"request": {
-				"url": "localhost:3000/signup/verifyEmail/57fb72b99089430c90a53643",
+				"url": "localhost:3000/signup/verifyEmail/57fb75af62e9af0648418a4b",
 				"method": "POST",
 				"header": [
 					{
@@ -530,7 +530,21 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"email\": \"bogdandrb@gmail.com\",\n  \"token\": \"712945\"\n}"
+					"raw": "{\n  \"email\": \"bogdandrb@gmail.com\",\n  \"token\": \"a5b0b6\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/signup/login/mugurel.mitrut@gmail.com&plm",
+			"request": {
+				"url": "localhost:3000/signup/login/mugurel.mitrut@gmail.com&plm",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
 				},
 				"description": ""
 			},

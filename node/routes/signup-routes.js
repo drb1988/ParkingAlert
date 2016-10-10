@@ -18,6 +18,8 @@ router.post('/user', function(req, res, next) {
     * @param {String} :userId
     */
   var userID ="";
+      const secret = 'Friendly';
+      const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
   var insertDocument = function(db, callback) {
    db.collection('parking').insertOne( {
       "first_name": req.body.first_name,
@@ -26,6 +28,7 @@ router.post('/user', function(req, res, next) {
       "email": req.body.email,
       "cars": [],
       "security": [],
+      "password": hash,
       // "driver_license": req.body.driver_license,
       // "photo": req.body.photo,
       "platform": req.body.platform,
@@ -126,6 +129,45 @@ router.post('/verifyEmail/:userID', function(req, res, next) {
                 res.status(200).send("Email verification failure")
               }
               callback();
+        });            
+    }
+    MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findUser(db, function() {
+            db.close();
+        });
+      });
+});
+
+router.get('/login/:email&:password', function(req, res, next) {
+    /**
+      * Route to login,
+      * @name /getUser/:userID
+      * @param {String} :userId
+      */
+      const secret = 'Friendly';
+      const hash = Crypto.createHmac('sha256', secret).update(req.params.password).digest('hex');
+      var findUser = function(db, callback) {
+      db.collection('parking').findOne({"email": req.params.email},
+        function(err, result) {
+              console.log(result)
+              assert.equal(err, null);
+              console.log("Found email "+result._id);
+              var payload = {
+              "user_id"   : result._id,
+              "email"     : result.email
+              };
+      var token = jwt.encode( config.jwt.secret, payload);
+      var response = {
+        "token": token,
+        "user": result
+      }
+      if(result.password == hash){
+          res.status(200).send(response)
+      }
+      else 
+          res.status(200).send({"error": "Invalid email or password"})
+      callback();
         });            
     }
     MongoClient.connect(dbConfig.url, function(err, db) {
