@@ -26,7 +26,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"plates\": \"BH65XXX\",\n    \"given_name\": \"Furia Gri\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"year\": \"1991\" \n}"
+					"raw": "{\n    \"plates\": \"BH65XXX\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"year\": \"1991\" \n}"
 				},
 				"description": "post phone number, get response with validation code"
 			},
@@ -176,7 +176,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"plates\": \"BH71SEX\",\n    \"given_name\": \"Furia Gri\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"year\": \"1991\" \n}"
+					"raw": "{\n    \"plates\": \"BH71SEX\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"year\": \"1991\",\n    \"enable_notifications\": true,\n    \"is_owner\": true,\n    \"enable_others\": true\n}"
 				},
 				"description": "post phone number, get response with validation code"
 			},
@@ -306,7 +306,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"bogdandrb@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdandrb@gmail.com\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\"\n}"
 				},
 				"description": "post phone number, get response with validation code"
 			},

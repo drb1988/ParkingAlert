@@ -20,14 +20,14 @@ router.post('/user', function(req, res, next) {
    db.collection('parking').insertOne( {
       "first_name": req.body.first_name,
       "last_name": req.body.last_name,
-      "nickname": req.body.nickname,
+      // "nickname": req.body.nickname,
       "email": req.body.email,
       "cars": [],
       "security": [],
-      "driver_license": req.body.driver_license,
-      "photo": req.body.photo,
+      // "driver_license": req.body.driver_license,
+      // "photo": req.body.photo,
       "platform": req.body.platform,
-      "user_city": req.body.user_city
+      // "user_city": req.body.user_city
    }, function(err, result) {
     assert.equal(err, null);
     userID = result.insertedId;
