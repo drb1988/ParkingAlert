@@ -2,6 +2,7 @@ package bigcityapps.com.parkingalert;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -13,7 +14,11 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
@@ -31,6 +36,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import Util.Constants;
 import Util.SecurePreferences;
 import io.fabric.sdk.android.Fabric;
 
@@ -58,24 +64,24 @@ public class LoginNew extends Activity implements View.OnClickListener {
         prefs = new SecurePreferences(ctx);
         initComponents();
         loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList("public_profile", "edemail", "user_birthday", "user_friends", "user_location", "user_about_me", "user_hometown"));
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends", "user_location", "user_about_me", "user_hometown"));
         callbackManager = CallbackManager.Factory.create();
 
-        edPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    {
-                        hideKeyboard(v);
-                        if(edPassword.getText().length()<6)
-                            inputPassword.setError("Parola trebuie sa fie de cel putin 6 caractere");
-                        else
-                            inputPassword.setErrorEnabled(false);
-
-                    }
-                }else
-                    showKeyboard(edPassword);
-            }
-        });
+//        edPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (!hasFocus) {
+//                    {
+//                        hideKeyboard(v);
+//                        if(edPassword.getText().length()<6)
+//                            inputPassword.setError("Parola trebuie sa fie de cel putin 6 caractere");
+//                        else
+//                            inputPassword.setErrorEnabled(false);
+//
+//                    }
+//                }else
+//                    showKeyboard(edPassword);
+//            }
+//        });
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             public void onSuccess(LoginResult loginResult) {
@@ -83,7 +89,7 @@ public class LoginNew extends Activity implements View.OnClickListener {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Log.w("meniuu", "callback:" + object);
                         try {
-                            Log.w("meniuu","oemail"+object.getString("edemail"));
+                            Log.w("meniuu","oemail"+object.getString("email"));
                             Log.w("meniuu","nume"+object.getString("name"));
                         } catch (JSONException e) {
                             Log.w("meniuu","catch");
@@ -93,7 +99,7 @@ public class LoginNew extends Activity implements View.OnClickListener {
                     }
                 });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,edemail,gender,birthday,location");
+                parameters.putString("fields", "id,name,email,gender,birthday,location");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -111,7 +117,7 @@ public class LoginNew extends Activity implements View.OnClickListener {
     public void initComponents(){
         inputEmail=(TextInputLayout)findViewById(R.id.input_email);
         inputPassword=(TextInputLayout)findViewById(R.id.input_password);
-        edEmail=(EditText)findViewById(R.id.email_login);
+        edEmail=(EditText)findViewById(R.id.email);
         edPassword=(EditText)findViewById(R.id.parola);
         tvLogin=(TextView) findViewById(R.id.intra_in_cont);
         tvLogin.setOnClickListener(this);
@@ -126,7 +132,7 @@ public class LoginNew extends Activity implements View.OnClickListener {
     public void onClick(View view) {
     switch (view.getId()){
         case R.id.intra_in_cont:
-
+            login();
             break;
         case R.id.forget_password:
 
@@ -156,4 +162,47 @@ public class LoginNew extends Activity implements View.OnClickListener {
         InputMethodManager keyboard = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboard.showSoftInput(ed, 0);
     }
+
+    public void login() {
+        String url = Constants.URL + "signup/login/"+edEmail.getText().toString().trim()+"&"+edPassword.getText().toString();
+        Log.w("meniuu","email:"+edEmail.getText()+" pass:"+edPassword.getText()+" url:"+url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        try {
+                            JSONObject obj = new JSONObject(json);
+                            JSONObject token= new JSONObject(obj.getString("token"));
+                            prefs.edit().putString("user_id", obj.getString("userID")).commit();
+                            prefs.edit().putString("token", token.getString("value")).commit();
+                            Intent continuare= new Intent(LoginNew.this, MainActivity.class);
+                            startActivity(continuare);
+                            finish();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+//                        Snackbar snackbar = Snackbar
+//                                .make(coordinatorLayout, "Masina a fost stearsa!", Snackbar.LENGTH_LONG);
+////                                    .setAction("SETARI", new View.OnClickListener() {
+////                                        public void onClick(View view) {
+////                                            startActivityForResult(new Intent(android. provider.Settings.ACTION_SETTINGS), 0);
+////                                        }
+////                                    });
+//                        snackbar.show();
+                    }
+                }, ErrorListener) {
+//            protected java.util.Map<String, String> getParams() {
+//                java.util.Map<String, String> params = new HashMap<String, String>();
+//                params.put("email", email);
+//                return params;
+//            }
+        };
+        queue.add(stringRequest);
+    }
+    Response.ErrorListener ErrorListener = new Response.ErrorListener() {
+        public void onErrorResponse(VolleyError error) {
+            Log.w("meniuu", "error: errorlistener:" + error);
+        }
+    };
 }

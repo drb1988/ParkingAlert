@@ -250,7 +250,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                     params.put("first_name", nume);
                     params.put("last_name", prenume);
                     params.put("edNickname", nume+prenume);
-                    params.put("edemail", email);
+                    params.put("email", email);
                     params.put("password", parola);
 //                    params.put("photo", "photo");
                     params.put("platform", "Android");
