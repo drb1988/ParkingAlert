@@ -269,6 +269,7 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                         initSwipe();
                         Log.w("meniuu", "se afisaza recycler");
                         rlLayoutDialog.setVisibility(View.INVISIBLE);
+                        recyclerView.setVisibility(View.VISIBLE);
                     } else {
                         rlLayoutDialog.setVisibility(View.VISIBLE);
                         Log.w("meniuu", "se pune pe invisible");

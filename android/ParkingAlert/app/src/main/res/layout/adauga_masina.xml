@@ -105,15 +105,18 @@
                     <!--android:src="@drawable/default_image_profile_round" />-->
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_masina"
+                        android:layout_toRightOf="@+id/view2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <EditText
+                            android:imeOptions="actionNext"
+                            android:singleLine="true"
                             android:id="@+id/et_numele_masina"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginLeft="10dp"
-                            android:layout_toRightOf="@+id/view2"
+
                             android:background="@android:color/transparent"
                             android:gravity="center"
                             android:hint="Numele masinii"
@@ -124,10 +127,13 @@
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/input_nr"
                     android:layout_width="match_parent"
-                    android:layout_below="@+id/rel_poza"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rel_poza">
 
                     <EditText
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
+                        android:textAllCaps="true"
                         android:id="@+id/et_nr"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -165,6 +171,8 @@
                     android:layout_height="wrap_content">
 
                     <EditText
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
                         android:id="@+id/et_producator"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -182,6 +190,8 @@
                     android:layout_height="wrap_content">
 
                     <EditText
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
                         android:id="@+id/et_model"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -199,6 +209,9 @@
                     android:layout_height="wrap_content">
 
                     <EditText
+                        android:imeOptions="actionDone"
+                        android:singleLine="true"
+                        android:inputType="date"
                         android:id="@+id/et_an_productie"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -239,6 +252,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:checked="true"
                     android:padding="10dp" />
 
                 <TextView
@@ -255,6 +269,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/receive_notification"
+                    android:checked="false"
                     android:padding="10dp" />
             </RelativeLayout>
         </LinearLayout>

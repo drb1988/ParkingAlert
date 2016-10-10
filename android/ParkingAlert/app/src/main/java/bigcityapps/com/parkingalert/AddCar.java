@@ -217,8 +217,8 @@ public class AddCar extends Activity implements View.OnClickListener{
      */
     public void addCar(final String id){
         String url = Constants.URL+"users/addCar/"+id;
-        if(edname.getText().length()==0 || edNr.getText().length()==0 || edMaker.getText().length()==0 || edModel.getText().length()==0 || edYear.getText().length()==0)
-            Toast.makeText(ctx,"Completati toate campurile",Toast.LENGTH_LONG).show();
+        if( edNr.getText().length()==0 )
+            Toast.makeText(ctx,"Trebuie sa completezi numarul de inmatriculare",Toast.LENGTH_LONG).show();
         else{
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
@@ -231,10 +231,12 @@ public class AddCar extends Activity implements View.OnClickListener{
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("plates", edNr.getText().toString());
-                    params.put("given_name", edname.getText().toString());
-                    params.put("make", edMaker.getText().toString());
-                    params.put("edModel", edModel.getText().toString());
-                    params.put("year", edYear.getText().toString());
+                    params.put("given_name", edname.getText().toString().length()>0?edname.getText().toString():"Masina lui");
+                    params.put("make", edMaker.getText().toString().length()>0?edMaker.getText().toString():"");
+                    params.put("edModel", edModel.getText().toString().length()>0?edModel.getText().toString():"");
+                    params.put("year", edYear.getText().toString().length()>0?edYear.getText().toString():"");
+                    params.put("enable_notifications", receive_notification.isChecked()+"");
+                    params.put("enable_others", all_drive.isChecked()+"");
                     return params;
                 }
 
