@@ -3,6 +3,11 @@ var router = express.Router();
 var assert = require('assert');
 
 /* GET home page. */
+router.get('/newpage', function(req, res, next) {
+  res.render('newpage', { 
+    title: 'Express'
+  });
+   });
 router.get('/', function(req, res, next) {
   /**
     * Base route,
