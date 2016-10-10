@@ -3,6 +3,7 @@ package bigcityapps.com.parkingalert;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -19,7 +20,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+
+import java.util.HashMap;
+
+import Util.Constants;
+import Util.SecurePreferences;
 import Util.Utils;
 
 /**
@@ -29,8 +45,12 @@ import Util.Utils;
 public class ConnectFragment extends Fragment {
     RelativeLayout notificaProprietar;
     double latitude, longitude;
+    TextView notify_maker;
+    SharedPreferences prefs;
     private CoordinatorLayout coordinatorLayout;
     LocationManager locationManager;
+    boolean hasCar=false;
+    RequestQueue queue;
 
     public ConnectFragment() {
     }
@@ -58,6 +78,10 @@ public class ConnectFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(bigcityapps.com.parkingalert.R.layout.notifica_proprietar, container, false);
+        notify_maker=(TextView)rootView.findViewById(R.id.notify_maker);
+        prefs = new SecurePreferences(getContext());
+        queue = Volley.newRequestQueue(getContext());
+        getCars(prefs.getString("user_id", ""));
         coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinatorLayout);
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -70,10 +94,16 @@ public class ConnectFragment extends Fragment {
                 if (Utils.isNetworkAvailable(getContext())) {
                     if (!checkLocation())
                         return;
-                    Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
-                    intent.putExtra("lat",latitude+"");
-                    intent.putExtra("lng",longitude+"");
-                    startActivity(intent);
+                    if(hasCar)
+                    {  Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
+                        intent.putExtra("lat",latitude+"");
+                        intent.putExtra("lng",longitude+"");
+                        startActivity(intent);
+                    }else
+                    {
+                        Intent addCar= new Intent(getActivity(), Cars.class);
+                        startActivity(addCar);
+                    }
                 }else
                 {
                     Snackbar snackbar = Snackbar
@@ -149,4 +179,40 @@ public class ConnectFragment extends Fragment {
                 });
         dialog.show();
     }
+    public void getCars(String id) {
+        String url = Constants.URL + "users/getCars/" + id;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                Log.w("meniuu", "response: getcar" + response);
+                try {
+                    JSONArray obj = new JSONArray(json);
+                    if(obj.length()==0){
+                        notify_maker.setText("Adauga o masina");
+                        hasCar=false;
+                    }else {
+                        notify_maker.setText("Notifica proprietarul");
+                        hasCar=true;
+                    }
+                } catch (Throwable t) {
+                    Log.w("meniuu", "cacth get questions");
+                    t.printStackTrace();
+                }
+            }
+        }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Log.w("meniuu", "token:" + auth_token_string);
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    Response.ErrorListener ErrorListener = new Response.ErrorListener() {
+        public void onErrorResponse(VolleyError error) {
+            Log.w("meniuu", "error: errorlistener:" + error);
+        }
+    };
 }

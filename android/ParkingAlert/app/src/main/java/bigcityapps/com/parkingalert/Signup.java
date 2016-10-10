@@ -16,10 +16,21 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+
+import Util.Constants;
 import Util.SecurePreferences;
 
 /**
@@ -135,8 +146,10 @@ public void FluiEdittext(){
 
                 break;
             case R.id.inregistreazate:
-                Intent signup= new Intent(Signup.this, EmailValidation.class);
-                startActivity(signup);
+                if(validateEmail() && edEmail.getText().toString().equals(edCheckEmail.getText().toString()))
+                    sendEmailVerification(edEmail.getText().toString());
+                else
+                    Toast.makeText(ctx,"Email incorect",Toast.LENGTH_LONG).show();
                 break;
         }
     }
@@ -160,19 +173,12 @@ public void FluiEdittext(){
 
 
     private class MyTextWatcher implements TextWatcher {
-
         private View view;
-
         private MyTextWatcher(View view) {
             this.view = view;
         }
-
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {
                 case R.id.email:
@@ -215,4 +221,49 @@ public void FluiEdittext(){
         }
         return true;
     }
+
+    public void sendEmailVerification(final String email) {
+        String url = Constants.URL + "signup/sendEmailVerification";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        try {
+                            JSONObject user = new JSONObject(json);
+                            String verificationId=user.getString("verificationID");
+                            Log.w("meniuu", "response:email verification" + response);
+                            Intent signup= new Intent(Signup.this, EmailValidation.class);
+                            signup.putExtra("nume",edFname.getText().toString());
+                            signup.putExtra("prenume",edLname.getText().toString());
+                            signup.putExtra("parola",edPassword.getText().toString());
+                            signup.putExtra("verificationId",verificationId);
+                            signup.putExtra("email",edEmail.getText().toString());
+                            startActivity(signup);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+//                        Snackbar snackbar = Snackbar
+//                                .make(coordinatorLayout, "Masina a fost stearsa!", Snackbar.LENGTH_LONG);
+////                                    .setAction("SETARI", new View.OnClickListener() {
+////                                        public void onClick(View view) {
+////                                            startActivityForResult(new Intent(android. provider.Settings.ACTION_SETTINGS), 0);
+////                                        }
+////                                    });
+//                        snackbar.show();
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("email", email);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    Response.ErrorListener ErrorListener = new Response.ErrorListener() {
+        public void onErrorResponse(VolleyError error) {
+            Log.w("meniuu", "error: errorlistener:" + error);
+        }
+    };
 }

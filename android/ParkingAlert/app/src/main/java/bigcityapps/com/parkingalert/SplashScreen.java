@@ -70,7 +70,7 @@ public class SplashScreen extends Activity {
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 if(prefs.getString("token", null)==null)
-                {   Intent i = new Intent(SplashScreen.this, Login.class);
+                {   Intent i = new Intent(SplashScreen.this, FirstScreen.class);
                     startActivity(i);
                     finish();
                 }
