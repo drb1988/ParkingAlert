@@ -150,7 +150,6 @@ router.get('/login/:email&:password', function(req, res, next) {
       var findUser = function(db, callback) {
       db.collection('parking').findOne({"email": req.params.email},
         function(err, result) {
-              console.log(result)
               assert.equal(err, null);
               console.log("Found email "+result._id);
               var payload = {
@@ -160,6 +159,7 @@ router.get('/login/:email&:password', function(req, res, next) {
       var token = jwt.encode( config.jwt.secret, payload);
       var response = {
         "token": token,
+        "userID": result._id,
         "user": result
       }
       if(result.password == hash){
