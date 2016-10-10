@@ -31,9 +31,9 @@ router.post('/addCar/:userID', function(req, res, next) {
       								"make": req.body.make,
       								"model": req.body.model,
       								"year": req.body.year,
-      								"enable_notifications": true,
+      								"enable_notifications": req.body.enable_notifications,
       								"is_owner": true,
-      								"enable_others": false 
+      								"enable_others": req.body.enable_others 
       							} 
                       }
              },function(err, result) {
