@@ -69,7 +69,7 @@ router.post('/sendEmailVerification', function(req, res, next) {
   var insertDocument = function(db, callback) {
    db.collection('tempUsers').insertOne( {
       "email": req.body.email,
-      "security": [],
+      "token": token
       }, function(err, result) {
     assert.equal(err, null);
     userID = result.insertedId;
@@ -105,6 +105,35 @@ MongoClient.connect(dbConfig.url, function(err, db) {
       res.status(200).send(result)
   });
 });
+});
+
+router.post('/verifyEmail/:userID', function(req, res, next) {
+    /**
+      * Route to get and user by ID,
+      * @name /getUser/:userID
+      * @param {String} :userId
+      */
+    var findUser = function(db, callback) {   
+    var o_id = new ObjectId(req.params.userID);
+      db.collection('tempUsers').findOne({"_id": o_id},
+        function(err, result) {
+              console.log(result)
+              assert.equal(err, null);
+              if(result.email==req.body.email && result.token==req.body.token){
+                res.status(200).send("Success")
+              }
+              else{
+                res.status(200).send("Email verification failure")
+              }
+              callback();
+        });            
+    }
+    MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findUser(db, function() {
+            db.close();
+        });
+      });
 });
 
 module.exports = router
