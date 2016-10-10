@@ -27,11 +27,13 @@ router.post('/addCar/:userID', function(req, res, next) {
              {$push: { 
                          "cars":{ 	
                         			"plates": req.body.plates,
-      								"given_name": req.body.given_name,
+      								// "given_name": req.body.given_name,
       								"make": req.body.make,
       								"model": req.body.model,
       								"year": req.body.year,
-      								"enable_notifications": true 
+      								"enable_notifications": true,
+      								"is_owner": true,
+      								"enable_others": false 
       							} 
                       }
              },function(err, result) {
@@ -204,12 +206,12 @@ router.post('/updateUser/:userID', function(req, res, next) {
 	    	 {$set: { 
                       "first_name": req.body.first_name,
       				  "last_name": req.body.last_name,
-				      "nickname": req.body.nickname,
+				      // "nickname": req.body.nickname,
 				      "email": req.body.email,
-				      "driver_license": req.body.driver_license,
-				      "photo": req.body.photo,
+				      // "driver_license": req.body.driver_license,
+				      // "photo": req.body.photo,
 				      "platform": req.body.platform,
-				      "user_city": req.body.user_city
+				      // "user_city": req.body.user_city
                       }
              },
 	    	function(err, result) {
@@ -239,11 +241,13 @@ router.post('/editCar/:userID&:plates', function(req, res, next) {
              {$set: { 
                          "cars":[{ 	
                         			"plates": req.body.plates,
-      								"given_name": req.body.given_name,
+      								// "given_name": req.body.given_name,
       								"make": req.body.make,
       								"model": req.body.model,
       								"year": req.body.year,
-      								"enable_notifications": req.body.enable_notifications 
+      								"enable_notifications": req.body.enable_notifications,
+      								"is_owner": req.body.is_owner,
+      								"enable_others": req.body.enable_others  
       							}]  
                       }
              },function(err, result) {
@@ -271,9 +275,9 @@ router.get('/enableNotifications/:userID&:plates', function(req, res, next) {
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
              {$set: { 
-                         "cars":{ 	
+                         "cars":[{ 	
                         			"enable_notifications": true 
-      							}  
+      							}]  
                       }
              },function(err, result) {
 				    assert.equal(err, null);
@@ -300,9 +304,9 @@ router.get('/disableNotifications/:userID&:plates', function(req, res, next) {
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
              {$set: { 
-                         "cars":{ 	
+                         "cars":[{ 	
                         			"enable_notifications": false 
-      							}  
+      							}]  
                       }
              },function(err, result) {
 				    assert.equal(err, null);
