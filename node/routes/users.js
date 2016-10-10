@@ -27,7 +27,7 @@ router.post('/addCar/:userID', function(req, res, next) {
              {$push: { 
                          "cars":{ 	
                         			"plates": req.body.plates,
-      								// "given_name": req.body.given_name,
+      								"given_name": req.body.given_name,
       								"make": req.body.make,
       								"model": req.body.model,
       								"year": req.body.year,
@@ -241,7 +241,7 @@ router.post('/editCar/:userID&:plates', function(req, res, next) {
              {$set: { 
                          "cars":[{ 	
                         			"plates": req.body.plates,
-      								// "given_name": req.body.given_name,
+      								"given_name": req.body.given_name,
       								"make": req.body.make,
       								"model": req.body.model,
       								"year": req.body.year,
