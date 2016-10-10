@@ -50,8 +50,8 @@ import Util.SecurePreferences;
 /**
  * Created by fasu on 19/09/2016.
  */
-public class Cars extends AppCompatActivity implements View.OnClickListener{
-    RelativeLayout rlBack, rlAdd;
+public class Cars extends AppCompatActivity implements View.OnClickListener {
+    RelativeLayout rlBack, rlAdd, rlLayoutDialog;
     SharedPreferences prefs;
     Context ctx;
     NotificareAdapter adapter;
@@ -62,14 +62,16 @@ public class Cars extends AppCompatActivity implements View.OnClickListener{
     private Paint p = new Paint();
     FloatingActionButton fab;
     ArrayList<CarModel> carModelArrayList = new ArrayList<>();
+    TextView tvExistQr, tvNoExistQr, tvCancel;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.masini);
         initcomponents();
-        ctx=this;
+        ctx = this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
-        getCars(prefs.getString("user_id",""));
+        getCars(prefs.getString("user_id", ""));
 //        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //            Intent vizualizare= new Intent(Cars.this,ViewCar.class);
@@ -88,33 +90,42 @@ public class Cars extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     protected void onResume() {
-        getCars(prefs.getString("user_id",""));
+        getCars(prefs.getString("user_id", ""));
         super.onResume();
     }
 
-    public void initcomponents(){
+    public void initcomponents() {
+        tvExistQr=(TextView)findViewById(R.id.exist_qr);
+        tvExistQr.setOnClickListener(this);
+        tvNoExistQr=(TextView)findViewById(R.id.no_exist_qr);
+        tvNoExistQr.setOnClickListener(this);
+        tvCancel=(TextView)findViewById(R.id.cancel);
+        tvCancel.setOnClickListener(this);
+        rlLayoutDialog = (RelativeLayout) findViewById(R.id.layout_dialog);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
-        tvTitle =(TextView)findViewById(bigcityapps.com.parkingalert.R.id.title);
-        tvMessage =(TextView)findViewById(R.id.mMessage);
+        tvTitle = (TextView) findViewById(bigcityapps.com.parkingalert.R.id.title);
+        tvMessage = (TextView) findViewById(R.id.mMessage);
 //        listViewMasini=(ListView)findViewById(bigcityapps.com.parkingalert.R.id.listview_masini);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_masini);
-        rlBack =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_lista_masini);
-        rlAdd =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.adauga_masini);
+        rlBack = (RelativeLayout) findViewById(bigcityapps.com.parkingalert.R.id.inapoi_lista_masini);
+        rlAdd = (RelativeLayout) findViewById(bigcityapps.com.parkingalert.R.id.adauga_masini);
         rlBack.setOnClickListener(this);
         rlAdd.setOnClickListener(this);
     }
-    private void initSwipe(){
+
+    private void initSwipe() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
             }
+
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
 
-                if (direction == ItemTouchHelper.LEFT){
+                if (direction == ItemTouchHelper.LEFT) {
                     adapter.removeItem(position);
                 } else {
 //                    removeView();
@@ -124,17 +135,18 @@ public class Cars extends AppCompatActivity implements View.OnClickListener{
 //                    alertDialog.show();
                 }
             }
+
             @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
                 Bitmap icon;
-                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
 
                     View itemView = viewHolder.itemView;
                     float height = (float) itemView.getBottom() - (float) itemView.getTop();
                     float width = height / 3;
 
-                    if(dX > 0){
+                    if (dX > 0) {
 //                        p.setColor(Color.parseColor("#388E3C"));
 //                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());
 //                        c.drawRect(background,p);
@@ -143,11 +155,11 @@ public class Cars extends AppCompatActivity implements View.OnClickListener{
 //                        c.drawBitmap(icon,null,icon_dest,p);
                     } else {
                         p.setColor(Color.parseColor("#D32F2F"));
-                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
-                        c.drawRect(background,p);
+                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+                        c.drawRect(background, p);
                         icon = BitmapFactory.decodeResource(getResources(), R.drawable.delete);
-                        RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
-                        c.drawBitmap(icon,null,icon_dest,p);
+                        RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+                        c.drawBitmap(icon, null, icon_dest, p);
                     }
                 }
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -156,25 +168,34 @@ public class Cars extends AppCompatActivity implements View.OnClickListener{
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
-            public void onClick(View view) {
-switch (view.getId()){
-    case R.id.inapoi_lista_masini:
-        Intent inapoi= new Intent(Cars.this,MainActivity.class);
-        inapoi.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(inapoi);
-        break;
 
-//    case R.id.adauga_masini:
-//        Intent adauga_masina=new Intent(Cars.this, AddCar.class);
-//        startActivity(adauga_masina);
-//        break;
-    case R.id.fab:
-        Intent adauga_masina=new Intent(Cars.this, AddCar.class);
-        startActivity(adauga_masina);
-        break;
-}
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.inapoi_lista_masini:
+                Intent inapoi = new Intent(Cars.this, MainActivity.class);
+                inapoi.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(inapoi);
+                break;
+
+            case R.id.fab:
+                rlLayoutDialog.setVisibility(View.VISIBLE);
+                break;
+            case R.id.exist_qr:
+
+                break;
+            case R.id.no_exist_qr:
+                Intent adauga_masina = new Intent(Cars.this, AddCar.class);
+                startActivity(adauga_masina);
+                break;
+
+            case R.id.cancel:
+                rlLayoutDialog.setVisibility(View.INVISIBLE);
+                break;
+        }
+
     }
-//    class NotificareAdapter extends ArrayAdapter<CarModel> {
+
+    //    class NotificareAdapter extends ArrayAdapter<CarModel> {
 //        private ArrayList<CarModel> itemList;
 //        private Context context;
 //
@@ -217,8 +238,8 @@ switch (view.getId()){
 //        TextView proprietar, edNr;
 //        ImageView mImage;
 //    }
-    public void getCars(String id){
-        String url = Constants.URL+"users/getCars/"+id;
+    public void getCars(String id) {
+        String url = Constants.URL + "users/getCars/" + id;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             public void onResponse(String response) {
                 String json = response;
@@ -237,7 +258,7 @@ switch (view.getId()){
 //                        carModel.setEnable_notifications(c.getInt("enable_notifications")+"");
                         carModelArrayList.add(carModel);
                     }
-                    if(carModelArrayList.size()>0) {
+                    if (carModelArrayList.size() > 0) {
                         adapter = new NotificareAdapter(carModelArrayList);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                         recyclerView.setLayoutManager(mLayoutManager);
@@ -246,9 +267,11 @@ switch (view.getId()){
                         tvTitle.setVisibility(View.INVISIBLE);
                         tvMessage.setVisibility(View.INVISIBLE);
                         initSwipe();
-                        Log.w("meniuu","se afisaza recycler");
-                    }else {
-                        Log.w("meniuu","se pune pe invisible");
+                        Log.w("meniuu", "se afisaza recycler");
+                        rlLayoutDialog.setVisibility(View.INVISIBLE);
+                    } else {
+                        rlLayoutDialog.setVisibility(View.VISIBLE);
+                        Log.w("meniuu", "se pune pe invisible");
                         recyclerView.setVisibility(View.INVISIBLE);
                         tvTitle.setVisibility(View.VISIBLE);
                         tvMessage.setVisibility(View.VISIBLE);
@@ -263,12 +286,13 @@ switch (view.getId()){
                 String auth_token_string = prefs.getString("token", "");
                 Log.w("meniuu", "token:" + auth_token_string);
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization","Bearer "+ auth_token_string);
+                params.put("Authorization", "Bearer " + auth_token_string);
                 return params;
             }
         };
         queue.add(stringRequest);
     }
+
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);
@@ -276,7 +300,7 @@ switch (view.getId()){
     };
 
 
-    public class NotificareAdapter extends RecyclerView.Adapter<NotificareAdapter.MyViewHolder>{
+    public class NotificareAdapter extends RecyclerView.Adapter<NotificareAdapter.MyViewHolder> {
 
         private List<CarModel> moviesList;
 
@@ -287,9 +311,9 @@ switch (view.getId()){
 
             public MyViewHolder(View view) {
                 super(view);
-                proprietar=(TextView) view.findViewById(R.id.mMaker);
-                nr=(TextView) view.findViewById(R.id.nr);
-                poza=(ImageView) view.findViewById(R.id.poza_lista_masini);
+                proprietar = (TextView) view.findViewById(R.id.mMaker);
+                nr = (TextView) view.findViewById(R.id.nr);
+                poza = (ImageView) view.findViewById(R.id.poza_lista_masini);
             }
         }
 
@@ -308,7 +332,7 @@ switch (view.getId()){
         public void onBindViewHolder(MyViewHolder holder, final int position) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    Intent vizualizare= new Intent(Cars.this,ViewCar.class);
+                    Intent vizualizare = new Intent(Cars.this, ViewCar.class);
                     vizualizare.putExtra("edYear", carModelArrayList.get(position).getAn());
                     vizualizare.putExtra("edname", carModelArrayList.get(position).getmCarName());
                     vizualizare.putExtra("edNr", carModelArrayList.get(position).getNr());
@@ -317,7 +341,7 @@ switch (view.getId()){
                     vizualizare.putExtra("edYear", carModelArrayList.get(position).getAn());
                     vizualizare.putExtra("image", carModelArrayList.get(position).getmImage());
                     vizualizare.putExtra("enable_notifications", carModelArrayList.get(position).getEnable_notifications());
-                    Log.w("meniuu","toate"+ carModelArrayList.get(position).getAn());
+                    Log.w("meniuu", "toate" + carModelArrayList.get(position).getAn());
                     startActivity(vizualizare);
                 }
             });
@@ -327,54 +351,56 @@ switch (view.getId()){
             Picasso.with(ctx).load(item.getmImage()).into(holder.poza);
 
         }
+
         public void removeItem(int position) {
-            deleteCar(prefs.getString("user_id",""),moviesList.get(position).getNr());
+            deleteCar(prefs.getString("user_id", ""), moviesList.get(position).getNr());
             moviesList.remove(position);
-            if(moviesList.size()==0){
+            if (moviesList.size() == 0) {
                 recyclerView.setVisibility(View.INVISIBLE);
                 tvTitle.setVisibility(View.VISIBLE);
                 tvMessage.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, moviesList.size());
             }
         }
+
         @Override
         public int getItemCount() {
             return moviesList.size();
         }
     }
 
-    public void deleteCar(final String id, final String plates){
-        String url = Constants.URL+"users/removeCar/"+id;
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                    new Response.Listener<String>() {
-                        public void onResponse(String response) {
-                            String json = response;
-                            Log.w("meniuu", "response:post user" + response);
-                            Snackbar snackbar = Snackbar
-                                    .make(coordinatorLayout, "Masina a fost stearsa!", Snackbar.LENGTH_LONG);
+    public void deleteCar(final String id, final String plates) {
+        String url = Constants.URL + "users/removeCar/" + id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        Log.w("meniuu", "response:post user" + response);
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "Masina a fost stearsa!", Snackbar.LENGTH_LONG);
 //                                    .setAction("SETARI", new View.OnClickListener() {
 //                                        public void onClick(View view) {
 //                                            startActivityForResult(new Intent(android. provider.Settings.ACTION_SETTINGS), 0);
 //                                        }
 //                                    });
-                            snackbar.show();
-                        }
-                    }, ErrorListener) {
-                protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("plates", plates);
-                    return params;
-                }
+                        snackbar.show();
+                    }
+                }, ErrorListener) {
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("plates", plates);
+                return params;
+            }
 
             public Map<String, String> getHeaders() throws AuthFailureError {
                 String auth_token_string = prefs.getString("token", "");
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization","Bearer "+  auth_token_string);
+                params.put("Authorization", "Bearer " + auth_token_string);
                 return params;
             }
-            };
-            queue.add(stringRequest);
+        };
+        queue.add(stringRequest);
     }
 }

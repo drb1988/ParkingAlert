@@ -30,6 +30,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +69,7 @@ public class AddCar extends Activity implements View.OnClickListener{
     final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
     final int ACTIVITY_SELECT_IMAGE = 1234;
     RequestQueue queue;
+    Switch receive_notification, all_drive;
 
     /**
      *
@@ -98,6 +100,8 @@ public class AddCar extends Activity implements View.OnClickListener{
         edYear =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
         ivImageCar =(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
         ivImageCar.setOnClickListener(this);
+        receive_notification=(Switch)findViewById(R.id.all_drive);
+        all_drive=(Switch)findViewById(R.id.all_drive);
     }
 
     /**

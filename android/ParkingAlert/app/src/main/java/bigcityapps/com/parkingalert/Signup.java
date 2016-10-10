@@ -2,12 +2,16 @@ package bigcityapps.com.parkingalert;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -26,7 +30,7 @@ public class Signup extends Activity implements View.OnClickListener {
     RequestQueue queue;
     Context ctx;
     EditText edFname, edLname, edEmail, edCheckEmail, edPassword;
-    TextInputLayout inputCheckEmail, inputPassword;
+    TextInputLayout inputCheckEmail, inputPassword,inputEmail;
     TextView tvSignup;
     RelativeLayout rlBack, rlLogin;
 
@@ -102,6 +106,7 @@ public void FluiEdittext(){
 
 }
     public void initComponents() {
+        inputEmail =(TextInputLayout)findViewById(R.id.input_email);
         inputCheckEmail =(TextInputLayout)findViewById(R.id.input_verifica_email);
         inputPassword =(TextInputLayout)findViewById(R.id.inputPassword);
         edFname = (EditText) findViewById(R.id.nume);
@@ -110,11 +115,13 @@ public void FluiEdittext(){
         edCheckEmail = (EditText) findViewById(R.id.verifica_email);
         edPassword = (EditText) findViewById(R.id.parola);
         tvSignup = (TextView) findViewById(R.id.inregistreazate);
+        tvSignup.setOnClickListener(this);
         rlBack = (RelativeLayout) findViewById(R.id.back_signup);
         rlBack.setOnClickListener(this);
         rlLogin = (RelativeLayout) findViewById(R.id.login_signup);
         rlLogin.setOnClickListener(this);
-
+        edEmail.addTextChangedListener(new MyTextWatcher(edEmail));
+        edPassword.addTextChangedListener(new MyTextWatcher(edPassword));
 
     }
 
@@ -128,7 +135,8 @@ public void FluiEdittext(){
 
                 break;
             case R.id.inregistreazate:
-
+                Intent signup= new Intent(Signup.this, EmailValidation.class);
+                startActivity(signup);
                 break;
         }
     }
@@ -148,5 +156,63 @@ public void FluiEdittext(){
         } else {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
         }
+    }
+
+
+    private class MyTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()) {
+                case R.id.email:
+                    validateEmail();
+                    break;
+                case R.id.parola:
+                    validatePassword();
+                    break;
+            }
+        }
+    }
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+    private static boolean isValidEmail(String email) {
+        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+    private boolean validateEmail() {
+        String email = edEmail.getText().toString().trim();
+        if (email.isEmpty() || !isValidEmail(email)) {
+            inputEmail.setError(getString(R.string.err_msg_email));
+            requestFocus(edEmail);
+            return false;
+        } else {
+            inputEmail.setErrorEnabled(false);
+        }
+        return true;
+    }
+
+    private boolean validatePassword() {
+        String password = edPassword.getText().toString().trim();
+        if (password.length()<6) {
+            inputPassword.setError(getString(R.string.err_msg_email));
+            requestFocus(edPassword);
+            return false;
+        } else {
+            inputPassword.setErrorEnabled(false);
+        }
+        return true;
     }
 }

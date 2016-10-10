@@ -11,7 +11,7 @@
         android:gravity="center_vertical">
 
         <RelativeLayout
-            android:id="@+id/inapoi_intra_in_cont"
+            android:id="@+id/back_email_validation"
             style="?android:borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:text="Inapoi"
                 android:textColor="@color/alb"
-                android:textSize="17dp" />
+                android:textSize="@dimen/txt_size_mic" />
         </RelativeLayout>
 
         <TextView
@@ -31,25 +31,10 @@
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="Intra in cont"
+            android:text="Valideaza email"
             android:textColor="@android:color/white"
-            android:textSize="18dp" />
+            android:textSize="@dimen/txt_size" />
 
-        <RelativeLayout
-            android:id="@+id/inregistrare_intra_in_cont"
-            style="?android:borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Inregistrare"
-                android:textColor="@android:color/white"
-                android:textSize="17dp" />
-        </RelativeLayout>
     </RelativeLayout>
 
     <ScrollView
@@ -59,23 +44,62 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#EFEFF4"
             android:orientation="vertical">
 
             <TextView
-                android:background="#EFEFF4"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:background="#EFEFF4"
                 android:gravity="center_vertical"
-                android:text="Ai cont? Poti intra in cont cu emailul si parola cu care te-ai inregistrat."></TextView>
+                android:text="Ti-am trimis pe email un cod de validare. Te rugam sa il introduci in campul de mai jos."></TextView>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/alb"
-                android:orientation="vertical">
+                android:layout_height="120dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_validation_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/validation_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Cod de validare"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true" />
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/email_validation"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/input_validation_code"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@color/blue_white"
+                    android:gravity="center"
+                    android:text="Validare email"
+                    android:textColor="@color/alb"
+                    android:textSize="@dimen/txt_size_mic" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:text="Daca nu ai primit codul, poti sa il mai trimiti o data sau poti folosi Facebook pentru autentificare."></TextView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp">
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/input_email"
@@ -91,47 +115,29 @@
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/input_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/parola"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Parola"
-                        android:imeOptions="actionDone"
-                        android:singleLine="true" />
-                </android.support.design.widget.TextInputLayout>
-
                 <TextView
-                    android:id="@+id/intra_in_cont"
+                    android:id="@+id/resend_email"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_below="@+id/titlu1"
-                    android:layout_marginBottom="25dp"
+                    android:layout_height="60dp"
+                    android:layout_below="@+id/input_email"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="35dp"
-                    android:background="#5387CB"
+                    android:layout_marginTop="30dp"
+                    android:background="@color/blue_white"
                     android:gravity="center"
-                    android:text="Intra in cont"
+                    android:text="Trimite inca o data codul de validare"
                     android:textColor="@color/alb"
-                    android:textSize="@dimen/txt_size" />
-            </LinearLayout>
+                    android:textSize="@dimen/txt_size_mic" />
+            </RelativeLayout>
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="15dp"
-                android:text="Sau foloseste unu dintre conturile tale sociale" />
+                android:layout_height="50dp"
+                android:background="#EFEFF4"></RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/alb"
-                android:padding="15dp">
+                android:layout_height="120dp">
 
                 <com.facebook.login.widget.LoginButton xmlns:fb="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/login_button"
@@ -145,30 +151,7 @@
                     android:layout_marginTop="15dp"
                     fb:login_text="Autentifica-te  cu Facebook"
                     fb:logout_text="Logout" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:background="@color/alb"
-                android:padding="15dp">
-
-                <TextView
-                    android:id="@+id/forget_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_below="@+id/titlu1"
-                    android:layout_marginBottom="15dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="15dp"
-                    android:background="#8446BA"
-                    android:gravity="center"
-                    android:text="Ai uitat parola? Se mai intampla.."
-                    android:textColor="@color/alb"
-                    android:textSize="@dimen/txt_size" />
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
