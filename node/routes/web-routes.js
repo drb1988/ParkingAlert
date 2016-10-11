@@ -71,4 +71,60 @@ router.get('/getUsers', function(req, res, next) {
 			});
 });
 
+router.get('/banUser/:userID', function(req, res, next) {
+	/**
+    * Route to ban a user,
+    * @name /updateUser/:userID
+    * @param {String} :userId
+    */
+	var findUser = function(db, callback) {   
+	var o_id = new ObjectId(req.params.userID);
+	    db.collection('parking').update({"_id": o_id},
+	    	 {$set: { 
+                      "is_banned": true,
+                     }
+             },
+	    	function(err, result) {
+					    assert.equal(err, null);
+					    console.log("Found user "+req.params.userID);
+					    res.status(200).send(result)
+					    callback();
+				});            
+		}
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findUser(db, function() {
+			      db.close();
+			  });
+			});
+});
+
+router.get('/unbanUser/:userID', function(req, res, next) {
+	/**
+    * Route to ban a user,
+    * @name /updateUser/:userID
+    * @param {String} :userId
+    */
+	var findUser = function(db, callback) {   
+	var o_id = new ObjectId(req.params.userID);
+	    db.collection('parking').update({"_id": o_id},
+	    	 {$set: { 
+                      "is_banned": false,
+                     }
+             },
+	    	function(err, result) {
+					    assert.equal(err, null);
+					    console.log("Found user "+req.params.userID);
+					    res.status(200).send(result)
+					    callback();
+				});            
+		}
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findUser(db, function() {
+			      db.close();
+			  });
+			});
+});
+
 module.exports = router;
