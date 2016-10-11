@@ -58,6 +58,47 @@ MongoClient.connect(dbConfig.url, function(err, db) {
 });
 });
 
+router.post('/facebookLogin', function(req, res, next) {
+    /**
+    * Route for facebook login,
+    * @name /users/:userId
+    * @param {String} :userId
+    */
+  var userID ="";
+  var insertDocument = function(db, callback) {
+   db.collection('parking').insertOne( {
+      "first_name": req.body.first_name,
+      "last_name": req.body.last_name,
+      "email": req.body.email,
+      "facebookID": req.body.facebookID,
+      "cars": [],
+      "security": [],
+      "platform": req.body.platform
+   }, function(err, result) {
+    assert.equal(err, null);
+    userID = result.insertedId;
+    console.log("Inserted a user in the users collection. "+result.insertedId);
+    callback();
+  });
+};
+MongoClient.connect(dbConfig.url, function(err, db) {
+  assert.equal(null, err);
+  insertDocument(db, function() {
+      db.close();
+      var payload = {
+        "user_id"   : userID,
+        "email"     : req.body.email
+    };
+  var token = jwt.encode( config.jwt.secret, payload);
+  var result = {
+    "userID": userID,
+    "token": token
+  }
+      res.status(200).send(result)
+  });
+});
+});
+
 router.post('/sendEmailVerification', function(req, res, next) {
     /**
     * Route to get users by ID,
@@ -150,7 +191,6 @@ router.get('/login/:email&:password', function(req, res, next) {
       var findUser = function(db, callback) {
       db.collection('parking').findOne({"email": req.params.email},
         function(err, result) {
-              console.log(result)
               assert.equal(err, null);
               console.log("Found email "+result._id);
               var payload = {
@@ -160,6 +200,7 @@ router.get('/login/:email&:password', function(req, res, next) {
       var token = jwt.encode( config.jwt.secret, payload);
       var response = {
         "token": token,
+        "userID": result._id,
         "user": result
       }
       if(result.password == hash){

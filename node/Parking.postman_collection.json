@@ -549,6 +549,26 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "localhost:3000/facebookLogin",
+			"request": {
+				"url": "localhost:3000/signup/facebookLogin",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdandrb@gmail.com\",\n    \"photo\": \"sec91@gmail.com\",\n    \"facebookID\": \"babanaluicristi16\",\n    \"platform\": \"Android\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
 		}
 	]
 }
