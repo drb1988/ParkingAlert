@@ -252,4 +252,57 @@ router.get('/login/:email&:password', function(req, res, next) {
       });
 });
 
+router.get('/resetPassword/:email', function(req, res, next) {
+    /**
+      * Route to login,
+      * @name /getUser/:userID
+      * @param {String} :userId
+      */
+      const secret = 'Friendly';
+      var password = "";
+      Crypto.randomBytes(3, function(err, buffer) {
+          password = buffer.toString('hex');
+      });
+      const hash = Crypto.createHmac('sha256', secret).update(password).digest('hex');
+      var resetPassword = function(db, callback) {
+      db.collection('parking').update({"email": req.params.email}, 
+                 {$set: { 
+                          "password": hash    
+                        }
+                 },function(err, result) {
+                assert.equal(err, null);
+                console.log("Inserted a car for the user "+req.params.userID);
+                callback();
+          });            
+      }
+      MongoClient.connect(dbConfig.url, function(err, db) {
+          assert.equal(null, err);
+          resetPassword(db, function() {
+              db.close();
+              var result = {
+                "result": "Mail Sent"
+              }   
+              var transporter = nodemailer.createTransport({
+                      service: 'Gmail',
+                      auth: {
+                          user: 'mugurel.mitrut@gmail.com', // Your email id
+                          pass: 'banana1!' // Your password
+                        }
+                      });
+              var mailOptions = {
+                        from: '"Parking Alert" <mugurel.mitrut@gmail.com>', // sender address
+                        to: req.params.email,// list of receivers
+                        subject: 'Notification', // Subject line
+                        text: password // plaintext body
+                      };
+              transporter.sendMail(mailOptions, function(error, info){if(error){
+                          return console.log(error);  
+                        } else {
+                          return console.log(info);  
+                        }});   
+                          res.status(200).send(result)
+                      });
+        });
+});
+
 module.exports = router

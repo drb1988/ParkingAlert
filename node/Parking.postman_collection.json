@@ -564,9 +564,23 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdandrb@gmail.com\",\n    \"photo\": \"sec91@gmail.com\",\n    \"facebookID\": \"babanaluicristi16\",\n    \"platform\": \"Android\"\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdan_drb@gmail.com\",\n    \"photo\": \"sec91@gmail.com\",\n    \"facebookID\": \"babanaluicristi16\",\n    \"platform\": \"Android\"\n}"
 				},
 				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/signup/resetPassword/bogdandrb@gmail.com",
+			"request": {
+				"url": "localhost:3000/signup/resetPassword/bogdandrb@gmail.com",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
 			},
 			"response": []
 		}
