@@ -116,31 +116,38 @@ $(document).ready(function () {
           endDateTime = date[1];
       var json = {
         selectedDate: selectedDate, 
-        endDateTime : endDateTime,
-        circle: {
-          is_defined: circle ? true : false,
-          value: {
-            radius: circle ? circle.getRadius() : null,
-            center: {
-              lat: circle ? circle.getCenter().lat() : null,
-              lng: circle ? circle.getCenter().lng() : null
-            }
-          }
-        },
-        rectangle: {
-          is_defined: rectangle ? true : false,
-          value: {
-            NorthEast: {
-              lat: rectangle ? rectangle.getBounds().getNorthEast().lat() : null,
-              lng: rectangle ? rectangle.getBounds().getNorthEast().lng() : null
-            },
-            SouthWest: {
-              lat: rectangle ? rectangle.getBounds().getSouthWest().lat() : null,
-              lng: rectangle ? rectangle.getBounds().getSouthWest().lng() : null
-            }
-          }
-        }
-      };
+        endDateTime : endDateTime
+      }
+      json.type = circle ? "circle" : rectangle ? "rectangle" : polygon ? "polygon" : false;
+      json.value = circle ? "crc" : rectangle ? rectangle.getBounds() : polygon ? "polygon.getPath()" : false;
+      // console.log("circle", circle);
+      // console.log("rectangle", rectangle);
+      // console.log("polygon", polygon);
+      // if(circle)
+      //   json.circle= {
+      //     value: {
+      //       radius: circle ? circle.getRadius() : null,
+      //       center: {
+      //         lat: circle ? circle.getCenter().lat() : null,
+      //         lng: circle ? circle.getCenter().lng() : null
+      //       }
+      //     }
+      //   }
+      // if(rectangle)
+      //   json.rectangle= {
+      //     value: {
+      //       NorthEast: {
+      //         lat: rectangle ? rectangle.getBounds().getNorthEast().lat() : null,
+      //         lng: rectangle ? rectangle.getBounds().getNorthEast().lng() : null
+      //       },
+      //       SouthWest: {
+      //         lat: rectangle ? rectangle.getBounds().getSouthWest().lat() : null,
+      //         lng: rectangle ? rectangle.getBounds().getSouthWest().lng() : null
+      //       }
+      //     }
+      //   };
+      // if(polygon) 
+      //   json.value = polygon.getPath();
       console.log("json pentru stat",json);
       chart.setTitle({text: "Statistica pentru perioada : "+selectedDate});
       $.ajax({

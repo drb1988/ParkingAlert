@@ -3,6 +3,11 @@ var router = express.Router();
 var assert = require('assert');
 
 /* GET home page. */
+router.get('/newpage', function(req, res, next) {
+  res.render('newpage', { 
+    title: 'Express'
+  });
+   });
 router.get('/', function(req, res, next) {
   /**
     * Base route,
@@ -219,7 +224,7 @@ router.get('/users', function(req, res, next) {
   res.render('users', { title: 'Express' });
 });
 
-router.get('/users/:userId', function(req, res, next) {
+router.get('/user_profile', function(req, res, next) {
     /**
     * Route to get users by ID,
     * @name /users/:userId
@@ -227,5 +232,6 @@ router.get('/users/:userId', function(req, res, next) {
     */
   res.render('user', { title: 'Express' });
 });
+
 
 module.exports = router;
