@@ -26,6 +26,7 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/background_first_screen">
@@ -72,8 +73,8 @@
                 android:layout_height="50dp"
                 android:layout_below="@+id/titlu1"
                 android:layout_marginBottom="15dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginTop="15dp"
                 android:background="#5387CB"
                 android:gravity="center"
@@ -86,8 +87,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_below="@+id/intra_in_cont"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:background="#5387CB"
                 android:gravity="center"
                 android:text="Inregistreaza-te cu email-ul"
@@ -100,8 +101,8 @@
                 android:layout_height="50dp"
                 android:layout_below="@+id/inregistreazate_email"
                 android:layout_centerHorizontal="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 fb:login_text="Autentifica-te  cu Facebook"

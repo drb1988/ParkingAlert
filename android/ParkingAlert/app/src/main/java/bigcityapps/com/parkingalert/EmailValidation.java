@@ -79,7 +79,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
 
         initComponents();
         loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList("public_profile", "edemail", "user_birthday", "user_friends", "user_location", "user_about_me", "user_hometown"));
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends", "user_location", "user_about_me", "user_hometown"));
         callbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             public void onSuccess(LoginResult loginResult) {
@@ -87,7 +87,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Log.w("meniuu", "callback:" + object);
                         try {
-                            Log.w("meniuu", "oemail" + object.getString("edemail"));
+                            Log.w("meniuu", "oemail" + object.getString("email"));
                             Log.w("meniuu", "nume" + object.getString("name"));
                         } catch (JSONException e) {
                             Log.w("meniuu", "catch");

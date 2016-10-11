@@ -88,7 +88,7 @@ public class User_profile extends Activity implements View.OnClickListener{
                     params.put("first_name", nume.getText().toString());
                     params.put("last_name", nume.getText().toString());
                     params.put("edNickname", nickname.getText().toString());
-                    params.put("edemail", email.getText().toString());
+                    params.put("email", email.getText().toString());
                     params.put("edDriverLicense", driver_license.getText().toString());
                     params.put("photo", "photo");
                     params.put("platform", "Android");
@@ -131,7 +131,7 @@ public class User_profile extends Activity implements View.OnClickListener{
                     JSONObject user = new JSONObject(json);
                     nume.setText(user.getString("first_name")+" "+user.getString("last_name"));
                     nickname.setText(user.getString("nickname"));
-                    email.setText(user.getString("edemail"));
+                    email.setText(user.getString("email"));
                     driver_license.setText(user.getString("edDriverLicense"));
                     Glide.with(ctx).load(user.getString("photo")).asBitmap().centerCrop().into(new BitmapImageViewTarget(poza_rotunda_user_profile) {
                         protected void setResource(Bitmap resource) {

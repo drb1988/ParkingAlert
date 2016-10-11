@@ -41,7 +41,7 @@ public class Signup extends Activity implements View.OnClickListener {
     RequestQueue queue;
     Context ctx;
     EditText edFname, edLname, edEmail, edCheckEmail, edPassword;
-    TextInputLayout inputCheckEmail, inputPassword,inputEmail;
+    TextInputLayout inputCheckEmail, inputPassword, inputEmail;
     TextView tvSignup;
     RelativeLayout rlBack, rlLogin;
 
@@ -55,71 +55,73 @@ public class Signup extends Activity implements View.OnClickListener {
         FluiEdittext();
 
     }
-public void FluiEdittext(){
-    edFname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (!hasFocus) {
-                hideKeyboard(v);
-            }else
-                showKeyboard(edFname);
-        }
-    });
-    edLname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (!hasFocus) {
-                hideKeyboard(v);
-            }else
-                showKeyboard(edLname);
-        }
-    });
-    edCheckEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (!hasFocus) {
-                {
+
+    public void FluiEdittext() {
+        edFname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
                     hideKeyboard(v);
-                    if(edEmail.getText().toString().equals(edCheckEmail.getText().toString())) {
-
-                        inputCheckEmail.setErrorEnabled(false);
-                        Log.w("meniuu","nu este bun");
-                    }
-                    else {   inputCheckEmail.setError("Emailul nu este bun");
-
-                        Log.w("meniuu","dispate");
-                    }
-                }
-            }else
-                showKeyboard(edCheckEmail);
-        }
-    });
-    edPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (!hasFocus) {
-                {
+                } else
+                    showKeyboard(edFname);
+            }
+        });
+        edLname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
                     hideKeyboard(v);
-                    if(edPassword.getText().length()<6)
-                        inputPassword.setError("Parola trebuie sa fie de cel putin 6 caractere");
-                    else
-                        inputPassword.setErrorEnabled(false);
-                        
-                }
-            }else
-                showKeyboard(edPassword);
-        }
-    });
-    edEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (!hasFocus) {
-                hideKeyboard(v);
-            }else
-                showKeyboard(edEmail);
-        }
-    });
+                } else
+                    showKeyboard(edLname);
+            }
+        });
+        edCheckEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    {
+                        hideKeyboard(v);
+                        if (edEmail.getText().toString().equals(edCheckEmail.getText().toString())) {
 
-}
+                            inputCheckEmail.setErrorEnabled(false);
+                            Log.w("meniuu", "nu este bun");
+                        } else {
+                            inputCheckEmail.setError("Emailul nu este bun");
+
+                            Log.w("meniuu", "dispate");
+                        }
+                    }
+                } else
+                    showKeyboard(edCheckEmail);
+            }
+        });
+        edPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    {
+                        hideKeyboard(v);
+                        if (edPassword.getText().length() < 6)
+                            inputPassword.setError("Parola trebuie sa fie de cel putin 6 caractere");
+                        else
+                            inputPassword.setErrorEnabled(false);
+
+                    }
+                } else
+                    showKeyboard(edPassword);
+            }
+        });
+        edEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edEmail);
+            }
+        });
+
+    }
+
     public void initComponents() {
-        inputEmail =(TextInputLayout)findViewById(R.id.input_email);
-        inputCheckEmail =(TextInputLayout)findViewById(R.id.input_verifica_email);
-        inputPassword =(TextInputLayout)findViewById(R.id.inputPassword);
+        inputEmail = (TextInputLayout) findViewById(R.id.input_email);
+        inputCheckEmail = (TextInputLayout) findViewById(R.id.input_verifica_email);
+        inputPassword = (TextInputLayout) findViewById(R.id.inputPassword);
         edFname = (EditText) findViewById(R.id.nume);
         edLname = (EditText) findViewById(R.id.prenume);
         edEmail = (EditText) findViewById(R.id.email);
@@ -137,31 +139,35 @@ public void FluiEdittext(){
     }
 
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.back_signup:
                 finish();
                 break;
 
             case R.id.login_signup:
-
+                Intent signup = new Intent(Signup.this, LoginNew.class);
+                startActivity(signup);
+                finish();
                 break;
             case R.id.inregistreazate:
-                if(validateEmail() && edEmail.getText().toString().equals(edCheckEmail.getText().toString()))
+                if (validateEmail() && edEmail.getText().toString().equals(edCheckEmail.getText().toString()))
                     sendEmailVerification(edEmail.getText().toString());
                 else
-                    Toast.makeText(ctx,"Email incorect",Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, "Email incorect", Toast.LENGTH_LONG).show();
                 break;
         }
     }
 
     public void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
     public void showKeyboard(EditText ed) {
-        InputMethodManager keyboard = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboard.showSoftInput(ed, 0);
     }
+
     //check email validation
     public final static boolean isValidEmail(CharSequence target) {
         if (TextUtils.isEmpty(target)) {
@@ -174,11 +180,17 @@ public void FluiEdittext(){
 
     private class MyTextWatcher implements TextWatcher {
         private View view;
+
         private MyTextWatcher(View view) {
             this.view = view;
         }
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {
                 case R.id.email:
@@ -190,14 +202,17 @@ public void FluiEdittext(){
             }
         }
     }
+
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
+
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
+
     private boolean validateEmail() {
         String email = edEmail.getText().toString().trim();
         if (email.isEmpty() || !isValidEmail(email)) {
@@ -212,7 +227,7 @@ public void FluiEdittext(){
 
     private boolean validatePassword() {
         String password = edPassword.getText().toString().trim();
-        if (password.length()<6) {
+        if (password.length() < 6) {
             inputPassword.setError(getString(R.string.err_msg_email));
             requestFocus(edPassword);
             return false;
@@ -230,14 +245,14 @@ public void FluiEdittext(){
                         String json = response;
                         try {
                             JSONObject user = new JSONObject(json);
-                            String verificationId=user.getString("verificationID");
+                            String verificationId = user.getString("verificationID");
                             Log.w("meniuu", "response:email verification" + response);
-                            Intent signup= new Intent(Signup.this, EmailValidation.class);
-                            signup.putExtra("nume",edFname.getText().toString());
-                            signup.putExtra("prenume",edLname.getText().toString());
-                            signup.putExtra("parola",edPassword.getText().toString());
-                            signup.putExtra("verificationId",verificationId);
-                            signup.putExtra("email",edEmail.getText().toString());
+                            Intent signup = new Intent(Signup.this, EmailValidation.class);
+                            signup.putExtra("nume", edFname.getText().toString());
+                            signup.putExtra("prenume", edLname.getText().toString());
+                            signup.putExtra("parola", edPassword.getText().toString());
+                            signup.putExtra("verificationId", verificationId);
+                            signup.putExtra("email", edEmail.getText().toString());
                             startActivity(signup);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -261,6 +276,7 @@ public void FluiEdittext(){
         };
         queue.add(stringRequest);
     }
+
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);

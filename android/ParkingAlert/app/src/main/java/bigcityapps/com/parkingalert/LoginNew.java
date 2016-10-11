@@ -6,13 +6,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,6 +35,8 @@ import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,12 +54,18 @@ public class LoginNew extends Activity implements View.OnClickListener {
     SharedPreferences prefs;
     RequestQueue queue;
     EditText edEmail, edPassword;
-    TextView tvLogin,tvPasswordForget;
+    TextView tvLogin, tvPasswordForget;
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     TextInputLayout inputEmail, inputPassword;
     Context ctx;
     RelativeLayout rlBack, rlSignup;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -60,12 +73,13 @@ public class LoginNew extends Activity implements View.OnClickListener {
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.intra_in_cont);
         queue = Volley.newRequestQueue(this);
-        ctx=this;
+        ctx = this;
         prefs = new SecurePreferences(ctx);
         initComponents();
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends", "user_location", "user_about_me", "user_hometown"));
         callbackManager = CallbackManager.Factory.create();
+        edEmail.addTextChangedListener(new MyTextWatcher(edEmail));
 
 //        edPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //            public void onFocusChange(View v, boolean hasFocus) {
@@ -89,10 +103,10 @@ public class LoginNew extends Activity implements View.OnClickListener {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Log.w("meniuu", "callback:" + object);
                         try {
-                            Log.w("meniuu","oemail"+object.getString("email"));
-                            Log.w("meniuu","nume"+object.getString("name"));
+                            Log.w("meniuu", "oemail" + object.getString("email"));
+                            Log.w("meniuu", "nume" + object.getString("name"));
                         } catch (JSONException e) {
-                            Log.w("meniuu","catch");
+                            Log.w("meniuu", "catch");
                             e.printStackTrace();
                         }
 //                        loginButton.setVisibility(View.GONE);
@@ -113,74 +127,95 @@ public class LoginNew extends Activity implements View.OnClickListener {
                 e.printStackTrace();
             }
         });
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-    public void initComponents(){
-        inputEmail=(TextInputLayout)findViewById(R.id.input_email);
-        inputPassword=(TextInputLayout)findViewById(R.id.input_password);
-        edEmail=(EditText)findViewById(R.id.email);
-        edPassword=(EditText)findViewById(R.id.parola);
-        tvLogin=(TextView) findViewById(R.id.intra_in_cont);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+    public void initComponents() {
+        inputEmail = (TextInputLayout) findViewById(R.id.input_email);
+        inputPassword = (TextInputLayout) findViewById(R.id.input_password);
+        edEmail = (EditText) findViewById(R.id.email);
+        edPassword = (EditText) findViewById(R.id.parola);
+        tvLogin = (TextView) findViewById(R.id.intra_in_cont);
         tvLogin.setOnClickListener(this);
-        tvPasswordForget=(TextView)findViewById(R.id.forget_password);
+        tvPasswordForget = (TextView) findViewById(R.id.forget_password);
         tvPasswordForget.setOnClickListener(this);
-        rlBack=(RelativeLayout)findViewById(R.id.inapoi_intra_in_cont);
+        rlBack = (RelativeLayout) findViewById(R.id.inapoi_intra_in_cont);
         rlBack.setOnClickListener(this);
-        rlSignup=(RelativeLayout)findViewById(R.id.inregistrare_intra_in_cont);
+        rlSignup = (RelativeLayout) findViewById(R.id.inregistrare_intra_in_cont);
         rlSignup.setOnClickListener(this);
 
     }
+
     public void onClick(View view) {
-    switch (view.getId()){
-        case R.id.intra_in_cont:
-            login();
-            break;
-        case R.id.forget_password:
+        switch (view.getId()) {
+            case R.id.intra_in_cont:
+                login();
+                break;
+            case R.id.forget_password:
 
-            break;
-        case R.id.inapoi_intra_in_cont:
-            finish();
-            break;
-        case R.id.inregistrare_intra_in_cont:
+                break;
+            case R.id.inapoi_intra_in_cont:
+                finish();
+                break;
+            case R.id.inregistrare_intra_in_cont:
+                Intent login = new Intent(LoginNew.this, Signup.class);
+                startActivity(login);
+                finish();
+                break;
+        }
 
-            break;
     }
 
-    }
     //check email validation
     public final static boolean isValidEmail(CharSequence target) {
         if (TextUtils.isEmpty(target)) {
             return false;
         } else {
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+            return Patterns.EMAIL_ADDRESS.matcher(target).matches();
         }
     }
+
     public void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
     public void showKeyboard(EditText ed) {
-        InputMethodManager keyboard = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboard.showSoftInput(ed, 0);
     }
 
     public void login() {
-        String url = Constants.URL + "signup/login/"+edEmail.getText().toString().trim()+"&"+edPassword.getText().toString();
-        Log.w("meniuu","email:"+edEmail.getText()+" pass:"+edPassword.getText()+" url:"+url);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    public void onResponse(String response) {
-                        String json = response;
-                        try {
-                            JSONObject obj = new JSONObject(json);
-                            JSONObject token= new JSONObject(obj.getString("token"));
-                            prefs.edit().putString("user_id", obj.getString("userID")).commit();
-                            prefs.edit().putString("token", token.getString("value")).commit();
-                            Intent continuare= new Intent(LoginNew.this, MainActivity.class);
-                            startActivity(continuare);
-                            finish();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+        if (validateEmail()) {
+            String url = Constants.URL + "signup/login/" + edEmail.getText().toString().trim() + "&" + edPassword.getText().toString();
+            Log.w("meniuu", "email:" + edEmail.getText() + " pass:" + edPassword.getText() + " url:" + url);
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        public void onResponse(String response) {
+                            String json = response;
+                            try {
+                                Log.w("meniuu", "response la login" + json);
+                                JSONObject obj = new JSONObject(json);
+                                JSONObject token = new JSONObject(obj.getString("token"));
+                                prefs.edit().putString("user_id", obj.getString("userID")).commit();
+                                prefs.edit().putString("token", token.getString("value")).commit();
+                                Intent continuare = new Intent(LoginNew.this, MainActivity.class);
+                                startActivity(continuare);
+                                finish();
+                            } catch (Exception e) {
+                                try {
+                                    JSONObject obj = new JSONObject(json);
+                                    Toast.makeText(ctx,obj.getString("error"),Toast.LENGTH_LONG).show();
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                                e.printStackTrace();
+                            }
 
 //                        Snackbar snackbar = Snackbar
 //                                .make(coordinatorLayout, "Masina a fost stearsa!", Snackbar.LENGTH_LONG);
@@ -190,19 +225,66 @@ public class LoginNew extends Activity implements View.OnClickListener {
 ////                                        }
 ////                                    });
 //                        snackbar.show();
-                    }
-                }, ErrorListener) {
+                        }
+                    }, ErrorListener) {
 //            protected java.util.Map<String, String> getParams() {
 //                java.util.Map<String, String> params = new HashMap<String, String>();
 //                params.put("email", email);
 //                return params;
 //            }
-        };
-        queue.add(stringRequest);
+            };
+            queue.add(stringRequest);
+        } else
+            Toast.makeText(ctx, "Complectati doate campurile!", Toast.LENGTH_LONG).show();
     }
+
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);
         }
     };
+
+    private class MyTextWatcher implements TextWatcher {
+        private View view;
+
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()) {
+                case R.id.email:
+                    validateEmail();
+                    break;
+            }
+        }
+    }
+
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+
+    private static boolean isValidEmail(String email) {
+        return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private boolean validateEmail() {
+        String email = edEmail.getText().toString().trim();
+        if (email.isEmpty() || !isValidEmail(email)) {
+            inputEmail.setError(getString(R.string.err_msg_email));
+            requestFocus(edEmail);
+            return false;
+        } else {
+            inputEmail.setErrorEnabled(false);
+        }
+        return true;
+    }
 }

@@ -67,7 +67,7 @@ public class Login extends Activity implements View.OnClickListener {
 //        loginButton.setBackgroundResource(R.drawable.facebook);
 //        loginButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         initComponents();
-        loginButton.setReadPermissions(Arrays.asList("public_profile", "edemail", "user_birthday", "user_friends", "user_location", "user_about_me", "user_hometown"));
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends", "user_location", "user_about_me", "user_hometown"));
         ctx = this;
         callbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -76,8 +76,8 @@ public class Login extends Activity implements View.OnClickListener {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Log.w("meniuu", "callback:" + object);
                         try {
-                            Log.w("meniuu","obj.getemail:"+object.getString("edemail"));
-                            edemail.setText(object.getString("edemail"));
+                            Log.w("meniuu","obj.getemail:"+object.getString("email"));
+                            edemail.setText(object.getString("email"));
                             edName.setText(object.getString("name"));
 //                            edCity.setText(object.getString("edCity"));
                         } catch (JSONException e) {
@@ -235,7 +235,7 @@ public class Login extends Activity implements View.OnClickListener {
                     params.put("first_name", edName.getText().toString());
                     params.put("last_name", edPrenume.getText().toString());
                     params.put("edNickname", edName.getText().toString()+edPrenume.getText().toString());
-                    params.put("edemail", edemail.getText().toString());
+                    params.put("email", edemail.getText().toString());
                     params.put("edDriverLicense", "driverlicense");
                     params.put("photo", "photo");
                     params.put("platform", "Android");
