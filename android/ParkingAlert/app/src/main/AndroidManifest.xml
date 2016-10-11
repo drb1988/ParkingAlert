@@ -45,6 +45,7 @@
         <activity android:name="bigcityapps.com.parkingalert.EmailValidation"></activity>
         <activity android:name="bigcityapps.com.parkingalert.FirstScreen"></activity>
         <activity android:name="bigcityapps.com.parkingalert.ViewCar"></activity>
+        <activity android:name="bigcityapps.com.parkingalert.PasswordReset"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

@@ -10,7 +10,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
@@ -25,8 +30,9 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
+import java.util.*;
 
+import Util.Constants;
 import Util.SecurePreferences;
 import io.fabric.sdk.android.Fabric;
 
@@ -40,6 +46,7 @@ public class FirstScreen extends Activity implements View.OnClickListener {
     TextView mLogin, mSignupEmail;
     private LoginButton loginButton;
     private CallbackManager callbackManager;
+    String mFirstName, mEmail, mFacebookId,mLastName;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +70,23 @@ public class FirstScreen extends Activity implements View.OnClickListener {
                         try {
                             Log.w("meniuu", "mail" + object.getString("email"));
                             Log.w("meniuu", "nume" + object.getString("name"));
+                            if(object.getString("name").contains(" ")) {
+                                try {
+                                    String a[] = object.getString("name").split(" ");
+                                    mFirstName = a[0];
+                                    mLastName = a[1];
+                                }catch (Exception e){
+                                    mFirstName=object.getString("name");
+                                    e.printStackTrace();
+                                }
+                            }
+                             mEmail=object.getString("email");
+                            mFacebookId=object.getString("id");
+                            facebookLogin(mFirstName,mLastName, mFacebookId, mEmail);
+
                         } catch (JSONException e) {
                             Log.w("meniuu", "catch");
+                            Toast.makeText(ctx,"Eroare la conectarea cu Facebook-ul",Toast.LENGTH_LONG).show();
                             e.printStackTrace();
                         }
 //                        loginButton.setVisibility(View.GONE);
@@ -114,4 +136,50 @@ public class FirstScreen extends Activity implements View.OnClickListener {
 
         }
     }
+
+    public void facebookLogin(final String fname, final String lname, final String facebookID, final String email){
+        String url = Constants.URL+"signup/facebookLogin";
+        Log.w("meniuu","fname:"+fname+" lname:"+lname+" facebookid:"+facebookID+" email:"+email);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        public void onResponse(String response) {
+                            String json = response;
+                            try {
+                                Log.w("meniuu", "response la login facebook in firstscreen" + json);
+                                JSONObject obj = new JSONObject(json);
+                                JSONObject token = new JSONObject(obj.getString("token"));
+                                prefs.edit().putString("user_id", obj.getString("userID")).commit();
+                                prefs.edit().putString("token", token.getString("value")).commit();
+                                Intent continuare = new Intent(FirstScreen.this, MainActivity.class);
+                                startActivity(continuare);
+                                finish();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, ErrorListener) {
+                protected java.util.Map<String, String> getParams() {
+                    java.util.Map<String, String> params = new HashMap<String, String>();
+                    params.put("first_name", fname);
+                    params.put("last_name", lname);
+                    params.put("email", email);
+                    params.put("platform", "Android");
+                    params.put("facebookID", facebookID);
+                    return params;
+                }
+
+                public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                    String auth_token_string = prefs.getString("token", "");
+                    java.util.Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization","Bearer "+ auth_token_string);
+                    return params;
+                }
+            };
+            queue.add(stringRequest);
+    }
+    Response.ErrorListener ErrorListener = new Response.ErrorListener() {
+        public void onErrorResponse(VolleyError error) {
+            Log.w("meniuu", "error: errorlistener:" + error);
+        }
+    };
 }

@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import Util.Constants;
 import Util.SecurePreferences;
@@ -60,6 +62,7 @@ public class LoginNew extends Activity implements View.OnClickListener {
     TextInputLayout inputEmail, inputPassword;
     Context ctx;
     RelativeLayout rlBack, rlSignup;
+    String mFirstName, mEmail, mFacebookId,mLastName;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -81,21 +84,6 @@ public class LoginNew extends Activity implements View.OnClickListener {
         callbackManager = CallbackManager.Factory.create();
         edEmail.addTextChangedListener(new MyTextWatcher(edEmail));
 
-//        edPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (!hasFocus) {
-//                    {
-//                        hideKeyboard(v);
-//                        if(edPassword.getText().length()<6)
-//                            inputPassword.setError("Parola trebuie sa fie de cel putin 6 caractere");
-//                        else
-//                            inputPassword.setErrorEnabled(false);
-//
-//                    }
-//                }else
-//                    showKeyboard(edPassword);
-//            }
-//        });
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             public void onSuccess(LoginResult loginResult) {
@@ -103,12 +91,28 @@ public class LoginNew extends Activity implements View.OnClickListener {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Log.w("meniuu", "callback:" + object);
                         try {
-                            Log.w("meniuu", "oemail" + object.getString("email"));
+                            Log.w("meniuu", "mail" + object.getString("email"));
                             Log.w("meniuu", "nume" + object.getString("name"));
+                            if(object.getString("name").contains(" ")) {
+                                try {
+                                    String a[] = object.getString("name").split(" ");
+                                    mFirstName = a[0];
+                                    mLastName = a[1];
+                                }catch (Exception e){
+                                    mFirstName=object.getString("name");
+                                    e.printStackTrace();
+                                }
+                            }
+                            mEmail=object.getString("email");
+                            mFacebookId=object.getString("id");
+                            facebookLogin(mFirstName,mLastName, mFacebookId, mEmail);
+
                         } catch (JSONException e) {
+                            Toast.makeText(ctx,"Eroare la conectarea cu Facebook-ul",Toast.LENGTH_LONG).show();
                             Log.w("meniuu", "catch");
                             e.printStackTrace();
                         }
+
 //                        loginButton.setVisibility(View.GONE);
                     }
                 });
@@ -157,7 +161,8 @@ public class LoginNew extends Activity implements View.OnClickListener {
                 login();
                 break;
             case R.id.forget_password:
-
+                Intent reset=new Intent(LoginNew.this, PasswordReset.class);
+                    startActivity(reset);
                 break;
             case R.id.inapoi_intra_in_cont:
                 finish();
@@ -250,13 +255,10 @@ public class LoginNew extends Activity implements View.OnClickListener {
         private MyTextWatcher(View view) {
             this.view = view;
         }
-
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
-
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
-
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {
                 case R.id.email:
@@ -286,5 +288,45 @@ public class LoginNew extends Activity implements View.OnClickListener {
             inputEmail.setErrorEnabled(false);
         }
         return true;
+    }
+    public void facebookLogin(final String fname, final String lname, final String facebookID, final String email){
+        String url = Constants.URL+"signup/facebookLogin";
+        Log.w("meniuu","fname:"+fname+" lname:"+lname+" facebookid:"+facebookID+" email:"+email);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        try {
+                            Log.w("meniuu", "response la login facebook in firstscreen" + json);
+                            JSONObject obj = new JSONObject(json);
+                            JSONObject token = new JSONObject(obj.getString("token"));
+                            prefs.edit().putString("user_id", obj.getString("userID")).commit();
+                            prefs.edit().putString("token", token.getString("value")).commit();
+                            Intent continuare = new Intent(LoginNew.this, MainActivity.class);
+                            startActivity(continuare);
+                            finish();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("first_name", fname);
+                params.put("last_name", lname);
+                params.put("email", email);
+                params.put("platform", "Android");
+                params.put("facebookID", facebookID);
+                return params;
+            }
+
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
     }
 }

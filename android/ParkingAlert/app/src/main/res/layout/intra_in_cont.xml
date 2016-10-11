@@ -63,11 +63,10 @@
             android:orientation="vertical">
 
             <TextView
+                android:padding="15dp"
                 android:background="#EFEFF4"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:gravity="center_vertical"
                 android:text="Ai cont? Poti intra in cont cu emailul si parola cu care te-ai inregistrat."></TextView>
 
@@ -145,7 +144,7 @@
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="15dp"
                     fb:login_text="Autentifica-te  cu Facebook"
-                    fb:logout_text="Logout" />
+                    />
             </LinearLayout>
 
             <LinearLayout
