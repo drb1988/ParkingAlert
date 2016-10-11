@@ -10,6 +10,23 @@ var config = require(__dirname + '/../config.js');
 var nodemailer = require('nodemailer');
 var Crypto = require('crypto');
 
+var findUserID = function(db, callback, email) {
+    /**
+    * Function to get userID by email address,
+    * @name findUserToken
+    * @param {String} :userId
+    */ 
+      db.collection('parking').findOne({"email": email},
+        function(err, result) {
+              assert.equal(err, null);
+              if(result != null){
+              callback(result._id);
+              }
+              else {
+                callback("404")
+              }
+        });            
+    }
 
 router.post('/user', function(req, res, next) {
     /**
@@ -83,19 +100,35 @@ router.post('/facebookLogin', function(req, res, next) {
 };
 MongoClient.connect(dbConfig.url, function(err, db) {
   assert.equal(null, err);
-  insertDocument(db, function() {
-      db.close();
-      var payload = {
-        "user_id"   : userID,
-        "email"     : req.body.email
-    };
-  var token = jwt.encode( config.jwt.secret, payload);
-  var result = {
-    "userID": userID,
-    "token": token
-  }
-      res.status(200).send(result)
-  });
+  findUserID(db, function(user){console.log(user); 
+      if(user != "404") {
+        var payload = {
+              "user_id"   : user,
+              "email"     : req.body.email
+          };
+        var token = jwt.encode( config.jwt.secret, payload);
+        var result = {
+          "userID": user,
+          "token": token
+        }
+        res.status(200).send(result)
+      }
+      else {
+          insertDocument(db, function() {
+              db.close();
+              var payload = {
+                "user_id"   : userID,
+                "email"     : req.body.email
+            };
+          var token = jwt.encode( config.jwt.secret, payload);
+          var result = {
+            "userID": userID,
+            "token": token
+          }
+              res.status(200).send(result)
+          });
+      }
+  }, req.body.email);
 });
 });
 
