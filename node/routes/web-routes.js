@@ -41,4 +41,34 @@ router.get('/getNotifications', function(req, res, next) {
 			});
 });
 
+router.get('/getUsers', function(req, res, next) {
+		/**
+    	* Route to get all users,
+    	* @name /getNotifications
+    	* @param {String} :userId
+    	*/
+
+    	var findUsers = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	 		var result = [];
+		    var cursor =db.collection('parking').find();
+		    cursor.each(function(err, doc) {
+		      assert.equal(err, null);
+		      if (doc != null) {
+		         result.push(doc);
+		      } else {
+		         callback();
+		         res.status(200).send(result)
+		      }
+		   });
+		};	
+
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findUsers(db, function() {
+			      db.close();
+			  });
+			});
+});
+
 module.exports = router;

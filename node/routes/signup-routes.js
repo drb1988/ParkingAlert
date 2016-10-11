@@ -46,6 +46,7 @@ router.post('/user', function(req, res, next) {
       "cars": [],
       "security": [],
       "password": hash,
+      "is_banned": false,
       // "driver_license": req.body.driver_license,
       // "photo": req.body.photo,
       "platform": req.body.platform,
@@ -90,6 +91,7 @@ router.post('/facebookLogin', function(req, res, next) {
       "facebookID": req.body.facebookID,
       "cars": [],
       "security": [],
+      "is_banned": false,
       "platform": req.body.platform
    }, function(err, result) {
     assert.equal(err, null);
