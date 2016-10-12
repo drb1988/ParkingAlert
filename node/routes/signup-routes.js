@@ -9,6 +9,8 @@ var jwt = require('json-web-token');
 var config = require(__dirname + '/../config.js');
 var nodemailer = require('nodemailer');
 var Crypto = require('crypto');
+var Chance = require('chance');
+var chance = new Chance();
 
 var findUserID = function(db, callback, email) {
     /**
@@ -261,10 +263,7 @@ router.get('/resetPassword/:email', function(req, res, next) {
       * @param {String} :userId
       */
       const secret = 'Friendly';
-      var password = "";
-      Crypto.randomBytes(3, function(err, buffer) {
-          password = buffer.toString('hex');
-      });
+      var password = chance.string();
       const hash = Crypto.createHmac('sha256', secret).update(password).digest('hex');
       var resetPassword = function(db, callback) {
       db.collection('parking').update({"email": req.params.email}, 
@@ -273,7 +272,7 @@ router.get('/resetPassword/:email', function(req, res, next) {
                         }
                  },function(err, result) {
                 assert.equal(err, null);
-                console.log("Inserted a car for the user "+req.params.userID);
+                console.log("Inserted the password "+hash);
                 callback();
           });            
       }
