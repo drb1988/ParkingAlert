@@ -325,4 +325,35 @@ router.get('/disableNotifications/:userID&:plates', function(req, res, next) {
 		});
 })
 
+router.get('/getUsersForCode/:token', function(req, res, next) {
+		/**
+    	* Route to get all notifications for a user ID,
+    	* @name /getNotifications/:userID
+    	* @param {String} :userId
+    	*/
+
+    	var findNotifications = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	 		var result = [];
+		    var cursor =db.collection('parking').find({"cars.qr_code": req.params.token});
+		    cursor.each(function(err, doc) {
+		      assert.equal(err, null);
+		      if (doc != null) {
+		         console.log("doc "+doc);
+		         result.push(doc);
+		      } else {
+		         callback();
+		         res.status(200).send(result)
+		      }
+		   });
+		};	
+
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findNotifications(db, function() {
+			      db.close();
+			  });
+			});
+});
+
 module.exports = router;
