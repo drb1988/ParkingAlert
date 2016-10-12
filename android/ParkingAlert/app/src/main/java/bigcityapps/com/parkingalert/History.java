@@ -113,7 +113,7 @@ public class History extends AppCompatActivity implements View.OnClickListener{
             ViewHolder holder;
             if (v == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = inflater.inflate(bigcityapps.com.parkingalert.R.layout.custom_listview, null);
+                v = inflater.inflate(bigcityapps.com.parkingalert.R.layout.custom_listview_notification, null);
                 holder = new ViewHolder();
                 holder.titlu=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.title_listview);
                 holder.detalii=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.detalii_listview);

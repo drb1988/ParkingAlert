@@ -63,11 +63,11 @@
             android:orientation="vertical">
 
             <TextView
-                android:padding="15dp"
-                android:background="#EFEFF4"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
+                android:background="#EFEFF4"
                 android:gravity="center_vertical"
+                android:padding="15dp"
                 android:text="Ai cont? Poti intra in cont cu emailul si parola cu care te-ai inregistrat."></TextView>
 
             <LinearLayout
@@ -86,8 +86,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Email"
-                        android:inputType="textEmailAddress"
                         android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -130,8 +130,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/alb"
-                >
+                android:background="@color/alb">
 
                 <com.facebook.login.widget.LoginButton xmlns:fb="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/login_button"
@@ -143,16 +142,14 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="15dp"
-                    fb:login_text="Autentifica-te  cu Facebook"
-                    />
+                    fb:login_text="Autentifica-te  cu Facebook" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:background="@color/alb"
-                >
+                android:background="@color/alb">
 
                 <TextView
                     android:id="@+id/forget_password"

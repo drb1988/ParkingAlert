@@ -4,165 +4,170 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/blue_dark"
-            android:gravity="center_vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/back_signup"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center">
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/blue_dark"
+                android:gravity="center_vertical">
+
+                <RelativeLayout
+                    android:id="@+id/back_signup"
+                    style="?android:borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Inapoi"
+                        android:textColor="@color/alb"
+                        android:textSize="@dimen/txt_size_mic" />
+                </RelativeLayout>
 
                 <TextView
+                    android:id="@+id/title"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Inapoi"
-                    android:textColor="@color/alb"
-                    android:textSize="@dimen/txt_size_mic" />
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="Vino in Friendly"
+                    android:textColor="@android:color/white"
+                    android:textSize="18dp" />
+
+                <RelativeLayout
+                    android:id="@+id/login_signup"
+                    style="?android:borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Intra in cont"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/txt_size_mic" />
+                </RelativeLayout>
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:text="Vino in Friendly"
-                android:textColor="@android:color/white"
-                android:textSize="18dp" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#EFEFF4"
+                android:padding="15dp"
+                android:text="Ai ales sa te inregistrezi cu emailul. Te rugam completeaza cu atentie datele de mai jos." />
 
-            <RelativeLayout
-                android:id="@+id/login_signup"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:gravity="center">
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/nume"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Intra in cont"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/txt_size_mic" />
-            </RelativeLayout>
-        </RelativeLayout>
+                    android:hint="Nume"
+                    android:imeOptions="actionNext"
+                    android:singleLine="true"
+                    android:textColor="@color/blue_white"
+                    android:textColorHint="@color/blue_white" />
+            </android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#EFEFF4"
-            android:padding="10dp"
-            android:text="Ai ales sa te inregistrezi cu emailul. Te rugam completeaza cu atentie datele de mai jos." />
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/prenume"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Prenume"
+                    android:imeOptions="actionNext"
+                    android:singleLine="true"
+                    android:textColor="@color/blue_white"
+                    android:textColorHint="@color/blue_white" />
+            </android.support.design.widget.TextInputLayout>
 
-            <EditText
-                android:id="@+id/nume"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email(iti vom trimite un cod de validare)"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:textColor="@color/blue_white"
+                    android:textColorHint="@color/blue_white" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_verifica_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/verifica_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Verifica email"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:textColor="@color/blue_white"
+                    android:textColorHint="@color/blue_white" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/parola"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Parola"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    android:textColor="@color/blue_white"
+                    android:textColorHint="@color/blue_white" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:id="@+id/inregistreazate"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/titlu1"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="25dp"
+                android:background="#5387CB"
+                android:gravity="center"
+                android:text="Inregistreazate"
+                android:textColor="@color/alb"
+                android:textSize="@dimen/txt_size_mic" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nume"
-                android:imeOptions="actionNext"
-                android:singleLine="true"
-                android:textColor="@color/blue_white"
-                android:textColorHint="@color/blue_white" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/prenume"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Prenume"
-                android:imeOptions="actionNext"
-                android:singleLine="true"
-                android:textColor="@color/blue_white"
-                android:textColorHint="@color/blue_white" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Email(iti vom trimite un cod de validare)"
-                android:imeOptions="actionNext"
-                android:singleLine="true"
-                android:inputType="textEmailAddress"
-                android:textColor="@color/blue_white"
-                android:textColorHint="@color/blue_white" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_verifica_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:inputType="textEmailAddress"
-                android:id="@+id/verifica_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Verifica email"
-                android:imeOptions="actionNext"
-                android:singleLine="true"
-                android:textColor="@color/blue_white"
-                android:textColorHint="@color/blue_white" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/inputPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/parola"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Parola"
-                android:imeOptions="actionDone"
-                android:singleLine="true"
-                android:textColor="@color/blue_white"
-                android:textColorHint="@color/blue_white" />
-        </android.support.design.widget.TextInputLayout>
-
-        <TextView
-            android:id="@+id/inregistreazate"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/titlu1"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="25dp"
-            android:background="#5387CB"
-            android:gravity="center"
-            android:text="Inregistreazate"
-            android:textColor="@color/alb"
-            android:textSize="@dimen/txt_size_mic" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Prin apasarea butonului de inregistrare esti de aord cu Termenii si Conditiile de functionare ale aplicatiei." />
-    </LinearLayout>
+                android:padding="15dp"
+                android:text="Prin apasarea butonului de inregistrare esti de aord cu Termenii si Conditiile de functionare ale aplicatiei." />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

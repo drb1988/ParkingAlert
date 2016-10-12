@@ -2,10 +2,12 @@ package bigcityapps.com.parkingalert;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -38,7 +40,8 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import Util.Constants;
 import Util.SecurePreferences;
@@ -57,7 +60,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     TextInputLayout inputLayout;
-    String mFirstName, mEmail, mFacebookId,mLastName;
+    String mFirstName, mEmail, mFacebookId, mLastName;
     String nume, prenume, parola, verificationId, email;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,30 +94,40 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                         try {
                             Log.w("meniuu", "mail" + object.getString("email"));
                             Log.w("meniuu", "nume" + object.getString("name"));
-                            if(object.getString("name").contains(" ")) {
+                            if (object.getString("name").contains(" ")) {
                                 try {
                                     String a[] = object.getString("name").split(" ");
                                     mFirstName = a[0];
                                     mLastName = a[1];
-                                }catch (Exception e){
-                                    mFirstName=object.getString("name");
+                                } catch (Exception e) {
+                                    mFirstName = object.getString("name");
                                     e.printStackTrace();
                                 }
                             }
-                            mEmail=object.getString("email");
-                            mFacebookId=object.getString("id");
-                            facebookLogin(mFirstName,mLastName, mFacebookId, mEmail);
+                            mEmail = object.getString("email");
+                            mFacebookId = object.getString("id");
+                            facebookLogin(mFirstName, mLastName, mFacebookId, mEmail);
 
                         } catch (JSONException e) {
-                            Toast.makeText(ctx,"Eroare la conectarea cu Facebook-ul",Toast.LENGTH_LONG).show();
+                            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+                            alertDialog.setTitle("Error");
+                            alertDialog.setMessage("Facebook error");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
                             Log.w("meniuu", "catch");
                             e.printStackTrace();
                         }
+
 //                        loginButton.setVisibility(View.GONE);
                     }
                 });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,edemail,gender,birthday,location");
+                parameters.putString("fields", "id,name,email,gender,birthday,location");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -152,8 +165,8 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                 verifyEmail(email, verificationId);
                 break;
             case R.id.resend_email:
-                if(validateEmail())
-                sendEmailVerification(edEmail.getText().toString());
+                if (validateEmail())
+                    sendEmailVerification(edEmail.getText().toString());
                 break;
         }
     }
@@ -212,14 +225,6 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                         String json = response;
                         Log.w("meniuu", "response verify email:" + json);
                         postUser();
-//                        Snackbar snackbar = Snackbar
-//                                .make(coordinatorLayout, "Masina a fost stearsa!", Snackbar.LENGTH_LONG);
-////                                    .setAction("SETARI", new View.OnClickListener() {
-////                                        public void onClick(View view) {
-////                                            startActivityForResult(new Intent(android. provider.Settings.ACTION_SETTINGS), 0);
-////                                        }
-////                                    });
-//                        snackbar.show();
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
@@ -235,46 +240,60 @@ public class EmailValidation extends Activity implements View.OnClickListener {
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);
+            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+            alertDialog.setTitle("Error");
+            alertDialog.setMessage("Server error");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
         }
     };
 
-    public void postUser(){
+    public void postUser() {
         final SharedPreferences prefs = new SecurePreferences(ctx);
-        String url = Constants.URL+"signup/user";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                    new Response.Listener<String>() {
-                        public void onResponse(String response) {
-                            String json = response;
-                            try {
-                                JSONObject obj = new JSONObject(json);
-                                JSONObject token= new JSONObject(obj.getString("token"));
-                                prefs.edit().putString("user_id", obj.getString("userID")).commit();
-                                prefs.edit().putString("token", token.getString("value")).commit();
-                                Intent mainactivity = new Intent(EmailValidation.this, MainActivity.class);
-                                mainactivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(mainactivity);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Log.w("meniuu","catch la response, signup");
-                                Toast.makeText(ctx,"erro",Toast.LENGTH_LONG).show();
-                            }
-                            Log.w("meniuu", "response:post user" + response);
-
+        String url = Constants.URL + "signup/user";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        try {
+                            JSONObject obj = new JSONObject(json);
+                            JSONObject token = new JSONObject(obj.getString("token"));
+                            prefs.edit().putString("user_id", obj.getString("userID")).commit();
+                            prefs.edit().putString("token", token.getString("value")).commit();
+                            Intent mainactivity = new Intent(EmailValidation.this, MainActivity.class);
+                            mainactivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(mainactivity);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.w("meniuu", "catch la response, signup");
+                            Toast.makeText(ctx, "erro", Toast.LENGTH_LONG).show();
                         }
-                    }, ErrorListener) {
-                protected java.util.Map<String, String> getParams() {
-                    java.util.Map<String, String> params = new HashMap<String, String>();
-                    params.put("first_name", nume);
-                    params.put("last_name", prenume);
-                    params.put("edNickname", nume+prenume);
-                    params.put("email", email);
-                    params.put("password", parola);
+                        Log.w("meniuu", "response:post user" + response);
+
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("first_name", nume);
+                params.put("last_name", prenume);
+                params.put("edNickname", nume + prenume);
+                params.put("email", email);
+                params.put("password", parola);
 //                    params.put("photo", "photo");
-                    params.put("platform", "Android");
-                    return params;
-                }
-            };
-            queue.add(stringRequest);
+                params.put("platform", "Android");
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
     public void sendEmailVerification(final String email) {
         String url = Constants.URL + "signup/sendEmailVerification";
@@ -284,9 +303,9 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                         String json = response;
                         try {
                             JSONObject user = new JSONObject(json);
-                            verificationId=user.getString("verificationID");
+                            verificationId = user.getString("verificationID");
                             Log.w("meniuu", "response:email verification" + response);
-                            Toast.makeText(ctx,"A fost trimisa cu succes", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ctx, "A fost trimisa cu succes", Toast.LENGTH_LONG).show();
                             edEmail.setText("");
                             inputLayout.setErrorEnabled(false);
                             requestFocus(edValidationCode);
@@ -312,9 +331,10 @@ public class EmailValidation extends Activity implements View.OnClickListener {
         };
         queue.add(stringRequest);
     }
-    public void facebookLogin(final String fname, final String lname, final String facebookID, final String email){
-        String url = Constants.URL+"signup/facebookLogin";
-        Log.w("meniuu","fname:"+fname+" lname:"+lname+" facebookid:"+facebookID+" email:"+email);
+
+    public void facebookLogin(final String fname, final String lname, final String facebookID, final String email) {
+        String url = Constants.URL + "signup/facebookLogin";
+        Log.w("meniuu", "fname:" + fname + " lname:" + lname + " facebookid:" + facebookID + " email:" + email);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
@@ -346,7 +366,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
             public java.util.Map<String, String> getHeaders() throws AuthFailureError {
                 String auth_token_string = prefs.getString("token", "");
                 java.util.Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization","Bearer "+ auth_token_string);
+                params.put("Authorization", "Bearer " + auth_token_string);
                 return params;
             }
         };

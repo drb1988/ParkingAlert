@@ -56,7 +56,7 @@ import Util.SecurePreferences;
 /**
  * Created by fasu on 19/09/2016.
  */
-public class AddCar extends Activity implements View.OnClickListener{
+public class ModifyCar extends Activity implements View.OnClickListener{
     Context ctx;
     SharedPreferences prefs;
     RelativeLayout rlBack, rlOk;
@@ -114,7 +114,7 @@ public class AddCar extends Activity implements View.OnClickListener{
                 finish();
                 break;
             case R.id.gata_adauga_masina:
-                addCar(prefs.getString("user_id",""));
+                UpdateCar(prefs.getString("user_id",""));
                 break;
             case R.id.poza_masina:
                 final Dialog dialog = new Dialog(ctx);
@@ -215,8 +215,8 @@ public class AddCar extends Activity implements View.OnClickListener{
      *  add car method
      * @param id
      */
-    public void addCar(final String id){
-        String url = Constants.URL+"users/UpdateCar/"+id;
+    public void UpdateCar(final String id){
+        String url = Constants.URL + "users/editCar/" + id + "&" + edNr;
         if( edNr.getText().length()==0 )
             Toast.makeText(ctx,"Trebuie sa completezi numarul de inmatriculare",Toast.LENGTH_LONG).show();
         else{
@@ -240,12 +240,12 @@ public class AddCar extends Activity implements View.OnClickListener{
                     return params;
                 }
 
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                String auth_token_string = prefs.getString("token", "");
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization","Bearer "+ auth_token_string);
-                return params;
-            }
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    String auth_token_string = prefs.getString("token", "");
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization","Bearer "+ auth_token_string);
+                    return params;
+                }
             };
             queue.add(stringRequest);
         }
@@ -416,4 +416,5 @@ public class AddCar extends Activity implements View.OnClickListener{
         }
         return directory.getAbsolutePath();
     }
+
 }

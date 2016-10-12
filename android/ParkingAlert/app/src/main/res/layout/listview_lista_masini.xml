@@ -5,46 +5,43 @@
     android:orientation="vertical"
     android:weightSum="1">
 
-    <LinearLayout
+    <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:orientation="horizontal"
-        android:weightSum="5">
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:id="@+id/poza_lista_masini"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/default_image_profile_round" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2">
-
-            <ImageView
-                android:id="@+id/poza_lista_masini"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_centerInParent="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/default_image_profile_round" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/poza_lista_masini"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/mMaker"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textColor="@android:color/black"
                 android:text="Lane's car"
+                android:textColor="@android:color/black"
                 android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/nr"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/mMaker"
                 android:ellipsize="end"
@@ -55,17 +52,31 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:layout_marginRight="10dp"
             android:id="@+id/sageata_listamasini"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_alignParentRight="true"
             android:gravity="center">
 
+            <TextView
+                android:id="@+id/text_on_off"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="Pornit"
+                android:textSize="@dimen/txt_size" />
+
             <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="30dp"
-                android:layout_height="20dp"
-                android:layout_toRightOf="@+id/ora_listview"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/text_on_off"
+                android:layout_toRightOf="@+id/text_on_off"
                 android:src="@drawable/sageata_dreapta" />
         </RelativeLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

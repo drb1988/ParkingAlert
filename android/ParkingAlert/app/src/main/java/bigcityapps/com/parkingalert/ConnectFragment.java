@@ -195,6 +195,7 @@ public class ConnectFragment extends Fragment {
                         hasCar=true;
                     }
                 } catch (Throwable t) {
+                    notify_maker.setText("Adauga o masina");
                     Log.w("meniuu", "cacth get questions");
                     t.printStackTrace();
                 }

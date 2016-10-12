@@ -7,16 +7,26 @@ public class CarModel {
     String mImage;
     String mMaker;
     String mCarName;
+    boolean enable_notifications;
 
-    public String getEnable_notifications() {
+    public boolean isEnable_others() {
+        return enable_others;
+    }
+
+    public void setEnable_others(boolean enable_others) {
+        this.enable_others = enable_others;
+    }
+
+    boolean enable_others;
+    public boolean isEnable_notifications() {
         return enable_notifications;
     }
 
-    public void setEnable_notifications(String enable_notifications) {
+    public void setEnable_notifications(boolean enable_notifications) {
         this.enable_notifications = enable_notifications;
     }
 
-    String enable_notifications;
+
 
     public String getmCarName() {
         return mCarName;

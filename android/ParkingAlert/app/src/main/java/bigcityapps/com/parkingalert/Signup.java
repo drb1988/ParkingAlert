@@ -2,10 +2,12 @@ package bigcityapps.com.parkingalert;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -79,13 +81,9 @@ public class Signup extends Activity implements View.OnClickListener {
                     {
                         hideKeyboard(v);
                         if (edEmail.getText().toString().equals(edCheckEmail.getText().toString())) {
-
                             inputCheckEmail.setErrorEnabled(false);
-                            Log.w("meniuu", "nu este bun");
                         } else {
                             inputCheckEmail.setError("Emailul nu este bun");
-
-                            Log.w("meniuu", "dispate");
                         }
                     }
                 } else
@@ -279,7 +277,16 @@ public class Signup extends Activity implements View.OnClickListener {
 
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
-            Log.w("meniuu", "error: errorlistener:" + error);
+            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+            alertDialog.setTitle("Error");
+            alertDialog.setMessage("Server error");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
         }
     };
 }

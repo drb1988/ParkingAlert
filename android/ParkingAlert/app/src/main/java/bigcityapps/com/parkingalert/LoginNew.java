@@ -2,10 +2,12 @@ package bigcityapps.com.parkingalert;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -62,7 +64,7 @@ public class LoginNew extends Activity implements View.OnClickListener {
     TextInputLayout inputEmail, inputPassword;
     Context ctx;
     RelativeLayout rlBack, rlSignup;
-    String mFirstName, mEmail, mFacebookId,mLastName;
+    String mFirstName, mEmail, mFacebookId, mLastName;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -93,22 +95,31 @@ public class LoginNew extends Activity implements View.OnClickListener {
                         try {
                             Log.w("meniuu", "mail" + object.getString("email"));
                             Log.w("meniuu", "nume" + object.getString("name"));
-                            if(object.getString("name").contains(" ")) {
+                            if (object.getString("name").contains(" ")) {
                                 try {
                                     String a[] = object.getString("name").split(" ");
                                     mFirstName = a[0];
                                     mLastName = a[1];
-                                }catch (Exception e){
-                                    mFirstName=object.getString("name");
+                                } catch (Exception e) {
+                                    mFirstName = object.getString("name");
                                     e.printStackTrace();
                                 }
                             }
-                            mEmail=object.getString("email");
-                            mFacebookId=object.getString("id");
-                            facebookLogin(mFirstName,mLastName, mFacebookId, mEmail);
+                            mEmail = object.getString("email");
+                            mFacebookId = object.getString("id");
+                            facebookLogin(mFirstName, mLastName, mFacebookId, mEmail);
 
                         } catch (JSONException e) {
-                            Toast.makeText(ctx,"Eroare la conectarea cu Facebook-ul",Toast.LENGTH_LONG).show();
+                            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+                            alertDialog.setTitle("Error");
+                            alertDialog.setMessage("Facebook error");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
                             Log.w("meniuu", "catch");
                             e.printStackTrace();
                         }
@@ -135,10 +146,12 @@ public class LoginNew extends Activity implements View.OnClickListener {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
     public void initComponents() {
         inputEmail = (TextInputLayout) findViewById(R.id.input_email);
         inputPassword = (TextInputLayout) findViewById(R.id.input_password);
@@ -161,8 +174,8 @@ public class LoginNew extends Activity implements View.OnClickListener {
                 login();
                 break;
             case R.id.forget_password:
-                Intent reset=new Intent(LoginNew.this, PasswordReset.class);
-                    startActivity(reset);
+                Intent reset = new Intent(LoginNew.this, PasswordReset.class);
+                startActivity(reset);
                 break;
             case R.id.inapoi_intra_in_cont:
                 finish();
@@ -215,7 +228,17 @@ public class LoginNew extends Activity implements View.OnClickListener {
                             } catch (Exception e) {
                                 try {
                                     JSONObject obj = new JSONObject(json);
-                                    Toast.makeText(ctx,obj.getString("error"),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ctx, obj.getString("error"), Toast.LENGTH_LONG).show();
+                                    AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+                                    alertDialog.setTitle("Eroare");
+                                    alertDialog.setMessage("Email sau parola gresita!");
+                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    alertDialog.show();
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
                                 }
@@ -246,6 +269,16 @@ public class LoginNew extends Activity implements View.OnClickListener {
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);
+            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+            alertDialog.setTitle("Error");
+            alertDialog.setMessage("Server error");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
         }
     };
 
@@ -255,10 +288,13 @@ public class LoginNew extends Activity implements View.OnClickListener {
         private MyTextWatcher(View view) {
             this.view = view;
         }
+
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
+
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
+
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {
                 case R.id.email:
@@ -289,9 +325,10 @@ public class LoginNew extends Activity implements View.OnClickListener {
         }
         return true;
     }
-    public void facebookLogin(final String fname, final String lname, final String facebookID, final String email){
-        String url = Constants.URL+"signup/facebookLogin";
-        Log.w("meniuu","fname:"+fname+" lname:"+lname+" facebookid:"+facebookID+" email:"+email);
+
+    public void facebookLogin(final String fname, final String lname, final String facebookID, final String email) {
+        String url = Constants.URL + "signup/facebookLogin";
+        Log.w("meniuu", "fname:" + fname + " lname:" + lname + " facebookid:" + facebookID + " email:" + email);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
@@ -323,7 +360,7 @@ public class LoginNew extends Activity implements View.OnClickListener {
             public java.util.Map<String, String> getHeaders() throws AuthFailureError {
                 String auth_token_string = prefs.getString("token", "");
                 java.util.Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization","Bearer "+ auth_token_string);
+                params.put("Authorization", "Bearer " + auth_token_string);
                 return params;
             }
         };

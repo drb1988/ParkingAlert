@@ -222,7 +222,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
 //            ViewHolder holder;
 //            if (v == null) {
 //                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                v = inflater.inflate(bigcityapps.com.parkingalert.R.layout.custom_listview, null);
+//                v = inflater.inflate(bigcityapps.com.parkingalert.R.layout.custom_listview_notification, null);
 //                holder = new ViewHolder();
 //                holder.titlu=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.title_listview);
 //                holder.detalii=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.detalii_listview);
@@ -501,7 +501,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_listview, parent, false);
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_listview_notification, parent, false);
             return new MyViewHolder(itemView);
         }
 

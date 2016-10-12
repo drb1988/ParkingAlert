@@ -2,10 +2,12 @@ package bigcityapps.com.parkingalert;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -79,9 +81,20 @@ public class PasswordReset extends Activity implements View.OnClickListener {
                     public void onResponse(String response) {
                         String json = response;
                         try {
-                            Intent continuare = new Intent(PasswordReset.this, LoginNew.class);
-                            startActivity(continuare);
-                            finish();
+                            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+                            alertDialog.setTitle("Alerta");
+                            alertDialog.setMessage("Vei primi pe email noua parola");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent continuare = new Intent(PasswordReset.this, LoginNew.class);
+                                            startActivity(continuare);
+                                            finish();
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -99,6 +112,16 @@ public class PasswordReset extends Activity implements View.OnClickListener {
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);
+            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+            alertDialog.setTitle("Error");
+            alertDialog.setMessage("Server error");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
         }
     };
     private boolean validateEmail() {

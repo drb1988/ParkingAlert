@@ -33,7 +33,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -255,7 +254,8 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                         carModel.setModel(c.getString("model"));
                         carModel.setAn(c.getString("year"));
                         carModel.setProducator(c.getString("make"));
-//                        carModel.setEnable_notifications(c.getInt("enable_notifications")+"");
+                        carModel.setEnable_notifications(c.getBoolean("enable_notifications"));
+                        carModel.setEnable_others(c.getBoolean("enable_others"));
                         carModelArrayList.add(carModel);
                     }
                     if (carModelArrayList.size() > 0) {
@@ -309,11 +309,13 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView proprietar, nr;
             ImageView poza;
+            TextView tvOnOff;
 
             public MyViewHolder(View view) {
                 super(view);
                 proprietar = (TextView) view.findViewById(R.id.mMaker);
                 nr = (TextView) view.findViewById(R.id.nr);
+                tvOnOff = (TextView) view.findViewById(R.id.text_on_off);
                 poza = (ImageView) view.findViewById(R.id.poza_lista_masini);
             }
         }
@@ -341,15 +343,19 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                     vizualizare.putExtra("edModel", carModelArrayList.get(position).getModel());
                     vizualizare.putExtra("edYear", carModelArrayList.get(position).getAn());
                     vizualizare.putExtra("image", carModelArrayList.get(position).getmImage());
-                    vizualizare.putExtra("enable_notifications", carModelArrayList.get(position).getEnable_notifications());
-                    Log.w("meniuu", "toate" + carModelArrayList.get(position).getAn());
+                    vizualizare.putExtra("enable_notifications", carModelArrayList.get(position).isEnable_notifications());
+                    vizualizare.putExtra("enable_others", carModelArrayList.get(position).isEnable_others());
                     startActivity(vizualizare);
                 }
             });
             CarModel item = moviesList.get(position);
             holder.proprietar.setText(item.getmCarName());
             holder.nr.setText(item.getNr());
-            Picasso.with(ctx).load(item.getmImage()).into(holder.poza);
+//            Picasso.with(ctx).load(item.getmImage()).into(holder.poza);
+            if(item.isEnable_notifications())
+                holder.tvOnOff.setText("Pornit");
+            else
+                holder.tvOnOff.setText("Oprit");
 
         }
 
