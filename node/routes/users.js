@@ -33,6 +33,7 @@ router.post('/addCar/:userID', function(req, res, next) {
       								"year": req.body.year,
       								"enable_notifications": req.body.enable_notifications,
       								"is_owner": true,
+      								"qr_code": req.body.qr_code,
       								"enable_others": req.body.enable_others 
       							} 
                       }
@@ -246,6 +247,7 @@ router.post('/editCar/:userID&:plates', function(req, res, next) {
       								"model": req.body.model,
       								"year": req.body.year,
       								"enable_notifications": req.body.enable_notifications,
+      								"qr_code": req.body.qr_code,
       								"is_owner": req.body.is_owner,
       								"enable_others": req.body.enable_others  
       							}]  

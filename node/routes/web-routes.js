@@ -81,8 +81,8 @@ router.get('/banUser/:userID', function(req, res, next) {
 	var o_id = new ObjectId(req.params.userID);
 	    db.collection('parking').update({"_id": o_id},
 	    	 {$set: { 
-                      "is_banned": true,
-                     }
+                  "is_banned": true,
+                }
              },
 	    	function(err, result) {
 					    assert.equal(err, null);
