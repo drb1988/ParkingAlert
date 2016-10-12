@@ -263,7 +263,7 @@ router.get('/resetPassword/:email', function(req, res, next) {
       * @param {String} :userId
       */
       const secret = 'Friendly';
-      var password = chance.string();
+      var password = chance.integer();
       const hash = Crypto.createHmac('sha256', secret).update(password).digest('hex');
       var resetPassword = function(db, callback) {
       db.collection('parking').update({"email": req.params.email}, 
