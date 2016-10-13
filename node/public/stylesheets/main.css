@@ -66,6 +66,10 @@ body {
       transform: rotate(-45deg); }
 
 /* END General styles */
+input.form-control.login {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 .background-login {
   background-image: url("../img/large-background.jpg");
   background-repeat: no-repeat;
@@ -76,7 +80,7 @@ body {
   margin-left: -10px;
   height: 100%; }
   .background-login .account-wall-container {
-    opacity: 0.8;
+    opacity: 0.9;
     width: 400px;
     padding: 70px 35px 50px;
     background-color: #ffffff;
@@ -139,7 +143,7 @@ body {
         margin: 60px auto 20px;
         padding: 10px 16px;
         line-height: 1.3333333;
-        border-radius: 0px;
+        border-radius: 8px;
         font-size: 1.5rem; }
       .background-login .account-wall-container .form-login .form-login-footer {
         margin-top: 25px; }

@@ -9,8 +9,8 @@ block content
         form.form-login(action="./login", method="POST")
           if (message && message.length > 0)
             div.alert.alert-danger #{message}
-          input.form-control(type="email", name="email", value="", placeholder="Email Adress", required=true)
-          input.form-control(type="password", name="password", value="", placeholder="Password", required=true)
+          input.form-control.login(type="email", name="email", value="", placeholder="Email Adress", required=true)
+          input.form-control.login(type="password", name="password", value="", placeholder="Password", required=true)
           //input.form-input(type="text", name="phone_number", value="", placeholder="Phone Number", required=true)
           button(class='btn btn-lg btn-primary btn-block btn-login', type='submit') Sign in
 block scripts

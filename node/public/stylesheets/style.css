@@ -150,3 +150,9 @@ html, body {
 #target {
   width: 345px;
 }
+
+
+
+a.paginate_button {
+  padding: 5px !important;
+}

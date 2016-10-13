@@ -1,318 +1,366 @@
-include dashboard-layout
-block content
- style(type='text/css').
-  .range-slider {
-  position: relative;
-  height: 80px;
-  }
-  .inp {
-  font-size: 18px;
-  width: 40px;
-  text-align: center;
-  padding: 5px;
-  }
-  .inp + .inp {
-  float: right;
-  }
-  .irs-grid {
-  display: none !Important
-  }
- script(src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js')
- script(src='http://ionden.com/a/plugins/ion.rangeSlider/static/js/ion-rangeSlider/ion.rangeSlider.js')
- link(rel='stylesheet', type='text/css', href='http://ionden.com/a/plugins/ion.rangeSlider/static/css/ion.rangeSlider.css')
- link(rel='stylesheet', type='text/css', href='http://ionden.com/a/plugins/ion.rangeSlider/static/css/ion.rangeSlider.skinFlat.css')
- .range-slider
-  input.js-range-slider(type='text', value='')
- script.
-  var $range = $(".js-range-slider"),
-  $from = $(".js-from"),
-  $to = $(".js-to"),
-  range,
-  min = 1,
-  max = 24,
-  from,
-  to;
-  var updateValues = function () {
-  $from.prop("value", from);
-  $to.prop("value", to);
-  reinit(from,to);
-  };
-  $range.ionRangeSlider({
-  type: "double",
-  min: min,
-  max: max,
-  prettify_enabled: false,
-  grid: true,
-  grid_num: 10,
-  onChange: function (data) {
-  from = data.from;
-  to = data.to;
-  updateValues();
-  }
-  });
-  range = $range.data("ionRangeSlider");
-  var updateRange = function () {
-  range.update({
-  from: from,
-  to: to
-  });
-  };
-  $from.on("change", function () {
-  from = +$(this).prop("value");
-  if (from < min) {
-  from = min;
-  }
-  if (from > to) {
-  from = to;
-  }
-  updateValues();
-  updateRange();
-  });
-  $to.on("change", function () {
-  to = +$(this).prop("value");
-  if (to > max) {
-  to = max;
-  }
-  if (to < from) {
-  to = from;
-  }
-  updateValues();
-  updateRange();
-  });
-
- #map-content
-  #floating-panel
-      button(id='changeGradient' onclick='changeGradient()') Change gradient
-      button(onclick='changeRadius()') Change radius
-      button(onclick='changeOpacity()') Change opacity
-  #map
-block scripts
-    script.
-      function reinit(startpointvalue, endpointvalue) {
-      //getPoints
-      heatmap.set('data' ,getPoints(startpointvalue, endpointvalue));
-      //initMap(pointvalue);
-      }
-      // This example requires the Visualization library. Include the libraries=visualization
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
-      var map, heatmap;
-      function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 13,
-      center: {lat: 37.775, lng: -122.434},
-      mapTypeId: 'satellite'
-      });
-      heatmap = new google.maps.visualization.HeatmapLayer({
-      data: getPoints(1, 24),
-      map: map
-      });
-      }
-      function changeGradient() {
-      var gradient = [
-      'rgba(0, 255, 255, 0)',
-      'rgba(0, 255, 255, 1)',
-      'rgba(0, 191, 255, 1)',
-      'rgba(0, 127, 255, 1)',
-      'rgba(0, 63, 255, 1)',
-      'rgba(0, 0, 255, 1)',
-      'rgba(0, 0, 223, 1)',
-      'rgba(0, 0, 191, 1)',
-      'rgba(0, 0, 159, 1)',
-      'rgba(0, 0, 127, 1)',
-      'rgba(63, 0, 91, 1)',
-      'rgba(127, 0, 63, 1)',
-      'rgba(191, 0, 31, 1)',
-      'rgba(255, 0, 0, 1)'
-      ]
-      heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-      }
-      function changeRadius() {
-      heatmap.set('radius', heatmap.get('radius') ? null : 20);
-      }
-      function changeOpacity() {
-      heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
-      }
-      // Heatmap data: 500 Points
-      function getPoints(startpointvalue, endpointvalue) {
-      var hour=[];
-      var hour_1 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_1)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_1.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[1]=hour_1;
-      var hour_2 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_2)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_2.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[2]=hour_2;
-      var hour_3 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_3)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_3.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[3]=hour_3;
-      var hour_4 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_4)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_4.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[4]=hour_4;
-
-      var hour_5 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_5)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_5.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[5]=hour_5;
-
-      var hour_6 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_6)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_6.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[6]=hour_6;
-      var hour_7 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_7)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_7.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[7]=hour_7;
-      var hour_8 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_8)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_8.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[8]=hour_8;
-      var hour_9 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_9)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_9.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[9]=hour_9;
-      var hour_10 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_10)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_10.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[10]=hour_10;
-      var hour_11 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_11)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_11.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[11]=hour_11;
-      var hour_12 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_12)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_12.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[12]=hour_12;
-      var hour_13 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_13)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_13.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[13]=hour_13;
-      var hour_14 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_14)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_14.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[14]=hour_14;
-      var hour_15 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_15)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_15.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[15]=hour_15;
-      var hour_16 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_16)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_16.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[16]=hour_16;
-      var hour_17 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_17)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_17.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[17]=hour_17;
-      var hour_18 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_18)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_18.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[18]=hour_18;
-      var hour_19 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_19)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_19.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[19]=hour_19;
-      var hour_20 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_20)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_20.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[20]=hour_20;
-      var hour_21 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_21)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_21.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[21]=hour_21;
-      var hour_22 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_22)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_22.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[22]=hour_22;
-      var hour_23 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_23)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_23.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[23]=hour_23;
-      var hour_24 = [];
-      otherPlayers = {};
-      var cplayerList = !{JSON.stringify(resources.hour_24)};
-      cplayerList.forEach(function(pointheatmap){
-      hour_24.push(new google.maps.LatLng(pointheatmap.lat, pointheatmap.lng));
-      });
-      hour[24]=hour_24;
-
-      var result=[];
-      var qq = "";
-      for(var i=startpointvalue; i<=endpointvalue; i++){
-      qq= result.concat(hour[i]);
-      result = qq;
-      }
-      return result;
-      }
-    script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')
+doctype html
+html
+  head
+    title Flat Admin V.2 - Free Bootstrap Admin Templates
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    // Fonts
+    link(href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400', rel='stylesheet', type='text/css')
+    link(href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900', rel='stylesheet', type='text/css')
+    // CSS Libs
+    link(rel='stylesheet', type='text/css', href='/lib/css/bootstrap.min.css')
+    link(rel='stylesheet', type='text/css', href='/lib/css/font-awesome.min.css')
+    link(rel='stylesheet', type='text/css', href='/lib/css/animate.min.css')
+    link(rel='stylesheet', type='text/css', href='/lib/css/bootstrap-switch.min.css')
+    link(rel='stylesheet', type='text/css', href='/lib/css/checkbox3.min.css')
+    link(rel='stylesheet', type='text/css', href='/lib/css/jquery.dataTables.min.css')
+    link(rel='stylesheet', type='text/css', href='/lib/css/dataTables.bootstrap.css')
+    link(rel='stylesheet', type='text/css', href='/lib/css/select2.min.css')
+    // CSS App
+    link(rel='stylesheet', type='text/css', href='/css/style.css')
+    link(rel='stylesheet', type='text/css', href='/css/themes/flat-blue.css')
+  body.flat-blue
+    .app-container
+      .row.content-container
+        nav.navbar.navbar-default.navbar-fixed-top.navbar-top
+          .container-fluid
+            .navbar-header
+              button.navbar-expand-toggle(type='button')
+                i.fa.fa-bars.icon
+              ol.breadcrumb.navbar-breadcrumb
+                li.active Dashboard
+              button.navbar-right-expand-toggle.pull-right.visible-xs(type='button')
+                i.fa.fa-th.icon
+            ul.nav.navbar-nav.navbar-right
+              button.navbar-right-expand-toggle.pull-right.visible-xs(type='button')
+                i.fa.fa-times.icon
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+                  i.fa.fa-comments-o
+                ul.dropdown-menu.animated.fadeInDown
+                  li.title
+                    | Notification 
+                    span.badge.pull-right 0
+                  li.message
+                    | No new notification
+              li.dropdown.danger
+                a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+                  i.fa.fa-star-half-o
+                  |  4
+                ul.dropdown-menu.danger.animated.fadeInDown
+                  li.title
+                    | Notification 
+                    span.badge.pull-right 4
+                  li
+                    ul.list-group.notifications
+                      a(href='#')
+                        li.list-group-item
+                          span.badge 1
+                          i.fa.fa-exclamation-circle.icon
+                          |  new registration
+                      a(href='#')
+                        li.list-group-item
+                          span.badge.success 1
+                          i.fa.fa-check.icon
+                          |  new orders
+                      a(href='#')
+                        li.list-group-item
+                          span.badge.danger 2
+                          i.fa.fa-comments.icon
+                          |  customers messages
+                      a(href='#')
+                        li.list-group-item.message
+                          | view all
+              li.dropdown.profile
+                a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+                  | Emily Hart 
+                  span.caret
+                ul.dropdown-menu.animated.fadeInDown
+                  li.profile-img
+                    img.profile-img(src='/img/profile/picjumbo.com_HNCK4153_resize.jpg')
+                  li
+                    .profile-info
+                      h4.username Emily Hart
+                      p emily_hart@email.com
+                      .btn-group.margin-bottom-2x(role='group')
+                        button.btn.btn-default(type='button')
+                          i.fa.fa-user
+                          |  Profile
+                        button.btn.btn-default(type='button')
+                          i.fa.fa-sign-out
+                          |  Logout
+        .side-menu.sidebar-inverse
+          nav.navbar.navbar-default(role='navigation')
+            .side-menu-container
+              .navbar-header
+                a.navbar-brand(href='#')
+                  .icon.fa.fa-paper-plane
+                  .title Flat Admin V.2
+                button.navbar-expand-toggle.pull-right.visible-xs(type='button')
+                  i.fa.fa-times.icon
+              ul.nav.navbar-nav
+                li.active
+                  a(href='index.html')
+                    span.icon.fa.fa-tachometer
+                    span.title Dashboard
+                li.panel.panel-default.dropdown
+                  a(data-toggle='collapse', href='#dropdown-element')
+                    span.icon.fa.fa-desktop
+                    span.title UI Kits
+                  // Dropdown level 1
+                  #dropdown-element.panel-collapse.collapse
+                    .panel-body
+                      ul.nav.navbar-nav
+                        li
+                          a(href='ui-kits/theming.html') Theming
+                        li
+                          a(href='ui-kits/grid.html') Grid
+                        li
+                          a(href='ui-kits/button.html') Buttons
+                        li
+                          a(href='ui-kits/card.html') Cards
+                        li
+                          a(href='ui-kits/list.html') Lists
+                        li
+                          a(href='ui-kits/modal.html') Modals
+                        li
+                          a(href='ui-kits/alert.html') Alerts & Toasts
+                        li
+                          a(href='ui-kits/panel.html') Panels
+                        li
+                          a(href='ui-kits/loader.html') Loaders
+                        li
+                          a(href='ui-kits/step.html') Tabs & Steps
+                        li
+                          a(href='ui-kits/other.html') Other
+                li.panel.panel-default.dropdown
+                  a(data-toggle='collapse', href='#dropdown-table')
+                    span.icon.fa.fa-table
+                    span.title Table
+                  // Dropdown level 1
+                  #dropdown-table.panel-collapse.collapse
+                    .panel-body
+                      ul.nav.navbar-nav
+                        li
+                          a(href='table/table.html') Table
+                        li
+                          a(href='table/datatable.html') Datatable
+                li.panel.panel-default.dropdown
+                  a(data-toggle='collapse', href='#dropdown-form')
+                    span.icon.fa.fa-file-text-o
+                    span.title Form
+                  // Dropdown level 1
+                  #dropdown-form.panel-collapse.collapse
+                    .panel-body
+                      ul.nav.navbar-nav
+                        li
+                          a(href='form/ui-kits.html') Form UI Kits
+                // Dropdown
+                li.panel.panel-default.dropdown
+                  a(data-toggle='collapse', href='#component-example')
+                    span.icon.fa.fa-cubes
+                    span.title Components
+                  // Dropdown level 1
+                  #component-example.panel-collapse.collapse
+                    .panel-body
+                      ul.nav.navbar-nav
+                        li
+                          a(href='components/pricing-table.html') Pricing Table
+                        li
+                          a(href='components/chartjs.html') Chart.JS
+                // Dropdown
+                li.panel.panel-default.dropdown
+                  a(data-toggle='collapse', href='#dropdown-example')
+                    span.icon.fa.fa-slack
+                    span.title Page Example
+                  // Dropdown level 1
+                  #dropdown-example.panel-collapse.collapse
+                    .panel-body
+                      ul.nav.navbar-nav
+                        li
+                          a(href='pages/login.html') Login
+                        li
+                          a(href='pages/index.html') Landing Page
+                // Dropdown
+                li.panel.panel-default.dropdown
+                  a(data-toggle='collapse', href='#dropdown-icon')
+                    span.icon.fa.fa-archive
+                    span.title Icons
+                  // Dropdown level 1
+                  #dropdown-icon.panel-collapse.collapse
+                    .panel-body
+                      ul.nav.navbar-nav
+                        li
+                          a(href='icons/glyphicons.html') Glyphicons
+                        li
+                          a(href='icons/font-awesome.html') Font Awesomes
+                li
+                  a(href='license.html')
+                    span.icon.fa.fa-thumbs-o-up
+                    span.title License
+            // /.navbar-collapse
+        // Main Content
+        .container-fluid
+          .side-body.padding-top
+            .row
+              .col-lg-3.col-md-6.col-sm-6.col-xs-12
+                a(href='#')
+                  .card.red.summary-inline
+                    .card-body
+                      i.icon.fa.fa-inbox.fa-4x
+                      .content
+                        .title 50
+                        .sub-title New Mails
+                      .clear-both
+              .col-lg-3.col-md-6.col-sm-6.col-xs-12
+                a(href='#')
+                  .card.yellow.summary-inline
+                    .card-body
+                      i.icon.fa.fa-comments.fa-4x
+                      .content
+                        .title 23
+                        .sub-title New Message
+                      .clear-both
+              .col-lg-3.col-md-6.col-sm-6.col-xs-12
+                a(href='#')
+                  .card.green.summary-inline
+                    .card-body
+                      i.icon.fa.fa-tags.fa-4x
+                      .content
+                        .title 280
+                        .sub-title Product View
+                      .clear-both
+              .col-lg-3.col-md-6.col-sm-6.col-xs-12
+                a(href='#')
+                  .card.blue.summary-inline
+                    .card-body
+                      i.icon.fa.fa-share-alt.fa-4x
+                      .content
+                        .title 16
+                        .sub-title Share
+                      .clear-both
+            .row.no-margin-bottom
+              .col-sm-6.col-xs-12
+                .row
+                  .col-xs-12
+                    .card.primary
+                      .card-jumbotron.no-padding
+                        canvas#jumbotron-line-chart.chart.no-padding
+                      .card-body.half-padding
+                        h4.float-left.no-margin.font-weight-300 Profits
+                        h2.float-right.no-margin.font-weight-300 $3200
+                        .clear-both
+                .row
+                  .col-md-6.col-sm-12
+                    .thumbnail.no-margin-bottom
+                      img.img-responsive(src='/img/thumbnails/picjumbo.com_IMG_4566.jpg')
+                      .caption
+                        h3#thumbnail-label
+                          | Thumbnail label
+                          a.anchorjs-link(href='#thumbnail-label')
+                            span.anchorjs-icon
+                        p
+                          | Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                        p
+                          a.btn.btn-primary(href='#', role='button') Button
+                          a.btn.btn-default(href='#', role='button') Button
+                  .col-md-6.col-sm-12
+                    .thumbnail.no-margin-bottom
+                      img.img-responsive(src='/img/thumbnails/picjumbo.com_IMG_3241.jpg')
+                      .caption
+                        h3#thumbnail-label
+                          | Thumbnail label
+                          a.anchorjs-link(href='#thumbnail-label')
+                            span.anchorjs-icon
+                        p
+                          | Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                        p
+                          a.btn.btn-success(href='#', role='button') Button
+                          a.btn.btn-default(href='#', role='button') Button
+              .col-sm-6.col-xs-12
+                .row
+                  .col-md-6.col-sm-12
+                    .card.primary
+                      .card-jumbotron.no-padding
+                        canvas#jumbotron-bar-chart.chart.no-padding
+                      .card-body.half-padding
+                        h4.float-left.no-margin.font-weight-300 Orders
+                        .clear-both
+                  .col-md-6.col-sm-12
+                    .card.primary
+                      .card-jumbotron.no-padding
+                        canvas#jumbotron-line-2-chart.chart.no-padding
+                      .card-body.half-padding
+                        h4.float-left.no-margin.font-weight-300 Pages view
+                        .clear-both
+                .card.card-success
+                  .card-header
+                    .card-title
+                      .title
+                        i.fa.fa-comments-o
+                        |  Last Message
+                    .clear-both
+                  .card-body.no-padding
+                    ul.message-list
+                      a(href='#')
+                        li
+                          img.profile-img.pull-left(src='/img/profile/profile-1.jpg')
+                          .message-block
+                            div
+                              span.username Tui2Tone
+                              span.message-datetime 12 min ago
+                            .message
+                              | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+                      a(href='#')
+                        li
+                          img.profile-img.pull-left(src='/img/profile/profile-1.jpg')
+                          .message-block
+                            div
+                              span.username Tui2Tone
+                              span.message-datetime 15 min ago
+                            .message
+                              | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+                      a(href='#')
+                        li
+                          img.profile-img.pull-left(src='/img/profile/profile-1.jpg')
+                          .message-block
+                            div
+                              span.username Tui2Tone
+                              span.message-datetime 2 hour ago
+                            .message
+                              | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+                      a(href='#')
+                        li
+                          img.profile-img.pull-left(src='/img/profile/profile-1.jpg')
+                          .message-block
+                            div
+                              span.username Tui2Tone
+                              span.message-datetime 1 day ago
+                            .message
+                              | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+                      a#message-load-more(href='#')
+                        li.text-center.load-more
+                          i.fa.fa-refresh
+                          |  load more..
+      footer.app-footer
+        .wrapper
+          span.pull-right
+            | 2.1 
+            a(href='#')
+              i.fa.fa-long-arrow-up
+          |  © 2015 Copyright.
+      div
+        // Javascript Libs
+        script(type='text/javascript', src='/lib/js/jquery.min.js')
+        script(type='text/javascript', src='/lib/js/bootstrap.min.js')
+        script(type='text/javascript', src='/lib/js/Chart.min.js')
+        script(type='text/javascript', src='/lib/js/bootstrap-switch.min.js')
+        script(type='text/javascript', src='/lib/js/jquery.matchHeight-min.js')
+        script(type='text/javascript', src='/lib/js/jquery.dataTables.min.js')
+        script(type='text/javascript', src='/lib/js/dataTables.bootstrap.min.js')
+        script(type='text/javascript', src='/lib/js/select2.full.min.js')
+        script(type='text/javascript', src='/lib/js/ace/ace.js')
+        script(type='text/javascript', src='/lib/js/ace/mode-html.js')
+        script(type='text/javascript', src='/lib/js/ace/theme-github.js')
+        // Javascript
+        script(type='text/javascript', src='/js/app.js')
+        script(type='text/javascript', src='/js/index.js')

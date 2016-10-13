@@ -11,7 +11,6 @@ function reinitMarker(json) {
 var map, heatmap;
 var circle, rectangle, polygon;
 // var infoWindow;
-
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		zoom: 13,
@@ -214,6 +213,5 @@ function setMarkers(json) {
 	return markers;
 }
 console.log("chart din c: ",map);
-
 
 

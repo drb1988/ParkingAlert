@@ -1,4 +1,4 @@
-extends dashboard-layout
+include dashboard-layout-map-chart
 block content
  #map-content
   #floating-panel
@@ -10,5 +10,5 @@ block content
   #map
 block scripts
     script(src='/js/map.js')
-    //script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')
+    //script(async='', defer='', src='https://maps.googleapis.com/maps/api/s?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')
     script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization,places,drawing&callback=initMap')
