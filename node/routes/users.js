@@ -339,8 +339,16 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 		    cursor.each(function(err, doc) {
 		      assert.equal(err, null);
 		      if (doc != null) {
-		         console.log("doc "+doc);
-		         result.push(doc);
+		      	var foundCar = {
+		      		"userID": "",
+		      		"car": null
+		      	};
+		         foundCar.userID = doc._id;
+		         for (var i = doc.cars.length - 1; i >= 0; i--) {
+		         	if(doc.cars[i].qr_code == req.params.token)
+		         		foundCar.car = doc.cars[i];
+		         };
+		         result.push(foundCar);
 		      } else {
 		         callback();
 		         res.status(200).send(result)
