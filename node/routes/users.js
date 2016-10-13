@@ -341,12 +341,17 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 		      if (doc != null) {
 		      	var foundCar = {
 		      		"userID": "",
-		      		"car": null
+		      		"car": "disabled"
 		      	};
 		         foundCar.userID = doc._id;
 		         for (var i = doc.cars.length - 1; i >= 0; i--) {
-		         	if(doc.cars[i].qr_code == req.params.token && doc.cars[i].enable_notifications == true)
+		         	console.log(doc.cars[i].enable_notifications + " " + doc.cars[i].qr_code);
+		         	if((doc.cars[i].qr_code == req.params.token) && ((doc.cars[i].enable_notifications == true) || (doc.cars[i].enable_notifications == "true"))
+		         	{
 		         		foundCar.car = doc.cars[i];
+		         		console.log("aici");
+		         	}
+		      //   	if(doc.cars[i].qr_code == req.params.token)
 		         };
 		         result.push(foundCar);
 		      } else {
