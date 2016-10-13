@@ -1,13 +1,26 @@
 // Navigation
 nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
   .navbar-header
-    button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+    .col-md-2
+     button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
       span.sr-only Toggle navigation
       span.icon-bar
       span.icon-bar
       span.icon-bar
-    a.navbar-brand(href='#' ) Parking Alert
-    img(src="../../../img/rsz_3logo.png" )
+     a.navbar-brand(href='#' ) 
+     img(src="../../../img/rsz_logo_parking.png" style="max-width:50px; max-height:50px")
+    .col-md-10(style='border-bottom: 1px solid #e7e7e7;')
+     .col-md-12
+       .col-md-6
+         .col-md-12
+          label.daterange-text Alege intervalul dorit: // san francisco
+         .col-md-12
+          input.form-control#ajaxDate(type='text', name='daterange')
+       .col-md-6
+        .col-md-6
+         i.fa.fa-map-marker.map-cosen.active Harta
+        .col-md-6
+         i.fa.fa-bar-chart-o.chart-cosen Statistica
   // /.navbar-header
   ul.nav.navbar-top-links.navbar-right
     li.dropdown
@@ -17,37 +30,16 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bot
         i.fa.fa-caret-down
       ul.dropdown-menu.dropdown-user
         li
-          a(href='/admin-eparti-030616/user-profile')
-            i.fa.fa-user.fa-fw
-            |  User Profile
-        li
-          a(href='#')
-            i.fa.fa-gear.fa-fw
-            |  Settings
-        li.divider
-        li
           a(href='/admin-eparti-030616/logout/')
             i.fa.fa-sign-out.fa-fw
             |  Logout
+
 script(src='https://cdn.jsdelivr.net/jquery/1/jquery.min.js')
 script(src='https://cdn.jsdelivr.net/momentjs/latest/moment.min.js')
 link(rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" )
 script(src='https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js')
 link(rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" )
 
-.col-md-12(style='border-bottom: 1px solid #e7e7e7;')
- .col-md-12
-   .col-md-6
-     .col-md-12
-      label.daterange-text Alege intervalul dorit: // san francisco
-     .col-md-12
-      input.form-control#ajaxDate(type='text', name='daterange')
-   .col-md-6
-    .col-md-6
-     i.fa.fa-map-marker.map-cosen.active Harta
-    .col-md-6
-     i.fa.fa-bar-chart-o.chart-cosen Statistica
-hr
 
 
 script(src='/js/date-selector.js')

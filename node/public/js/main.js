@@ -35,30 +35,10 @@ function activeAjaxMap()  {
       var json = {
         selectedDate: selectedDate, 
         endDateTime : endDateTime,
-        circle: {
-          is_defined: circle ? true : false,
-          value: {
-            radius: circle ? circle.getRadius() : null,
-            center: {
-              lat: circle ? circle.getCenter().lat() : null,
-              lng: circle ? circle.getCenter().lng() : null
-            }
-          }
-        },
-        rectangle: {
-          is_defined: rectangle ? true : false,
-          value: {
-            NorthEast: {
-              lat: rectangle ? rectangle.getBounds().getNorthEast().lat() : null,
-              lng: rectangle ? rectangle.getBounds().getNorthEast().lng() : null
-            },
-            SouthWest: {
-              lat: rectangle ? rectangle.getBounds().getSouthWest().lat() : null,
-              lng: rectangle ? rectangle.getBounds().getSouthWest().lng() : null
-            }
-          }
-        }
       };
+      json.type = circle ? "circle" : rectangle ? "rectangle" : polygon ? "polygon" : false;
+      json.value = circle ? "crc" : rectangle ? rectangle.getBounds() : polygon ? polygon.getPath() : false;
+
       // make ajax call to the server
       console.log("map in ajax ",json);
       $.ajax({
@@ -67,27 +47,31 @@ function activeAjaxMap()  {
         url: "/heatmaps_ajax_map", 
         data: json,
         success: function(result) {
-          $("#div1").text("The map has changed"); // alert user 
+          console.log("merge map result in ajax");
+          // $("#div1").text("The map has changed"); // alert user 
 
-          if(prevArrMarkers) {
-            for (var i = 0; i < prevArrMarkers.length; i++) 
-              prevArrMarkers[i].setMap(null);
-            prevArrMarkers= '';
-          }
+          // if(prevArrMarkers) {
+          //   for (var i = 0; i < prevArrMarkers.length; i++) 
+          //     prevArrMarkers[i].setMap(null);
+          //   prevArrMarkers= '';
+          // }
 
-          if(typeOfMap)
-            prevArrMarkers = reinitMarker(result);
-          else
-            reinit(result);
+          // if(typeOfMap)
+          //   prevArrMarkers = reinitMarker(result);
+          // else
+          //   reinit(result);
 
-          if(prevArr) {
-            prevArr = theArr;
-            theArr = result;
-          }
-          else {
-            prevArr = result;
-          }
-       }
+          // if(prevArr) {
+          //   prevArr = theArr;
+          //   theArr = result;
+          // }
+          // else {
+          //   prevArr = result;
+          // }
+       },
+       error: function(XMLHttpRequest, textStatus, errorThrown) { 
+        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    }   
       });
     }
   });

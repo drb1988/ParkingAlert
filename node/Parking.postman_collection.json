@@ -10,7 +10,7 @@
 		{
 			"name": "localhost:3000/users/addCar/57e11909853b0122ac974e23",
 			"request": {
-				"url": "localhost:3000/users/addCar/57f4b3a1ab2de50b380f7e95",
+				"url": "localhost:3000/users/addCar/57fe17798ef9141d0cc2e2ad",
 				"method": "POST",
 				"header": [
 					{
@@ -26,7 +26,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"plates\": \"BH65XXX\",\n    \"given_name\": \"Furia Gri\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"year\": \"1991\"\n}"
+					"raw": "{\n    \"plates\": \"BH65XXX\",\n    \"given_name\": \"Furia Gri\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"qr_code\": \"123456\",\n    \"year\": \"1991\"\n}"
 				},
 				"description": "post phone number, get response with validation code"
 			},
@@ -85,7 +85,7 @@
 		{
 			"name": "localhost:3000/users/getCars/57e11909853b0122ac974e23",
 			"request": {
-				"url": "localhost:3000/users/getCars/57f4b3a1ab2de50b380f7e95",
+				"url": "localhost:3000/users/getUsersForCode/123456",
 				"method": "GET",
 				"header": [
 					{
@@ -295,7 +295,7 @@
 		{
 			"name": "localhost:3000/signup/user",
 			"request": {
-				"url": "localhost:3000/signup/user",
+				"url": "localhost:3000/web-routes/addUser",
 				"method": "POST",
 				"header": [
 					{
@@ -306,7 +306,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdandrb@gmail.com\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\"\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdandrb@gmail.com\",\n    \"password\": \"1234\"\n}"
 				},
 				"description": "post phone number, get response with validation code"
 			},
@@ -564,7 +564,128 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdandrb@gmail.com\",\n    \"photo\": \"sec91@gmail.com\",\n    \"facebookID\": \"babanaluicristi16\",\n    \"platform\": \"Android\"\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdan_drb@gmail.com\",\n    \"photo\": \"sec91@gmail.com\",\n    \"facebookID\": \"babanaluicristi16\",\n    \"platform\": \"Android\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/signup/resetPassword/bogdandrb@gmail.com",
+			"request": {
+				"url": "localhost:3000/signup/resetPassword/bogdandrb@gmail.com",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/getUsers",
+			"request": {
+				"url": "localhost:3000/web-routes/getUsers",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/banUser/57fcbb11d99917071090d3b8",
+			"request": {
+				"url": "localhost:3000/web-routes/banUser/57fcbb11d99917071090d3b8",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/unbanUser/57fcbb11d99917071090d3b8",
+			"request": {
+				"url": "localhost:3000/web-routes/unbanUser/57fcbb11d99917071090d3b8",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/addUser",
+			"request": {
+				"url": "localhost:3000/web-routes/addUser",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdandrb@gmail.com\",\n    \"password\": \"1234\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/login/bogdandrb@gmail.com&1234",
+			"request": {
+				"url": "localhost:3000/web-routes/login/bogdandrb@gmail.com&1234",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/getUsersForCode/123456",
+			"request": {
+				"url": "localhost:3000/users/getUsersForCode/123456",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
 				},
 				"description": "post phone number, get response with validation code"
 			},
