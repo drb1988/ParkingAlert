@@ -94,11 +94,11 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
     }
 
     public void initcomponents() {
-        tvExistQr=(TextView)findViewById(R.id.exist_qr);
+        tvExistQr = (TextView) findViewById(R.id.exist_qr);
         tvExistQr.setOnClickListener(this);
-        tvNoExistQr=(TextView)findViewById(R.id.no_exist_qr);
+        tvNoExistQr = (TextView) findViewById(R.id.no_exist_qr);
         tvNoExistQr.setOnClickListener(this);
-        tvCancel=(TextView)findViewById(R.id.cancel);
+        tvCancel = (TextView) findViewById(R.id.cancel);
         tvCancel.setOnClickListener(this);
         rlLayoutDialog = (RelativeLayout) findViewById(R.id.layout_dialog);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
@@ -180,12 +180,11 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                 rlLayoutDialog.setVisibility(View.VISIBLE);
                 break;
             case R.id.exist_qr:
-            Intent addQr= new Intent(Cars.this, AddQR.class);
+                Intent addQr = new Intent(Cars.this, AddQR.class);
                 startActivity(addQr);
                 break;
             case R.id.no_exist_qr:
-                Intent adauga_masina = new Intent(Cars.this, AddCar.class);
-                startActivity(adauga_masina);
+                generateQr(prefs.getString("user_id",""));
                 break;
 
             case R.id.cancel:
@@ -257,6 +256,7 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                         carModel.setProducator(c.getString("make"));
                         carModel.setEnable_notifications(c.getBoolean("enable_notifications"));
                         carModel.setEnable_others(c.getBoolean("enable_others"));
+                        carModel.setQrcode(c.getString("qr_code"));
                         carModelArrayList.add(carModel);
                     }
                     if (carModelArrayList.size() > 0) {
@@ -346,6 +346,7 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                     vizualizare.putExtra("image", carModelArrayList.get(position).getmImage());
                     vizualizare.putExtra("enable_notifications", carModelArrayList.get(position).isEnable_notifications());
                     vizualizare.putExtra("enable_others", carModelArrayList.get(position).isEnable_others());
+                    vizualizare.putExtra("qr_code", carModelArrayList.get(position).getQrcode());
                     startActivity(vizualizare);
                 }
             });
@@ -353,7 +354,7 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
             holder.proprietar.setText(item.getmCarName());
             holder.nr.setText(item.getNr());
 //            Picasso.with(ctx).load(item.getmImage()).into(holder.poza);
-            if(item.isEnable_notifications())
+            if (item.isEnable_notifications())
                 holder.tvOnOff.setText("Pornit");
             else
                 holder.tvOnOff.setText("Oprit");
@@ -411,4 +412,37 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
         };
         queue.add(stringRequest);
     }
+
+
+    public void generateQr(String id) {
+        String url = Constants.URL + "users/generateCarCode/" + id;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                Log.w("meniuu", "response: getcar" + response);
+                carModelArrayList.clear();
+                try {
+                    JSONObject obj = new JSONObject(json);
+                    String carCode = obj.getString("carCode");
+                    Intent showQr=new Intent(Cars.this, ShowQRCode.class);
+                    showQr.putExtra("qrcode",carCode);
+                    startActivity(showQr);
+                    finish();
+                } catch (Throwable t) {
+                    Log.w("meniuu", "cacth get questions");
+                    t.printStackTrace();
+                }
+            }
+        }, ErrorListener) {
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Log.w("meniuu", "token:" + auth_token_string);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
 }

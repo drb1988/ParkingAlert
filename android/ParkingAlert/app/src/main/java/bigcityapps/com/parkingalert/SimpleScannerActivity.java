@@ -18,7 +18,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import java.util.HashMap;
+import org.json.JSONObject;
+
+import java.util.*;
 
 import Util.Constants;
 import Util.SecurePreferences;
@@ -31,6 +33,7 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
     Context ctx;
     SharedPreferences prefs;
     String latitude,longitude;
+    String user_id, plates;
 
     @Override
     public void onCreate(Bundle state) {
@@ -69,7 +72,7 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
         // Do something with the result here
 //        Log.v(TAG, rawResult.getContents()); // Prints scan results
 //        Log.v(TAG, rawResult.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
-        postNotification(rawResult.getContents());
+        getUsersForCode(rawResult.getContents());
         // If you would like to resume scanning, call this method below:
 //        mScannerView.resumeCameraPreview(this);
     }
@@ -80,7 +83,7 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                     public void onResponse(String response) {
                         String json = response;
                         final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                        builder.setTitle("BH12ZEU a fost notificat cu succes");
+                        builder.setTitle(plates+" a fost notificat cu succes");
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 //                                Intent harta= new Intent(Scan.this, Map.class);
@@ -133,4 +136,34 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
             });
         }
     };
+    public void getUsersForCode(String qrcode) {
+        Log.w("meniuu","qrcode: in getusersforcode:"+qrcode);
+        String url = Constants.URL + "users/getUsersForCode/" + qrcode;
+        Log.w("meniuu","url:"+url+" in getusersforcode");
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                Log.w("meniuu", "response: getusersforcode" + response);
+                try {
+                    JSONObject obj = new JSONObject(json);
+                    JSONObject car= new JSONObject(obj.getString("car"));
+                    user_id=obj.getString("userID");
+                    plates=car.getString("plates");
+                    Log.w("meniuu","user_id:"+user_id+" se apeleaza postnotification");
+                    postNotification(user_id);
+                } catch (Throwable t) {
+                    Log.w("meniuu", "cacth get questions");
+                    t.printStackTrace();
+                }
+            }
+        }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
 }

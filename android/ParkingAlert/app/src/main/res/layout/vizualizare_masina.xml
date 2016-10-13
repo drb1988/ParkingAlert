@@ -32,12 +32,11 @@
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="Vizualizare masina"
             android:textColor="@android:color/white"
             android:textSize="18dp" />
 
         <RelativeLayout
-            android:id="@+id/gata_vizualizare_masina"
+            android:id="@+id/modify_view_car"
             style="?android:borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -48,7 +47,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Salvare"
+                android:text="Modifica"
                 android:textColor="@android:color/white"
                 android:textSize="17dp" />
         </RelativeLayout>
@@ -86,7 +85,7 @@
                         android:layout_marginLeft="10dp"
                         android:src="@drawable/default_image_profile_round" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/et_numele_masina"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -118,7 +117,7 @@
                         android:textColor="@color/blue_white"
                         android:textSize="@dimen/txt_size_mic" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/et_nr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -148,7 +147,7 @@
                         android:textColor="@color/blue_white"
                         android:textSize="@dimen/txt_size_mic" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/ed_autovehicul"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -174,6 +173,7 @@
                 android:text="Fiecare masina are un cod QR" />
 
             <RelativeLayout
+                android:id="@+id/view_qr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp">

@@ -9,6 +9,15 @@ public class CarModel {
     String mCarName;
     boolean enable_notifications;
 
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode;
+    }
+
+    String qrcode;
     public boolean isEnable_others() {
         return enable_others;
     }

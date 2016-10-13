@@ -16,7 +16,6 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -27,6 +26,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.zxing.Result;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
     SharedPreferences prefs;
     double latitude, longitude;
     LocationManager locationManager;
-
+    String user_id, plates;
     protected void onResume() {
 //        if (!checkLocation())
 //            return;
@@ -145,9 +146,9 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
         mScannerView.stopCamera();
 //        setContentView(R.layout.scan);
         mesaj_preintampinare.setVisibility(View.GONE);
-        Log.e("meniuu", rawResult.getText()); // Prints scan results
-        Log.e("handler", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode)
-        postNotification(rawResult.getText());
+        Log.w("meniuu", "resultat scanare:"+rawResult.getText()); // Prints scan results
+        getUsersForCode(rawResult.getText().toString());
+
         // show the scanner result into dialog box.
 
 
@@ -179,7 +180,7 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
                     public void onResponse(String response) {
                         String json = response;
                         final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                        builder.setTitle("BH12ZEU a fost notificat cu succes");
+                        builder.setTitle(plates+" a fost notificat cu succes");
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 //                                Intent harta= new Intent(Scan.this, Map.class);
@@ -202,12 +203,12 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
                 params.put("is_active", "false");
                 params.put("mLatitude",latitude+"");
                 params.put("mLongitude", longitude+"");
-                params.put("vehicle", "edNr masina");
+                params.put("vehicle", plates);
                 params.put("sender_id", prefs.getString("user_id",""));
                 params.put("sender_nickname", "sender_nickname");
                 params.put("receiver_id", receiver_id);
                 params.put("receiver_nickname", "nick_name_Receiver");
-                Log.w("meniuu","lat+"+latitude+" lang:"+longitude);
+                Log.w("meniuu","lat+"+latitude+" lang:"+longitude+"receiver_id:"+receiver_id);
                 return params;
             }
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -223,7 +224,6 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu","error volley:"+error.getMessage());
-            Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
             final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
             builder.setTitle("A aparut o eroare" + "Va rog sa reincercati");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -233,4 +233,36 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
             });
         }
     };
+
+    public void getUsersForCode(String qrcode) {
+        Log.w("meniuu","qrcode: in getusersforcode"+qrcode);
+        String url = Constants.URL + "users/getUsersForCode/" + qrcode;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                Log.w("meniuu", "response: getusersforcode" + response);
+                try {
+                    JSONObject obj = new JSONObject(json);
+                    JSONObject car= new JSONObject(obj.getString("car"));
+                     user_id=obj.getString("userID");
+                     plates=car.getString("plates");
+                    Log.w("meniuu","user_id:"+user_id+" se apeleaza postnotification");
+                    postNotification(user_id);
+                } catch (Throwable t) {
+                    Log.w("meniuu", "cacth get questions");
+                    t.printStackTrace();
+                }
+            }
+        }, ErrorListener) {
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Log.w("meniuu", "token:" + auth_token_string);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
 }
