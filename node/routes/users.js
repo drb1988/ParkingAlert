@@ -345,7 +345,7 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 		      	};
 		         foundCar.userID = doc._id;
 		         for (var i = doc.cars.length - 1; i >= 0; i--) {
-		         	if(doc.cars[i].qr_code == req.params.token)
+		         	if(doc.cars[i].qr_code == req.params.token && doc.cars[i].enable_notifications == true)
 		         		foundCar.car = doc.cars[i];
 		         };
 		         result.push(foundCar);
