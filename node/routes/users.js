@@ -364,4 +364,10 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 			});
 });
 
+router.get('/generateCarCode/:userID', function(req, res, next) {
+	res.status(200).send({
+		"carCode":  "66"+req.params.userID+"33" 
+	})
+});
+
 module.exports = router;
