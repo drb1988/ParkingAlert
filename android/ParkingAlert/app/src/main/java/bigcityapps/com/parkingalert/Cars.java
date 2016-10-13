@@ -180,7 +180,8 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                 rlLayoutDialog.setVisibility(View.VISIBLE);
                 break;
             case R.id.exist_qr:
-
+            Intent addQr= new Intent(Cars.this, AddQR.class);
+                startActivity(addQr);
                 break;
             case R.id.no_exist_qr:
                 Intent adauga_masina = new Intent(Cars.this, AddCar.class);

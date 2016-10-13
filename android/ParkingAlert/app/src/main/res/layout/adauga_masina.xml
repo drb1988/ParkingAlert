@@ -75,11 +75,11 @@
                 android:background="@color/alb">
 
                 <RelativeLayout
-                    android:gravity="center"
                     android:id="@+id/rel_poza"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="10dp"
+                    android:gravity="center">
 
                     <android.support.v7.widget.CardView
                         android:id="@+id/view2"
@@ -94,8 +94,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerHorizontal="true"
-                            android:src="@drawable/com_facebook_profile_picture_blank_square"
-                            android:scaleType="centerCrop"></ImageView>
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/com_facebook_profile_picture_blank_square"></ImageView>
                     </android.support.v7.widget.CardView>
 
                     <!--<ImageView-->
@@ -106,21 +106,21 @@
                     <!--android:src="@drawable/default_image_profile_round" />-->
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_masina"
-                        android:layout_toRightOf="@+id/view2"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/view2">
 
                         <EditText
-                            android:imeOptions="actionNext"
-                            android:singleLine="true"
                             android:id="@+id/et_numele_masina"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginLeft="10dp"
-
                             android:background="@android:color/transparent"
                             android:gravity="center"
+
                             android:hint="Numele masinii"
+                            android:imeOptions="actionNext"
+                            android:singleLine="true"
                             android:textSize="@dimen/txt_size" />
                     </android.support.design.widget.TextInputLayout>
                 </RelativeLayout>
@@ -132,9 +132,6 @@
                     android:layout_below="@+id/rel_poza">
 
                     <EditText
-                        android:inputType="textCapCharacters"
-                        android:imeOptions="actionNext"
-                        android:singleLine="true"
                         android:id="@+id/et_nr"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -142,7 +139,10 @@
                         android:layout_marginTop="10dp"
                         android:background="@android:color/transparent"
                         android:hint="Numar de inmatriculare"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapCharacters"
                         android:padding="20dp"
+                        android:singleLine="true"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/txt_size" />
                 </android.support.design.widget.TextInputLayout>
@@ -172,15 +172,15 @@
                     android:layout_height="wrap_content">
 
                     <EditText
-                        android:imeOptions="actionNext"
-                        android:singleLine="true"
                         android:id="@+id/et_producator"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:background="@android:color/transparent"
                         android:hint="Producator"
+                        android:imeOptions="actionNext"
                         android:padding="20dp"
+                        android:singleLine="true"
                         android:textColor="@color/blue_white"
                         android:textSize="@dimen/txt_size" />
                 </android.support.design.widget.TextInputLayout>
@@ -191,15 +191,15 @@
                     android:layout_height="wrap_content">
 
                     <EditText
-                        android:imeOptions="actionNext"
-                        android:singleLine="true"
                         android:id="@+id/et_model"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:background="@android:color/transparent"
                         android:hint="Model"
+                        android:imeOptions="actionNext"
                         android:padding="20dp"
+                        android:singleLine="true"
                         android:textColor="@color/blue_white"
                         android:textSize="@dimen/txt_size" />
                 </android.support.design.widget.TextInputLayout>
@@ -210,16 +210,16 @@
                     android:layout_height="wrap_content">
 
                     <EditText
-                        android:imeOptions="actionDone"
-                        android:singleLine="true"
-                        android:inputType="date"
                         android:id="@+id/et_an_productie"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:background="@android:color/transparent"
                         android:hint="An de productie"
+                        android:imeOptions="actionDone"
+                        android:inputType="date"
                         android:padding="20dp"
+                        android:singleLine="true"
                         android:textColor="@color/blue_white"
                         android:textSize="@dimen/txt_size" />
                 </android.support.design.widget.TextInputLayout>
@@ -236,15 +236,17 @@
                 android:text="Optiuni de notificare." />
 
             <RelativeLayout
+                android:id="@+id/rl_receive_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/alb">
+                android:background="@color/alb"
+                android:padding="10dp">
 
                 <TextView
                     android:id="@+id/notif"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
+
                     android:text="Primeste notificari"
                     android:textSize="@dimen/txt_size" />
 
@@ -253,25 +255,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:checked="true"
-                    android:padding="10dp" />
+                    android:layout_centerVertical="true"
+                    android:checked="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_receive_notification"
+                android:background="@color/alb"
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/receive_notification"
-                    android:padding="10dp"
                     android:text="Masina e condusa si de altii"
-                    android:textSize="@dimen/txt_size" />
+                    android:textSize="@dimen/txt_size"
+                    android:layout_toLeftOf="@+id/all_drive"
+                    android:layout_toStartOf="@+id/all_drive" />
 
                 <Switch
                     android:id="@+id/all_drive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@+id/receive_notification"
-                    android:checked="false"
-                    android:padding="10dp" />
+                    android:layout_centerVertical="true"
+                    android:checked="false" />
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/codqr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="Codul QR"
+        android:textColor="@color/alb"
+        android:textSize="@dimen/txt_size_bigger1" />
+
+    <TextView
+        android:id="@+id/details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/codqr"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:text="Acesta este codul Qr care va fi asociat masinii tale."
+        android:textColor="@color/alb"
+        android:textSize="@dimen/txt_size_bigger" />
+
+    <ImageView
+        android:id="@+id/iv_qrcode"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/details"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/next_step"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="La final ti-l vom trimite pe email si salva in pozele telefonului"
+        android:textColor="@color/alb"
+        android:textSize="@dimen/txt_size_bigger" />
+
+    <TextView
+        android:id="@+id/next_step"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/back_linear_unique"
+        android:gravity="center"
+        android:text="Treci la pasul urmator"
+        android:textColor="@color/blue_dark" />
+</RelativeLayout>

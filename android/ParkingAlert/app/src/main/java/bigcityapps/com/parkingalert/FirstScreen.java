@@ -68,7 +68,6 @@ public class FirstScreen extends Activity implements View.OnClickListener {
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Log.w("meniuu", "callback:" + object);
-                        Toast.makeText(ctx,"callback",Toast.LENGTH_LONG).show();
                         try {
                             Log.w("meniuu", "mail" + object.getString("email"));
                             Log.w("meniuu", "nume" + object.getString("name"));

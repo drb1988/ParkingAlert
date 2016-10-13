@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,12 +14,14 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -41,8 +42,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -57,6 +63,8 @@ import Util.SecurePreferences;
  * Created by fasu on 19/09/2016.
  */
 public class AddCar extends Activity implements View.OnClickListener{
+    public final static String APP_PATH_SD_CARD = "/Friendly/";
+    public final static String APP_THUMBNAIL_PATH_SD_CARD = "thumbnails";
     Context ctx;
     SharedPreferences prefs;
     RelativeLayout rlBack, rlOk;
@@ -85,11 +93,8 @@ public class AddCar extends Activity implements View.OnClickListener{
         act=this;
         Intent iin= getIntent();
         Bundle b = iin.getExtras();
-
         if(b!=null)
-        {
             qrcode =(String) b.get("qrcode");
-        }
         initComponents();
     }
 
@@ -102,14 +107,19 @@ public class AddCar extends Activity implements View.OnClickListener{
         rlOk.setOnClickListener(this);
         rlBack.setOnClickListener(this);
         edname =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_numele_masina);
+        edname.requestFocus();
         edNr =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_nr);
         edMaker =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_producator);
         edModel =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_model);
         edYear =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
         ivImageCar =(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
         ivImageCar.setOnClickListener(this);
-        receive_notification=(Switch)findViewById(R.id.all_drive);
+        receive_notification=(Switch)findViewById(R.id.receive_notification);
         all_drive=(Switch)findViewById(R.id.all_drive);
+        receive_notification.setChecked(true);
+        all_drive.setChecked(false);
+        Log.w("meniuu","alldrive,ischeck:"+all_drive.isChecked());
+        Log.w("meniuu","receive_notification,ischeck:"+receive_notification.isChecked());
     }
 
     /**
@@ -122,7 +132,7 @@ public class AddCar extends Activity implements View.OnClickListener{
                 finish();
                 break;
             case R.id.gata_adauga_masina:
-                addCar(prefs.getString("user_id",""));
+                addCar(prefs.getString("user_id",""), qrcode);
                 break;
             case R.id.poza_masina:
                 final Dialog dialog = new Dialog(ctx);
@@ -223,8 +233,8 @@ public class AddCar extends Activity implements View.OnClickListener{
      *  add car method
      * @param id
      */
-    public void addCar(final String id){
-        String url = Constants.URL+"users/UpdateCar/"+id;
+    public void addCar(final String id, final String qrcode){
+        String url = Constants.URL+"users/addCar/"+id;
         if( edNr.getText().length()==0 )
             Toast.makeText(ctx,"Trebuie sa completezi numarul de inmatriculare",Toast.LENGTH_LONG).show();
         else{
@@ -233,6 +243,7 @@ public class AddCar extends Activity implements View.OnClickListener{
                         public void onResponse(String response) {
                             String json = response;
                             Log.w("meniuu", "response:post user" + response);
+                            saveImageToExternalStorageQrcode();
                             finish();
                         }
                     }, ErrorListener) {
@@ -241,10 +252,13 @@ public class AddCar extends Activity implements View.OnClickListener{
                     params.put("plates", edNr.getText().toString());
                     params.put("given_name", edname.getText().toString().length()>0?edname.getText().toString():"Masina lui");
                     params.put("make", edMaker.getText().toString().length()>0?edMaker.getText().toString():"");
-                    params.put("edModel", edModel.getText().toString().length()>0?edModel.getText().toString():"");
+                    params.put("model", edModel.getText().toString().length()>0?edModel.getText().toString():"");
                     params.put("year", edYear.getText().toString().length()>0?edYear.getText().toString():"");
                     params.put("enable_notifications", receive_notification.isChecked()+"");
                     params.put("enable_others", all_drive.isChecked()+"");
+                    params.put("qr_code", qrcode);
+                    Log.w("meniuu","enable_notifications:"+receive_notification.isChecked());
+                    Log.w("meniuu","enable_others:"+all_drive.isChecked());
                     return params;
                 }
 
@@ -318,6 +332,7 @@ public class AddCar extends Activity implements View.OnClickListener{
                         imagePath = cursor.getString(column_index_data);
                         realPath = GetFilePathFromDevice.getPath(this, data.getData());
                         ivImageCar.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+                        saveImageToExternalStorage((BitmapFactory.decodeFile(imagePath)));
                         //dupa ce este ceva facut
 //                        uplloadImage();
                     } catch (Exception e) {
@@ -328,22 +343,6 @@ public class AddCar extends Activity implements View.OnClickListener{
             }
         }
     }
-    private File persistImage(Bitmap bitmap, String name) {
-        File filesDir = ctx.getFilesDir();
-        File imageFile = new File(filesDir, name + ".jpg");
-        OutputStream os;
-        try {
-            os = new FileOutputStream(imageFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-            os.flush();
-            os.close();
-            return imageFile;
-        } catch (Exception e) {
-            Log.e("meniuu", "Error writing bitmap", e);
-        }
-        return imageFile;
-    }
-
     /**
      *  rotate mImage if si necessary
      * @param src
@@ -400,28 +399,123 @@ public class AddCar extends Activity implements View.OnClickListener{
         }
         return bitmap;
     }
+    public boolean saveImageToExternalStorage(Bitmap image) {
+        String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_PATH_SD_CARD + APP_THUMBNAIL_PATH_SD_CARD;
 
-    private String saveToInternalStorage(Bitmap bitmapImage){
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        // Create imageDir
-        File mypath=new File(directory,"profile.jpg");
-
-        FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(mypath);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            File dir = new File(fullPath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            OutputStream fOut = null;
+            File file = new File(fullPath, "car_image.png");
+            file.createNewFile();
+            fOut = new FileOutputStream(file);
+
+// 100 means no compression, the lower you go, the stronger the compression
+            image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+
+            MediaStore.Images.Media.insertImage(ctx.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+
+            return true;
+
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
+            Log.e("saveToExternalStorage()", e.getMessage());
+            return false;
+        }
+    }
+    public boolean isSdReadable() {
+
+        boolean mExternalStorageAvailable = false;
+        String state = Environment.getExternalStorageState();
+
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+// We can read and write the media
+            mExternalStorageAvailable = true;
+            Log.i("isSdReadable", "External storage card is readable.");
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+// We can only read the media
+            Log.i("isSdReadable", "External storage card is readable.");
+            mExternalStorageAvailable = true;
+        } else {
+// Something else is wrong. It may be one of many other
+// states, but all we need to know is we can neither read nor write
+            mExternalStorageAvailable = false;
+        }
+
+        return mExternalStorageAvailable;
+    }
+    public Bitmap getThumbnail(String filename) {
+
+        String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_PATH_SD_CARD + APP_THUMBNAIL_PATH_SD_CARD;
+        Bitmap thumbnail = null;
+
+// Look for the file on the external storage
+        try {
+            if (isSdReadable() == true) {
+                thumbnail = BitmapFactory.decodeFile(fullPath + "/" + filename);
+            }
+        } catch (Exception e) {
+            Log.e("getThumbnail() on external storage", e.getMessage());
+        }
+
+// If no file on external storage, look in internal storage
+        if (thumbnail == null) {
             try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                File filePath = ctx.getFileStreamPath(filename);
+                FileInputStream fi = new FileInputStream(filePath);
+                thumbnail = BitmapFactory.decodeStream(fi);
+            } catch (Exception ex) {
+                Log.e("getThumbnail() on internal storage", ex.getMessage());
             }
         }
-        return directory.getAbsolutePath();
+        return thumbnail;
     }
+    public boolean saveImageToExternalStorageQrcode() {
+        Bitmap bmp = null;
+        QRCodeWriter writer = new QRCodeWriter();
+        try {
+            BitMatrix bitMatrix = writer.encode(qrcode, BarcodeFormat.QR_CODE, 512, 512);
+            int width = bitMatrix.getWidth();
+            int height = bitMatrix.getHeight();
+             bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                }
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_PATH_SD_CARD + APP_THUMBNAIL_PATH_SD_CARD;
+
+        try {
+            File dir = new File(fullPath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            OutputStream fOut = null;
+            File file = new File(fullPath, "qrcode_"+edNr.getText().toString()+".png");
+            file.createNewFile();
+            fOut = new FileOutputStream(file);
+
+// 100 means no compression, the lower you go, the stronger the compression
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+
+            MediaStore.Images.Media.insertImage(ctx.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+
+            return true;
+
+        } catch (Exception e) {
+            Log.e("saveToExternalStorage()", e.getMessage());
+            return false;
+        }
+    }
+
 }

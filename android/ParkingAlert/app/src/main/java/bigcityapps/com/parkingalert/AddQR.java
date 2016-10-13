@@ -70,9 +70,11 @@ public class AddQR  extends Activity implements ZBarScannerView.ResultHandler {
 //        Log.v(TAG, rawResult.getContents()); // Prints scan results
 //        Log.v(TAG, rawResult.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
 //        postNotification(rawResult.getContents());
-        Intent harta= new Intent(AddQR.this, AddQR.class);
+
+        Intent harta= new Intent(AddQR.this, ShowQRCode.class);
         harta.putExtra("qrcode",rawResult.getContents());
         startActivity(harta);
+        finish();
 
 
         // If you would like to resume scanning, call this method below:
