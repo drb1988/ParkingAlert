@@ -70,6 +70,7 @@ public class AddCar extends Activity implements View.OnClickListener{
     final int ACTIVITY_SELECT_IMAGE = 1234;
     RequestQueue queue;
     Switch receive_notification, all_drive;
+    String qrcode;
 
     /**
      *
@@ -82,6 +83,13 @@ public class AddCar extends Activity implements View.OnClickListener{
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
         act=this;
+        Intent iin= getIntent();
+        Bundle b = iin.getExtras();
+
+        if(b!=null)
+        {
+            qrcode =(String) b.get("qrcode");
+        }
         initComponents();
     }
 
