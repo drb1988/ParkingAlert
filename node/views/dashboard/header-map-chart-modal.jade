@@ -1,18 +1,16 @@
 // Navigation
-nav.navbar.navbar-default.navbar-static-top(role='navigation')
-  .navbar-header
-    .col-md-12
-       .col-md-12
-         .col-md-12
-          label.daterange-text Alege intervalul dorit: // san francisco
-         .col-md-12
-          input.form-control#ajaxDate(type='text', name='daterange')
-       .col-md-6
-        .col-md-6
-         i.fa.fa-map-marker.map-cosen.active Harta
-        .col-md-6
-         i.fa.fa-bar-chart-o.chart-cosen Statistica
-  // /.navbar-header
+.row
+  .col-md-12
+    label.daterange-text Alege intervalul dorit:
+    input.form-control#ajaxDate(type='text', name='daterange' style='margin-top:7px;margin-bottom:7px;')
+.row
+  .col-md-12
+    ul.nav.nav-tabs
+      li.map-cosen.active
+        a Harta
+      li.chart-cosen 
+        a Statistica
+    br
 
 script(src='https://cdn.jsdelivr.net/jquery/1/jquery.min.js')
 script(src='https://cdn.jsdelivr.net/momentjs/latest/moment.min.js')
