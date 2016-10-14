@@ -188,6 +188,8 @@ public class FirstScreen extends Activity implements View.OnClickListener {
                     dialog.dismiss();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
 }

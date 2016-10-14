@@ -30,7 +30,6 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,7 +68,6 @@ public class ModifyCar extends Activity implements View.OnClickListener{
     final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
     final int ACTIVITY_SELECT_IMAGE = 1234;
     RequestQueue queue;
-    Switch receive_notification, all_drive;
 
     /**
      *
@@ -86,12 +84,17 @@ public class ModifyCar extends Activity implements View.OnClickListener{
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
-            edname.setText(b.getString("edname"));
-            edNr.setText(b.getString("edNr"));
-            edMaker.setText(b.getString("edMaker"));
-            edModel.setText(b.getString("edModel"));
-            edYear.setText(b.getString("edYear"));
-            edYear.setText(b.getString("edYear"));
+
+            if(!b.getString("edNr").equals("null"))
+                edNr.setText(b.getString("edNr"));
+            if(!b.getString("edMaker").equals("null"))
+                edMaker.setText(b.getString("edMaker"));
+            if(!b.getString("edModel").equals("null"))
+                edModel.setText(b.getString("edModel"));
+            if(!b.getString("edYear").equals("null"))
+                edYear.setText(b.getString("edYear"));
+            if(!b.getString("edname").equals("null"))
+                edname.setText(b.getString("edname"));
         }
     }
 
@@ -110,8 +113,6 @@ public class ModifyCar extends Activity implements View.OnClickListener{
         edYear =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
         ivImageCar =(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
         ivImageCar.setOnClickListener(this);
-        receive_notification=(Switch)findViewById(R.id.all_drive);
-        all_drive=(Switch)findViewById(R.id.all_drive);
     }
 
     /**
@@ -226,7 +227,8 @@ public class ModifyCar extends Activity implements View.OnClickListener{
      * @param id
      */
     public void UpdateCar(final String id){
-        String url = Constants.URL + "users/editCar/" + id + "&" + edNr;
+        String url = Constants.URL + "users/editCar/" + id + "&" + edNr.getText();
+        Log.w("meniuu","url:"+url);
         if( edNr.getText().length()==0 )
             Toast.makeText(ctx,"Trebuie sa completezi numarul de inmatriculare",Toast.LENGTH_LONG).show();
         else{
@@ -235,6 +237,9 @@ public class ModifyCar extends Activity implements View.OnClickListener{
                         public void onResponse(String response) {
                             String json = response;
                             Log.w("meniuu", "response:post user" + response);
+                            Intent cars=new Intent(ModifyCar.this,Cars.class);
+                            cars.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(cars);
                             finish();
                         }
                     }, ErrorListener) {
@@ -245,8 +250,6 @@ public class ModifyCar extends Activity implements View.OnClickListener{
                     params.put("make", edMaker.getText().toString().length()>0?edMaker.getText().toString():"");
                     params.put("edModel", edModel.getText().toString().length()>0?edModel.getText().toString():"");
                     params.put("year", edYear.getText().toString().length()>0?edYear.getText().toString():"");
-                    params.put("enable_notifications", receive_notification.isChecked()+"");
-                    params.put("enable_others", all_drive.isChecked()+"");
                     return params;
                 }
 

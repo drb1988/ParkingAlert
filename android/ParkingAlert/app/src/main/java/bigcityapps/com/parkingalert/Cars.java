@@ -421,6 +421,7 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
 
 
     public void generateQr(String id) {
+        Log.w("meniuu","start");
         String url = Constants.URL + "users/generateCarCode/" + id;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             public void onResponse(String response) {
@@ -435,6 +436,7 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                     showQr.putExtra("qrcode",carCode);
                     startActivity(showQr);
                     finish();
+                    Log.w("meniuu","end");
                 } catch (Throwable t) {
                     Log.w("meniuu", "cacth get questions");
                     t.printStackTrace();

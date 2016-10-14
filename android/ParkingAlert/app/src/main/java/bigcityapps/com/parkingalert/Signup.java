@@ -284,6 +284,8 @@ public class Signup extends Activity implements View.OnClickListener {
                     dialog.dismiss();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
 }

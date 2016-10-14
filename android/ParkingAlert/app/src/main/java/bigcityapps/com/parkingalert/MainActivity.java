@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new ConnectFragment();
                 break;
             case 1:
-                Intent question = new Intent(MainActivity.this, Notificari.class);
+                Intent question = new Intent(MainActivity.this, Notifications.class);
                 startActivity(question);
                 break;
             case 2:

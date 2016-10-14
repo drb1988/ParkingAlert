@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="bigcityapps.com.parkingalert.Notificari"></activity>
+        <activity android:name="bigcityapps.com.parkingalert.Notifications"></activity>
         <activity android:name="bigcityapps.com.parkingalert.Scan"></activity>
         <activity android:name="bigcityapps.com.parkingalert.Timer"></activity>
         <activity android:name="bigcityapps.com.parkingalert.Map"></activity>

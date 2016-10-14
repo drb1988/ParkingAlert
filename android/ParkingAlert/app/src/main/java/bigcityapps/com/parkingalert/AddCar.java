@@ -47,6 +47,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -62,7 +64,7 @@ import Util.SecurePreferences;
 /**
  * Created by fasu on 19/09/2016.
  */
-public class AddCar extends Activity implements View.OnClickListener{
+public class AddCar extends Activity implements View.OnClickListener {
     public final static String APP_PATH_SD_CARD = "/Friendly/";
     public final static String APP_THUMBNAIL_PATH_SD_CARD = "thumbnails";
     Context ctx;
@@ -79,9 +81,9 @@ public class AddCar extends Activity implements View.OnClickListener{
     RequestQueue queue;
     Switch receive_notification, all_drive;
     String qrcode;
+    String nick_name;
 
     /**
-     *
      * @param savedInstanceState
      */
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,56 +92,53 @@ public class AddCar extends Activity implements View.OnClickListener{
         ctx = this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
-        act=this;
-        Intent iin= getIntent();
+        act = this;
+        Intent iin = getIntent();
         Bundle b = iin.getExtras();
-        if(b!=null)
-            qrcode =(String) b.get("qrcode");
+        if (b != null)
+            qrcode = (String) b.get("qrcode");
         initComponents();
+        getUser(prefs.getString("user_id",""));
     }
 
     /**
      * initializing components
      */
-    public void initComponents(){
-        rlBack =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_adauga_masina);
-        rlOk =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.gata_adauga_masina);
+    public void initComponents() {
+        rlBack = (RelativeLayout) findViewById(bigcityapps.com.parkingalert.R.id.inapoi_adauga_masina);
+        rlOk = (RelativeLayout) findViewById(bigcityapps.com.parkingalert.R.id.gata_adauga_masina);
         rlOk.setOnClickListener(this);
         rlBack.setOnClickListener(this);
-        edname =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_numele_masina);
+        edname = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_numele_masina);
         edname.requestFocus();
-        edNr =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_nr);
-        edMaker =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_producator);
-        edModel =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_model);
-        edYear =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
-        ivImageCar =(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
+        edNr = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_nr);
+        edMaker = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_producator);
+        edModel = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_model);
+        edYear = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
+        ivImageCar = (ImageView) findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
         ivImageCar.setOnClickListener(this);
-        receive_notification=(Switch)findViewById(R.id.receive_notification);
-        all_drive=(Switch)findViewById(R.id.all_drive);
+        receive_notification = (Switch) findViewById(R.id.receive_notification);
+        all_drive = (Switch) findViewById(R.id.all_drive);
         receive_notification.setChecked(true);
         all_drive.setChecked(false);
-        Log.w("meniuu","alldrive,ischeck:"+all_drive.isChecked());
-        Log.w("meniuu","receive_notification,ischeck:"+receive_notification.isChecked());
     }
 
     /**
-     *
      * @param view
      */
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.inapoi_adauga_masina:
                 finish();
                 break;
             case R.id.gata_adauga_masina:
-                addCar(prefs.getString("user_id",""), qrcode);
+                addCar(prefs.getString("user_id", ""), qrcode);
                 break;
             case R.id.poza_masina:
                 final Dialog dialog = new Dialog(ctx);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 dialog.setContentView(bigcityapps.com.parkingalert.R.layout.dialog_user_profile);
-
                 TextView take_photo = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.take_photo);
                 TextView biblioteca = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.biblioteca);
                 take_photo.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +160,7 @@ public class AddCar extends Activity implements View.OnClickListener{
                                 } else {
                                     ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                                 }
-                            }else{
+                            } else {
                                 String fileName = "Camera_Example.jpg";
                                 ContentValues values = new ContentValues();
                                 values.put(MediaStore.Images.Media.TITLE, fileName);
@@ -172,8 +171,7 @@ public class AddCar extends Activity implements View.OnClickListener{
                                 startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                                 dialog.dismiss();
                             }
-                        }
-                        else{
+                        } else {
                             String fileName = "Camera_Example.jpg";
                             ContentValues values = new ContentValues();
                             values.put(MediaStore.Images.Media.TITLE, fileName);
@@ -197,20 +195,21 @@ public class AddCar extends Activity implements View.OnClickListener{
                                     builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
                                     builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                         @TargetApi(Build.VERSION_CODES.M)
-                                        public void onDismiss(DialogInterface dialog) {requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                                        public void onDismiss(DialogInterface dialog) {
+                                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                                         }
                                     });
                                     builder.show();
                                 } else {
                                     ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                                 }
-                            }else{
+                            } else {
                                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                                 intent.setType("image/*");
                                 startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
                                 dialog.dismiss();
                             }
-                        }else {
+                        } else {
                             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                             intent.setType("image/*");
                             startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
@@ -230,7 +229,8 @@ public class AddCar extends Activity implements View.OnClickListener{
     }
 
     /**
-     *  add car method
+     * add car method
+     *
      * @param id
      */
 
@@ -272,12 +272,11 @@ public class AddCar extends Activity implements View.OnClickListener{
 //        };
 //        queue.add(request);
 //    }
-
-    public void addCar(final String id, final String qrcode){
-        String url = Constants.URL+"users/addCar/"+id;
-        if( edNr.getText().length()==0 )
-            Toast.makeText(ctx,"Trebuie sa completezi numarul de inmatriculare",Toast.LENGTH_LONG).show();
-        else{
+    public void addCar(final String id, final String qrcode) {
+        String url = Constants.URL + "users/addCar/" + id;
+        if (edNr.getText().length() == 0)
+            Toast.makeText(ctx, "Trebuie sa completezi numarul de inmatriculare", Toast.LENGTH_LONG).show();
+        else {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
                         public void onResponse(String response) {
@@ -290,23 +289,23 @@ public class AddCar extends Activity implements View.OnClickListener{
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("plates", edNr.getText().toString().trim());
-                    params.put("given_name", edname.getText().toString().length()>0?edname.getText().toString():"Masina lui");
-                    params.put("make", edMaker.getText().toString().length()>0?edMaker.getText().toString():"");
-                    params.put("model", edModel.getText().toString().length()>0?edModel.getText().toString():"");
-                    params.put("year", edYear.getText().toString().length()>0?edYear.getText().toString():"");
+                    params.put("given_name", edname.getText().toString().length() > 0 ? edname.getText().toString() : "Masina lui "+nick_name);
+                    params.put("make", edMaker.getText().toString().length() > 0 ? edMaker.getText().toString() : "");
+                    params.put("model", edModel.getText().toString().length() > 0 ? edModel.getText().toString() : "");
+                    params.put("year", edYear.getText().toString().length() > 0 ? edYear.getText().toString() : "");
                     params.put("qr_code", qrcode);
-//                    params.put("enable_notifications", receive_notification.isChecked()+"");
-//                    params.put("enable_others", all_drive.isChecked()+"");
+                    params.put("enable_notifications", receive_notification.isChecked()+"");
+                    params.put("enable_others", all_drive.isChecked()+"");
 
                     return params;
                 }
 
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                String auth_token_string = prefs.getString("token", "");
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization","Bearer "+ auth_token_string);
-                return params;
-            }
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    String auth_token_string = prefs.getString("token", "");
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer " + auth_token_string);
+                    return params;
+                }
             };
             queue.add(stringRequest);
         }
@@ -318,17 +317,18 @@ public class AddCar extends Activity implements View.OnClickListener{
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);
-            Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
+            Toast.makeText(ctx, "Something went wrong", Toast.LENGTH_LONG).show();
         }
     };
 
     /**
      * on activity result, when we want to upload a picture
+     *
      * @param requestCode
      * @param resultCode
      * @param data
      */
-    protected void onActivityResult( int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 try {
@@ -360,9 +360,9 @@ public class AddCar extends Activity implements View.OnClickListener{
                 Toast.makeText(this, " Picture was not taken ", Toast.LENGTH_SHORT).show();
             }
         }
-        if(requestCode==ACTIVITY_SELECT_IMAGE){
-            if(resultCode == RESULT_OK){
-                if(data.getData()!=null) {
+        if (requestCode == ACTIVITY_SELECT_IMAGE) {
+            if (resultCode == RESULT_OK) {
+                if (data.getData() != null) {
                     try {
                         String[] projection = {MediaStore.Images.Media.DATA};
                         Cursor cursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
@@ -382,8 +382,10 @@ public class AddCar extends Activity implements View.OnClickListener{
             }
         }
     }
+
     /**
-     *  rotate mImage if si necessary
+     * rotate mImage if si necessary
+     *
      * @param src
      * @return
      */
@@ -438,6 +440,7 @@ public class AddCar extends Activity implements View.OnClickListener{
         }
         return bitmap;
     }
+
     public boolean saveImageToExternalStorage(Bitmap image) {
         String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_PATH_SD_CARD + APP_THUMBNAIL_PATH_SD_CARD;
 
@@ -466,6 +469,7 @@ public class AddCar extends Activity implements View.OnClickListener{
             return false;
         }
     }
+
     public boolean isSdReadable() {
 
         boolean mExternalStorageAvailable = false;
@@ -487,6 +491,7 @@ public class AddCar extends Activity implements View.OnClickListener{
 
         return mExternalStorageAvailable;
     }
+
     public Bitmap getThumbnail(String filename) {
 
         String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_PATH_SD_CARD + APP_THUMBNAIL_PATH_SD_CARD;
@@ -513,6 +518,7 @@ public class AddCar extends Activity implements View.OnClickListener{
         }
         return thumbnail;
     }
+
     public boolean saveImageToExternalStorageQrcode() {
         Bitmap bmp = null;
         QRCodeWriter writer = new QRCodeWriter();
@@ -520,7 +526,7 @@ public class AddCar extends Activity implements View.OnClickListener{
             BitMatrix bitMatrix = writer.encode(qrcode, BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
-             bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
@@ -538,7 +544,7 @@ public class AddCar extends Activity implements View.OnClickListener{
             }
 
             OutputStream fOut = null;
-            File file = new File(fullPath, "qrcode_"+edNr.getText().toString()+".png");
+            File file = new File(fullPath, "qrcode_" + edNr.getText().toString() + ".png");
             file.createNewFile();
             fOut = new FileOutputStream(file);
 
@@ -557,4 +563,29 @@ public class AddCar extends Activity implements View.OnClickListener{
         }
     }
 
+    public void getUser(String id) {
+        String url = Constants.URL + "users/getUser/" + id;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                try {
+                    Log.w("meniuu", "response getuser:" + response);
+                    JSONObject user = new JSONObject(json);
+                     nick_name = user.getString("first_name");
+                } catch (Exception e) {
+                    Log.w("meniuu", "este catch");
+                    e.printStackTrace();
+                }
+            }
+        }, ErrorListener) {
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Log.w("meniuu", "authtoken:" + auth_token_string);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
 }

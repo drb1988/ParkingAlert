@@ -91,6 +91,8 @@ public class PasswordReset extends Activity implements View.OnClickListener {
                                     dialog.dismiss();
                                 }
                             });
+                            AlertDialog alert1 = builder.create();
+                            alert1.show();
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -116,6 +118,8 @@ public class PasswordReset extends Activity implements View.OnClickListener {
                     dialog.dismiss();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
     private boolean validateEmail() {

@@ -74,6 +74,7 @@ public class ViewCar extends Activity implements View.OnClickListener {
             switch_cars.setChecked(enable_notifications);
             switch_other.setChecked(enable_others);
             title.setText(mPlatesOriginal);
+            Constants.plates=mPlatesOriginal;
         }
     }
 
@@ -119,7 +120,7 @@ public class ViewCar extends Activity implements View.OnClickListener {
             case R.id.modify_view_car:
                 Intent update = new Intent(ViewCar.this, ModifyCar.class);
                 update.putExtra("edYear", mYear);
-                update.putExtra("edname", mNAme);
+                update.putExtra("edname", tv_numele_masina.getText());
                 update.putExtra("edNr", mPlates);
                 update.putExtra("edMaker", mMaker);
                 update.putExtra("edModel", mModel);

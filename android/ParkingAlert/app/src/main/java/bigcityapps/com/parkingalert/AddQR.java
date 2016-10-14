@@ -70,7 +70,6 @@ public class AddQR extends Activity implements ZBarScannerView.ResultHandler {
 //        Log.v(TAG, rawResult.getContents()); // Prints scan results
 //        Log.v(TAG, rawResult.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
 //        postNotification(rawResult.getContents());
-        Constants.change=true;
         Intent harta = new Intent(AddQR.this, ShowQRCode.class);
         harta.putExtra("qrcode", rawResult.getContents());
         startActivity(harta);
@@ -141,6 +140,8 @@ public class AddQR extends Activity implements ZBarScannerView.ResultHandler {
                     finish();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
 }

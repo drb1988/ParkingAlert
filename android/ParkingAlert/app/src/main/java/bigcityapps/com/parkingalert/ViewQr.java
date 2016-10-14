@@ -170,11 +170,10 @@ public class ViewQr extends Activity implements View.OnClickListener {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             public void onResponse(String response) {
                 String json = response;
-                Log.w("meniuu", "response: getcar" + response);
+                Log.w("meniuu", "response:generateQR" + response);
                 try {
                     JSONObject obj = new JSONObject(json);
                     String carCode = obj.getString("carCode");
-
                     Intent showQr=new Intent(ViewQr.this, ShowQRCode.class);
                     showQr.putExtra("qrcode",carCode);
                     startActivity(showQr);

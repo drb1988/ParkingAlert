@@ -53,7 +53,7 @@ import Util.SecurePreferences;
 /**
  * Created by fasu on 14/09/2016.
  */
-public class Notificari extends AppCompatActivity implements View.OnClickListener{
+public class Notifications extends AppCompatActivity implements View.OnClickListener{
     static boolean active = false;
 //    ListView listView;
     private CoordinatorLayout coordinatorLayout;
@@ -114,28 +114,28 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
 //                if(modelNotificationArrayList.get(i).getmType()==3) {
 //                    receiverRead(modelNotificationArrayList.get(i).getId());
 //                    Log.w(TAG,"intra in view, mType:"+modelNotificationArrayList.get(i).getmType());
-//                    Intent view_notification = new Intent(Notificari.this, ViewNotification.class);
+//                    Intent view_notification = new Intent(Notifications.this, ViewNotification.class);
 //                    view_notification.putExtra("mDetails", modelNotificationArrayList.get(i).getmDetails());
 //                    view_notification.putExtra("notification_id", modelNotificationArrayList.get(i).getId());
 //                    view_notification.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
 //                    startActivity(view_notification);
 //                } else
 //                if(modelNotificationArrayList.get(i).getmType()==2) {
-//                    Intent timer = new Intent(Notificari.this, Timer.class);
+//                    Intent timer = new Intent(Notifications.this, Timer.class);
 //                    timer.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
 //                    timer.putExtra("mHour", modelNotificationArrayList.get(i).getmHour());
 //                    timer.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
 //                    startActivity(timer);
 //                }else
 //                    if(modelNotificationArrayList.get(i).getmType()==1){
-//                        Intent harta = new Intent(Notificari.this, Map.class);
+//                        Intent harta = new Intent(Notifications.this, Map.class);
 //                        harta.putExtra("mHour", modelNotificationArrayList.get(i).getmHour());
 //                        harta.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
 //                        harta.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
 //                        startActivity(harta);
 //                    }else
 //                    if(modelNotificationArrayList.get(i).getmType()==4) {
-//                        Intent timer = new Intent(Notificari.this, TimerSender.class);
+//                        Intent timer = new Intent(Notifications.this, TimerSender.class);
 //                        timer.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
 //                        timer.putExtra("mHour", modelNotificationArrayList.get(i).getmHour());
 //                        timer.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
@@ -177,14 +177,14 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.inapoi:
-                Intent mainactivity= new Intent(Notificari.this, MainActivity.class);
+                Intent mainactivity= new Intent(Notifications.this, MainActivity.class);
                 mainactivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(mainactivity);
                 finish();
                 break;
 
             case R.id.istoric:
-                Intent istoric= new Intent(Notificari.this, History.class);
+                Intent istoric= new Intent(Notifications.this, History.class);
                 istoric.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(istoric);
 //                finish();
@@ -512,7 +512,7 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                     if(modelNotificationArrayList.get(position).getmType()==3) {
                         receiverRead(modelNotificationArrayList.get(position).getId());
                         Log.w(TAG,"intra in view, mType:"+modelNotificationArrayList.get(position).getmType());
-                        Intent view_notification = new Intent(Notificari.this, ViewNotification.class);
+                        Intent view_notification = new Intent(Notifications.this, ViewNotification.class);
                         view_notification.putExtra("mDetails", modelNotificationArrayList.get(position).getmDetails());
                         view_notification.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
                         view_notification.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
@@ -520,21 +520,21 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                     } else
                     if(modelNotificationArrayList.get(position).getmType()==2) {
                         senderRead(modelNotificationArrayList.get(position).getId());
-                        Intent timer = new Intent(Notificari.this, Timer.class);
+                        Intent timer = new Intent(Notifications.this, Timer.class);
                         timer.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
                         timer.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
                         timer.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
                         startActivity(timer);
                     }else
                     if(modelNotificationArrayList.get(position).getmType()==1){
-                        Intent harta = new Intent(Notificari.this, Map.class);
+                        Intent harta = new Intent(Notifications.this, Map.class);
                         harta.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
                         harta.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
                         harta.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
                         startActivity(harta);
                     }else
                     if(modelNotificationArrayList.get(position).getmType()==4) {
-                        Intent timer = new Intent(Notificari.this, TimerSender.class);
+                        Intent timer = new Intent(Notifications.this, TimerSender.class);
                         timer.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
                         timer.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
                         timer.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());

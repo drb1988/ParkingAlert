@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -117,7 +119,8 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                                     finish();
                                 }
                             });
-
+                            AlertDialog alert1 = builder.create();
+                            alert1.show();
                             e.printStackTrace();
                         }
 
@@ -245,6 +248,8 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                     dialog.dismiss();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
 
@@ -260,6 +265,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                             JSONObject token = new JSONObject(obj.getString("token"));
                             prefs.edit().putString("user_id", obj.getString("userID")).commit();
                             prefs.edit().putString("token", token.getString("value")).commit();
+                            postToken( obj.getString("userID"),token.getString("value"));
                             Intent mainactivity = new Intent(EmailValidation.this, MainActivity.class);
                             mainactivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(mainactivity);
@@ -340,6 +346,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                             JSONObject token = new JSONObject(obj.getString("token"));
                             prefs.edit().putString("user_id", obj.getString("userID")).commit();
                             prefs.edit().putString("token", token.getString("value")).commit();
+                            postToken( obj.getString("userID"),token.getString("value"));
                             Intent continuare = new Intent(EmailValidation.this, MainActivity.class);
                             startActivity(continuare);
                             finish();
@@ -362,6 +369,34 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                 String auth_token_string = prefs.getString("token", "");
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    public void postToken(String user_id, final String token) {
+        prefs = new SecurePreferences(ctx);
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        String url = Constants.URL + "users/addSecurity/"+user_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+//                        postUser();
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("device_token", prefs.getString("phone_token", ""));
+                params.put("password", "nuamideecepltrebeaici");
+                params.put("reg_ip", ip);
+                return params;
+            }
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ token);
                 return params;
             }
         };

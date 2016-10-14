@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -21,7 +20,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.HashMap;
 
 import Util.Constants;
 import Util.SecurePreferences;
@@ -71,6 +70,21 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
     @Override
     public void handleResult(Result rawResult) {
         Log.w("meniuu","resultat");
+        if(rawResult.getContents().contains(" ")){
+            setContentView(R.layout.test);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+            builder.setTitle("Codul QR nu este intr-un format acceptat de aplicatie");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+//                                Intent harta= new Intent(Scan.this, Map.class);
+//                                startActivity(harta);
+                    finish();
+                }
+            });
+//                        builder.setmMessage(rawResult.getText());
+            AlertDialog alert1 = builder.create();
+            alert1.show();
+        }else
         getUsersForCode(rawResult.getContents());
     }
     public void postNotification(final String receiver_id){
@@ -103,7 +117,7 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                 params.put("is_active", "false");
                 params.put("mLatitude",latitude);
                 params.put("mLongitude",longitude);
-                params.put("vehicle", "edNr masina");
+                params.put("vehicle", plates);
                 params.put("sender_id", prefs.getString("user_id",""));
                 params.put("sender_nickname", "sender_nickname");
                 params.put("receiver_id", receiver_id);
@@ -122,8 +136,8 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
     }
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
+            setContentView(R.layout.test);
             Log.w("meniuu","error volley:"+error.getMessage());
-            Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
             final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
             builder.setTitle("A aparut o eroare" + "Va rog sa reincercati");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -131,6 +145,8 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                     finish();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
     public void getUsersForCode(String qrcode) {

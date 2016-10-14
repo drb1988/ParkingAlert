@@ -47,7 +47,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if(notification_type.equals("sender")) {
                 notification_id = question.getString("notification_id");
-                if(Notificari.active) {
+                if(Notifications.active) {
                     Intent intent = new Intent(INTENT_FILTER_Notificari);
                     sendBroadcast(intent);
                 }else
@@ -68,7 +68,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 estimated_time=question.getString("estimated_time");
                 notification_id = question.getString("notification_id");
 
-                if(Notificari.active) {
+                if(Notifications.active) {
                     Intent intent = new Intent(INTENT_FILTER_Notificari);
                     sendBroadcast(intent);
                 }else
@@ -88,7 +88,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 estimated_time=question.getString("estimated_time");
                 notification_id = question.getString("notification_id");
 
-                if(Notificari.active) {
+                if(Notifications.active) {
                     Intent intent = new Intent(INTENT_FILTER_Notificari);
                     sendBroadcast(intent);
                 }else
@@ -107,7 +107,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }else if(notification_type.equals("review")) {
                 notification_id = question.getString("notification_id");
 
-                if(Notificari.active) {
+                if(Notifications.active) {
                     Intent intent = new Intent(INTENT_FILTER_Notificari);
                     sendBroadcast(intent);
                 }else
@@ -128,7 +128,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.w("meniuu","catch la firebase");
             e.printStackTrace();
         }
-        Log.w(TAG,"notificari:"+Notificari.active+" mainactivity:"+MainActivity.active);
+        Log.w(TAG,"notificari:"+ Notifications.active+" mainactivity:"+MainActivity.active);
     }
 
     private void sendNotification(String notification_type,String messageBody, String title, String notification_id, String nr_car, String estimated_time, String answered_at ) {
