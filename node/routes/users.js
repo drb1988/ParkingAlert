@@ -277,10 +277,8 @@ router.get('/enableNotifications/:userID&:plates', function(req, res, next) {
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
              {$set: { 
-                         "cars":[{ 	
-                        			"enable_notifications": true 
-      							}]  
-                      }
+                        "cars.$.enable_notifications": true 
+                    }
              },function(err, result) {
 				    assert.equal(err, null);
 				    console.log("Inserted a car for the user "+req.params.userID);
@@ -290,6 +288,46 @@ router.get('/enableNotifications/:userID&:plates', function(req, res, next) {
 	MongoClient.connect(dbConfig.url, function(err, db) {
 		  assert.equal(null, err);
 		  deleteCar(db, function() {
+		      db.close();
+		      res.status(200).send(req.params.userID)
+		  });
+		});
+})
+
+router.get('/allowOthers/:userID&:plates&:action', function(req, res, next) {
+    /**
+    * Route to enable others for using a car,
+    * @name /editCar/:userID&:plates
+    * @param {String} :userID&:plates
+    */
+    var allowOthers = function(db, callback) {   
+ 	var o_id = new ObjectId(req.params.userID);
+ 	if((req.params.action == true) || (req.params.action == "true")){
+ 		console.log("in if");
+ 		db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+             {$set: { 
+                        "cars.$.enable_others": true
+                    }
+             },function(err, result) {
+				    assert.equal(err, null);
+				    callback();
+			});  
+ 	}
+ 	else {
+ 		console.log("in else")
+ 		db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+             {$set: { 
+                        "cars.$.enable_others": false
+                    }
+             },function(err, result) {
+				    assert.equal(err, null);
+				    callback();
+			});  
+ 	}              
+	}
+	MongoClient.connect(dbConfig.url, function(err, db) {
+		  assert.equal(null, err);
+		  allowOthers(db, function() {
 		      db.close();
 		      res.status(200).send(req.params.userID)
 		  });
@@ -306,10 +344,8 @@ router.get('/disableNotifications/:userID&:plates', function(req, res, next) {
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
              {$set: { 
-                         "cars":[{ 	
-                        			"enable_notifications": false 
-      							}]  
-                      }
+                        "cars.$.enable_notifications": false 
+                    }
              },function(err, result) {
 				    assert.equal(err, null);
 				    console.log("Inserted a car for the user "+req.params.userID);
@@ -339,8 +375,19 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 		    cursor.each(function(err, doc) {
 		      assert.equal(err, null);
 		      if (doc != null) {
-		         console.log("doc "+doc);
-		         result.push(doc);
+		      	var foundCar = {
+		      		"userID": "",
+		      		"car": "disabled"
+		      	};
+		         foundCar.userID = doc._id;
+		         for (var i = doc.cars.length - 1; i >= 0; i--) {
+		         	console.log(doc.cars[i].enable_notifications + " " + doc.cars[i].qr_code);
+		         	if((doc.cars[i].qr_code == req.params.token) && ((doc.cars[i].enable_notifications == true) || (doc.cars[i].enable_notifications == "true")))
+		         	{
+		         		foundCar.car = doc.cars[i];
+		         	}
+		         };
+		         result.push(foundCar);
 		      } else {
 		         callback();
 		         res.status(200).send(result)
@@ -354,6 +401,12 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 			      db.close();
 			  });
 			});
+});
+
+router.get('/generateCarCode/:userID', function(req, res, next) {
+	res.status(200).send({
+		"carCode":  "66"+req.params.userID+"33" 
+	})
 });
 
 module.exports = router;
