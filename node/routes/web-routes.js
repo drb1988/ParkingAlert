@@ -7,6 +7,16 @@ var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 var Crypto = require('crypto'); 
 
+router.get('/login', function(req, res, next) {
+  res.render('login', { title: 'Express' });
+});
+
+
+router.get('/dashboard', function(req, res, next) {
+  res.render('newpage', { 
+    title: 'Express'
+  });
+});
 
 router.get('/getNotifications', function(req, res, next) {
 		/**
@@ -15,7 +25,7 @@ router.get('/getNotifications', function(req, res, next) {
     	* @param {String} :userId
     	*/
 
-    	var findNotifications = function(db, callback) {   
+    var findNotifications = function(db, callback) {   
 	 	var o_id = new ObjectId(req.params.userID);
 	 		var result = [];
 		    var cursor =db.collection('notifications').find();
@@ -41,7 +51,7 @@ router.get('/getNotifications', function(req, res, next) {
 			});
 });
 
-router.get('/getUsers', function(req, res, next) {
+router.get('/users', function(req, res, next) {
 		/**
     	* Route to get all users,
     	* @name /getNotifications
@@ -57,8 +67,12 @@ router.get('/getUsers', function(req, res, next) {
 		      if (doc != null) {
 		         result.push(doc);
 		      } else {
-		         callback();
-		         res.status(200).send(result)
+		          callback();
+		         //res.status(200).send(result);
+              res.render('users', { 
+                title: 'Express',
+                users: result
+              });
 		      }
 		   });
 		};	
@@ -71,7 +85,7 @@ router.get('/getUsers', function(req, res, next) {
 			});
 });
 
-router.get('/banUser/:userID', function(req, res, next) {
+router.get('/users/ban/:userID', function(req, res, next) {
 	/**
     * Route to ban a user,
     * @name /updateUser/:userID
@@ -99,7 +113,7 @@ router.get('/banUser/:userID', function(req, res, next) {
 			});
 });
 
-router.get('/unbanUser/:userID', function(req, res, next) {
+router.get('/users/unban/:userID', function(req, res, next) {
 	/**
     * Route to ban a user,
     * @name /updateUser/:userID
@@ -127,16 +141,16 @@ router.get('/unbanUser/:userID', function(req, res, next) {
 			});
 });
 
-router.get('/login/:email&:password', function(req, res, next) {
+router.post('/login', function(req, res, next) {
     /**
       * Route to login,
       * @name /getUser/:userID
       * @param {String} :userId
       */
       const secret = 'Friendly';
-      const hash = Crypto.createHmac('sha256', secret).update(req.params.password).digest('hex');
+      const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
       var findUser = function(db, callback) {
-      db.collection('parkingAdmins').findOne({"email": req.params.email},
+      db.collection('parkingAdmins').findOne({"email": req.body.email},
         function(err, result) {
               assert.equal(err, null);
               console.log("Found email "+result._id);
@@ -148,7 +162,7 @@ router.get('/login/:email&:password', function(req, res, next) {
         "userID": result._id
       }
       if(result.password == hash){
-          res.status(200).send(response)
+          res.redirect("/web-routes/dashboard");
       }
       else 
           res.status(200).send({"error": "Invalid email or password"})
@@ -173,7 +187,7 @@ router.post('/addUser', function(req, res, next) {
       const secret = 'Friendly';
       const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
   var insertDocument = function(db, callback) {
-   db.collection('parkingAdmins').insertOne( {
+  db.collection('parkingAdmins').insertOne( {
       "first_name": req.body.first_name,
       "last_name": req.body.last_name,
       "email": req.body.email,
@@ -185,6 +199,7 @@ router.post('/addUser', function(req, res, next) {
     callback();
   });
 };
+
 MongoClient.connect(dbConfig.url, function(err, db) {
   assert.equal(null, err);
   insertDocument(db, function() {

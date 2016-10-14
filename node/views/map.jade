@@ -1,7 +1,8 @@
-extends dashboard-layout
+include dashboard-layout-map-chart
 block content
  #map-content
-  #floating-panel
+  button.btn.btn-danger#map-menu Optiuni Mapa
+  #floating-panel(style='display:none')
     button.btn.btn-info(id='reinitMarker' onclick='') Hărți termice / Markere
     button.btn.btn-info(id='changeGradient' onclick='changeGradient()') Schimba gradient
     button.btn.btn-info(onclick='changeRadius()') Schimba radius
@@ -10,5 +11,12 @@ block content
   #map
 block scripts
     script(src='/js/map.js')
-    //script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')
+    //script(async='', defer='', src='https://maps.googleapis.com/maps/api/s?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')
     script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization,places,drawing&callback=initMap')
+    script.
+      $( "#map-menu" ).click(function() {
+        if($("#floating-panel").is(":visible") )
+        $( "#floating-panel" ).fadeOut( "slow");
+        else
+        $( "#floating-panel" ).fadeIn( "slow");
+      });
