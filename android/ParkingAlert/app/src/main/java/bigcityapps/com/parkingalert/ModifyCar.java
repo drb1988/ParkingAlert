@@ -77,12 +77,22 @@ public class ModifyCar extends Activity implements View.OnClickListener{
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(bigcityapps.com.parkingalert.R.layout.adauga_masina);
+        setContentView(R.layout.car_modify);
         ctx = this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
         act=this;
         initComponents();
+        Intent iin = getIntent();
+        Bundle b = iin.getExtras();
+        if (b != null) {
+            edname.setText(b.getString("edname"));
+            edNr.setText(b.getString("edNr"));
+            edMaker.setText(b.getString("edMaker"));
+            edModel.setText(b.getString("edModel"));
+            edYear.setText(b.getString("edYear"));
+            edYear.setText(b.getString("edYear"));
+        }
     }
 
     /**

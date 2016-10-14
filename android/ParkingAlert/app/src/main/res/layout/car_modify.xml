@@ -235,44 +235,44 @@
                 android:padding="10dp"
                 android:text="Optiuni de notificare." />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/alb">
+            <!--<RelativeLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@color/alb">-->
 
-                <TextView
-                    android:id="@+id/notif"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="Primeste notificari"
-                    android:textSize="@dimen/txt_size" />
+                <!--<TextView-->
+                    <!--android:id="@+id/notif"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:text="Primeste notificari"-->
+                    <!--android:textSize="@dimen/txt_size" />-->
 
-                <Switch
-                    android:id="@+id/receive_notification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:checked="true"
-                    android:padding="10dp" />
+                <!--<Switch-->
+                    <!--android:id="@+id/receive_notification"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:checked="true"-->
+                    <!--android:padding="10dp" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/receive_notification"
-                    android:padding="10dp"
-                    android:text="Masina e condusa si de altii"
-                    android:textSize="@dimen/txt_size" />
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/receive_notification"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:text="Masina e condusa si de altii"-->
+                    <!--android:textSize="@dimen/txt_size" />-->
 
-                <Switch
-                    android:id="@+id/all_drive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/receive_notification"
-                    android:checked="false"
-                    android:padding="10dp" />
-            </RelativeLayout>
+                <!--<Switch-->
+                    <!--android:id="@+id/all_drive"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_below="@+id/receive_notification"-->
+                    <!--android:checked="false"-->
+                    <!--android:padding="10dp" />-->
+            <!--</RelativeLayout>-->
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

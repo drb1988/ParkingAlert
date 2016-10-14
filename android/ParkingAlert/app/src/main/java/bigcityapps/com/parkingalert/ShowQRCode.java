@@ -33,7 +33,7 @@ import Util.SecurePreferences;
  */
 public class ShowQRCode extends Activity implements OnClickListener{
     public final static String APP_PATH_SD_CARD = "/Friendly/";
-    public final static String APP_THUMBNAIL_PATH_SD_CARD = "thumbnails";
+    public final static String APP_THUMBNAIL_PATH_SD_CARD = "Image";
     Context ctx;
     RequestQueue queue;
     ImageView ivQrcode;

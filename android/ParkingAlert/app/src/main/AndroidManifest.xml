@@ -49,6 +49,7 @@
         <activity android:name="bigcityapps.com.parkingalert.AddQR"></activity>
         <activity android:name="bigcityapps.com.parkingalert.ShowQRCode"></activity>
         <activity android:name="bigcityapps.com.parkingalert.ViewQr"></activity>
+        <activity android:name="bigcityapps.com.parkingalert.ModifyCar"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

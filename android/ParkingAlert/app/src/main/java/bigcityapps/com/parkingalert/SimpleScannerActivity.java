@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -50,7 +51,8 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
         }
         prefs = new SecurePreferences(this);
         mScannerView = new ZBarScannerView(this);    // Programmatically initialize the scanner view
-        setContentView(mScannerView);                // Set the scanner view as the content view
+        setContentView(mScannerView);
+        Log.w("meniuu","oncreate simplescanneractivity");// Set the scanner view as the content view
     }
 
     @Override
@@ -69,12 +71,7 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
     @Override
     public void handleResult(Result rawResult) {
         Log.w("meniuu","resultat");
-        // Do something with the result here
-//        Log.v(TAG, rawResult.getContents()); // Prints scan results
-//        Log.v(TAG, rawResult.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
         getUsersForCode(rawResult.getContents());
-        // If you would like to resume scanning, call this method below:
-//        mScannerView.resumeCameraPreview(this);
     }
     public void postNotification(final String receiver_id){
         String url = Constants.URL+"notifications/notification";
@@ -145,12 +142,15 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                 String json = response;
                 Log.w("meniuu", "response: getusersforcode" + response);
                 try {
-                    JSONObject obj = new JSONObject(json);
-                    JSONObject car= new JSONObject(obj.getString("car"));
-                    user_id=obj.getString("userID");
-                    plates=car.getString("plates");
-                    Log.w("meniuu","user_id:"+user_id+" se apeleaza postnotification");
-                    postNotification(user_id);
+                    JSONArray obj = new JSONArray(json);
+                    for (int i = 0; i < obj.length(); i++) {
+                        JSONObject c = obj.getJSONObject(i);
+                        JSONObject car = new JSONObject(c.getString("car"));
+                        user_id = c.getString("userID");
+                        plates = car.getString("plates");
+                        Log.w("meniuu", "user_id:" + user_id + " se apeleaza postnotification");
+                        postNotification(user_id);
+                    }
                 } catch (Throwable t) {
                     Log.w("meniuu", "cacth get questions");
                     t.printStackTrace();

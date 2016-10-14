@@ -81,19 +81,16 @@ public class PasswordReset extends Activity implements View.OnClickListener {
                     public void onResponse(String response) {
                         String json = response;
                         try {
-                            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
-                            alertDialog.setTitle("Alerta");
-                            alertDialog.setMessage("Vei primi pe email noua parola");
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent continuare = new Intent(PasswordReset.this, LoginNew.class);
-                                            startActivity(continuare);
-                                            finish();
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                            builder.setTitle("Vei primi pe email noua parola");
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent continuare = new Intent(PasswordReset.this, LoginNew.class);
+                                    startActivity(continuare);
+                                    finish();
+                                    dialog.dismiss();
+                                }
+                            });
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -112,16 +109,13 @@ public class PasswordReset extends Activity implements View.OnClickListener {
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);
-            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
-            alertDialog.setTitle("Error");
-            alertDialog.setMessage("Server error");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+            builder.setTitle("Eroare de server");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
         }
     };
     private boolean validateEmail() {

@@ -181,16 +181,13 @@ public class FirstScreen extends Activity implements View.OnClickListener {
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);
-            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
-            alertDialog.setTitle("Error");
-            alertDialog.setMessage("Server error");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+            builder.setTitle("Eroare de server");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
         }
     };
 }

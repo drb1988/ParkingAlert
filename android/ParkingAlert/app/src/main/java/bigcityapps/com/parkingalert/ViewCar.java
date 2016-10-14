@@ -33,10 +33,11 @@ public class ViewCar extends Activity implements View.OnClickListener {
     TextView ed_autovehicul;
     String qr_code;
     boolean enable_notifications, enable_others;
+    String mMaker,mModel, mYear, mNAme, mPlates, mImage;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.vizualizare_masina);
+        setContentView(R.layout.view_car);
         initcomponents();
         ctx = this;
         prefs = new SecurePreferences(ctx);
@@ -44,7 +45,12 @@ public class ViewCar extends Activity implements View.OnClickListener {
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
+            mMaker=b.getString("edMaker");
+            mModel=b.getString("edModel");
+            mYear=b.getString("edYear");
+            mPlates=b.getString("edNr");
             mPlatesOriginal = (String) b.get("edNr");
+            mImage=b.getString("image");
             tv_numele_masina.setText((String) b.get("edname"));
             qr_code=b.getString("qr_code");
             tv_nr.setText((String) b.get("edNr"));
@@ -56,7 +62,6 @@ public class ViewCar extends Activity implements View.OnClickListener {
             if (!b.getString("edModel").equals("null"))
                 a = a + " " + b.getString("edModel");
             ed_autovehicul.setText(a);
-            Log.w("meniuu", "nrinmatriculare:" + mPlatesOriginal + " marime:" + mPlatesOriginal.length());
             enable_notifications = b.getBoolean("enable_notifications");
             enable_others = b.getBoolean("enable_others");
             switch_cars.setChecked(enable_notifications);
@@ -89,8 +94,15 @@ public class ViewCar extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.modify_view_car:
-//                Intent update = new Intent(ViewCar.this, ModifyCar.class);
-//                startActivity(update);
+                Intent update = new Intent(ViewCar.this, ModifyCar.class);
+                update.putExtra("edYear", mYear);
+                update.putExtra("edname", mNAme);
+                update.putExtra("edNr", mPlates);
+                update.putExtra("edMaker", mMaker);
+                update.putExtra("edModel", mModel);
+                update.putExtra("edYear",mYear);
+                update.putExtra("image",mYear);
+                startActivity(update);
 //            updateCars(prefs.getString("user_id",""));
 
 //        Intent salvare= new Intent(ViewCar.this, MainActivity.class);

@@ -109,17 +109,15 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                             facebookLogin(mFirstName, mLastName, mFacebookId, mEmail);
 
                         } catch (JSONException e) {
-                            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
-                            alertDialog.setTitle("Error");
-                            alertDialog.setMessage("Facebook error");
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
-                            Log.w("meniuu", "catch");
+                            Log.w("meniuu","catch la facebbok");
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                            builder.setTitle("Facebook error");
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    finish();
+                                }
+                            });
+
                             e.printStackTrace();
                         }
 
@@ -240,16 +238,13 @@ public class EmailValidation extends Activity implements View.OnClickListener {
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);
-            AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
-            alertDialog.setTitle("Error");
-            alertDialog.setMessage("Server error");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+            builder.setTitle("Eroare de server");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
         }
     };
 
