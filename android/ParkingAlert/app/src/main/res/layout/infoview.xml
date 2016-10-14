@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/back_linear_unique"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:background="@drawable/back_blue"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/image_info_view"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/com_facebook_profile_picture_blank_square" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="30dp">
+
+        <TextView
+            android:id="@+id/nr_masina_infoview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="Notificat bh12abc"
+            android:textSize="@dimen/txt_size_bigger"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/time_info_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nr_masina_infoview"
+            android:layout_centerHorizontal="true"
+            android:text="Acum 4 minute"
+            android:textSize="@dimen/txt_size" />
+    </RelativeLayout>
+</LinearLayout>
