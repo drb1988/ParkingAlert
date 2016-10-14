@@ -277,10 +277,36 @@ router.post('/editCar/:userID&:plates', function(req, res, next) {
 		});
 })
 
+router.post('/chanceQR/:userID&:plates', function(req, res, next) {
+    /**
+    * Route to change the QR code for a car,
+    * @name /chanceQR/:userID&:plates
+    * @param {String} :userID&:plates
+    */
+    var deleteCar = function(db, callback) {   
+ 	var o_id = new ObjectId(req.params.userID);
+    db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+             {$set: { 
+                        "cars.$.qr_code": req.body.qr_code 
+                    }
+             },function(err, result) {
+				    assert.equal(err, null);
+				    callback();
+			});            
+	}
+	MongoClient.connect(dbConfig.url, function(err, db) {
+		  assert.equal(null, err);
+		  deleteCar(db, function() {
+		      db.close();
+		      res.status(200).send(req.params.userID)
+		  });
+		});
+})
+
 router.get('/enableNotifications/:userID&:plates', function(req, res, next) {
     /**
     * Route to enable notifications for a car,
-    * @name /editCar/:userID&:plates
+    * @name /enableNotifications/:userID&:plates
     * @param {String} :userID&:plates
     */
     var deleteCar = function(db, callback) {   
@@ -307,7 +333,7 @@ router.get('/enableNotifications/:userID&:plates', function(req, res, next) {
 router.get('/allowOthers/:userID&:plates&:action', function(req, res, next) {
     /**
     * Route to enable others for using a car,
-    * @name /editCar/:userID&:plates
+    * @name /allowOthers/:userID&:plates&:action
     * @param {String} :userID&:plates
     */
     var allowOthers = function(db, callback) {   
@@ -347,7 +373,7 @@ router.get('/allowOthers/:userID&:plates&:action', function(req, res, next) {
 router.get('/disableNotifications/:userID&:plates', function(req, res, next) {
     /**
     * Route to enable notifications for a car,
-    * @name /editCar/:userID&:plates
+    * @name /disableNotifications/:userID&:plates
     * @param {String} :userID&:plates
     */
     var deleteCar = function(db, callback) {   

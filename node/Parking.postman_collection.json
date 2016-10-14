@@ -740,6 +740,31 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "localhost:3000/users/chanceQR/57ff7872e0ec5a14b844ad2a&BH89FSSU",
+			"request": {
+				"url": "localhost:3000/users/chanceQR/57ff7872e0ec5a14b844ad2a&BH89FSSU",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"qr_code\": \"loremipsumdolor\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
