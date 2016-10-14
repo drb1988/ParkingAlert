@@ -85,7 +85,7 @@
 		{
 			"name": "localhost:3000/users/getCars/57e11909853b0122ac974e23",
 			"request": {
-				"url": "localhost:3000/users/getUsersForCode/123456",
+				"url": "localhost:3000/users/getCars/57fb950da02dc721a824a96c",
 				"method": "GET",
 				"header": [
 					{
@@ -713,6 +713,31 @@
 					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
 				},
 				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/allowOthers/57fe17798ef9141d0cc2e2ad&BH65XXX&true",
+			"request": {
+				"url": "localhost:3000/users/allowOthers/57fe17798ef9141d0cc2e2ad&BH65XXX&true",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+				},
+				"description": ""
 			},
 			"response": []
 		}
