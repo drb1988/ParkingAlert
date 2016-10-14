@@ -1,0 +1,23 @@
+// Navigation
+.row
+  .col-md-12
+    label.daterange-text Alege intervalul dorit:
+    input.form-control#ajaxDate(type='text', name='daterange' style='margin-top:7px;margin-bottom:7px;')
+.row
+  .col-md-12
+    ul.nav.nav-tabs
+      li.map-cosen.active
+        a Harta
+      li.chart-cosen 
+        a Statistica
+    br
+
+script(src='https://cdn.jsdelivr.net/jquery/1/jquery.min.js')
+script(src='https://cdn.jsdelivr.net/momentjs/latest/moment.min.js')
+link(rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" )
+script(src='https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js')
+link(rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" )
+
+
+
+script(src='/js/date-selector.js')

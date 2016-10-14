@@ -1,0 +1,25 @@
+html
+  head
+    meta(charset="utf-8")
+    meta(content="width=device-width, initial-scale=1", name="viewport")
+    meta(name="description" content="Moneparti dashboard")
+    meta(charset='utf-8')
+    title Heatmaps
+    link(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Indie+Flower" )
+    link(rel="stylesheet" href="/css/bootstrap.min.css" media="all" charset="utf-8")
+    link(rel="stylesheet" href="/css/modern-business.css" media="all" charset="utf-8")
+    link(rel="stylesheet" href="/stylesheets/style.css" media="all" charset="utf-8")
+    link(href='/css/bootstrap.min.css', rel='stylesheet')
+    link(href='/stylesheets/dashboard/font-awesome.min.css', rel='stylesheet', type='text/css')
+  body
+    #wrapper('margin:40px')
+      script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
+      script(src='/js/highcarts/jquery.min.js')
+      // Bootstrap Core JavaScript
+      script(src='/js/bootstrap.min.js')
+      // Custom Theme JavaScript
+      script(src='/js/jquery.js')
+      // MainJS js/jquery.js
+      script(src='/js/main.js')
+      include ./dashboard/header-map-chart-modal
+      #page-wrapper

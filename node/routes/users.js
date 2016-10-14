@@ -5,6 +5,22 @@ var db = require('mongoskin').db(dbConfig.url);
 var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId; 
+var jwt = require('json-web-token');
+var Chance = require('chance');
+var chance = new Chance();
+
+var generateCode = function (user)
+ {	
+ 	var secret = "Friendly2016"
+ 	var seed = chance.integer({min: 100000, max: 999999}).toString();
+ 	var payload = {
+        "user_id"   : user,
+        "seed"     : seed,
+        "usage": "QRCode"
+    };
+    var result = jwt.encode( secret, payload);
+    return result.value;
+ }
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -240,17 +256,11 @@ router.post('/editCar/:userID&:plates', function(req, res, next) {
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
              {$set: { 
-                         "cars":[{ 	
-                        			"plates": req.body.plates,
-      								"given_name": req.body.given_name,
-      								"make": req.body.make,
-      								"model": req.body.model,
-      								"year": req.body.year,
-      								"enable_notifications": req.body.enable_notifications,
-      								"qr_code": req.body.qr_code,
-      								"is_owner": req.body.is_owner,
-      								"enable_others": req.body.enable_others  
-      							}]  
+                        "cars.$.plates": req.body.plates,
+      					"cars.$.given_name": req.body.given_name,
+      					"cars.$.make": req.body.make,
+      					"cars.$.model": req.body.model,
+      					"cars.$.year": req.body.year,
                       }
              },function(err, result) {
 				    assert.equal(err, null);
@@ -267,10 +277,36 @@ router.post('/editCar/:userID&:plates', function(req, res, next) {
 		});
 })
 
+router.post('/chanceQR/:userID&:plates', function(req, res, next) {
+    /**
+    * Route to change the QR code for a car,
+    * @name /chanceQR/:userID&:plates
+    * @param {String} :userID&:plates
+    */
+    var deleteCar = function(db, callback) {   
+ 	var o_id = new ObjectId(req.params.userID);
+    db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+             {$set: { 
+                        "cars.$.qr_code": req.body.qr_code 
+                    }
+             },function(err, result) {
+				    assert.equal(err, null);
+				    callback();
+			});            
+	}
+	MongoClient.connect(dbConfig.url, function(err, db) {
+		  assert.equal(null, err);
+		  deleteCar(db, function() {
+		      db.close();
+		      res.status(200).send(req.params.userID)
+		  });
+		});
+})
+
 router.get('/enableNotifications/:userID&:plates', function(req, res, next) {
     /**
     * Route to enable notifications for a car,
-    * @name /editCar/:userID&:plates
+    * @name /enableNotifications/:userID&:plates
     * @param {String} :userID&:plates
     */
     var deleteCar = function(db, callback) {   
@@ -297,7 +333,7 @@ router.get('/enableNotifications/:userID&:plates', function(req, res, next) {
 router.get('/allowOthers/:userID&:plates&:action', function(req, res, next) {
     /**
     * Route to enable others for using a car,
-    * @name /editCar/:userID&:plates
+    * @name /allowOthers/:userID&:plates&:action
     * @param {String} :userID&:plates
     */
     var allowOthers = function(db, callback) {   
@@ -337,7 +373,7 @@ router.get('/allowOthers/:userID&:plates&:action', function(req, res, next) {
 router.get('/disableNotifications/:userID&:plates', function(req, res, next) {
     /**
     * Route to enable notifications for a car,
-    * @name /editCar/:userID&:plates
+    * @name /disableNotifications/:userID&:plates
     * @param {String} :userID&:plates
     */
     var deleteCar = function(db, callback) {   
@@ -405,7 +441,7 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 
 router.get('/generateCarCode/:userID', function(req, res, next) {
 	res.status(200).send({
-		"carCode":  "66"+req.params.userID+"33" 
+		"carCode":  generateCode(req.params.userID) 
 	})
 });
 

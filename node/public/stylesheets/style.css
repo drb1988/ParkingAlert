@@ -6,8 +6,11 @@ html, body {
   // background: url('/img/large-background.jpg') no-repeat fixed center;
 }
 #map-content {
-  height: 500px;
+  height: 430px;
   }
+iframe {
+  border:none;
+}
 #map {
   height: 100%;
 }
@@ -27,7 +30,7 @@ html, body {
 
 #floating-panel {
   position: absolute;
-  top: 10px;
+  top: 80%;
   left: 25%;
   z-index: 5;
   background-color: #fff;
@@ -67,7 +70,7 @@ html, body {
   border-bottom: 6px solid #3358B1;
 }
 
-.map-cosen , .chart-cosen {
+/*.map-cosen , .chart-cosen {
   text-align: center;
   margin: 12px auto;
   border: 1px solid #3570BD;
@@ -77,16 +80,16 @@ html, body {
   border-radius: 2px 2px 2px 2px;
   //background-color: #3570BD;
   zoom: 1.2;
-}
+}*/
 
-.map-cosen:hover , .chart-cosen:hover {
+/*.map-cosen:hover , .chart-cosen:hover {
   color: white;
   background-color: #3358B1;
 }
 .active {
   color: white;
   background-color: #3570BD;
-}
+}*/
 .row.hidden#chart-container > .col-md-12 > #container {
   min-width: 0px; height: 400px; margin: 0 auto; max-width:1000px;
 }
@@ -149,4 +152,10 @@ html, body {
 }
 #target {
   width: 345px;
+}
+
+
+
+a.paginate_button {
+  padding: 5px !important;
 }
