@@ -11,4 +11,5 @@ public class Constants {
     /// url...
     public  static String URL="http://82.76.188.13:3000/";
     public static Activity ctx;
+    public static boolean change=false;
 }

@@ -180,10 +180,12 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                 rlLayoutDialog.setVisibility(View.VISIBLE);
                 break;
             case R.id.exist_qr:
+                Constants.change=true;
                 Intent addQr = new Intent(Cars.this, AddQR.class);
                 startActivity(addQr);
                 break;
             case R.id.no_exist_qr:
+                Constants.change=true;
                 generateQr(prefs.getString("user_id",""));
                 break;
 
@@ -247,17 +249,21 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                 try {
                     JSONArray obj = new JSONArray(json);
                     for (int i = 0; i < obj.length(); i++) {
-                        JSONObject c = obj.getJSONObject(i);
-                        CarModel carModel = new CarModel();
-                        carModel.setNr(c.getString("plates"));
-                        carModel.setmCarName(c.getString("given_name"));
-                        carModel.setModel(c.getString("model"));
-                        carModel.setAn(c.getString("year"));
-                        carModel.setProducator(c.getString("make"));
-                        carModel.setEnable_notifications(c.getBoolean("enable_notifications"));
-                        carModel.setEnable_others(c.getBoolean("enable_others"));
-                        carModel.setQrcode(c.getString("qr_code"));
-                        carModelArrayList.add(carModel);
+                        try {
+                            JSONObject c = obj.getJSONObject(i);
+                            CarModel carModel = new CarModel();
+                            carModel.setNr(c.getString("plates"));
+                            carModel.setmCarName(c.getString("given_name"));
+                            carModel.setModel(c.getString("model"));
+                            carModel.setAn(c.getString("year"));
+                            carModel.setProducator(c.getString("make"));
+                            carModel.setEnable_notifications(c.getBoolean("enable_notifications"));
+                            carModel.setEnable_others(c.getBoolean("enable_others"));
+                            carModel.setQrcode(c.getString("qr_code"));
+                            carModelArrayList.add(carModel);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                     if (carModelArrayList.size() > 0) {
                         adapter = new NotificareAdapter(carModelArrayList);
@@ -424,6 +430,7 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                 try {
                     JSONObject obj = new JSONObject(json);
                     String carCode = obj.getString("carCode");
+                    Constants.change=true;
                     Intent showQr=new Intent(Cars.this, ShowQRCode.class);
                     showQr.putExtra("qrcode",carCode);
                     startActivity(showQr);

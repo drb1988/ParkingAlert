@@ -240,7 +240,7 @@ public class ModifyCar extends Activity implements View.OnClickListener{
                     }, ErrorListener) {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("plates", edNr.getText().toString());
+                    params.put("plates", edNr.getText().toString().trim());
                     params.put("given_name", edname.getText().toString().length()>0?edname.getText().toString():"Masina lui");
                     params.put("make", edMaker.getText().toString().length()>0?edMaker.getText().toString():"");
                     params.put("edModel", edModel.getText().toString().length()>0?edModel.getText().toString():"");

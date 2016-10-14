@@ -233,6 +233,46 @@ public class AddCar extends Activity implements View.OnClickListener{
      *  add car method
      * @param id
      */
+
+//    public void addCar(final  String id, final String qrcode){
+//        String url = Constants.URL+"users/addCar/"+id;
+//        JSONObject object = new JSONObject();
+//        try {
+//            object.put("enable_notifications", receive_notification.isChecked());
+//            object.put("enable_others", all_drive.isChecked());
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, object, new Response.Listener<JSONObject>() {
+//            public void onResponse(JSONObject response) {
+////                String json = response;
+//                Log.w("meniuu", "response:post user" + response);
+//                saveImageToExternalStorageQrcode();
+//                finish();
+//            }
+//        }, ErrorListener){
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                HashMap<String, String> params = new HashMap<>();
+//                params.put("plates", edNr.getText().toString());
+//                params.put("given_name", edname.getText().toString().length()>0?edname.getText().toString():"Masina lui");
+//                params.put("make", edMaker.getText().toString().length()>0?edMaker.getText().toString():"");
+//                params.put("model", edModel.getText().toString().length()>0?edModel.getText().toString():"");
+//                params.put("year", edYear.getText().toString().length()>0?edYear.getText().toString():"");
+//                params.put("qr_code", qrcode);
+//                return params;
+//            }
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                String auth_token_string = prefs.getString("token", "");
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("Authorization","Bearer "+ auth_token_string);
+//                return params;
+//            }
+//        };
+//        queue.add(request);
+//    }
+
     public void addCar(final String id, final String qrcode){
         String url = Constants.URL+"users/addCar/"+id;
         if( edNr.getText().length()==0 )
@@ -249,16 +289,15 @@ public class AddCar extends Activity implements View.OnClickListener{
                     }, ErrorListener) {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("plates", edNr.getText().toString());
+                    params.put("plates", edNr.getText().toString().trim());
                     params.put("given_name", edname.getText().toString().length()>0?edname.getText().toString():"Masina lui");
                     params.put("make", edMaker.getText().toString().length()>0?edMaker.getText().toString():"");
                     params.put("model", edModel.getText().toString().length()>0?edModel.getText().toString():"");
                     params.put("year", edYear.getText().toString().length()>0?edYear.getText().toString():"");
-                    params.put("enable_notifications", receive_notification.isChecked()+"");
-                    params.put("enable_others", all_drive.isChecked()+"");
                     params.put("qr_code", qrcode);
-                    Log.w("meniuu","enable_notifications:"+receive_notification.isChecked());
-                    Log.w("meniuu","enable_others:"+all_drive.isChecked());
+//                    params.put("enable_notifications", receive_notification.isChecked()+"");
+//                    params.put("enable_others", all_drive.isChecked()+"");
+
                     return params;
                 }
 

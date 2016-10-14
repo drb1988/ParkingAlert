@@ -7,15 +7,22 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.util.HashMap;
+
+import Util.Constants;
 import Util.SecurePreferences;
 
 /**
@@ -24,7 +31,7 @@ import Util.SecurePreferences;
 public class ViewCar extends Activity implements View.OnClickListener {
     Context ctx;
     TextView tv_numele_masina, tv_nr;
-    RelativeLayout rlBack, rlModify,rlViewQr;
+    RelativeLayout rlBack, rlModify, rlViewQr;
     RequestQueue queue;
     String mPlatesOriginal;
     SharedPreferences prefs;
@@ -33,7 +40,7 @@ public class ViewCar extends Activity implements View.OnClickListener {
     TextView ed_autovehicul;
     String qr_code;
     boolean enable_notifications, enable_others;
-    String mMaker,mModel, mYear, mNAme, mPlates, mImage;
+    String mMaker, mModel, mYear, mNAme, mPlates, mImage;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,14 +52,14 @@ public class ViewCar extends Activity implements View.OnClickListener {
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
-            mMaker=b.getString("edMaker");
-            mModel=b.getString("edModel");
-            mYear=b.getString("edYear");
-            mPlates=b.getString("edNr");
+            mMaker = b.getString("edMaker");
+            mModel = b.getString("edModel");
+            mYear = b.getString("edYear");
+            mPlates = b.getString("edNr");
             mPlatesOriginal = (String) b.get("edNr");
-            mImage=b.getString("image");
+            mImage = b.getString("image");
             tv_numele_masina.setText((String) b.get("edname"));
-            qr_code=b.getString("qr_code");
+            qr_code = b.getString("qr_code");
             tv_nr.setText((String) b.get("edNr"));
             String a = "";
             if (!b.getString("edYear").equals("null"))
@@ -83,6 +90,22 @@ public class ViewCar extends Activity implements View.OnClickListener {
         rlViewQr.setOnClickListener(this);
         rlBack.setOnClickListener(this);
         rlModify.setOnClickListener(this);
+        switch_cars.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    changeNotification("enableNotifications");
+                else
+                    changeNotification("disableNotifications");
+            }
+        });
+        switch_other.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    changeAllowOthers(true);
+                else
+                    changeAllowOthers(false);
+            }
+        });
     }
 
     public void onClick(View view) {
@@ -100,8 +123,8 @@ public class ViewCar extends Activity implements View.OnClickListener {
                 update.putExtra("edNr", mPlates);
                 update.putExtra("edMaker", mMaker);
                 update.putExtra("edModel", mModel);
-                update.putExtra("edYear",mYear);
-                update.putExtra("image",mYear);
+                update.putExtra("edYear", mYear);
+                update.putExtra("image", mYear);
                 startActivity(update);
 //            updateCars(prefs.getString("user_id",""));
 
@@ -109,10 +132,10 @@ public class ViewCar extends Activity implements View.OnClickListener {
 //        startActivity(salvare);
                 break;
             case R.id.view_qr:
-                Log.w("meniuu","a intrat in view_qr");
-                Intent viewQR= new Intent(ViewCar.this, ViewQr.class);
-                viewQR.putExtra("mPlates",mPlatesOriginal);
-                viewQR.putExtra("mQrcode",qr_code);
+                Log.w("meniuu", "a intrat in view_qr");
+                Intent viewQR = new Intent(ViewCar.this, ViewQr.class);
+                viewQR.putExtra("mPlates", mPlatesOriginal);
+                viewQR.putExtra("mQrcode", qr_code);
                 startActivity(viewQR);
                 break;
         }
@@ -159,4 +182,46 @@ public class ViewCar extends Activity implements View.OnClickListener {
             Log.w("meniuu", "error: errorlistener:" + error);
         }
     };
+
+    public void changeNotification(String action) {
+        String url = Constants.URL + "users/" + action + "/" + prefs.getString("user_id", "") + "&" + mPlates;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                Log.w("meniuu", "response viewcar:" + json);
+            }
+        }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Log.w("meniuu", "token:" + auth_token_string);
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
+    public void changeAllowOthers(boolean allow) {
+        String url = Constants.URL + "users/allowOthers/" + prefs.getString("user_id", "") + "&" + mPlates + "&" + allow;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        try {
+                            Log.w("meniuu", "response alloothers:" + json);
+                        } catch (Exception e) {
+                        }
+                    }
+                }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Log.w("meniuu", "token:" + auth_token_string);
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
 }

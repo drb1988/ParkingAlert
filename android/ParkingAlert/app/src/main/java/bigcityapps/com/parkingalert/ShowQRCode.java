@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import Util.Constants;
 import Util.SecurePreferences;
 
 /**
@@ -40,6 +41,7 @@ public class ShowQRCode extends Activity implements OnClickListener{
     TextView tvNextStep;
     SharedPreferences prefs;
     String qrcode;
+    boolean change;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_qrcode);
@@ -52,9 +54,10 @@ public class ShowQRCode extends Activity implements OnClickListener{
         queue = Volley.newRequestQueue(this);
         Intent iin= getIntent();
         Bundle b = iin.getExtras();
-        if(b!=null)
-            qrcode =(String) b.get("qrcode");
-
+        if(b!=null) {
+            qrcode = (String) b.get("qrcode");
+//            change=b.getBoolean("add");
+        }
         QRCodeWriter writer = new QRCodeWriter();
         try {
             BitMatrix bitMatrix = writer.encode(qrcode, BarcodeFormat.QR_CODE, 512, 512);
@@ -76,15 +79,24 @@ public class ShowQRCode extends Activity implements OnClickListener{
     public void initcomponents() {
         ivQrcode = (ImageView) findViewById(R.id.iv_qrcode);
         tvNextStep = (TextView) findViewById(R.id.next_step);
+        Log.e("meniuu","change:"+Constants.change);
+        if(Constants.change)
+            tvNextStep.setText("Treci la urmatorul pas");
+        else
+            tvNextStep.setText("QR codul a fost modificat cu succes");
         tvNextStep.setOnClickListener(this);
     }
 
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.next_step:
-                Intent addCar=new Intent(ShowQRCode.this, AddCar.class);
-                addCar.putExtra("qrcode",qrcode);
-                startActivity(addCar);
+                Log.e("meniuu","change:"+Constants.change);
+                if(Constants.change) {
+                    Intent addCar = new Intent(ShowQRCode.this, AddCar.class);
+                    addCar.putExtra("qrcode", qrcode);
+                    startActivity(addCar);
+                    finish();
+                }else
                 finish();
                 break;
         }
