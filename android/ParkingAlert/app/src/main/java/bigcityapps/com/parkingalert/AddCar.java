@@ -28,6 +28,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -70,7 +71,8 @@ public class AddCar extends Activity implements View.OnClickListener {
     Context ctx;
     SharedPreferences prefs;
     RelativeLayout rlBack, rlOk;
-    EditText edname, edNr, edMaker, edModel, edYear;
+    EditText edname, edNr, edModel, edYear;
+    EditText edMaker;
     ImageView ivImageCar;
     Uri imageUri;
     String imagePath;
@@ -93,12 +95,16 @@ public class AddCar extends Activity implements View.OnClickListener {
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
         act = this;
+
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null)
             qrcode = (String) b.get("qrcode");
         initComponents();
         getUser(prefs.getString("user_id",""));
+//        String[] countries={"audi","auzi","ana"};
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,countries);
+//        edMaker.setAdapter(adapter);
     }
 
     /**
@@ -120,6 +126,22 @@ public class AddCar extends Activity implements View.OnClickListener {
         receive_notification = (Switch) findViewById(R.id.receive_notification);
         all_drive = (Switch) findViewById(R.id.all_drive);
         receive_notification.setChecked(true);
+        all_drive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               if(isChecked){
+                   final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ctx);
+                   builder.setTitle("Informare");
+                   builder.setMessage("Acuma se mai poate adauga si altcineva la aceasta masina, scanand QR codul");
+                   builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+                           dialog.dismiss();
+                       }
+                   });
+                   android.support.v7.app.AlertDialog alert1 = builder.create();
+                   alert1.show();
+               }
+            }
+        });
         all_drive.setChecked(false);
     }
 

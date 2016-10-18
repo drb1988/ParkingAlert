@@ -36,7 +36,6 @@
         <activity android:name="bigcityapps.com.parkingalert.History"></activity>
         <activity android:name="bigcityapps.com.parkingalert.ViewNotification"></activity>
         <activity android:name="bigcityapps.com.parkingalert.MainActivity"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.Login"></activity>
         <activity android:name="bigcityapps.com.parkingalert.TimerSender"></activity>
         <activity android:name="bigcityapps.com.parkingalert.Review"></activity>
         <activity android:name="bigcityapps.com.parkingalert.SimpleScannerActivity"></activity>

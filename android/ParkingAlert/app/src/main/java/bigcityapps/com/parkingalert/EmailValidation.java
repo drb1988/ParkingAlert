@@ -62,7 +62,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     TextInputLayout inputLayout;
-    String mFirstName, mEmail, mFacebookId, mLastName;
+    String mFirstName, mEmail, mFacebookId, mLastName, mPhoneNumber;
     String nume, prenume, parola, verificationId, email;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +82,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
             parola = (String) b.get("parola");
             verificationId = (String) b.get("verificationId");
             email = (String) b.get("email");
+            mPhoneNumber=b.getString("phone_number");
         }
 
         initComponents();
@@ -275,7 +276,6 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                             Toast.makeText(ctx, "erro", Toast.LENGTH_LONG).show();
                         }
                         Log.w("meniuu", "response:post user" + response);
-
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
@@ -285,8 +285,8 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                 params.put("edNickname", nume + prenume);
                 params.put("email", email);
                 params.put("password", parola);
-//                    params.put("photo", "photo");
                 params.put("platform", "Android");
+                params.put("phone_number", mPhoneNumber);
                 return params;
             }
         };
@@ -334,7 +334,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
     }
 
     public void facebookLogin(final String fname, final String lname, final String facebookID, final String email) {
-        String url = Constants.URL + "signup/facebookLogin";
+        String url = Constants.URL  + "signup/facebookLogin";
         Log.w("meniuu", "fname:" + fname + " lname:" + lname + " facebookid:" + facebookID + " email:" + email);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

@@ -73,10 +73,10 @@
                 android:id="@+id/qr"
                 android:layout_width="250dp"
                 android:layout_height="250dp"
-                android:layout_gravity="center"
-                android:src="@drawable/logo"
                 android:layout_below="@+id/text"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:src="@drawable/logo" />
 
             <TextView
                 android:id="@+id/text2"
@@ -124,20 +124,25 @@
                     android:src="@drawable/sageata_dreapta" />
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/modify_qr"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@+id/go_site"
-                android:layout_marginBottom="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="25dp"
-                android:background="#5387CB"
+            <RelativeLayout
                 android:gravity="center"
-                android:text="Modifica codul QR"
-                android:textColor="@color/alb"
-                android:textSize="@dimen/txt_size_mic" />
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@+id/go_site"
+                android:background="#EFEFF4">
+
+                <TextView
+                    android:id="@+id/modify_qr"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="#5387CB"
+                    android:gravity="center"
+                    android:text="Modifica codul QR"
+                    android:textColor="@color/alb"
+                    android:textSize="@dimen/txt_size_mic" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/layout_dialog"

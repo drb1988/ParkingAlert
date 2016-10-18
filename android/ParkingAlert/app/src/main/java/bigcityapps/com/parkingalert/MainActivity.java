@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         drawerItem[0] = new DataModel(1, "NOTIFICARI");
         drawerItem[1] = new DataModel(R.drawable.notif, "Notificari");
         drawerItem[2] = new DataModel(R.drawable.send_notif, "Trimite notificari");
+
         drawerItem[3] = new DataModel(1, "SETARI");
         drawerItem[4] = new DataModel(R.drawable.profil, "Profil personal");
         drawerItem[5] = new DataModel(R.drawable.masini_inregistrate, "Masini inregistrate");

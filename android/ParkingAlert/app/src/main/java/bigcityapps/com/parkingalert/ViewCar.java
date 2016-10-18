@@ -2,12 +2,16 @@ package bigcityapps.com.parkingalert;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,6 +23,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.HashMap;
 
@@ -40,8 +48,9 @@ public class ViewCar extends Activity implements View.OnClickListener {
     TextView ed_autovehicul;
     String qr_code;
     boolean enable_notifications, enable_others;
-    String mMaker, mModel, mYear, mNAme, mPlates, mImage;
-
+    String mMaker, mModel, mYear, mPlates, mImage;
+    Bitmap bmp;
+    ImageView imQrcode;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_car);
@@ -73,12 +82,46 @@ public class ViewCar extends Activity implements View.OnClickListener {
             enable_others = b.getBoolean("enable_others");
             switch_cars.setChecked(enable_notifications);
             switch_other.setChecked(enable_others);
+
+            switch_other.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked){
+                        final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ctx);
+                        builder.setTitle("Informare");
+                        builder.setMessage("Acuma se mai poate adauga si altcineva la aceasta masina, scanand QR codul");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+                        android.support.v7.app.AlertDialog alert1 = builder.create();
+                        alert1.show();
+                    }
+                }
+            });
             title.setText(mPlatesOriginal);
             Constants.plates=mPlatesOriginal;
+            QRCodeWriter writer = new QRCodeWriter();
+            try {
+                BitMatrix bitMatrix = writer.encode(qr_code, BarcodeFormat.QR_CODE, 512, 512);
+                int width = bitMatrix.getWidth();
+                int height = bitMatrix.getHeight();
+                bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                    }
+                }
+                imQrcode.setImageBitmap(bmp);
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void initcomponents() {
+        imQrcode=(ImageView)findViewById(R.id.poza_masina);
+        imQrcode.setOnClickListener(this);
         title = (TextView) findViewById(R.id.title);
         switch_cars = (Switch) findViewById(R.id.switch_cars);
         switch_other = (Switch) findViewById(R.id.switch_other);
@@ -132,8 +175,14 @@ public class ViewCar extends Activity implements View.OnClickListener {
 //        Intent salvare= new Intent(ViewCar.this, MainActivity.class);
 //        startActivity(salvare);
                 break;
-            case R.id.view_qr:
-                Log.w("meniuu", "a intrat in view_qr");
+//            case R.id.view_qr:
+//                Log.w("meniuu", "a intrat in view_qr");
+//                Intent viewQR = new Intent(ViewCar.this, ViewQr.class);
+//                viewQR.putExtra("mPlates", mPlatesOriginal);
+//                viewQR.putExtra("mQrcode", qr_code);
+//                startActivity(viewQR);
+//                break;
+            case R.id.poza_masina:
                 Intent viewQR = new Intent(ViewCar.this, ViewQr.class);
                 viewQR.putExtra("mPlates", mPlatesOriginal);
                 viewQR.putExtra("mQrcode", qr_code);

@@ -18,8 +18,8 @@
         <item>Table</item>
         <item>Connect</item>
         <item>Fixtures</item>
-        <item>Table</item>
-        <item>Table</item>
+        <item>Instructiuni</item>
+        <item>Raporteaza un bug</item>
     </string-array>
     <string name="title_activity_maps">Map</string>
 </resources>

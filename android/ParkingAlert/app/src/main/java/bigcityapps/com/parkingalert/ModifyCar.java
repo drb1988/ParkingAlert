@@ -68,6 +68,7 @@ public class ModifyCar extends Activity implements View.OnClickListener{
     final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
     final int ACTIVITY_SELECT_IMAGE = 1234;
     RequestQueue queue;
+    String mPLatesOriginal;
 
     /**
      *
@@ -85,8 +86,11 @@ public class ModifyCar extends Activity implements View.OnClickListener{
         Bundle b = iin.getExtras();
         if (b != null) {
 
-            if(!b.getString("edNr").equals("null"))
+            if(!b.getString("edNr").equals("null")) {
                 edNr.setText(b.getString("edNr"));
+                mPLatesOriginal=b.getString("edNr");
+            }
+
             if(!b.getString("edMaker").equals("null"))
                 edMaker.setText(b.getString("edMaker"));
             if(!b.getString("edModel").equals("null"))
@@ -111,8 +115,8 @@ public class ModifyCar extends Activity implements View.OnClickListener{
         edMaker =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_producator);
         edModel =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_model);
         edYear =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
-        ivImageCar =(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
-        ivImageCar.setOnClickListener(this);
+//        ivImageCar =(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
+//        ivImageCar.setOnClickListener(this);
     }
 
     /**
@@ -227,7 +231,7 @@ public class ModifyCar extends Activity implements View.OnClickListener{
      * @param id
      */
     public void UpdateCar(final String id){
-        String url = Constants.URL + "users/editCar/" + id + "&" + edNr.getText();
+        String url = Constants.URL + "users/editCar/" + id + "&" + mPLatesOriginal;
         Log.w("meniuu","url:"+url);
         if( edNr.getText().length()==0 )
             Toast.makeText(ctx,"Trebuie sa completezi numarul de inmatriculare",Toast.LENGTH_LONG).show();
@@ -248,7 +252,7 @@ public class ModifyCar extends Activity implements View.OnClickListener{
                     params.put("plates", edNr.getText().toString().trim());
                     params.put("given_name", edname.getText().toString().length()>0?edname.getText().toString():"Masina lui");
                     params.put("make", edMaker.getText().toString().length()>0?edMaker.getText().toString():"");
-                    params.put("edModel", edModel.getText().toString().length()>0?edModel.getText().toString():"");
+                    params.put("model", edModel.getText().toString().length()>0?edModel.getText().toString():"");
                     params.put("year", edYear.getText().toString().length()>0?edYear.getText().toString():"");
                     return params;
                 }

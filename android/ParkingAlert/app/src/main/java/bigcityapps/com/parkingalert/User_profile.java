@@ -6,10 +6,13 @@ import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,8 +25,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import org.json.JSONObject;
 
@@ -43,9 +44,10 @@ public class User_profile extends Activity implements View.OnClickListener{
     Context ctx;
     SharedPreferences prefs;
     ImageView poza_patrata_user_profile,poza_rotunda_user_profile;
-    EditText nume, nickname, mobile, email, driver_license, city;
+    EditText nume, mobile, email;
     RequestQueue queue;
     RelativeLayout inapoi, salvare;
+    TextInputLayout textInputLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,7 @@ public class User_profile extends Activity implements View.OnClickListener{
         getUser(prefs.getString("user_id",""));
     }
     public void initComponents(){
+        textInputLayout=(TextInputLayout)findViewById(R.id.inputEmail);
         salvare=(RelativeLayout)findViewById(R.id.salvare_user_profile);
         salvare.setOnClickListener(this);
         inapoi=(RelativeLayout)findViewById(R.id.inapoi_user_profile);
@@ -64,15 +67,14 @@ public class User_profile extends Activity implements View.OnClickListener{
         poza_patrata_user_profile=(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_patrata_user_profile);
         poza_rotunda_user_profile=(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_rotunda_user_profile);
         nume=(EditText)findViewById(bigcityapps.com.parkingalert.R.id.numele_user_profile);
-        nickname=(EditText)findViewById(bigcityapps.com.parkingalert.R.id.nick_name);
+//        nickname=(EditText)findViewById(bigcityapps.com.parkingalert.R.id.nick_name);
         mobile=(EditText)findViewById(bigcityapps.com.parkingalert.R.id.mobile_user_profile);
         email=(EditText)findViewById(bigcityapps.com.parkingalert.R.id.email);
-        driver_license=(EditText)findViewById(bigcityapps.com.parkingalert.R.id.driver_license_user_profile);
-        city=(EditText)findViewById(bigcityapps.com.parkingalert.R.id.city_user_profile);
+        email.addTextChangedListener(new MyTextWatcher(email));
     }
     public void UpdateUser(final String id){
        String url = Constants.URL+"users/updateUser/"+id;
-        if(nume.getText().length()==0 || nickname.getText().length()==0 || email.getText().length()==0 || driver_license.getText().length()==0 || city.getText().length()==0)
+        if(nume.getText().length()==0 || validateEmail()==false )
             Toast.makeText(ctx,"Completati toate campurile",Toast.LENGTH_LONG).show();
             else{
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -85,14 +87,24 @@ public class User_profile extends Activity implements View.OnClickListener{
                     }, ErrorListener) {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("first_name", nume.getText().toString());
-                    params.put("last_name", nume.getText().toString());
-                    params.put("edNickname", nickname.getText().toString());
+                    String name=nume.getText().toString();
+                    if (name.contains(" ")) {
+                        String[] splitNume = name.split(" ", 2);
+                        params.put("first_name", splitNume[0]);
+                        params.put("last_name", splitNume[1]);
+                        Log.w("meniuu", "fname:" + splitNume[0] + " lname: " + splitNume[1]);
+                    } else
+                        params.put("first_name", name);
+
+
+
+//                    params.put("first_name", nume.getText().toString());
+//                    params.put("last_name", nume.getText().toString());
+//                    params.put("edNickname", nickname.getText().toString());
                     params.put("email", email.getText().toString());
-                    params.put("edDriverLicense", driver_license.getText().toString());
-                    params.put("photo", "photo");
+//                    params.put("photo", "photo");
                     params.put("platform", "Android");
-                    params.put("user_city", city.getText().toString());
+                    params.put("phone_number", mobile.getText().toString());
                     return params;
                 }
 
@@ -114,7 +126,7 @@ public class User_profile extends Activity implements View.OnClickListener{
     public void onClick(View view) {
     switch (view.getId()){
         case R.id.salvare_user_profile:
-            UpdateUser("57e11909853b0122ac974e23");
+            UpdateUser(prefs.getString("user_id",null));
             break;
         case R.id.inapoi_user_profile:
             finish();
@@ -130,17 +142,17 @@ public class User_profile extends Activity implements View.OnClickListener{
                     Log.w("meniuu","response getuser:"+response);
                     JSONObject user = new JSONObject(json);
                     nume.setText(user.getString("first_name")+" "+user.getString("last_name"));
-                    nickname.setText(user.getString("nickname"));
+//                    nickname.setText(user.getString("nickname"));
                     email.setText(user.getString("email"));
-                    driver_license.setText(user.getString("edDriverLicense"));
-                    Glide.with(ctx).load(user.getString("photo")).asBitmap().centerCrop().into(new BitmapImageViewTarget(poza_rotunda_user_profile) {
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            poza_rotunda_user_profile.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
-                    Glide.with(ctx).load(user.getString("photo")).into(poza_patrata_user_profile);
+                    mobile.setText(user.getString("phone_number"));
+//                    Glide.with(ctx).load(user.getString("photo")).asBitmap().centerCrop().into(new BitmapImageViewTarget(poza_rotunda_user_profile) {
+//                        protected void setResource(Bitmap resource) {
+//                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+//                            circularBitmapDrawable.setCircular(true);
+//                            poza_rotunda_user_profile.setImageDrawable(circularBitmapDrawable);
+//                        }
+//                    });
+//                    Glide.with(ctx).load(user.getString("photo")).into(poza_patrata_user_profile);
                 }catch (Exception e)
                 {Log.w("meniuu","este catch");
                     e.printStackTrace();
@@ -179,5 +191,50 @@ public class User_profile extends Activity implements View.OnClickListener{
             }
         }
         return directory.getAbsolutePath();
+    }
+
+    private boolean validateEmail() {
+        String memail = email.getText().toString().trim();
+        if (memail.isEmpty() || !isValidEmail(memail)) {
+            textInputLayout.setError(getString(R.string.err_msg_email));
+            requestFocus(email);
+            return false;
+        } else {
+            textInputLayout.setErrorEnabled(false);
+        }
+        return true;
+    }
+    public final static boolean isValidEmail(CharSequence target) {
+        if (TextUtils.isEmpty(target)) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
+    }
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+    private class MyTextWatcher implements TextWatcher {
+        private View view;
+
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()) {
+                case R.id.email:
+                    validateEmail();
+                    break;
+            }
+        }
     }
 }

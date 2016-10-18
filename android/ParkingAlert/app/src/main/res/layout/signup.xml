@@ -148,6 +148,7 @@
                     android:textColorHint="@color/blue_white" />
             </android.support.design.widget.TextInputLayout>
 
+
             <TextView
                 android:id="@+id/inregistreazate"
                 android:layout_width="match_parent"

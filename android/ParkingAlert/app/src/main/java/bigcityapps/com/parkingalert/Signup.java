@@ -113,7 +113,6 @@ public class Signup extends Activity implements View.OnClickListener {
                     showKeyboard(edEmail);
             }
         });
-
     }
 
     public void initComponents() {

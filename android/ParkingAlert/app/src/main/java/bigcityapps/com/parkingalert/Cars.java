@@ -33,6 +33,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -359,7 +363,24 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
             CarModel item = moviesList.get(position);
             holder.proprietar.setText(item.getmCarName());
             holder.nr.setText(item.getNr());
-//            Picasso.with(ctx).load(item.getmImage()).into(holder.poza);
+            Log.w("meniuu","item.getimage:"+item.getQrcode());
+            QRCodeWriter writer = new QRCodeWriter();
+            try {
+                BitMatrix bitMatrix = writer.encode(item.getQrcode(), BarcodeFormat.QR_CODE, 512, 512);
+                int width = bitMatrix.getWidth();
+                int height = bitMatrix.getHeight();
+              Bitmap  bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                    }
+                }
+                holder.poza.setImageBitmap(bmp);
+//                Picasso.with(ctx).load(bmp).into(holder.poza);
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+
             if (item.isEnable_notifications())
                 holder.tvOnOff.setText("Pornit");
             else
