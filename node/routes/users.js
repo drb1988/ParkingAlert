@@ -225,6 +225,7 @@ router.post('/updateUser/:userID', function(req, res, next) {
       				  "last_name": req.body.last_name,
 				      // "nickname": req.body.nickname,
 				      "email": req.body.email,
+				      "phone_number": req.body.phone_number,
 				      // "driver_license": req.body.driver_license,
 				      // "photo": req.body.photo,
 				      "platform": req.body.platform,
