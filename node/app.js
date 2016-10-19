@@ -4,9 +4,17 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var routes = require('./routes/index');
+
+var session = require('express-session');
+
+var routes = require('./routes/index'); 
 var users = require('./routes/users');
-var webRoutes = require('./routes/web-routes');
+
+var passport = require('passport');
+var initPassport = require(__dirname + '/config/passport/init.js');
+initPassport(passport);
+
+var webRoutes = require('./routes/web-routes')(passport);
 var signup = require('./routes/signup-routes');
 var notifications = require('./routes/notificationRoutes');
 var jwtMiddleware = require('express-jwt');
@@ -19,8 +27,14 @@ var mongoose = require('mongoose');
 var parkingCollection = dbConfig.collection;
 var app = express();
 
-var app = express();
-
+var expressSession = require('express-session');
+app.use(expressSession({
+    secret: '2C23-4D14-WpPQ38S',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

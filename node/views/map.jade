@@ -12,7 +12,7 @@ block content
 block scripts
     script(src='/js/map.js')
     //script(async='', defer='', src='https://maps.googleapis.com/maps/api/s?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization&callback=initMap')
-    script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization,places,drawing&callback=initMap')
+    script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmyGvsxDlsHTSFQ8XbfplRO4z3KuxAOGg&libraries=visualization,places,drawing,geometry&callback=initMap')
     script.
       $( "#map-menu" ).click(function() {
         if($("#floating-panel").is(":visible") )

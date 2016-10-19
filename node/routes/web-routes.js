@@ -1,258 +1,355 @@
 var express = require('express');
-var router = express.Router();
+var adminRouter = express.Router();
 var dbConfig = require('../db');
 var db = require('mongoskin').db(dbConfig.url);
 var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 var Crypto = require('crypto'); 
+var passport = require('passport');
 
-router.get('/login', function(req, res, next) {
-  res.render('login', { title: 'Express' });
-});
-
-
-router.get('/dashboard', function(req, res, next) {
-  res.render('newpage', { 
-    title: 'Express'
-  });
-});
-
-router.get('/users-cars', function(req, res, next) {
-  res.render('users-cars', { 
-    title: 'Express'
-  });
-});
-
-router.get('/getNotifications', function(req, res, next) {
-		/**
-    	* Route to get all notification points,
-    	* @name /getNotifications
-    	* @param {String} :userId
-    	*/
-
-    var findNotifications = function(db, callback) {   
-	 	var o_id = new ObjectId(req.params.userID);
-	 		var result = [];
-		    var cursor =db.collection('notifications').find();
-		    cursor.each(function(err, doc) {
-		      assert.equal(err, null);
-		      if (doc != null) {
-		         console.log(doc.location.coordinates[0]);
-		         console.log(doc.create_date);
-		         result.push({"latitude": doc.location.coordinates[0],
-		         		"longitude": doc.location.coordinates[1],
-		         		"create_date": doc.create_date});
-		      } else {
-		         callback(); res.status(200).send(result)
-		      }
-		   });
-		};	
-
-		MongoClient.connect(dbConfig.url, function(err, db) {
-			  assert.equal(null, err);
-			  findNotifications(db, function() {
-			      db.close();
-			  });
-			});
-});
-
-router.get('/getNotificationsExtended/:offset&:limit', function(req, res, next) {
-    /**
-      * Route to get notification with offset and limit,
-      * @name /getNotifications
-      * @param {String} :userId
-      */
-
-    var findNotifications = function(db, callback) {   
-    var o_id = new ObjectId(req.params.userID);
-      var result = [];
-        var cursor =db.collection('notifications').find().sort({ _id: -1}).skip(parseInt(req.params.offset)).limit(parseInt(req.params.limit));
-        cursor.each(function(err, doc) {
-          assert.equal(err, null);
-          if (doc != null) {
-             console.log(doc.location.coordinates[0]);
-             console.log(doc.create_date);
-             result.push({"latitude": doc.location.coordinates[0],
-                "longitude": doc.location.coordinates[1],
-                "create_date": doc.create_date});
-          } else {
-             callback(); res.status(200).send(result)
-          }
-       });
-    };  
-
-    MongoClient.connect(dbConfig.url, function(err, db) {
-        assert.equal(null, err);
-        findNotifications(db, function() {
-            db.close();
-        });
-      });
-});
-
-router.get('/users', function(req, res, next) {
-		/**
-    	* Route to get all users,
-    	* @name /getNotifications
-    	* @param {String} :userId
-    	*/
-
-    	var findUsers = function(db, callback) {   
-	 	var o_id = new ObjectId(req.params.userID);
-	 		var result = [];
-		    var cursor =db.collection('parking').find();
-		    cursor.each(function(err, doc) {
-		      assert.equal(err, null);
-		      if (doc != null) {
-		         result.push(doc);
-		      } else {
-		          callback();
-		         //res.status(200).send(result);
-              res.render('users', { 
-                title: 'Express',
-                users: result
-              });
-		      }
-		   });
-		};	
-
-		MongoClient.connect(dbConfig.url, function(err, db) {
-			  assert.equal(null, err);
-			  findUsers(db, function() {
-			      db.close();
-			  });
-			});
-});
-
-router.get('/users/ban/:userID', function(req, res, next) {
-	/**
-    * Route to ban a user,
-    * @name /updateUser/:userID
-    * @param {String} :userId
-    */
-	var findUser = function(db, callback) {   
-	var o_id = new ObjectId(req.params.userID);
-	    db.collection('parking').update({"_id": o_id},
-	    	 {$set: { 
-                  "is_banned": true,
-                }
-             },
-	    	function(err, result) {
-					    assert.equal(err, null);
-					    console.log("Found user "+req.params.userID);
-					    res.status(200).send(result)
-					    callback();
-				});            
-		}
-		MongoClient.connect(dbConfig.url, function(err, db) {
-			  assert.equal(null, err);
-			  findUser(db, function() {
-			      db.close();
-			  });
-			});
-});
-
-router.get('/users/unban/:userID', function(req, res, next) {
-	/**
-    * Route to ban a user,
-    * @name /updateUser/:userID
-    * @param {String} :userId
-    */
-	var findUser = function(db, callback) {   
-	var o_id = new ObjectId(req.params.userID);
-	    db.collection('parking').update({"_id": o_id},
-	    	 {$set: { 
-                      "is_banned": false,
-                     }
-             },
-	    	function(err, result) {
-					    assert.equal(err, null);
-					    console.log("Found user "+req.params.userID);
-					    res.status(200).send(result)
-					    callback();
-				});            
-		}
-		MongoClient.connect(dbConfig.url, function(err, db) {
-			  assert.equal(null, err);
-			  findUser(db, function() {
-			      db.close();
-			  });
-			});
-});
-
-router.post('/login', function(req, res, next) {
-    /**
-      * Route to login,
-      * @name /getUser/:userID
-      * @param {String} :userId
-      */
-      const secret = 'Friendly';
-      const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
-      var findUser = function(db, callback) {
-      db.collection('parkingAdmins').findOne({"email": req.body.email},
-        function(err, result) {
-              assert.equal(err, null);
-              console.log("Found email "+result._id);
-              var payload = {
-              "user_id"   : result._id,
-              "email"     : result.email
-              };
-      var response = {
-        "userID": result._id
-      }
-      if(result.password == hash){
-          res.redirect("/web-routes/dashboard");
-      }
-      else 
-          res.status(200).send({"error": "Invalid email or password"})
-      callback();
-        });            
-    }
-    MongoClient.connect(dbConfig.url, function(err, db) {
-        assert.equal(null, err);
-        findUser(db, function() {
-            db.close();
-        });
-      });
-});
-
-router.post('/addUser', function(req, res, next) {
-    /**
-    * Route to get users by ID,
-    * @name /users/:userId
-    * @param {String} :userId
-    */
-  var userID ="";
-      const secret = 'Friendly';
-      const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
-  var insertDocument = function(db, callback) {
-  db.collection('parkingAdmins').insertOne( {
-      "first_name": req.body.first_name,
-      "last_name": req.body.last_name,
-      "email": req.body.email,
-      "password": hash,
-   }, function(err, result) {
-    assert.equal(err, null);
-    userID = result.insertedId;
-    console.log("Inserted a user in the admins collection. "+result.insertedId);
-    callback();
-  });
-};
-
-MongoClient.connect(dbConfig.url, function(err, db) {
-  assert.equal(null, err);
-  insertDocument(db, function() {
-      db.close();
-      var payload = {
-        "user_id"   : userID,
-        "email"     : req.body.email
-    };
-  var result = {
-    "userID": userID
+var isAuthenticated = function (req, res, next) {
+  if (req.isAuthenticated()){
+    console.log("autentificat");
+    return next();
   }
-      res.status(200).send(result)
+  res.redirect('/web-routes/login');
+}
+
+module.exports = function(passport){
+
+  adminRouter.get('/login', function(req, res, next) {
+    res.render('login', { 
+      title: 'Friendly | Login' 
+    });
   });
-});
+
+  adminRouter.post('/login', passport.authenticate('login', { 
+    successRedirect: '/web-routes/dashboard', 
+    failureRedirect: '/web-routes/login', 
+    failureFlash : true
+  }));
+
+  adminRouter.get('/logout', isAuthenticated, function(req, res) {
+    req.logout();
+    res.redirect('/web-routes/login');
+  });
+
+
+  adminRouter.get('/dashboard', isAuthenticated, function(req, res, next) {
+    res.render('newpage', { 
+      title: 'Express'
+    });
+  });
+
+  adminRouter.get('/users-cars', isAuthenticated, function(req, res, next) {
+    res.render('users-cars', { 
+      title: 'Express'
+    });
+  });
+
+  adminRouter.get('/heatmaps_ajax', isAuthenticated, function(req, res, next) {
+  /**
+    * Base route,
+    * @name /
+    */
+//     describe('Array', function() {
+//     describe('#indexOf()', function() {
+//     it('should return -1 when the value is not present', function() {
+//       assert.equal(-1, [1,2,3].indexOf(4));
+//     });
+//   });
+// });
+
+  res.render('heatmap_ajax', { title: 'Express' });
 });
 
-module.exports = router;
+  adminRouter.post('/MapAjaxCallback', function(req, res, next) {
+    /**
+      * Base route,
+      * @name /
+      */
+  // });
+  // var result=[
+  //     { lat: 37.754665, lng: -122.403242 },
+  //     { lat: 37.753837, lng: -122.403172 }
+  //   ];
+    console.log("body request", req.body);
+    // req.body.startDateTime
+    // req.body.endDateTime
+    // req.body.type
+    // req.body.value
+    req.body.startDateTime = new Date(req.body.startDateTime);
+    req.body.endDateTime = new Date(req.body.endDateTime);
+
+    var findNotifications = function(db, callback) {   
+      var o_id = new ObjectId(req.params.userID);
+        var result = [];
+          var cursor =db.collection('notifications').find().sort({ _id: -1}).skip(parseInt(req.params.offset)).limit(parseInt(req.params.limit));
+          cursor.each(function(err, doc) {
+            assert.equal(err, null);
+            var create_date;
+            if (doc != null) {
+                console.log(doc.location.coordinates[0]);
+                console.log(doc.create_date);
+                if(doc.location.coordinates[0] && doc.location.coordinates[1] 
+                  && req.body.startDateTime.getTime()>=doc.create_date.getTime() 
+                  && doc.create_date.getTime()<=req.body.endDateTime.getTime()) {
+
+                  result.push({
+                    "lat": doc.location.coordinates[0],
+                    "lng": doc.location.coordinates[1]
+                  });
+              }
+              console.log("req.body.startDateTime: "+req.body.startDateTime.getTime());
+              console.log("req.body.endDateTime: "+req.body.endDateTime.getTime())
+            } else {
+               callback(); res.status(200).send(result)
+            }
+         });
+      };  
+
+      MongoClient.connect(dbConfig.url, function(err, db) {
+          assert.equal(null, err);
+          findNotifications(db, function() {
+              db.close();
+          });
+        });
+
+    //res.status(200).send(result);
+  });
+
+
+  adminRouter.get('/getNotifications', isAuthenticated, function(req, res, next) {
+  		/**
+      	* Route to get all notification points,
+      	* @name /getNotifications
+      	* @param {String} :userId
+      	*/
+
+      var findNotifications = function(db, callback) {   
+  	 	var o_id = new ObjectId(req.params.userID);
+  	 		var result = [];
+  		    var cursor =db.collection('notifications').find();
+  		    cursor.each(function(err, doc) {
+  		      assert.equal(err, null);
+  		      if (doc != null) {
+  		         console.log(doc.location.coordinates[0]);
+  		         console.log(doc.create_date);
+  		         result.push({"latitude": doc.location.coordinates[0],
+  		         		"longitude": doc.location.coordinates[1],
+  		         		"create_date": doc.create_date});
+  		      } else {
+  		         callback(); res.status(200).send(result)
+  		      }
+  		  });
+  		};	
+
+  		MongoClient.connect(dbConfig.url, function(err, db) {
+  			  assert.equal(null, err);
+  			  findNotifications(db, function() {
+  			      db.close();
+  			  });
+  			});
+  });
+
+  adminRouter.get('/getNotificationsExtended/:offset&:limit', function(req, res, next) {
+      /**
+        * Route to get notification with offset and limit,
+        * @name /getNotifications
+        * @param {String} :userId
+        */
+
+      var findNotifications = function(db, callback) {   
+      var o_id = new ObjectId(req.params.userID);
+        var result = [];
+          var cursor =db.collection('notifications').find().sort({ _id: -1}).skip(parseInt(req.params.offset)).limit(parseInt(req.params.limit));
+          cursor.each(function(err, doc) {
+            assert.equal(err, null);
+            if (doc != null) {
+               console.log(doc.location.coordinates[0]);
+               console.log(doc.create_date);
+               result.push({"latitude": doc.location.coordinates[0],
+                  "longitude": doc.location.coordinates[1],
+                  "create_date": doc.create_date});
+            } else {
+               callback(); res.status(200).send(result)
+            }
+         });
+      };  
+
+      MongoClient.connect(dbConfig.url, function(err, db) {
+          assert.equal(null, err);
+          findNotifications(db, function() {
+              db.close();
+          });
+        });
+  });
+
+  adminRouter.get('/users', function(req, res, next) {
+  		/**
+      	* Route to get all users,
+      	* @name /getNotifications
+      	* @param {String} :userId
+      	*/
+
+      	var findUsers = function(db, callback) {   
+  	 	var o_id = new ObjectId(req.params.userID);
+  	 		var result = [];
+  		    var cursor =db.collection('parking').find();
+  		    cursor.each(function(err, doc) {
+  		      assert.equal(err, null);
+  		      if (doc != null) {
+  		         result.push(doc);
+  		      } else {
+  		          callback();
+  		         //res.status(200).send(result);
+                res.render('users', { 
+                  title: 'Express',
+                  users: result
+                });
+  		      }
+  		   });
+  		};	
+
+  		MongoClient.connect(dbConfig.url, function(err, db) {
+  			  assert.equal(null, err);
+  			  findUsers(db, function() {
+  			      db.close();
+  			  });
+  			});
+  });
+
+  adminRouter.get('/users/ban/:userID', function(req, res, next) {
+  	/**
+      * Route to ban a user,
+      * @name /updateUser/:userID
+      * @param {String} :userId
+      */
+  	var findUser = function(db, callback) {   
+  	var o_id = new ObjectId(req.params.userID);
+  	    db.collection('parking').update({"_id": o_id},
+  	    	 {$set: { 
+                    "is_banned": true,
+                  }
+               },
+  	    	function(err, result) {
+  					    assert.equal(err, null);
+  					    console.log("Found user "+req.params.userID);
+  					    res.status(200).send(result)
+  					    callback();
+  				});            
+  		}
+  		MongoClient.connect(dbConfig.url, function(err, db) {
+  			  assert.equal(null, err);
+  			  findUser(db, function() {
+  			      db.close();
+  			  });
+  			});
+  });
+
+  adminRouter.get('/users/unban/:userID', function(req, res, next) {
+  	/**
+      * Route to ban a user,
+      * @name /updateUser/:userID
+      * @param {String} :userId
+      */
+  	var findUser = function(db, callback) {   
+  	var o_id = new ObjectId(req.params.userID);
+  	    db.collection('parking').update({"_id": o_id},
+  	    	 {$set: { 
+                        "is_banned": false,
+                       }
+               },
+  	    	function(err, result) {
+  					    assert.equal(err, null);
+  					    console.log("Found user "+req.params.userID);
+  					    res.status(200).send(result)
+  					    callback();
+  				});            
+  		}
+  		MongoClient.connect(dbConfig.url, function(err, db) {
+  			  assert.equal(null, err);
+  			  findUser(db, function() {
+  			      db.close();
+  			  });
+  			});
+  });
+
+  // adminRouter.post('/login', function(req, res, next) {
+  //     /**
+  //       * Route to login,
+  //       * @name /getUser/:userID
+  //       * @param {String} :userId
+  //       */
+  //       const secret = 'Friendly';
+  //       const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
+  //       var findUser = function(db, callback) {
+  //       db.collection('parkingAdmins').findOne({"email": req.body.email},
+  //         function(err, result) {
+  //               assert.equal(err, null);
+  //               console.log("Found email "+result._id);
+  //               var payload = {
+  //               "user_id"   : result._id,
+  //               "email"     : result.email
+  //               };
+  //       var response = {
+  //         "userID": result._id
+  //       }
+  //       if(result.password == hash){
+  //           res.redirect("/web-routes/dashboard");
+  //       }
+  //       else 
+  //           res.status(200).send({"error": "Invalid email or password"})
+  //       callback();
+  //         });            
+  //     }
+  //     MongoClient.connect(dbConfig.url, function(err, db) {
+  //         assert.equal(null, err);
+  //         findUser(db, function() {
+  //             db.close();
+  //         });
+  //       });
+  // });
+
+  adminRouter.post('/addUser', function(req, res, next) {
+      /**
+      * Route to get users by ID,
+      * @name /users/:userId
+      * @param {String} :userId
+      */
+    var userID ="";
+        const secret = 'Friendly';
+        const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
+    var insertDocument = function(db, callback) {
+    db.collection('parkingAdmins').insertOne( {
+        "first_name": req.body.first_name,
+        "last_name": req.body.last_name,
+        "email": req.body.email,
+        "password": hash,
+     }, function(err, result) {
+      assert.equal(err, null);
+      userID = result.insertedId;
+      console.log("Inserted a user in the admins collection. "+result.insertedId);
+      callback();
+    });
+  };
+
+  MongoClient.connect(dbConfig.url, function(err, db) {
+    assert.equal(null, err);
+    insertDocument(db, function() {
+        db.close();
+        var payload = {
+          "user_id"   : userID,
+          "email"     : req.body.email
+      };
+    var result = {
+      "userID": userID
+    }
+        res.status(200).send(result)
+    });
+  });
+  });
+
+  return adminRouter;
+}
