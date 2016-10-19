@@ -96,5 +96,7 @@ dependencies {
 
     ////mockito
     testCompile "org.mockito:mockito-core:1.9.5"
+    //upload
+    compile 'net.gotev:uploadservice:2.1'
 }
 apply plugin: 'com.google.gms.google-services'
