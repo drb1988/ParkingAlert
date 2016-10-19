@@ -14,7 +14,7 @@ block content
             .icon
               i.ion.ion-ios-location
             a.small-box-footer(href='#')
-              | Redirectionare  
+              | Vezi Harta  
               i.fa.fa-arrow-circle-right
           #MapModal.modal.fade(role='dialog' )
             .modal-dialog(style='max-width: 800px; width: 90%;')
@@ -40,7 +40,7 @@ block content
             .icon
               i.ion.ion-stats-bars
             a.small-box-footer(href='#')
-              | Redirectionare 
+              | Vezi statistica 
               i.fa.fa-arrow-circle-right
           #ChartModal.modal.fade(role='dialog' )
             .modal-dialog(style='max-width: 800px; width: 90%;')
@@ -69,7 +69,7 @@ block content
             .icon
               i.ion.ion-person-add
             a.small-box-footer(href='#')
-              | Redirectionare  
+              | Editeaza administratori 
               i.fa.fa-arrow-circle-right
           #myModal.modal.fade(role='dialog' )
             .modal-dialog(style='max-width: 800px; width: 90%;')
@@ -93,8 +93,8 @@ block content
               p Utilizatorii aplicatiei Andoid si iOS.
             .icon
               i.ion.ion-ios-people
-            a.small-box-footer(href='users')
-              | Redirectionare 
+            a.small-box-footer(href='#')
+              | Vezi utilizatori 
               i.fa.fa-arrow-circle-right
           #UsersModal.modal.fade(role='dialog' )
             .modal-dialog(style='max-width: 800px; width: 90%;')
@@ -118,7 +118,7 @@ block content
           // Custom tabs (Charts with tabs)
           .nav-tabs-custom
             // Tabs within a box
-           .box.box-solid.bg-green-gradient.hidden
+           .box.box-solid.bg-green-gradient
             .box-header
               i.fa.fa-calendar
               h3.box-title Calendar
@@ -145,6 +145,25 @@ block content
         // /.Left col
         // right col (We are only adding the ID to make the widgets sortable)
         section.col-lg-5.connectedSortable
+          .nav-tabs-custom
+            // Tabs within a box
+           .box.box-solid.bg-yellow-gradient
+            .box-header
+              i.fa.fa-calendar
+              h3.box-title Ultimele notificari
+            // /.box-header
+            .box-body.no-padding
+              // The calendar
+              .row
+                .col-md-12
+                  // button sss
+            // /.box-body
+          // /.nav-tabs-custom
+          .box.box-primary
+            // /.box-header
+            .box-body
+            // /.box-body
+            .box-footer.clearfix.no-border
           // /.box
           // /.box
           // Calendar

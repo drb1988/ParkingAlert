@@ -49,6 +49,7 @@ router.post('/user', function(req, res, next) {
       "security": [],
       "password": hash,
       "is_banned": false,
+      "phone_number": req.body.phone_number,
       // "driver_license": req.body.driver_license,
       // "photo": req.body.photo,
       "platform": req.body.platform,

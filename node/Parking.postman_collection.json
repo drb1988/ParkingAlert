@@ -135,7 +135,7 @@
 		{
 			"name": "localhost:3000/users/updateUser/57e11909853b0122ac974e23",
 			"request": {
-				"url": "localhost:3000/users/updateUser/57e11909853b0122ac974e23",
+				"url": "localhost:3000/users/updateUser/57ff7872e0ec5a14b844ad2a",
 				"method": "POST",
 				"header": [
 					{
@@ -763,6 +763,52 @@
 					"raw": "{\n    \"qr_code\": \"loremipsumdolor\"\n}"
 				},
 				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/getNotificationsExtended/5&5",
+			"request": {
+				"url": "localhost:3000/web-routes/getNotificationsExtended/5&5",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/setPicture/57ff7872e0ec5a14b844ad2a",
+			"request": {
+				"url": "localhost:3000/users/setPicture/57ff7872e0ec5a14b844ad2a",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					},
+					{
+						"key": "//Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"enabled": true,
+							"value": "3pe3.png"
+						}
+					]
+				},
+				"description": "post phone number, get response with validation code"
 			},
 			"response": []
 		}

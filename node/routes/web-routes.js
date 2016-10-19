@@ -18,6 +18,12 @@ router.get('/dashboard', function(req, res, next) {
   });
 });
 
+router.get('/users-cars', function(req, res, next) {
+  res.render('users-cars', { 
+    title: 'Express'
+  });
+});
+
 router.get('/getNotifications', function(req, res, next) {
 		/**
     	* Route to get all notification points,
@@ -49,6 +55,39 @@ router.get('/getNotifications', function(req, res, next) {
 			      db.close();
 			  });
 			});
+});
+
+router.get('/getNotificationsExtended/:offset&:limit', function(req, res, next) {
+    /**
+      * Route to get notification with offset and limit,
+      * @name /getNotifications
+      * @param {String} :userId
+      */
+
+    var findNotifications = function(db, callback) {   
+    var o_id = new ObjectId(req.params.userID);
+      var result = [];
+        var cursor =db.collection('notifications').find().sort({ _id: -1}).skip(parseInt(req.params.offset)).limit(parseInt(req.params.limit));
+        cursor.each(function(err, doc) {
+          assert.equal(err, null);
+          if (doc != null) {
+             console.log(doc.location.coordinates[0]);
+             console.log(doc.create_date);
+             result.push({"latitude": doc.location.coordinates[0],
+                "longitude": doc.location.coordinates[1],
+                "create_date": doc.create_date});
+          } else {
+             callback(); res.status(200).send(result)
+          }
+       });
+    };  
+
+    MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findNotifications(db, function() {
+            db.close();
+        });
+      });
 });
 
 router.get('/users', function(req, res, next) {
