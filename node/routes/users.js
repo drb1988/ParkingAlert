@@ -8,6 +8,18 @@ var ObjectId = require('mongodb').ObjectId;
 var jwt = require('json-web-token');
 var Chance = require('chance');
 var chance = new Chance();
+var multer = require('multer');
+
+var storage =   multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './uploads');
+  },
+  filename: function (req, file, callback) {
+  	var i = file.originalname.lastIndexOf('.');
+    var file_extension= (i < 0) ? '' : file.originalname.substr(i);
+    callback(null, file.fieldname + '-' + Date.now()+ file_extension);
+  }
+});
 
 var generateCode = function (user)
  {	
@@ -247,6 +259,46 @@ router.post('/updateUser/:userID', function(req, res, next) {
 			});
 });
 
+var upload = multer({ storage : storage}).single('file');
+
+router.post('/setPicture/:userID', function(req, res) {
+	/**
+    * Route to update user information,
+    * @name /updateUser/:userID
+    * @param {String} :userId
+    */
+
+    var findUser = function(db, profilePic, callback) {   
+	var o_id = new ObjectId(req.params.userID);
+	    db.collection('parking').update({"_id": o_id},
+	    	 {$set: { 
+                    "profile_picture": profilePic	
+                    }
+             },
+	    	function(err, result) {
+					    assert.equal(err, null);
+					    console.log("Found user "+req.params.userID);
+					    callback();
+				});            
+		}
+
+	upload(req,res,function(err) {
+		console.log(req.file)
+        if(err) {
+            return res.end("Error uploading file.");
+        }
+        else {
+        	MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findUser(db, req.file.path, function() {
+			      db.close();
+			  });
+			});
+        res.end("File is uploaded");
+        }
+    });
+});
+
 router.post('/editCar/:userID&:plates', function(req, res, next) {
     /**
     * Route to edit car information,
@@ -330,6 +382,8 @@ router.get('/enableNotifications/:userID&:plates', function(req, res, next) {
 		  });
 		});
 })
+
+
 
 router.get('/allowOthers/:userID&:plates&:action', function(req, res, next) {
     /**
