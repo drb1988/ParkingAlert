@@ -18,6 +18,12 @@ router.get('/dashboard', function(req, res, next) {
   });
 });
 
+router.get('/users-cars', function(req, res, next) {
+  res.render('users-cars', { 
+    title: 'Express'
+  });
+});
+
 router.get('/getNotifications', function(req, res, next) {
 		/**
     	* Route to get all notification points,

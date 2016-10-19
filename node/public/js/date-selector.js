@@ -4,6 +4,7 @@ $( ".map-cosen" ).click(function() {
 	console.log("merge");
 	$(this).addClass(' active');
 	$( ".chart-cosen" ).removeClass(' active');
+  $( ".users-cosen" ).removeClass(' active');
 	// $( ".chart-container" ).addClass(' content-hidden hidden');
 	// $( "#map-content" ).removeClass(' content-hidden hidden');
   $( ".chart-container" ).fadeOut(1000);
@@ -14,6 +15,7 @@ $( ".chart-cosen" ).click(function() {
 	console.log("merge .chart-cosen");
 	$(this).addClass(' active');
 	$( ".map-cosen" ).removeClass(' active');
+  $( ".users-cosen" ).removeClass(' active');
 
   $( "#map-content" ).fadeOut();
   $( ".chart-container" ).removeClass(' content-hidden');
@@ -22,6 +24,16 @@ $( ".chart-cosen" ).click(function() {
 	// $( "#map-content" ).addClass(' content-hidden hidden');
 });
 
+$( ".users-cosen" ).click(function() {
+  console.log("merge");
+  $(this).addClass(' active');
+  $( ".chart-cosen" ).removeClass(' active');
+  $( ".map-cosen" ).removeClass(' active');
+  // $( ".chart-container" ).addClass(' content-hidden hidden');
+  // $( "#map-content" ).removeClass(' content-hidden hidden');
+  $( ".chart-container" ).fadeOut(1000);
+  $( "#map-content" ).fadeOut(1000);
+});
 
 
 $( "input[name='daterange']" ).change(function() {
