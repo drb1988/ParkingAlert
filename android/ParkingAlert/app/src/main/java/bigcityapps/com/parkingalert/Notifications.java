@@ -517,6 +517,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     if(modelNotificationArrayList.get(position).getmType()==3) {
+                        Log.w("meniuu","view notification");
                         receiverRead(modelNotificationArrayList.get(position).getId());
                         Intent view_notification = new Intent(Notifications.this, ViewNotification.class);
                         view_notification.putExtra("mDetails", modelNotificationArrayList.get(position).getmDetails());
@@ -528,6 +529,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                     } else
                     if(modelNotificationArrayList.get(position).getmType()==2) {
 //                        senderRead(modelNotificationArrayList.get(position).getId());
+                        Log.w("meniuu","timer");
                         Intent timer = new Intent(Notifications.this, Timer.class);
                         timer.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
                         timer.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
@@ -538,6 +540,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         startActivity(timer);
                     }else
                     if(modelNotificationArrayList.get(position).getmType()==1){
+                        Log.w("meniuu","map");
                         Intent harta = new Intent(Notifications.this, Map.class);
                         harta.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
                         harta.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
@@ -547,6 +550,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         startActivity(harta);
                     }else
                     if(modelNotificationArrayList.get(position).getmType()==4) {
+                        Log.w("meniuu","timersend");
                         Intent timer = new Intent(Notifications.this, TimerSender.class);
                         timer.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
                         timer.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());

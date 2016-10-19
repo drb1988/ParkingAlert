@@ -64,25 +64,33 @@ public class ViewNotification extends Activity implements View.OnClickListener{
         inapoi.setOnClickListener(this);
         car_nr_view_notification=(TextView)findViewById(R.id.car_nr_view_notification);
     }
-
+public void setClick(boolean set){
+    zece.setClickable(set);
+    cinci.setClickable(set);
+    trei.setClickable(set);
+    nupot.setClickable(set);
+}
     public void onClick(View view) {
     switch (view.getId()){
         case R.id.inapoi_notificare:
             finish();
             break;
         case R.id.zece:
+            setClick(false);
             postAnswer("3");
             break;
         case R.id.cinci:
+            setClick(false);
             postAnswer("5");
             break;
 
         case R.id.trei:
+            setClick(false);
             postAnswer("7");
             break;
 
         case R.id.nupot:
-            postAnswer("nu pot");
+            postAnswer("100");
             break;
         }
     }
