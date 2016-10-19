@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -32,7 +33,8 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import Util.Constants;
 import Util.SecurePreferences;
@@ -151,6 +153,7 @@ public class FirstScreen extends Activity implements View.OnClickListener {
                                 JSONObject token = new JSONObject(obj.getString("token"));
                                 prefs.edit().putString("user_id", obj.getString("userID")).commit();
                                 prefs.edit().putString("token", token.getString("value")).commit();
+                                postToken( obj.getString("userID"),token.getString("value"));
                                 Intent continuare = new Intent(FirstScreen.this, MainActivity.class);
                                 startActivity(continuare);
                                 finish();
@@ -192,4 +195,34 @@ public class FirstScreen extends Activity implements View.OnClickListener {
             alert1.show();
         }
     };
+
+    public void postToken(String user_id, final String token) {
+        prefs = new SecurePreferences(ctx);
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        final String ip = android.text.format.Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        String url = Constants.URL + "users/addSecurity/"+user_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+//                        postUser();
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                Log.w("meniuu","device_token:"+prefs.getString("phone_token", ""));
+                params.put("device_token", prefs.getString("phone_token", ""));
+                params.put("password", "nuamideecepltrebeaici");
+                params.put("reg_ip", ip);
+                return params;
+            }
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ token);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
 }

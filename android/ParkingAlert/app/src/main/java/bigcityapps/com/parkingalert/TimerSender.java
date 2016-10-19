@@ -42,6 +42,7 @@ public class TimerSender extends Activity implements View.OnClickListener {
     private int mProgressStatus=0;
     TextView text;
     Context ctx;
+    String mLat, mLng;
     RequestQueue queue;
     SharedPreferences prefs;
     RelativeLayout extended;
@@ -63,6 +64,8 @@ public class TimerSender extends Activity implements View.OnClickListener {
             try {
                 timer = Integer.parseInt((String) b.get("time"));
                 ora = (String) b.get("mHour");
+                mLat =b.getString("lat");
+                mLng =b.getString("lng");
 
                 nr_carString = (String) b.get("mPlates");
                 notification_id = (String) b.get("notification_id");
@@ -96,6 +99,8 @@ public class TimerSender extends Activity implements View.OnClickListener {
                         harta.putExtra("mHour", ora);
                         harta.putExtra("mPlates", nr_carString);
                         harta.putExtra("time", timer);
+                        harta.putExtra("lat", mLat);
+                        harta.putExtra("lng", mLng);
                         startActivity(harta);
                         finish();
                     }

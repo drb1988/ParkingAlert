@@ -1,39 +1,28 @@
 package bigcityapps.com.parkingalert;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -59,7 +48,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Util.Constants;
-import Util.GetFilePathFromDevice;
 import Util.SecurePreferences;
 
 /**
@@ -73,56 +61,50 @@ public class AddCar extends Activity implements View.OnClickListener {
     RelativeLayout rlBack, rlOk;
     EditText edname, edNr, edModel, edYear;
     EditText edMaker;
-    ImageView ivImageCar;
-    Uri imageUri;
-    String imagePath;
-    Activity act;
-    String realPath;
-    final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
-    final int ACTIVITY_SELECT_IMAGE = 1234;
+//    Uri imageUri;
+//    String imagePath;
+//    Activity act;
+//    String realPath;
+//    final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
+//    final int ACTIVITY_SELECT_IMAGE = 1234;
     RequestQueue queue;
     Switch receive_notification, all_drive;
     String qrcode;
     String nick_name;
-
+    TextInputLayout input_car;
     /**
      * @param savedInstanceState
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(bigcityapps.com.parkingalert.R.layout.adauga_masina);
+        setContentView(R.layout.adauga_masina);
         ctx = this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
-        act = this;
-
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null)
             qrcode = (String) b.get("qrcode");
         initComponents();
         getUser(prefs.getString("user_id",""));
-//        String[] countries={"audi","auzi","ana"};
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,countries);
-//        edMaker.setAdapter(adapter);
     }
 
     /**
      * initializing components
      */
     public void initComponents() {
-        rlBack = (RelativeLayout) findViewById(bigcityapps.com.parkingalert.R.id.inapoi_adauga_masina);
-        rlOk = (RelativeLayout) findViewById(bigcityapps.com.parkingalert.R.id.gata_adauga_masina);
+        input_car=(TextInputLayout)findViewById(R.id.input_car);
+        rlBack = (RelativeLayout) findViewById(R.id.inapoi_adauga_masina);
+        rlOk = (RelativeLayout) findViewById(R.id.gata_adauga_masina);
         rlOk.setOnClickListener(this);
         rlBack.setOnClickListener(this);
-        edname = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_numele_masina);
+        edname = (EditText) findViewById(R.id.et_numele_masina);
         edname.requestFocus();
-        edNr = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_nr);
-        edMaker = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_producator);
-        edModel = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_model);
-        edYear = (EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
-        ivImageCar = (ImageView) findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
-        ivImageCar.setOnClickListener(this);
+        edNr = (EditText) findViewById(R.id.et_nr);
+        edNr.addTextChangedListener(new MyTextWatcher(edNr));
+        edMaker = (EditText) findViewById(R.id.et_producator);
+        edModel = (EditText) findViewById(R.id.et_model);
+        edYear = (EditText) findViewById(R.id.et_an_productie);
         receive_notification = (Switch) findViewById(R.id.receive_notification);
         all_drive = (Switch) findViewById(R.id.all_drive);
         receive_notification.setChecked(true);
@@ -156,97 +138,97 @@ public class AddCar extends Activity implements View.OnClickListener {
             case R.id.gata_adauga_masina:
                 addCar(prefs.getString("user_id", ""), qrcode);
                 break;
-            case R.id.poza_masina:
-                final Dialog dialog = new Dialog(ctx);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                dialog.setContentView(bigcityapps.com.parkingalert.R.layout.dialog_user_profile);
-                TextView take_photo = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.take_photo);
-                TextView biblioteca = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.biblioteca);
-                take_photo.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View view) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
-                                    builder.setPositiveButton(android.R.string.ok, null);
-                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
-                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                        @TargetApi(Build.VERSION_CODES.M)
-                                        public void onDismiss(DialogInterface dialog) {
-                                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                        }
-                                    });
-                                    builder.show();
-                                } else {
-                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                }
-                            } else {
-                                String fileName = "Camera_Example.jpg";
-                                ContentValues values = new ContentValues();
-                                values.put(MediaStore.Images.Media.TITLE, fileName);
-                                values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
-                                imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                                dialog.dismiss();
-                            }
-                        } else {
-                            String fileName = "Camera_Example.jpg";
-                            ContentValues values = new ContentValues();
-                            values.put(MediaStore.Images.Media.TITLE, fileName);
-                            values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
-                            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                biblioteca.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View view) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
-                                    builder.setPositiveButton(android.R.string.ok, null);
-                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
-                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                        @TargetApi(Build.VERSION_CODES.M)
-                                        public void onDismiss(DialogInterface dialog) {
-                                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                        }
-                                    });
-                                    builder.show();
-                                } else {
-                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                }
-                            } else {
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType("image/*");
-                                startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
-                                dialog.dismiss();
-                            }
-                        } else {
-                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                            intent.setType("image/*");
-                            startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                TextView dialogButton = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.anuler);
-                dialogButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-                break;
+//            case R.id.poza_masina:
+//                final Dialog dialog = new Dialog(ctx);
+//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//                dialog.setContentView(bigcityapps.com.parkingalert.R.layout.dialog_user_profile);
+//                TextView take_photo = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.take_photo);
+//                TextView biblioteca = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.biblioteca);
+//                take_photo.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View view) {
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+//                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
+//                                    builder.setPositiveButton(android.R.string.ok, null);
+//                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
+//                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                                        @TargetApi(Build.VERSION_CODES.M)
+//                                        public void onDismiss(DialogInterface dialog) {
+//                                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                        }
+//                                    });
+//                                    builder.show();
+//                                } else {
+//                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                }
+//                            } else {
+//                                String fileName = "Camera_Example.jpg";
+//                                ContentValues values = new ContentValues();
+//                                values.put(MediaStore.Images.Media.TITLE, fileName);
+//                                values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+//                                imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//                                dialog.dismiss();
+//                            }
+//                        } else {
+//                            String fileName = "Camera_Example.jpg";
+//                            ContentValues values = new ContentValues();
+//                            values.put(MediaStore.Images.Media.TITLE, fileName);
+//                            values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+//                            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//                            dialog.dismiss();
+//                        }
+//                    }
+//                });
+//                biblioteca.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View view) {
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+//                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
+//                                    builder.setPositiveButton(android.R.string.ok, null);
+//                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
+//                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                                        @TargetApi(Build.VERSION_CODES.M)
+//                                        public void onDismiss(DialogInterface dialog) {
+//                                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                        }
+//                                    });
+//                                    builder.show();
+//                                } else {
+//                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                }
+//                            } else {
+//                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                                intent.setType("image/*");
+//                                startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
+//                                dialog.dismiss();
+//                            }
+//                        } else {
+//                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                            intent.setType("image/*");
+//                            startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
+//                            dialog.dismiss();
+//                        }
+//                    }
+//                });
+//                TextView dialogButton = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.anuler);
+//                dialogButton.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View v) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                dialog.show();
+//                break;
         }
     }
 
@@ -296,7 +278,7 @@ public class AddCar extends Activity implements View.OnClickListener {
 //    }
     public void addCar(final String id, final String qrcode) {
         String url = Constants.URL + "users/addCar/" + id;
-        if (edNr.getText().length() == 0)
+        if (edNr.getText().length()<7)
             Toast.makeText(ctx, "Trebuie sa completezi numarul de inmatriculare", Toast.LENGTH_LONG).show();
         else {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -332,7 +314,43 @@ public class AddCar extends Activity implements View.OnClickListener {
             queue.add(stringRequest);
         }
     }
+    private boolean validateNr() {
+        String email = edNr.getText().toString().trim();
+        if (email.isEmpty() || email.length()!=7) {
+            input_car.setError(getString(R.string.err_msg_car_nr));
+            requestFocus(edNr);
+            return false;
+        } else {
+            input_car.setErrorEnabled(false);
+        }
+        return true;
+    }
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+    private class MyTextWatcher implements TextWatcher {
+        private View view;
 
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()) {
+                case R.id.et_nr:
+                    validateNr();
+                    break;
+            }
+        }
+    }
     /**
      * error listener at volley library
      */
@@ -350,60 +368,60 @@ public class AddCar extends Activity implements View.OnClickListener {
      * @param resultCode
      * @param data
      */
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                try {
-                    String[] projection = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-                    int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    cursor.moveToLast();
-                    realPath = cursor.getString(column_index_data);
-                    Bitmap img = rotateBitmap(realPath);
-//                    saveToInternalStorage(img);
-//                    Glide.with(ctx).load(img).crossFade().override(100,100).into(ivImageCar);
-//                    Glide.with(ctx).load(img).asBitmap().centerCrop().into(new BitmapImageViewTarget(ivImageCar) {
-//                        protected void setResource(Bitmap resource) {
-//                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
-//                            circularBitmapDrawable.setCircular(true);
-//                            ivImageCar.setImageDrawable(circularBitmapDrawable);
-//                        }
-//                    });
-                    ivImageCar.setImageBitmap(img);
-//                    persistImage(img, "parkingalert");
-                    ///dupa ce este ceva facut
-//                    uplloadImageFile(persistImage(img, "eparti"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, " Picture was not taken ", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, " Picture was not taken ", Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (requestCode == ACTIVITY_SELECT_IMAGE) {
-            if (resultCode == RESULT_OK) {
-                if (data.getData() != null) {
-                    try {
-                        String[] projection = {MediaStore.Images.Media.DATA};
-                        Cursor cursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-                        int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                        cursor.moveToLast();
-                        imagePath = cursor.getString(column_index_data);
-                        realPath = GetFilePathFromDevice.getPath(this, data.getData());
-                        ivImageCar.setImageBitmap(BitmapFactory.decodeFile(imagePath));
-                        saveImageToExternalStorage((BitmapFactory.decodeFile(imagePath)));
-                        //dupa ce este ceva facut
-//                        uplloadImage();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        }
-    }
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+//            if (resultCode == RESULT_OK) {
+//                try {
+//                    String[] projection = {MediaStore.Images.Media.DATA};
+//                    Cursor cursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
+//                    int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//                    cursor.moveToLast();
+//                    realPath = cursor.getString(column_index_data);
+//                    Bitmap img = rotateBitmap(realPath);
+////                    saveToInternalStorage(img);
+////                    Glide.with(ctx).load(img).crossFade().override(100,100).into(ivImageCar);
+////                    Glide.with(ctx).load(img).asBitmap().centerCrop().into(new BitmapImageViewTarget(ivImageCar) {
+////                        protected void setResource(Bitmap resource) {
+////                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+////                            circularBitmapDrawable.setCircular(true);
+////                            ivImageCar.setImageDrawable(circularBitmapDrawable);
+////                        }
+////                    });
+//                    ivImageCar.setImageBitmap(img);
+////                    persistImage(img, "parkingalert");
+//                    ///dupa ce este ceva facut
+////                    uplloadImageFile(persistImage(img, "eparti"));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            } else if (resultCode == RESULT_CANCELED) {
+//                Toast.makeText(this, " Picture was not taken ", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(this, " Picture was not taken ", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        if (requestCode == ACTIVITY_SELECT_IMAGE) {
+//            if (resultCode == RESULT_OK) {
+//                if (data.getData() != null) {
+//                    try {
+//                        String[] projection = {MediaStore.Images.Media.DATA};
+//                        Cursor cursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
+//                        int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//                        cursor.moveToLast();
+//                        imagePath = cursor.getString(column_index_data);
+//                        realPath = GetFilePathFromDevice.getPath(this, data.getData());
+//                        ivImageCar.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+//                        saveImageToExternalStorage((BitmapFactory.decodeFile(imagePath)));
+//                        //dupa ce este ceva facut
+////                        uplloadImage();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//            }
+//        }
+//    }
 
     /**
      * rotate mImage if si necessary

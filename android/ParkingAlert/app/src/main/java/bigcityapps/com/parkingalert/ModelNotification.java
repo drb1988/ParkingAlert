@@ -13,6 +13,24 @@ public class ModelNotification {
     boolean extended;
     boolean receiverRead;
 
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
+
+    String lat, lng;
+
     public boolean isSenderRead() {
         return senderRead;
     }

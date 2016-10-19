@@ -28,14 +28,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -47,7 +45,6 @@ import java.util.HashMap;
 
 import Util.Constants;
 import Util.SecurePreferences;
-import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Sistem1 on 10/10/2016.
@@ -68,8 +65,6 @@ public class EmailValidation extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        Fabric.with(this, new Crashlytics());
-        AppEventsLogger.activateApp(this);
         setContentView(R.layout.email_validation);
         ctx = this;
         prefs = new SecurePreferences(ctx);
@@ -83,6 +78,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
             verificationId = (String) b.get("verificationId");
             email = (String) b.get("email");
             mPhoneNumber=b.getString("phone_number");
+            Log.w("meniuu","email in getbundle:"+email+" verificationID:"+verificationId);
         }
 
         initComponents();
@@ -231,6 +227,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
                 java.util.Map<String, String> params = new HashMap<String, String>();
+                Log.w("meniuu","email:"+email+" token:"+token);
                 params.put("email", email);
                 params.put("token", token);
                 return params;
@@ -266,6 +263,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                             JSONObject token = new JSONObject(obj.getString("token"));
                             prefs.edit().putString("user_id", obj.getString("userID")).commit();
                             prefs.edit().putString("token", token.getString("value")).commit();
+                            Log.w("meniuu","response de la signp");
                             postToken( obj.getString("userID"),token.getString("value"));
                             Intent mainactivity = new Intent(EmailValidation.this, MainActivity.class);
                             mainactivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -282,11 +280,9 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("first_name", nume);
                 params.put("last_name", prenume);
-                params.put("edNickname", nume + prenume);
                 params.put("email", email);
                 params.put("password", parola);
                 params.put("platform", "Android");
-                params.put("phone_number", mPhoneNumber);
                 return params;
             }
         };
@@ -375,6 +371,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
         queue.add(stringRequest);
     }
     public void postToken(String user_id, final String token) {
+        Log.w("meniuu","user_id:"+user_id+" token:"+token+" device_token:"+prefs.getString("phone_token", ""));
         prefs = new SecurePreferences(ctx);
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());

@@ -48,11 +48,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     TextView adress;
     private String provider;
     private LocationManager locationManager;
-    String mHour;
+    String mHour, mLat, mLng;
     String mText;
     String mPlates;
-    double mLongitude, mLatitude;
-    String TAG="meniuu";
+//    double mLongitude, mLatitude;
+    String TAG = "meniuu";
+
     protected void onStop() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -62,7 +63,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-//        private final View myContentsView;
+        //        private final View myContentsView;
         LayoutInflater inflater = null;
 //        public MyInfoWindowAdapter(LayoutInflater inflater) {
 //            this.inflater = inflater;
@@ -87,15 +88,16 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             LayoutInflater inflater = (LayoutInflater) cw.getSystemService(LAYOUT_INFLATER_SERVICE);
             View v = inflater.inflate(R.layout.infoview, null);
             if (marker != null) {
-                ImageView image=(ImageView)v.findViewById(R.id.image_info_view);
-                TextView tvTitle = ((TextView)v.findViewById(R.id.nr_masina_infoview));
-                tvTitle.setText("Notificat "+ mPlates);
-                TextView tvSnippet = ((TextView)v.findViewById(R.id.time_info_view));
+                ImageView image = (ImageView) v.findViewById(R.id.image_info_view);
+                TextView tvTitle = ((TextView) v.findViewById(R.id.nr_masina_infoview));
+                tvTitle.setText("Notificat " + mPlates);
+                TextView tvSnippet = ((TextView) v.findViewById(R.id.time_info_view));
                 tvSnippet.setText(marker.getSnippet());
             }
             return v;
         }
     }
+
     public static long getDateDiff(Date date1, Date date2) {
         long diffInMillies = date1.getTime() - date2.getTime();
         return diffInMillies;
@@ -105,43 +107,42 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.harta);
         initComponents();
-        Intent iin= getIntent();
+        Intent iin = getIntent();
         Bundle b = iin.getExtras();
-        if(b!=null) {
+        Log.w("meniuu", "map");
+        if (b != null) {
             try {
                 mHour = (String) b.get("mHour");
-//                txt_time.setText("Raspuns la "+timer);
-                Log.w("meniuu","mHour in harta:"+ mHour);
                 mPlates = (String) b.get("mPlates");
-
+                mLat = b.getString("lat");
+                mLng = b.getString("lng");
+                Log.w("meniuu","lat:"+mLat+" lng:"+mLng);
                 SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                 Date d = df.parse(mHour);
-                Date date2= new Date();
-                String actual_date=df.format(date2);
-                Log.w("meniuu","data_actuala:"+actual_date);
-                Date date_actual=df.parse(actual_date);
-                long diff=getDateDiff(date_actual,d);
-                diff=diff/1000;
-                Log.w("meniuu","diff in harta:"+diff);
+                Date date2 = new Date();
+                String actual_date = df.format(date2);
+                Log.w("meniuu", "data_actuala:" + actual_date);
+                Date date_actual = df.parse(actual_date);
+                long diff = getDateDiff(date_actual, d);
+                diff = diff / 1000;
+                Log.w("meniuu", "diff in harta:" + diff);
                 int minutes = 0;
-                if(diff<3600) {
+                if (diff < 3600) {
                     minutes = ((int) diff % 3600) / 60;
                     mText = "Acum " + minutes + " minute";
-                }else
-                if(diff<86400) {
-                    minutes=(int)diff/60/60;
-                    if(minutes==1)
-                    mText = "Acum " +minutes+" ora";
+                } else if (diff < 86400) {
+                    minutes = (int) diff / 60 / 60;
+                    if (minutes == 1)
+                        mText = "Acum " + minutes + " ora";
                     else
-                        mText = "Acum " +minutes+" ore";
-                }else
-                if(diff>86400){
-                    minutes=(int)60/60/24;
-                    mText = "Acum " +minutes+" zile";
+                        mText = "Acum " + minutes + " ore";
+                } else if (diff > 86400) {
+                    minutes = (int) 60 / 60 / 24;
+                    mText = "Acum " + minutes + " zile";
                 }
 
-            }catch (Exception e){
-                Log.w("meniuu","catch la lueare putextra in harta");
+            } catch (Exception e) {
+                Log.w("meniuu", "catch la lueare putextra in harta");
                 e.printStackTrace();
             }
         }
@@ -150,30 +151,38 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
+        adress.setText(getAddress(Double.parseDouble(mLat), Double.parseDouble(mLng)));
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, false);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
     }
+
     private final LocationListener locationListenerNetwork = new LocationListener() {
         public void onLocationChanged(Location location) {
-            mLongitude = location.getLongitude();
-            mLatitude = location.getLatitude();
-            adress.setText(getAddress(mLatitude, mLongitude));
-            final LatLng CIU = new LatLng(mLatitude, mLongitude);
-            LatLng sydney = new LatLng(mLatitude, mLongitude);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLatitude, mLongitude), 12.0f));
-            Marker marker=mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(mText +""));
-//            mMap.addMarker(new MarkerOptions().position(CIU).tvTitle("My Office").snippet(mText+""));
-                marker.showInfoWindow();
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//            mLongitude = location.getLongitude();
+//            mLatitude = location.getLatitude();
+//            adress.setText(getAddress(mLatitude, mLongitude));
+//            final LatLng CIU = new LatLng(mLatitude, mLongitude);
+//            LatLng sydney = new LatLng(mLatitude, mLongitude);
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLatitude, mLongitude), 12.0f));
+//            Marker marker = mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(mText + ""));
+////            mMap.addMarker(new MarkerOptions().position(CIU).tvTitle("My Office").snippet(mText+""));
+//            marker.showInfoWindow();
+//            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         }
-        public void onStatusChanged(String s, int i, Bundle bundle) {}
-        public void onProviderEnabled(String s) {}
-        public void onProviderDisabled(String s) {}
+
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+        }
+
+        public void onProviderEnabled(String s) {
+        }
+
+        public void onProviderDisabled(String s) {
+        }
     };
+
     private void showAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Enable Location")
@@ -192,14 +201,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 });
         dialog.show();
     }
+
     private boolean isLocationEnabled() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
+
     private boolean checkLocation() {
         if (!isLocationEnabled())
             showAlert();
         return isLocationEnabled();
     }
+
     @Override
     protected void onResume() {
 
@@ -208,7 +220,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,  1000, 10, locationListenerNetwork);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListenerNetwork);
         super.onResume();
     }
 
@@ -216,8 +228,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
      *
      */
     public void initComponents() {
-        adress=(TextView)findViewById(R.id.adress);
-        back_maps=(RelativeLayout)findViewById(R.id.back_maps);
+        adress = (TextView) findViewById(R.id.adress);
+        back_maps = (RelativeLayout) findViewById(R.id.back_maps);
         back_maps.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 finish();
@@ -228,22 +240,30 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setInfoWindowAdapter(new MyInfoWindowAdapter());
+        final LatLng CIU = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
+        LatLng sydney = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng)), 12.0f));
+        Marker marker = mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(mText + ""));
+//            mMap.addMarker(new MarkerOptions().position(CIU).tvTitle("My Office").snippet(mText+""));
+        marker.showInfoWindow();
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     /**
      * get adress from lat and lng
+     *
      * @param lat
      * @param lng
      * @return
      */
     public String getAddress(double lat, double lng) {
-        Log.w("meniuu","lat:"+lat+" lng:"+lng);
+        Log.w("meniuu", "lat:" + lat + " lng:" + lng);
         String adresa = "";
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-            for(int i=0;i<addresses.size();i++)
-            Log.w("meniuu","adress:"+addresses.get(i));
+            for (int i = 0; i < addresses.size(); i++)
+                Log.w("meniuu", "adress:" + addresses.get(i));
             Address obj = addresses.get(0);
             String add = obj.getAddressLine(0);
             adresa = add + ", \n" + obj.getLocality();

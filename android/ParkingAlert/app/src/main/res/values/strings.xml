@@ -7,12 +7,13 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="err_msg_email">Introdu o adresa de email corecta!</string>
+    <string name="err_msg_car_nr">Introdu un numar de inmatriculare corect!</string>
     <string name="err_msg_password">Parola trebuie sa contina cel putin 6 caractere</string>
 
     <string-array name="navigation_drawer_items_array">
-        <item>Connect</item>
+        <item>Notifica</item>
         <item>Fixtures</item>
-        <item>Table</item>
+        <item>Notifica</item>
         <item>Connect</item>
         <item>Fixtures</item>
         <item>Table</item>

@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <ScrollView
@@ -41,7 +43,7 @@
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:text="Vino in Friendly"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/alb"
                     android:textSize="18dp" />
 
                 <RelativeLayout
@@ -56,7 +58,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Intra in cont"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/alb"
                         android:textSize="@dimen/txt_size_mic" />
                 </RelativeLayout>
             </RelativeLayout>

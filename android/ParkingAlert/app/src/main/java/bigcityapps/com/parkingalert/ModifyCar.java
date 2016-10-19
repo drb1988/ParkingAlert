@@ -22,11 +22,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -69,6 +74,7 @@ public class ModifyCar extends Activity implements View.OnClickListener{
     final int ACTIVITY_SELECT_IMAGE = 1234;
     RequestQueue queue;
     String mPLatesOriginal;
+    TextInputLayout inputCar;
 
     /**
      *
@@ -82,6 +88,7 @@ public class ModifyCar extends Activity implements View.OnClickListener{
         queue = Volley.newRequestQueue(this);
         act=this;
         initComponents();
+        FluiEdittext();
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
@@ -101,22 +108,112 @@ public class ModifyCar extends Activity implements View.OnClickListener{
                 edname.setText(b.getString("edname"));
         }
     }
+    private boolean validateNr() {
+        String email = edNr.getText().toString().trim();
+        if (email.isEmpty() || email.length()!=7) {
+            inputCar.setError(getString(R.string.err_msg_car_nr));
+            requestFocus(edNr);
+            return false;
+        } else {
+            inputCar.setErrorEnabled(false);
+        }
+        return true;
+    }
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+    private class MyTextWatcher implements TextWatcher {
+        private View view;
 
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()) {
+                case R.id.et_nr:
+                    validateNr();
+                    break;
+            }
+        }
+    }
     /**
      * initializing components
      */
     public void initComponents(){
-        rlBack =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_adauga_masina);
-        rlOk =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.gata_adauga_masina);
+        inputCar=(TextInputLayout)findViewById(R.id.input_nr);
+        rlBack =(RelativeLayout)findViewById(R.id.inapoi_adauga_masina);
+        rlOk =(RelativeLayout)findViewById(R.id.gata_adauga_masina);
         rlOk.setOnClickListener(this);
         rlBack.setOnClickListener(this);
-        edname =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_numele_masina);
-        edNr =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_nr);
-        edMaker =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_producator);
-        edModel =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_model);
-        edYear =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
+        edname =(EditText) findViewById(R.id.et_numele_masina);
+        edNr =(EditText) findViewById(R.id.et_nr);
+        edNr.addTextChangedListener(new MyTextWatcher(edNr));
+        edMaker =(EditText) findViewById(R.id.et_producator);
+        edModel =(EditText) findViewById(R.id.et_model);
+        edYear =(EditText) findViewById(R.id.et_an_productie);
 //        ivImageCar =(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
 //        ivImageCar.setOnClickListener(this);
+    }
+
+    public void  FluiEdittext() {
+        edname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edname);
+            }
+        });
+        edNr.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edNr);
+            }
+        });
+        edMaker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edMaker);
+            }
+        });
+        edModel.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edModel);
+            }
+        });
+        edYear.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edYear);
+            }
+        });
+    }
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public void showKeyboard(EditText ed) {
+        InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboard.showSoftInput(ed, 0);
     }
 
     /**
@@ -233,7 +330,7 @@ public class ModifyCar extends Activity implements View.OnClickListener{
     public void UpdateCar(final String id){
         String url = Constants.URL + "users/editCar/" + id + "&" + mPLatesOriginal;
         Log.w("meniuu","url:"+url);
-        if( edNr.getText().length()==0 )
+        if( edNr.getText().length()<7 )
             Toast.makeText(ctx,"Trebuie sa completezi numarul de inmatriculare",Toast.LENGTH_LONG).show();
         else{
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,

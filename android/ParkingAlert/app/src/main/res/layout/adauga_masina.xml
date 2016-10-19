@@ -34,7 +34,7 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:text="Adauga masina"
-            android:textColor="@android:color/white"
+            android:textColor="@color/alb"
             android:textSize="18dp" />
 
         <RelativeLayout
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gata"
-                android:textColor="@android:color/white"
+                android:textColor="@color/alb"
                 android:textSize="17dp" />
         </RelativeLayout>
     </RelativeLayout>
@@ -81,43 +81,18 @@
                     android:layout_marginTop="10dp"
                     android:gravity="center">
 
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/view2"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_marginLeft="10dp"
-                        android:shape="ring"
-                        app:cardCornerRadius="40dp">
-
-                        <ImageView
-                            android:id="@+id/poza_masina"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_centerHorizontal="true"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/com_facebook_profile_picture_blank_square"></ImageView>
-                    </android.support.v7.widget.CardView>
-
-                    <!--<ImageView-->
-                    <!--android:id="@+id/poza_masina"-->
-                    <!--android:layout_width="80dp"-->
-                    <!--android:layout_height="80dp"-->
-                    <!--android:layout_marginLeft="10dp"-->
-                    <!--android:src="@drawable/default_image_profile_round" />-->
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_masina"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/view2">
+                        >
 
                         <EditText
+                            android:padding="20dp"
                             android:id="@+id/et_numele_masina"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginLeft="10dp"
                             android:background="@android:color/transparent"
-                            android:gravity="center"
-
                             android:hint="Numele masinii"
                             android:imeOptions="actionNext"
                             android:singleLine="true"
@@ -126,7 +101,7 @@
                 </RelativeLayout>
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/input_nr"
+                    android:id="@+id/input_car"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rel_poza">
@@ -142,6 +117,7 @@
                         android:imeOptions="actionNext"
                         android:inputType="textCapCharacters"
                         android:padding="20dp"
+                        android:maxLength="7"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/txt_size" />
@@ -219,6 +195,7 @@
                         android:imeOptions="actionDone"
                         android:inputType="date"
                         android:padding="20dp"
+                        android:maxLength="4"
                         android:singleLine="true"
                         android:textColor="@color/blue_white"
                         android:textSize="@dimen/txt_size" />
@@ -271,8 +248,9 @@
                     android:layout_height="wrap_content"
                     android:text="Masina e condusa si de altii"
                     android:textSize="@dimen/txt_size"
-                    android:layout_toLeftOf="@+id/all_drive"
-                    android:layout_toStartOf="@+id/all_drive" />
+                    android:layout_alignBottom="@+id/all_drive"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
 
                 <Switch
                     android:id="@+id/all_drive"

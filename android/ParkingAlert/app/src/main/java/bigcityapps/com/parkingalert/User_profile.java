@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -44,7 +45,7 @@ public class User_profile extends Activity implements View.OnClickListener{
     Context ctx;
     SharedPreferences prefs;
     ImageView poza_patrata_user_profile,poza_rotunda_user_profile;
-    EditText nume, mobile, email;
+    EditText nume, mobile, email,prenom;
     RequestQueue queue;
     RelativeLayout inapoi, salvare;
     TextInputLayout textInputLayout;
@@ -57,8 +58,10 @@ public class User_profile extends Activity implements View.OnClickListener{
         queue = Volley.newRequestQueue(this);
         initComponents();
         getUser(prefs.getString("user_id",""));
+        FluiEdittext();
     }
     public void initComponents(){
+        prenom=(EditText)findViewById(R.id.prenume_user_profile);
         textInputLayout=(TextInputLayout)findViewById(R.id.inputEmail);
         salvare=(RelativeLayout)findViewById(R.id.salvare_user_profile);
         salvare.setOnClickListener(this);
@@ -71,6 +74,40 @@ public class User_profile extends Activity implements View.OnClickListener{
         mobile=(EditText)findViewById(bigcityapps.com.parkingalert.R.id.mobile_user_profile);
         email=(EditText)findViewById(bigcityapps.com.parkingalert.R.id.email);
         email.addTextChangedListener(new MyTextWatcher(email));
+    }
+  public void  FluiEdittext(){
+        mobile.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(mobile);
+            }
+        });
+      email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+          public void onFocusChange(View v, boolean hasFocus) {
+              if (!hasFocus) {
+                  hideKeyboard(v);
+              } else
+                  showKeyboard(email);
+          }
+      });
+      nume.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+          public void onFocusChange(View v, boolean hasFocus) {
+              if (!hasFocus) {
+                  hideKeyboard(v);
+              } else
+                  showKeyboard(nume);
+          }
+      });
+      prenom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+          public void onFocusChange(View v, boolean hasFocus) {
+              if (!hasFocus) {
+                  hideKeyboard(v);
+              } else
+                  showKeyboard(prenom);
+          }
+      });
     }
     public void UpdateUser(final String id){
        String url = Constants.URL+"users/updateUser/"+id;
@@ -141,10 +178,13 @@ public class User_profile extends Activity implements View.OnClickListener{
                 try {
                     Log.w("meniuu","response getuser:"+response);
                     JSONObject user = new JSONObject(json);
-                    nume.setText(user.getString("first_name")+" "+user.getString("last_name"));
-//                    nickname.setText(user.getString("nickname"));
+                    if(!user.getString("first_name").equals("null"))
+                        nume.setText(user.getString("first_name"));
+                    if(!user.getString("last_name").equals("null"))
+                        prenom.setText(user.getString("last_name"));
                     email.setText(user.getString("email"));
-                    mobile.setText(user.getString("phone_number"));
+                    if(!user.getString("phone_number").equals("null"))
+                        mobile.setText(user.getString("phone_number"));
 //                    Glide.with(ctx).load(user.getString("photo")).asBitmap().centerCrop().into(new BitmapImageViewTarget(poza_rotunda_user_profile) {
 //                        protected void setResource(Bitmap resource) {
 //                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
@@ -236,5 +276,14 @@ public class User_profile extends Activity implements View.OnClickListener{
                     break;
             }
         }
+    }
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public void showKeyboard(EditText ed) {
+        InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboard.showSoftInput(ed, 0);
     }
 }

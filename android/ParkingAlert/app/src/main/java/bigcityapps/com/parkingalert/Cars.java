@@ -1,6 +1,7 @@
 package bigcityapps.com.parkingalert;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -388,17 +390,35 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
 
         }
 
-        public void removeItem(int position) {
-            deleteCar(prefs.getString("user_id", ""), moviesList.get(position).getNr());
-            moviesList.remove(position);
-            if (moviesList.size() == 0) {
-                recyclerView.setVisibility(View.INVISIBLE);
-                tvTitle.setVisibility(View.VISIBLE);
-                tvMessage.setVisibility(View.VISIBLE);
-            } else {
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, moviesList.size());
-            }
+        public void removeItem(final int position) {
+            AlertDialog.Builder b=  new  AlertDialog.Builder(ctx)
+                    .setTitle("Esti sigur ca doresti sa stergi aceasta masina?")
+                    .setPositiveButton("Da",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    deleteCar(prefs.getString("user_id", ""), moviesList.get(position).getNr());
+                                    moviesList.remove(position);
+                                    if (moviesList.size() == 0) {
+                                        recyclerView.setVisibility(View.INVISIBLE);
+                                        tvTitle.setVisibility(View.VISIBLE);
+                                        tvMessage.setVisibility(View.VISIBLE);
+                                    } else {
+                                        notifyItemRemoved(position);
+                                        notifyItemRangeChanged(position, moviesList.size());
+                                    }
+                                }
+                            }
+                    )
+                    .setNegativeButton("Nu",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    notifyDataSetChanged();
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
+            b.show();
+
         }
 
         @Override

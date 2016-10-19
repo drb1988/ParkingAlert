@@ -115,13 +115,11 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("status", "1");
                 params.put("is_active", "false");
-                params.put("mLatitude",latitude);
-                params.put("mLongitude",longitude);
+                params.put("latitude",latitude);
+                params.put("longitude",longitude);
                 params.put("vehicle", plates);
                 params.put("sender_id", prefs.getString("user_id",""));
-                params.put("sender_nickname", "sender_nickname");
                 params.put("receiver_id", receiver_id);
-                params.put("receiver_nickname", "nick_name_Receiver");
                 Log.w("meniuu","lat+"+latitude+" lang:"+longitude);
                 return params;
             }

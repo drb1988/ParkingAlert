@@ -1,6 +1,7 @@
 package bigcityapps.com.parkingalert;
 
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -75,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(myReceiver, new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER));
         setContentView(R.layout.activity_main);
         mTitle = mDrawerTitle = getTitle();
-        mNavigationDrawerItemTitles= getResources().getStringArray(bigcityapps.com.parkingalert.R.array.navigation_drawer_items_array);
-        mDrawerLayout = (DrawerLayout) findViewById(bigcityapps.com.parkingalert.R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(bigcityapps.com.parkingalert.R.id.left_drawer);
+        mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
         ctx=this;
         setupToolbar();
 
@@ -272,6 +273,8 @@ public class MainActivity extends AppCompatActivity {
                     viewNotification.putExtra("mPlates", mPlates);
                     startActivity(viewNotification);
                     Toast.makeText(this, "clopot", Toast.LENGTH_LONG).show();
+                    NotificationManager notifManager= (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+                    notifManager.cancelAll();
                 }
                 else
                 Log.w("meniuu","e null");

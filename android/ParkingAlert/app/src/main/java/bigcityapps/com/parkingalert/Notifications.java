@@ -1,5 +1,6 @@
 package bigcityapps.com.parkingalert;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -314,6 +315,12 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         modelNotification.setId(c.getString("_id"));
                         JSONObject answer= new JSONObject(c.getString("answer"));
                         modelNotification.setNr_car(c.getString("vehicle"));
+                        JSONObject location= new JSONObject(c.getString("location"));
+                        JSONArray coordinates=new JSONArray(location.getString("coordinates"));
+                            modelNotification.setLat(coordinates.get(0).toString());
+                            modelNotification.setLng(coordinates.get(1).toString());
+                            Log.w("meniuu","lat:"+coordinates.get(0).toString());
+                            Log.w("meniuu","lng:"+coordinates.get(1).toString());
 
                         if(c.getString("sender_id").equals(id))
                         {
@@ -511,19 +518,23 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                 public void onClick(View view) {
                     if(modelNotificationArrayList.get(position).getmType()==3) {
                         receiverRead(modelNotificationArrayList.get(position).getId());
-                        Log.w(TAG,"intra in view, mType:"+modelNotificationArrayList.get(position).getmType());
                         Intent view_notification = new Intent(Notifications.this, ViewNotification.class);
                         view_notification.putExtra("mDetails", modelNotificationArrayList.get(position).getmDetails());
                         view_notification.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
                         view_notification.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
                         startActivity(view_notification);
+                        NotificationManager notifManager= (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+                        notifManager.cancelAll();
                     } else
                     if(modelNotificationArrayList.get(position).getmType()==2) {
-                        senderRead(modelNotificationArrayList.get(position).getId());
+//                        senderRead(modelNotificationArrayList.get(position).getId());
                         Intent timer = new Intent(Notifications.this, Timer.class);
                         timer.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
                         timer.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
                         timer.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
+                        timer.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
+                        timer.putExtra("lat", modelNotificationArrayList.get(position).getLat());
+                        timer.putExtra("lng", modelNotificationArrayList.get(position).getLng());
                         startActivity(timer);
                     }else
                     if(modelNotificationArrayList.get(position).getmType()==1){
@@ -531,6 +542,8 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         harta.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
                         harta.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
                         harta.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
+                        harta.putExtra("lat", modelNotificationArrayList.get(position).getLat());
+                        harta.putExtra("lng", modelNotificationArrayList.get(position).getLng());
                         startActivity(harta);
                     }else
                     if(modelNotificationArrayList.get(position).getmType()==4) {
@@ -539,6 +552,8 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         timer.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
                         timer.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
                         timer.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
+                        timer.putExtra("lat", modelNotificationArrayList.get(position).getLat());
+                        timer.putExtra("lng", modelNotificationArrayList.get(position).getLng());
                         startActivity(timer);
                     }
                 }
@@ -551,28 +566,23 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
             if(item.getmType()==2) {
                 if(item.isSenderRead()==false) {
                     holder.bagde.setImageResource(R.drawable.cerculet_notif);
-                    Log.w("meniuu","cerc");
                 }
                 else {
                     holder.bagde.setImageResource(android.R.color.transparent);
-                    Log.w("meniuu","transarent");
                 }
             }
             if(item.getmType()==3) {
                 if(item.isReceiverRead()==false) {
                     holder.bagde.setImageResource(R.drawable.cerculet_notif);
-                    Log.w("meniuu","cerc");
                 }
                 else {
                     holder.bagde.setImageResource(android.R.color.transparent);
-                    Log.w("meniuu","transarent");
                 }
             }
             if(item.getmType()==1 )
                 holder.bagde.setImageResource(android.R.color.transparent);
             if(item.getmType()==4)
                 holder.bagde.setImageResource(R.drawable.ic_back);
-            Log.w("meniu","item.getora:"+item.getmHour());
 
 //            String [] split= item.getmHour().split("T");
 //            Log.w("meniuu","split:"+split.length);

@@ -87,7 +87,7 @@ public class ConnectFragment extends Fragment {
         if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return rootView;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 10, locationListenerNetwork);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, 0, locationListenerNetwork);
         notificaProprietar=(RelativeLayout) rootView.findViewById(bigcityapps.com.parkingalert.R.id.relative_notifica_proprietarul);
         notificaProprietar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
