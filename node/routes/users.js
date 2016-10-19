@@ -89,7 +89,7 @@ router.post('/addSecurity/:userID', function(req, res, next) {
     var insertSecurity = function(db, callback) {   
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id}, 
-             {$push: { 
+             {$set: { 
                          "security":{ 	
                         			"device_token": req.body.device_token,
                         			"password": req.body.password,

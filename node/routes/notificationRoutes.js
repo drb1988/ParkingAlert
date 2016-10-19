@@ -32,7 +32,7 @@ var toLocalTime = function(time) {
   return n;
 };
 
-var sendNotification = function(token, notification, car, type, time){
+var sendNotification = function(token, notification, car, type, time, tat, longit){
         var serverKey = 'AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4';
         var fcm = new FCM("AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4");
         var message = {
@@ -42,11 +42,13 @@ var sendNotification = function(token, notification, car, type, time){
             car_id: car,
             notification_type: type,
             answered_at: new Date,
-            estimated_time: time
+            estimated_time: time,
+            latitude: lat,
+            longitude: longit,
           },
           notification: {
             title: 'Parking-Alert',
-            body: 'Ati primit norificare', 
+            body: 'Ati primit notificare', 
             sound: 'enabled'
           }
         };
@@ -172,7 +174,7 @@ MongoClient.connect(dbConfig.url, function(err, db) {
     insertDocument(db, function() {
       db.close();
       res.status(200).send(notificationID)
-      sendNotification(notificationReceiverToken, notificationID, car_id, "sender", 0)
+      sendNotification(notificationReceiverToken, notificationID, car_id, "sender", 0, req.body.latitude, req.body.longitude)
     });
   }, req.body.sender_id);
 });
@@ -206,7 +208,7 @@ router.get('/receiverRead/:notificationID', function(req, res, next) {
       deleteCar(db, function() {
         db.close();
         res.status(200).send(req.params.notificationID)
-        sendNotification(notificationSenderToken, req.params.notificationID, vehicle)
+        sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "read", 0, 0, 0)
       });
       }, req.params.notificationID);      
   });
@@ -239,7 +241,7 @@ router.get('/senderRead/:notificationID', function(req, res, next) {
       deleteCar(db, function() {
         db.close();
         res.status(200).send(req.params.notificationID)
-        sendNotification(notificationSenderToken, req.params.notificationID, vehicle)
+        sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "read", 0, 0, 0)
       });
       }, req.params.notificationID);      
   });
@@ -260,7 +262,7 @@ router.get('/senderReview/:notificationID', function(req, res, next) {
       vehicle=sender.vehicle;
         db.close();
         res.status(200).send(req.params.notificationID)
-        sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "review", 0)
+        sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "review", 0, 0, 0)
       }, req.params.notificationID);      
   });
   });
@@ -308,7 +310,7 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
           db.close();
           res.status(200).send(req.params.notificationID)
           console.log("estimated "+req.body.estimated);
-          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "receiver", req.body.estimated)
+          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "receiver", req.body.estimated, 0, 0)
         });
         }, req.params.notificationID);     
     });
@@ -348,7 +350,7 @@ router.post('/receiverExtended/:notificationID', function(req, res, next) {
         deleteCar(db, function() {
           db.close();
           res.status(200).send(req.params.notificationID)
-          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "extended", req.body.extension_time)
+          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "extended", req.body.extension_time, 0, 0)
         });
         }, req.params.notificationID);     
       });
