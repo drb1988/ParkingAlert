@@ -297,7 +297,9 @@ router.post('/setPicture/:userID', function(req, res) {
 			      db.close();
 			  });
 			});
-        res.end("File is uploaded");
+        res.send({ 
+                    "profile_picture": "http://82.76.188.13:3000/"+req.file.filename	
+                });
         }
     });
 });
