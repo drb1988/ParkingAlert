@@ -1,3 +1,5 @@
+'use strict';
+var bodyParser = require('body-parser');
 var express = require('express');
 var adminRouter = express.Router();
 var dbConfig = require('../db');
@@ -8,12 +10,32 @@ var ObjectId = require('mongodb').ObjectId;
 var Crypto = require('crypto'); 
 var passport = require('passport');
 
+var inside = require('point-in-polygon');
+var collide = require('point-circle-collision')
+
 var isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()){
     console.log("autentificat");
     return next();
   }
   res.redirect('/web-routes/login');
+}
+
+var verifyIfIsInsideACircle = function (CircleCenterLat, CircleCenterLng, PointLat, PointLng) {
+  var rad = function(x) {
+    return x * Math.PI / 180;
+  };
+
+  var R = 6378137; // Earth’s mean radius in meter
+  var dLat = rad(CircleCenterLat - PointLat);
+  var dLong = rad(CircleCenterLng - PointLng);
+  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(rad(CircleCenterLat)) * Math.cos(rad(CircleCenterLng)) *
+    Math.sin(dLong / 2) * Math.sin(dLong / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c;
+  console.log("dddddddddddddddddddddu: "+d);
+  return d
 }
 
 module.exports = function(passport){
@@ -67,56 +89,67 @@ module.exports = function(passport){
   adminRouter.post('/MapAjaxCallback', function(req, res, next) {
     /**
       * Base route,
-      * @name /
+      * @MapAjaxCallback /
       */
-  // });
-  // var result=[
-  //     { lat: 37.754665, lng: -122.403242 },
-  //     { lat: 37.753837, lng: -122.403172 }
-  //   ];
-    console.log("body request", req.body);
-    // req.body.startDateTime
-    // req.body.endDateTime
-    // req.body.type
-    // req.body.value
     req.body.startDateTime = new Date(req.body.startDateTime);
     req.body.endDateTime = new Date(req.body.endDateTime);
-
+    if(req.body.polygon)
+      for(var i=0;i<req.body.polygon.length;i++) {
+        req.body.polygon[i][0]=parseFloat(req.body.polygon[i][0]);
+        req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
+      }
+    console.log("body request", req.body);
     var findNotifications = function(db, callback) {   
       var o_id = new ObjectId(req.params.userID);
         var result = [];
           var cursor =db.collection('notifications').find().sort({ _id: -1}).skip(parseInt(req.params.offset)).limit(parseInt(req.params.limit));
           cursor.each(function(err, doc) {
             assert.equal(err, null);
-            var create_date;
             if (doc != null) {
-                console.log(doc.location.coordinates[0]);
-                console.log(doc.create_date);
-                if(doc.location.coordinates[0] && doc.location.coordinates[1] 
-                  && req.body.startDateTime.getTime()>=doc.create_date.getTime() 
-                  && doc.create_date.getTime()<=req.body.endDateTime.getTime()) {
-
-                  result.push({
-                    "lat": doc.location.coordinates[0],
-                    "lng": doc.location.coordinates[1]
-                  });
+              if(doc.location.coordinates[0] && doc.location.coordinates[1] 
+                && req.body.startDateTime.getTime()<=doc.create_date.getTime() 
+                && doc.create_date.getTime()<=req.body.endDateTime.getTime()
+                ) {
+                if(req.body.polygon)
+                  if(inside([ doc.location.coordinates[0], doc.location.coordinates[1] ], req.body.polygon) && (doc.sender_id || doc.reciver_id)) {
+                    result.push({
+                      "lat": doc.location.coordinates[0],
+                      "lng": doc.location.coordinates[1]
+                    });
+                    // db.collection('parking').findOne({"_id": { $in: [doc.sender_id, doc.reciver_id]}},
+                    //   function(err, result) {
+                    //     console.log(result.email)
+                    //     assert.equal(err, null);
+                    //     callback();
+                    //   });
+                  }
+                if(req.body.circle) {
+                  var circle = [parseFloat(req.body.circle.center.lat), parseFloat(req.body.circle.center.lng)],
+                  radius =  parseFloat(req.body.circle.radius),
+                  point = [doc.location.coordinates[0], doc.location.coordinates[1]]
+                  console.log("is in circle: "+collide(point, circle, radius));
+                  if(collide(point, circle, radius))
+                    result.push({
+                      "lat": doc.location.coordinates[0],
+                      "lng": doc.location.coordinates[1]
+                    });
+                }
               }
-              console.log("req.body.startDateTime: "+req.body.startDateTime.getTime());
-              console.log("req.body.endDateTime: "+req.body.endDateTime.getTime())
             } else {
-               callback(); res.status(200).send(result)
+               callback(); 
+               console.log("result: ",result);
+               res.status(200).send(result)
             }
+
          });
       };  
 
       MongoClient.connect(dbConfig.url, function(err, db) {
-          assert.equal(null, err);
-          findNotifications(db, function() {
-              db.close();
-          });
+        assert.equal(null, err);
+        findNotifications(db, function() {
+            db.close();
         });
-
-    //res.status(200).send(result);
+      });
   });
 
 

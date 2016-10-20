@@ -3,13 +3,7 @@ $(document).ready(function() {
   activeAjaxMap();
   activeAjaxChart();
 });
-
-function activeAjaxMap()  {
-  var prevArrMarkers = '',
-      prevArr = '',
-      theArr = '',
-      typeOfMap = false;
-
+function activeAjaxMap() {
   $( "#reinitMarker" ).click(function() {
     typeOfMap = !typeOfMap;
 
@@ -35,10 +29,31 @@ function activeAjaxMap()  {
       var json = {
         startDateTime: startDateTime, 
         endDateTime : endDateTime,
+        polygon: []
       };
       // json.type = circle ? "circle" : rectangle ? "rectangle" : polygon ? "polygon" : false;
       // json.value = circle ? "crc" : rectangle ? rectangle.getBounds() : polygon ? polygon.getPath() : false;
+      if(polygon) {
+        var vertices = polygon.getPath();
+        for (var i =0; i < vertices.getLength(); i++) {
+          var xy = vertices.getAt(i);
+          json.polygon.push([xy.lat(), xy.lng()]);
+          console.log(typeof xy.lat());
+        }
+      }
+      if(rectangle) {
 
+        var vertices = rectangle.getBounds();
+        console.log("vertices:",vertices);
+        json.polygon.push([vertices.getSouthWest().lat(), vertices.getNorthEast().lng()]);
+        json.polygon.push([vertices.getNorthEast().lat(), vertices.getNorthEast().lng()]);
+        json.polygon.push([vertices.getNorthEast().lat(), vertices.getSouthWest().lng()]);
+        json.polygon.push([vertices.getSouthWest().lat(), vertices.getSouthWest().lng()]);
+        
+        // console.log('getNorthEast lng: ',  rectangle.getBounds().getNorthEast().lng());
+        // console.log('getSouthWest lat: ',  rectangle.getBounds().getSouthWest().lat());
+        // console.log('getSouthWest lng: ',  rectangle.getBounds().getSouthWest().lng());
+      }
       // make ajax call to the server
       console.log("map in ajax ", json);
       $.ajax({
