@@ -166,8 +166,10 @@ router.post('/notification', function(req, res, next) {
       "receiver_token": notificationReceiverToken,
       "sender_token": notificationSenderToken,
       "sender_nickname": req.body.sender_nickname,
+      "sender_picture": senderPicture,
       "receiver_id": new ObjectId(req.body.receiver_id),
       "receiver_nickname": req.body.receiver_nickname,
+      "receiver_picture": receiverPicture,
       "is_ontime": true
    }, function(err, result) {
     car_id = req.body.vehicle;
