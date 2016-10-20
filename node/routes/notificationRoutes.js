@@ -236,6 +236,7 @@ router.get('/senderRead/:notificationID', function(req, res, next) {
   }
   MongoClient.connect(dbConfig.url, function(err, db) {
     assert.equal(null, err);
+    console.log(req.params.notificationID);
     findUsersByNotification(db, function(sender){console.log(sender); notificationSenderToken=sender.receiver_token;
       vehicle=sender.vehicle;
       deleteCar(db, function() {

@@ -271,11 +271,11 @@ router.post('/setPicture/:userID', function(req, res) {
     * @param {String} :userId
     */
 
-    var findUser = function(db, profilePic, callback) {   
+    var uploadPicture = function(db, profilePic, callback) {   
 	var o_id = new ObjectId(req.params.userID);
 	    db.collection('parking').update({"_id": o_id},
 	    	 {$set: { 
-                    "profile_picture": profilePic	
+                    "profile_picture": "http://82.76.188.13:3000/"+profilePic	
                     }
              },
 	    	function(err, result) {
@@ -293,7 +293,7 @@ router.post('/setPicture/:userID', function(req, res) {
         else {
         	MongoClient.connect(dbConfig.url, function(err, db) {
 			  assert.equal(null, err);
-			  findUser(db, req.file.path, function() {
+			  uploadPicture(db, req.file.filename, function() {
 			      db.close();
 			  });
 			});
