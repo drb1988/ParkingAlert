@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     TextView badge_count;
     String notification_id=null,mPlates=null,notification_type,estimated_time,answered_at;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+    String latitude = null, longitude = null;
     Context ctx;
 
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
                 mPlates = b.getString("mPlates");
                 estimated_time = b.getString("estimated_time");
                 answered_at = b.getString("answered_at");
+                latitude=b.getString("lat");
+                longitude=b.getString("lng");
                 Log.w("meniuu", "notificaion:" + notification_id);
                 updateUi();
             }catch (Exception e){
@@ -250,6 +253,9 @@ public class MainActivity extends AppCompatActivity {
                         timer.putExtra("time", estimated_time);
                         timer.putExtra("mHour", answered_at);
                         timer.putExtra("mPlates", mPlates);
+                        timer.putExtra("notification_id", notification_id);
+                        timer.putExtra("lat", latitude);
+                        timer.putExtra("lng", longitude);
                         startActivity(timer);
 
                     }else if(notification_type.equals("review")) {

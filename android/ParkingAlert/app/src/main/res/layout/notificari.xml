@@ -83,7 +83,6 @@
             android:id="@+id/listview_notificari"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/blue_white"
-            android:dividerHeight="0.5dp"></android.support.v7.widget.RecyclerView>
+            ></android.support.v7.widget.RecyclerView>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

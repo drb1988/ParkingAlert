@@ -120,19 +120,27 @@ public class TimerSender extends Activity implements View.OnClickListener {
     public void dosomething() {
         new Thread(new Runnable() {
             public void run() {
-
                 while (mProgressStatus > 0) {
-                    if(mProgressStatus<21){
-                        if(extended.getVisibility()==View.INVISIBLE)
-                            extended.setVisibility(View.VISIBLE);
-                    }
-                    Log.w("meniuu","run:"+run+" daca e fals ar trebui sa se opreasca:"+mProgressStatus);
                     if(run==false)
                         mProgressStatus=1;
                     mProgressStatus -= 1;
                     // Update the progress bar
                     mHandler.post(new Runnable() {
                         public void run() {
+                            if(mProgressStatus<21){
+                                if(extended.getVisibility()==View.INVISIBLE)
+                                    extended.setVisibility(View.VISIBLE);
+                            }
+//                            if(mProgressStatus==0){
+//                                Intent harta = new Intent(TimerSender.this, Map.class);
+//                                harta.putExtra("mHour", ora);
+//                                harta.putExtra("mPlates", nr_carString);
+//                                harta.putExtra("time", timer);
+//                                harta.putExtra("lat", mLat);
+//                                harta.putExtra("lng", mLng);
+//                                startActivity(harta);
+//                                finish();
+//                            }
                             progBar.setProgress(mProgressStatus);
                             int minutes=(mProgressStatus%3600)/60;
                             int sec=mProgressStatus%60;

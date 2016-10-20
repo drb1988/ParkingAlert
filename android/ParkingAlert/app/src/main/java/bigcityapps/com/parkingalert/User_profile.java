@@ -25,6 +25,8 @@ import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -46,6 +48,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
@@ -316,16 +320,18 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
                     if(!user.getString("last_name").equals("null"))
                         prenom.setText(user.getString("last_name"));
                     email.setText(user.getString("email"));
+
+                    Glide.with(ctx).load(user.getString("profile_picture")).asBitmap().centerCrop().into(new BitmapImageViewTarget(poza_rotunda_user_profile) {
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            poza_rotunda_user_profile.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
+
+                    Glide.with(ctx).load(user.getString("profile_picture")).into(poza_patrata_user_profile);
                     if(!user.getString("phone_number").equals("null"))
                         mobile.setText(user.getString("phone_number"));
-//                    Glide.with(ctx).load(user.getString("photo")).asBitmap().centerCrop().into(new BitmapImageViewTarget(poza_rotunda_user_profile) {
-//                        protected void setResource(Bitmap resource) {
-//                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
-//                            circularBitmapDrawable.setCircular(true);
-//                            poza_rotunda_user_profile.setImageDrawable(circularBitmapDrawable);
-//                        }
-//                    });
-//                    Glide.with(ctx).load(user.getString("photo")).into(poza_patrata_user_profile);
                 }catch (Exception e)
                 {Log.w("meniuu","este catch");
                     e.printStackTrace();
@@ -402,17 +408,30 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
 
     @Override
     public void onError(Exception exception) {
+        Log.w("meniuu","error in upload:"+exception);
         progresss.dismiss();
     }
 
     @Override
     public void onCompleted(int serverResponseCode, byte[] serverResponseBody) throws UnsupportedEncodingException, JSONException {
+
         progresss.dismiss();
+        JSONObject response = new JSONObject(new String(serverResponseBody, "UTF-8"));
+        Log.w("meniuu","oncompleted:"+response);
+        Glide.with(ctx).load(response.getString("profile_picture")).asBitmap().centerCrop().into(new BitmapImageViewTarget(poza_rotunda_user_profile) {
+            protected void setResource(Bitmap resource) {
+                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                poza_rotunda_user_profile.setImageDrawable(circularBitmapDrawable);
+            }
+        });
+        Glide.with(ctx).load(response.getString("profile_picture")).into(poza_patrata_user_profile);
     }
 
     @Override
     public void onCancelled() {
-
+        Log.w("meniuu","cancel");
+        progresss.dismiss();
     }
 
     private class MyTextWatcher implements TextWatcher {
@@ -445,7 +464,16 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
         InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboard.showSoftInput(ed, 0);
     }
+    protected void onResume() {
+        super.onResume();
+        uploadReceiver.register(this);
+    }
 
+    @Override
+    protected void onDestroy() {
+        uploadReceiver.unregister(this);
+        super.onDestroy();
+    }
     protected void onActivityResult( int requestCode, int resultCode, Intent data) {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -456,8 +484,8 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
                     cursor.moveToLast();
                     realPath = cursor.getString(column_index_data);
                     Bitmap img = rotateBitmap(realPath);
-                    persistImage(img, "eparti");
-                    uplloadImageFile(persistImage(img, "eparti"));
+                    persistImage(img, "parkingalert");
+                    uplloadImageFile(persistImage(img, "parkingalert"));
 //                    Bitmap bm = getThumbnailBitmap(realPath,200);
 //                    Log.w("meniuu","bm:"+bm.getHeight()+" :"+bm.getWidth());
 //                    poza_user_profile.setImageBitmap(bm);
@@ -489,12 +517,14 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
 //                        realPath = RealPathUtil.getRealPathFromURI_API11to18(this, data.getData());
 //                    else
 //                        realPath = RealPathUtil.getRealPathFromURI_API19(this, data.getData());
-                        uplloadImage();
+                        Bitmap img = rotateBitmap(realPath);
+                        persistImage(img, "parkingalert");
+                        uplloadImageFile(persistImage(img, "parkingalert"));
+//                        uplloadImage();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-
             }
         }
     }
@@ -503,7 +533,6 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
             try { ////storage/sdcard0/DCIM/Camera/1470811678304.jpg
                 //////storage/sdcard1/DCIM/Camera/lampa.jpg
                 Log.w("meniuu","imagepath in upload:"+realPath);
-
                 String uploadId = UUID.randomUUID().toString();
                 uploadReceiver.setDelegate(this);
                 uploadReceiver.setUploadID(uploadId);
@@ -521,6 +550,7 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
                 progresss.setCanceledOnTouchOutside(false);
                 progresss.show();
             } catch (Exception exc) {
+                progresss.dismiss();
                 Log.w("meniuu", "eroare la catpure picture" + exc.getMessage());
                 exc.printStackTrace();
                 Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
@@ -550,7 +580,6 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
             try { ////storage/sdcard0/DCIM/Camera/1470811678304.jpg
                 //////storage/sdcard1/DCIM/Camera/lampa.jpg
                 Log.w("meniuu","imagepath in upload:"+realPath);
-
                 String uploadId = UUID.randomUUID().toString();
                 uploadReceiver.setDelegate(this);
                 uploadReceiver.setUploadID(uploadId);
@@ -570,6 +599,7 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
             } catch (Exception exc) {
                 Log.w("meniuu", "eroare la catpure picture" + exc.getMessage());
                 exc.printStackTrace();
+                progresss.dismiss();
                 Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }else{

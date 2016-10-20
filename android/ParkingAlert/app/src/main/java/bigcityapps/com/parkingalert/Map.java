@@ -48,7 +48,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     TextView adress;
     private String provider;
     private LocationManager locationManager;
-    String mHour, mLat, mLng;
+    String mHour, mLat="", mLng="";
     String mText;
     String mPlates;
 //    double mLongitude, mLatitude;
@@ -116,7 +116,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 mPlates = (String) b.get("mPlates");
                 mLat = b.getString("lat");
                 mLng = b.getString("lng");
-                Log.w("meniuu","lat:"+mLat+" lng:"+mLng);
+                Log.w("meniuu","lat in map:"+mLat+" lng:"+mLng);
                 SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                 Date d = df.parse(mHour);
                 Date date2 = new Date();
@@ -151,7 +151,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        adress.setText(getAddress(Double.parseDouble(mLat), Double.parseDouble(mLng)));
+        if(mLng.length()!=0)
+            adress.setText(getAddress(Double.parseDouble(mLat), Double.parseDouble(mLng)));
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, false);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -161,16 +162,18 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
     private final LocationListener locationListenerNetwork = new LocationListener() {
         public void onLocationChanged(Location location) {
-//            mLongitude = location.getLongitude();
-//            mLatitude = location.getLatitude();
-//            adress.setText(getAddress(mLatitude, mLongitude));
-//            final LatLng CIU = new LatLng(mLatitude, mLongitude);
-//            LatLng sydney = new LatLng(mLatitude, mLongitude);
-//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLatitude, mLongitude), 12.0f));
-//            Marker marker = mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(mText + ""));
-////            mMap.addMarker(new MarkerOptions().position(CIU).tvTitle("My Office").snippet(mText+""));
-//            marker.showInfoWindow();
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            if(mLng.length()!=0) {
+                mLng = location.getLongitude() + "";
+                mLat = location.getLatitude() + "";
+                adress.setText(getAddress(Double.parseDouble(mLat), Double.parseDouble(mLng)));
+                final LatLng CIU = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
+                LatLng sydney = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng)), 12.0f));
+                Marker marker = mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(mText + ""));
+//            mMap.addMarker(new MarkerOptions().position(CIU).tvTitle("My Office").snippet(mText+""));
+                marker.showInfoWindow();
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            }
         }
 
         public void onStatusChanged(String s, int i, Bundle bundle) {
@@ -267,6 +270,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             Address obj = addresses.get(0);
             String add = obj.getAddressLine(0);
             adresa = add + ", \n" + obj.getLocality();
+            Log.w("meniuu","postal code:"+obj.getPostalCode());
             Log.w("meniuu", "adresa:" + add);
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -275,5 +279,4 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         }
         return adresa;
     }
-
 }

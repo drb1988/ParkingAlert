@@ -4,7 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -35,6 +40,8 @@ public class ViewNotification extends Activity implements View.OnClickListener{
     SharedPreferences prefs;
     Context ctx;
     String notification_id;
+    double latitude, longitude;
+    LocationManager locationManager;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_notification);
@@ -49,7 +56,11 @@ public class ViewNotification extends Activity implements View.OnClickListener{
             notification_id=(String) b.get("notification_id");
             Log.w("meniuu","notification_id"+notification_id);
         }
-
+        locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return ;
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, 0, locationListenerNetwork);
     }
     public void initComponents(){
         zece=(TextView)findViewById(R.id.zece);
@@ -109,9 +120,10 @@ public void setClick(boolean set){
                 }, ErrorListener) {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("mLatitude", "24");
-                params.put("mLongitude", "24");
+                params.put("latitude", latitude+"");
+                params.put("longitude", longitude+"");
                 params.put("estimated",time);
+                Log.w("meniuu","lat in receiver answered:"+latitude+" lng:"+longitude);
                 return params;
             }
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -128,5 +140,18 @@ public void setClick(boolean set){
             Log.w("meniuu", "error: errorlistener:" + error);
             Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
         }
+    };
+    private boolean isLocationEnabled() {
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+    private final LocationListener locationListenerNetwork = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+            Log.w("meniu", "long in locationlistener: " + longitude + " lat:" + latitude);
+        }
+        public void onStatusChanged(String s, int i, Bundle bundle) {}
+        public void onProviderEnabled(String s) {}
+        public void onProviderDisabled(String s) {}
     };
 }

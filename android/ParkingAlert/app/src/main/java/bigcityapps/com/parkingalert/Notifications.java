@@ -12,10 +12,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,6 +40,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -199,7 +204,11 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
         getNotifications(prefs.getString("user_id",""));
         super.onPostResume();
     }
-
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(myReceiver);
+        super.onDestroy();
+    }
     /**
      * notificareAdapter class for listview notificari
      */
@@ -323,7 +332,13 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                             Log.w("meniuu","lng:"+coordinates.get(1).toString());
 
                         if(c.getString("sender_id").equals(id))
-                        {
+                        {  try {
+                            modelNotification.setPicture(c.getString("receiver_picture"));
+                        }catch (Exception e){
+                            Log.w("meniuu","receiverul nu are poza");
+                            e.printStackTrace();
+                            modelNotification.setPicture("null");
+                        }
                             if(answer.getString("estimated").equals("null"))
                             {
                                 modelNotification.setTitle("Ai trimis notificare");
@@ -354,7 +369,13 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                             }
                         }else
                         if(c.getString("receiver_id").equals(id))
-                        {
+                        { try {
+                            modelNotification.setPicture(c.getString("sender_picture"));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            Log.w("meniuu","senderul nu are poza");
+                            modelNotification.setPicture("null");
+                        }
                             if(answer.getString("estimated").equals("null")) {
                                 modelNotification.setmType(3);
                                 if(c.getBoolean("receiver_read"))
@@ -491,13 +512,11 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                 super(view);
 
                 titlu=(TextView) view.findViewById(R.id.title_listview);
-                detalii=(TextView) view.findViewById(R.id.detalii_listview);
+//                detalii=(TextView) view.findViewById(R.id.detalii_listview);
                 mesaj=(TextView) view.findViewById(R.id.mesaj_listview);
                 ora=(TextView) view.findViewById(R.id.ora_listview);
                 poza=(ImageView) view.findViewById(R.id.poza_listview);
                 bagde=(ImageView) view.findViewById(R.id.badge_listview);
-
-                poza=(ImageView) view.findViewById(R.id.poza_lista_masini);
             }
         }
 
@@ -513,7 +532,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, final int position) {
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     if(modelNotificationArrayList.get(position).getmType()==3) {
@@ -564,29 +583,56 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
             });
             final ModelNotification item = moviesList.get(position);
             holder.titlu.setText(item.getTitle());
-            holder.detalii.setText(item.getmDetails());
+//            holder.detalii.setText(item.getmDetails());
             holder.mesaj.setText(item.getmMessage());
-
+            if(!item.getPicture().equals("null")) {
+                Log.w("meniuu","picture:"+item.getPicture());
+                Glide.with(ctx)
+                        .load(item.getPicture())
+                        .asBitmap().centerCrop().into(new BitmapImageViewTarget(
+                        holder.
+                                poza) {
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        holder.poza.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+            }
             if(item.getmType()==2) {
                 if(item.isSenderRead()==false) {
                     holder.bagde.setImageResource(R.drawable.cerculet_notif);
+                    holder.titlu.setTypeface(null, Typeface.BOLD);
+                    holder.itemView.setBackgroundColor(Color.WHITE);
                 }
                 else {
                     holder.bagde.setImageResource(android.R.color.transparent);
+                    holder.titlu.setTypeface(null, Typeface.NORMAL);
+                    holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
                 }
             }
             if(item.getmType()==3) {
                 if(item.isReceiverRead()==false) {
                     holder.bagde.setImageResource(R.drawable.cerculet_notif);
+                    holder.titlu.setTypeface(null, Typeface.BOLD);
+                    holder.itemView.setBackgroundColor(Color.WHITE);
                 }
                 else {
                     holder.bagde.setImageResource(android.R.color.transparent);
+                    holder.titlu.setTypeface(null, Typeface.NORMAL);
+                    holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
                 }
             }
-            if(item.getmType()==1 )
+            if(item.getmType()==1 ) {
                 holder.bagde.setImageResource(android.R.color.transparent);
-            if(item.getmType()==4)
+                holder.titlu.setTypeface(null, Typeface.NORMAL);
+                holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
+            }
+            if(item.getmType()==4) {
                 holder.bagde.setImageResource(R.drawable.ic_back);
+                holder.titlu.setTypeface(null, Typeface.NORMAL);
+                holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
+            }
 
 //            String [] split= item.getmHour().split("T");
 //            Log.w("meniuu","split:"+split.length);
@@ -608,8 +654,17 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
 
         }
         public void removeItem(int position) {
-
             deleteNotificationSender(modelNotificationArrayList.get(position).getId());
+            moviesList.remove(position);
+            if (moviesList.size() == 0) {
+                notifRecyclerView.setVisibility(View.INVISIBLE);
+            } else {
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, moviesList.size());
+            }
+        }
+        public void removeItemReceiver(int position) {
+            deleteNotificationReceiver(modelNotificationArrayList.get(position).getId());
             moviesList.remove(position);
             if (moviesList.size() == 0) {
                 notifRecyclerView.setVisibility(View.INVISIBLE);
@@ -624,8 +679,34 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void deleteNotificationSender(final String id){
+    public void deleteNotificationReceiver(final String id){
         String url = Constants.URL+"notifications/receiverDeleted/"+id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        Log.w("meniuu", "response:delete notificationSender" + response);
+                        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Notificarea a fost stearsa!", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                    }
+                }, ErrorListener) {
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("plates", plates);
+//                return params;
+//            }
+
+            public java.util.Map getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer "+  auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    public void deleteNotificationSender(final String id){
+        String url = Constants.URL+"notifications/senderDeleted/"+id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
@@ -660,9 +741,10 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                 int position = viewHolder.getAdapterPosition();
 
                 if (direction == ItemTouchHelper.LEFT){
-                    if(modelNotificationArrayList.get(position).getmType()==3||modelNotificationArrayList.get(position).getmType()==4) {
+                    if(modelNotificationArrayList.get(position).getmType()==1 || modelNotificationArrayList.get(position).getmType()==2) {
                         adapter.removeItem(position);
-                    }
+                    }else
+                        adapter.removeItemReceiver(position);
                 } else {
 //                    removeView();
 //                    edit_position = position;

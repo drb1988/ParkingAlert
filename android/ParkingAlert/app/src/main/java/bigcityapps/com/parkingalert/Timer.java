@@ -79,6 +79,7 @@ public class Timer extends Activity implements View.OnClickListener {
                 mLng = b.getString("lng");
                 Log.w("meniuu", "mHour:" + ora);
                 time_answer.setText("Raspuns la " + ora);
+                Log.w("meniuu","notification_id:"+notification_id);
                 senderRead(notification_id);
                 try {
                     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
@@ -146,12 +147,21 @@ public class Timer extends Activity implements View.OnClickListener {
         new Thread(new Runnable() {
             public void run() {
                 while (mProgressStatus > 0) {
-                    Log.w("meniuu", "in while run=" + run);
                     if (run == false)
                         mProgressStatus = 1;
                     mProgressStatus -= 1;
                     mHandler.post(new Runnable() {
                         public void run() {
+//                            if(mProgressStatus==0){
+//                                Intent harta = new Intent(Timer.this, Map.class);
+//                                harta.putExtra("mHour", ora);
+//                                harta.putExtra("mPlates", nr_carString);
+//                                harta.putExtra("time", timer);
+//                                harta.putExtra("lat", mLat);
+//                                harta.putExtra("lng", mLng);
+//                                startActivity(harta);
+//                                finish();
+//                            }
                             progBar.setProgress(mProgressStatus);
                             int minutes = (mProgressStatus % 3600) / 60;
                             int sec = mProgressStatus % 60;
@@ -190,7 +200,6 @@ public class Timer extends Activity implements View.OnClickListener {
     }
 
     public void senderRead(String notification_id) {
-        Log.w("meniuu", "notification id:" + notification_id);
         String url = Constants.URL + "notifications/senderRead/" + notification_id;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

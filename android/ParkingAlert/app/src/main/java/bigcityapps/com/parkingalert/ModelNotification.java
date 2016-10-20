@@ -13,6 +13,16 @@ public class ModelNotification {
     boolean extended;
     boolean receiverRead;
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    String picture;
+
     public String getLat() {
         return lat;
     }
