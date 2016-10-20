@@ -94,16 +94,24 @@ var findUserToken = function(db, callback, userID) {
     * @name findUserToken
     * @param {String} :userId
     */ 
-    console.log("aici "+userID);  
+    console.log("aici "+userID); 
     var o_id = new ObjectId(userID);
       db.collection('parking').findOne({"_id": o_id},
         function(err, result) {
               assert.equal(err, null);
-              if(result.security){
-              callback(result.security.device_token);
+              if(result.security && result.profile_picture){
+              callback({
+                "profile_picture": result.profile_picture,
+                "token": result.security.device_token});
               }
               else {
+                if(result.security){
+                  callback({
+                      "token": result.security.device_token});
+                    }
+                else {
                 callback("")
+                }
               }
         });            
     }
@@ -116,6 +124,8 @@ router.post('/notification', function(req, res, next) {
     */
   var notificationReceiverToken = "";
   var notificationSenderToken = "";
+  var senderPicture = null;
+  var receiverPicture = null;
   var notificationID ="";
   var car_id ="";
   var insertDocument = function(db, callback) {
@@ -169,8 +179,11 @@ router.post('/notification', function(req, res, next) {
 };
 MongoClient.connect(dbConfig.url, function(err, db) {
   assert.equal(null, err);
-  findUserToken(db, function(receiver){console.log(receiver); notificationReceiverToken=receiver;}, req.body.receiver_id);
-  findUserToken(db, function(sender){console.log(sender); notificationSenderToken=sender;
+  findUserToken(db, function(receiver){console.log(receiver); notificationReceiverToken=receiver.token;
+        if(receiver.profile_picture) {receiverPicture = receiver.profile_picture; }
+        }, req.body.receiver_id);
+  findUserToken(db, function(sender){console.log(sender); notificationSenderToken=sender.token;
+    if(sender.profile_picture) {senderPicture = sender.profile_picture; }
     insertDocument(db, function() {
       db.close();
       res.status(200).send(notificationID)
