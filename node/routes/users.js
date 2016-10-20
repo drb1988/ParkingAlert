@@ -149,7 +149,10 @@ router.get('/getNotifications/:userID', function(req, res, next) {
     	var findNotifications = function(db, callback) {   
 	 	var o_id = new ObjectId(req.params.userID);
 	 		var result = [];
-		    var cursor =db.collection('notifications').find({$or: [{"receiver_id": o_id}, {"sender_id": o_id}]}).sort([['_id', -1]]);
+		    var cursor =db.collection('notifications').find({$or: [
+		    										{"receiver_id": o_id, "receiver_deleted": false}, 
+		    										{"sender_id": o_id, "sender_deleted": false}]
+		    										}).sort([['_id', -1]]);
 		    cursor.each(function(err, doc) {
 		      assert.equal(err, null);
 		      if (doc != null) {

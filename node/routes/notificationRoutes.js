@@ -32,7 +32,7 @@ var toLocalTime = function(time) {
   return n;
 };
 
-var sendNotification = function(token, notification, car, type, time, tat, longit){
+var sendNotification = function(token, notification, car, type, time, lat, longit){
         var serverKey = 'AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4';
         var fcm = new FCM("AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4");
         var message = {
@@ -367,7 +367,7 @@ router.post('/receiverDeleted/:notificationID', function(req, res, next) {
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
                          "receiver_deleted": true 
-                   }
+                    }
              },function(err, result) {
             assert.equal(err, null);
             console.log("Receiver has deleted "+req.params.notificationID);
