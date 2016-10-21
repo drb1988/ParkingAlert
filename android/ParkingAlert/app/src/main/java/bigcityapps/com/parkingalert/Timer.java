@@ -22,9 +22,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import Util.Constants;
 import Util.SecurePreferences;
@@ -47,7 +47,7 @@ public class Timer extends Activity implements View.OnClickListener {
     RequestQueue queue;
     String mLat, mLng;
     SharedPreferences prefs;
-
+    Long estimetedTime, time , actualDate;
     @Override
     protected void onStop() {
         run = false;
@@ -82,21 +82,32 @@ public class Timer extends Activity implements View.OnClickListener {
                 Log.w("meniuu","notification_id:"+notification_id);
                 senderRead(notification_id);
                 try {
-                    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-                    Date d = df.parse(ora);
+//                    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+//                    Date d = df.parse(ora);
+//                    Date date2 = new Date();
+//                    String actual_date = df.format(date2);
+//                    Log.w("meniuu", "data_actuala:" + actual_date);
+//                    Date date_actual = df.parse(actual_date);
+//                    Calendar cal = Calendar.getInstance();
+//                    cal.setTime(d);
+//                    cal.add(Calendar.MINUTE, timer);
+//                    String newTime = df.format(cal.getTime());
+//                    Date date_plus = df.parse(newTime);
+
+
+
+//                    long diff = getDateDiff(date_plus, date_actual);
+//                    Log.w("meniuu", "diff:" + getDateDiff(date_plus, date_actual));
+
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                    Date myDate = simpleDateFormat.parse(ora);
+                    time=myDate.getTime();
+                    estimetedTime=(long)timer*60*1000;
+                    time=time+estimetedTime;
                     Date date2 = new Date();
-                    String actual_date = df.format(date2);
-                    Log.w("meniuu", "data_actuala:" + actual_date);
-                    Date date_actual = df.parse(actual_date);
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(d);
-                    cal.add(Calendar.MINUTE, timer);
-                    String newTime = df.format(cal.getTime());
-                    Date date_plus = df.parse(newTime);
-
-
-                    Log.w("meniuu", "diff:" + getDateDiff(date_actual, date_plus));
-                    long diff = getDateDiff(date_plus, date_actual);
+                    actualDate=date2.getTime();
+                    long diff=estimetedTime-actualDate;
                     diff = diff / 1000;
                     Log.w("meniuu", "diff inainte:" + diff);
                     if (diff > 0) {

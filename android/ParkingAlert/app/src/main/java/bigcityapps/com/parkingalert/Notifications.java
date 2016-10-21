@@ -326,10 +326,8 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         modelNotification.setNr_car(c.getString("vehicle"));
                         JSONObject location= new JSONObject(c.getString("location"));
                         JSONArray coordinates=new JSONArray(location.getString("coordinates"));
-                            modelNotification.setLat(coordinates.get(0).toString());
-                            modelNotification.setLng(coordinates.get(1).toString());
-                            Log.w("meniuu","lat:"+coordinates.get(0).toString());
-                            Log.w("meniuu","lng:"+coordinates.get(1).toString());
+                        modelNotification.setLat(coordinates.get(0).toString());
+                        modelNotification.setLng(coordinates.get(1).toString());
 
                         if(c.getString("sender_id").equals(id))
                         {  try {
@@ -347,21 +345,30 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
                                 Date myDate = simpleDateFormat.parse(c.getString("create_date"));
-                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
-                                String data=format1.format(myDate);
-                                modelNotification.setmHour(data);
+                                Log.w("meniuu","data in get:"+myDate);
+//                                Log.w("meniuu","datetime in milisec:"+myDate.getTime());
+//                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+//                                String data=format1.format(myDate);
+                                modelNotification.setmHour(c.getString("create_date"));
                             }else
                             {
                                 modelNotification.setTitle("Ai primit raspuns");
                                 modelNotification.setmMessage("Vin in aprox "+answer.getString("estimated")+" minute");
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
-                                Date myDate = simpleDateFormat.parse(answer.getString("answered_at"));
                                 modelNotification.setEstimeted_time(answer.getString("estimated"));
+                                try{
+                                    JSONArray extesions=new JSONArray(answer.getString("extesions"));
+                                    JSONObject extesions1 = obj.getJSONObject(0);
+                                    modelNotification.setExtended(true);
+                                    modelNotification.setEstimeted_time(extesions1.getString("extension_time"));
+                                    modelNotification.setExtension_time(extesions1.getString("extended_at"));
+                                }catch (Exception e){
+                                    modelNotification.setExtended(false);
+                                    e.printStackTrace();
+                                }
                                 modelNotification.setmType(2);
-                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
-                                String data=format1.format(myDate);
-                                modelNotification.setmHour(data);
+                                modelNotification.setmHour(answer.getString("answered_at"));
                                 if(c.getBoolean("sender_read"))
                                     modelNotification.setSenderRead(true);
                                 else
@@ -387,9 +394,11 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
                                 Date myDate = simpleDateFormat.parse(c.getString("create_date"));
-                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
-                                String data=format1.format(myDate);
-                                modelNotification.setmHour(data);
+                                Log.w("meniuu","data in get:"+myDate);
+//                                Log.w("meniuu","datetime in milisec:"+myDate.getTime());
+//                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+//                                String data=format1.format(myDate);
+                                modelNotification.setmHour(c.getString("create_date"));
                         }else
                         {
                             modelNotification.setmType(4);
@@ -397,18 +406,18 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                             modelNotification.setmMessage("Vin in aprox "+answer.getString("estimated")+" minute");
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
-                            try {
-                                Log.w(TAG,"asnwertime:"+answer.getString("answered_at"));
-                                Date myDate = simpleDateFormat.parse(answer.getString("answered_at"));
-                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
-                                String data=format1.format(myDate);
-                                modelNotification.setmHour(data);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                                Log.w("meniuu","catch la date");
-                            }
+                            modelNotification.setmHour(answer.getString("answered_at"));
                             modelNotification.setEstimeted_time(answer.getString("estimated"));
-
+                            try{
+                                JSONArray extesions=new JSONArray(answer.getString("extesions"));
+                                JSONObject extesions1 = obj.getJSONObject(0);
+                                modelNotification.setExtended(true);
+                                modelNotification.setEstimeted_time(extesions1.getString("extension_time"));
+                                modelNotification.setExtension_time(extesions1.getString("extended_at"));
+                            }catch (Exception e){
+                                modelNotification.setExtended(false);
+                                e.printStackTrace();
+                            }
                         }
                         }
                         modelNotificationArrayList.add(modelNotification);
@@ -547,7 +556,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         notifManager.cancelAll();
                     } else
                     if(modelNotificationArrayList.get(position).getmType()==2) {
-//                        senderRead(modelNotificationArrayList.get(position).getId());
+                        senderRead(modelNotificationArrayList.get(position).getId());
                         Log.w("meniuu","timer");
                         Intent timer = new Intent(Notifications.this, Timer.class);
                         timer.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
@@ -587,10 +596,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
             holder.mesaj.setText(item.getmMessage());
             if(!item.getPicture().equals("null")) {
                 Log.w("meniuu","picture:"+item.getPicture());
-                Glide.with(ctx)
-                        .load(item.getPicture())
-                        .asBitmap().centerCrop().into(new BitmapImageViewTarget(
-                        holder.
+                Glide.with(ctx).load(item.getPicture()).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.
                                 poza) {
                     protected void setResource(Bitmap resource) {
                         RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
@@ -634,13 +640,23 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                 holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
             }
 
-//            String [] split= item.getmHour().split("T");
-//            Log.w("meniuu","split:"+split.length);
-            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
+//            Date myDate = simpleDateFormat.parse(answer.getString("answered_at"));
+//            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+//             String data=format1.format(myDate);
+
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+            try {
+            Date myDate = simpleDateFormat.parse(item.getmHour());
+                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                String data=format1.format(myDate);
+
+//            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
             SimpleDateFormat format2 = new SimpleDateFormat("HH:mm");
             Date date = null;
-            try {
-                date = format1.parse(item.getmHour());
+
+                date = format1.parse(data);
                 String ora=format2.format(date);
                 holder.ora.setText(ora);
             } catch (Exception e) {

@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by fasu on 19/09/2016.
@@ -53,6 +54,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     String mPlates;
 //    double mLongitude, mLatitude;
     String TAG = "meniuu";
+    long  time, actualDate;
 
     protected void onStop() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -117,13 +119,24 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 mLat = b.getString("lat");
                 mLng = b.getString("lng");
                 Log.w("meniuu","lat in map:"+mLat+" lng:"+mLng);
-                SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-                Date d = df.parse(mHour);
+
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                Date myDate = simpleDateFormat.parse(mHour);
+                time=myDate.getTime();
                 Date date2 = new Date();
-                String actual_date = df.format(date2);
-                Log.w("meniuu", "data_actuala:" + actual_date);
-                Date date_actual = df.parse(actual_date);
-                long diff = getDateDiff(date_actual, d);
+                actualDate=date2.getTime();
+
+
+//                SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+//                Date d = df.parse(mHour);
+//                Date date2 = new Date();
+//                String actual_date = df.format(date2);
+//                Log.w("meniuu", "data_actuala:" + actual_date);
+//                Date date_actual = df.parse(actual_date);
+//                long diff = getDateDiff(date_actual, d);
+                long diff=actualDate-time;
                 diff = diff / 1000;
                 Log.w("meniuu", "diff in harta:" + diff);
                 int minutes = 0;
