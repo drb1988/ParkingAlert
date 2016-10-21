@@ -60,7 +60,11 @@ module.exports = function(passport){
 
   adminRouter.get('/dashboard', isAuthenticated, function(req, res, next) {
     res.render('newpage', { 
-      title: 'Express'
+      title: 'Express',
+      user: {
+        name: req.user.first_name + " " + req.user.last_name,
+        email: req.user.email
+      }
     });
   });
 
@@ -86,7 +90,7 @@ module.exports = function(passport){
   res.render('heatmap_ajax', { title: 'Express' });
 });
 
-  adminRouter.post('/MapAjaxCallback', function(req, res, next) {
+  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
       * @MapAjaxCallback /
@@ -99,6 +103,9 @@ module.exports = function(passport){
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
     console.log("body request", req.body);
+    if(req.user) {
+      console.log("req.user",req.user);
+    }
     var findNotifications = function(db, callback) {   
       var o_id = new ObjectId(req.params.userID);
         var result = [];
@@ -133,6 +140,73 @@ module.exports = function(passport){
                       "lat": doc.location.coordinates[0],
                       "lng": doc.location.coordinates[1]
                     });
+                }
+              }
+            } else {
+               callback(); 
+               console.log("result: ",result);
+               res.status(200).send(result)
+            }
+
+         });
+      };  
+
+      MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findNotifications(db, function() {
+            db.close();
+        });
+      });
+  });
+
+  adminRouter.post('/UsersAjaxCallback', function(req, res, next) {
+    /**
+      * Base route,
+      * @MapAjaxCallback /
+      */
+    req.body.startDateTime = new Date(req.body.startDateTime);
+    req.body.endDateTime = new Date(req.body.endDateTime);
+    if(req.body.polygon)
+      for(var i=0;i<req.body.polygon.length;i++) {
+        req.body.polygon[i][0]=parseFloat(req.body.polygon[i][0]);
+        req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
+      }
+    console.log("body request", req.body);
+    var findNotifications = function(db, callback) {   
+      var o_id = new ObjectId(req.params.userID);
+        var result = [];
+          var cursor =db.collection('notifications').find().sort({ _id: -1}).skip(parseInt(req.params.offset)).limit(parseInt(req.params.limit));
+          cursor.each(function(err, doc) {
+            assert.equal(err, null);
+            if (doc != null) {
+              if(doc.location.coordinates[0] && doc.location.coordinates[1] 
+                && req.body.startDateTime.getTime()<=doc.create_date.getTime() 
+                && doc.create_date.getTime()<=req.body.endDateTime.getTime()
+                ) {
+                if(req.body.polygon)
+                  if(inside([ doc.location.coordinates[0], doc.location.coordinates[1] ], req.body.polygon) && (doc.sender_id || doc.reciver_id)) {
+                    db.collection('parking').findOne({"_id": { $in: [doc.sender_id, doc.reciver_id]}},
+                      function(err, user) {
+                        console.log(result.email)
+                        assert.equal(err, null);
+                        result.push(user);
+                        callback();
+                      });
+                    }
+                if(req.body.circle) {
+                  var circle = [parseFloat(req.body.circle.center.lat), parseFloat(req.body.circle.center.lng)],
+                  radius =  parseFloat(req.body.circle.radius),
+                  point = [doc.location.coordinates[0], doc.location.coordinates[1]]
+                  console.log("is in circle: "+collide(point, circle, radius));
+                  if(collide(point, circle, radius)){
+                    db.collection('parking').findOne({"_id": { $in: [doc.sender_id, doc.reciver_id]}},
+                      function(err, user) {
+                        console.log(result.email)
+                        assert.equal(err, null);
+                        result.push(user);
+                        callback();
+                    });
+                  }
                 }
               }
             } else {

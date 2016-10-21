@@ -107,14 +107,14 @@ html
               li.dropdown.user.user-menu
                 a.dropdown-toggle(href='#', data-toggle='dropdown')
                   img.user-image(src='/dist/img/user3-128x128.jpg', alt='User Image')
-                  span.hidden-xs Claudia Oprea
+                  span.hidden-xs #{user.name}
                 ul.dropdown-menu
                   // User image
                   li.user-header
                     img.img-circle(src='/dist/img/user3-128x128.jpg', alt='User Image')
                     p
-                      | Claudia Oprea
-                      small Administrator cu drepturi depline.
+                      | #{user.name}
+                      small Esti logat cu #{user.email}.
                   // Menu Body
                   li.user-footer
                     .pull-left
