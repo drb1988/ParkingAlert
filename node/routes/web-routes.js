@@ -9,7 +9,9 @@ var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 var Crypto = require('crypto'); 
 var passport = require('passport');
-
+var jwt = require('json-web-token');
+var Chance = require('chance');
+var chance = new Chance();
 var inside = require('point-in-polygon');
 var collide = require('point-circle-collision')
 
@@ -457,6 +459,28 @@ module.exports = function(passport){
     });
   });
   });
+
+  var generateCode = function (user)
+     {  
+      var secret = "Friendly2016"
+      var seed = chance.integer({min: 100000, max: 999999}).toString();
+      var payload = {
+            "user_id"   : user,
+            "seed"     : seed,
+            "usage": "QRCode"
+        };
+        var result = jwt.encode( secret, payload);
+        return result.value;
+     }
+
+  router.get('/generateQrCode/:userID', function(req, res, next) {
+  var testCode = generateCode(req.params.userID);
+  console.log("test decodare");
+  console.log(decodeJwt(testCode));
+  res.status(200).send({
+    "carCode":  generateCode(req.params.userID) 
+  })
+});
 
   return adminRouter;
 }
