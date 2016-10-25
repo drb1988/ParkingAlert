@@ -21,6 +21,18 @@ var storage =   multer.diskStorage({
   }
 });
 
+var decodeJwt = function (token) {
+	var secret = "Friendly2016";
+	jwt.decode(secret, token, function(err, decode){
+    if (err) {
+      return(err.message);
+    } else {
+      console.log("decode: ",decode);
+     return(decode);
+    }
+  });
+}
+
 var generateCode = function (user)
  {	
  	var secret = "Friendly2016"
@@ -34,14 +46,7 @@ var generateCode = function (user)
     return result.value;
  }
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
 
-router.get('/chart', function(req, res, next) {
-  res.send('respond with a resource');
-});
 
 router.post('/addCar/:userID', function(req, res, next) {
     /**
@@ -168,6 +173,39 @@ router.get('/getNotifications/:userID', function(req, res, next) {
 		MongoClient.connect(dbConfig.url, function(err, db) {
 			  assert.equal(null, err);
 			  findNotifications(db, function() {
+			      db.close();
+			  });
+			});
+});
+
+router.get('/getNotification/:userID', function(req, res, next) {
+		/**
+    	* Route to get all notifications for a user ID,
+    	* @name /getNotifications/:userID
+    	* @param {String} :userId
+    	*/
+
+    	var findNotification = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	 		var result = [];
+		    var cursor =db.collection('notifications').find({$or: [
+		    										{"receiver_id": o_id, "receiver_deleted": false}, 
+		    										{"sender_id": o_id, "sender_deleted": false}]
+		    										}).sort({"create_date": -1}).limit(1);
+		    cursor.each(function(err, doc) {
+		      assert.equal(err, null);
+		      if (doc != null) {
+		         result = doc;
+		      } else {
+		         callback();
+		         res.status(200).send(result)
+		      }
+		   });
+		};	
+
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findNotification(db, function() {
 			      db.close();
 			  });
 			});
@@ -500,6 +538,9 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 });
 
 router.get('/generateCarCode/:userID', function(req, res, next) {
+	var testCode = generateCode(req.params.userID);
+	console.log("test decodare");
+	console.log(decodeJwt(testCode));
 	res.status(200).send({
 		"carCode":  generateCode(req.params.userID) 
 	})
