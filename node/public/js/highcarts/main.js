@@ -70,9 +70,9 @@ $(document).ready(function () {
     legend: {
       layout: 'vertical',
       align: 'left',
-      x: 50,
+      x: 70,
       verticalAlign: 'top',
-      y: 20,
+      y: 50,
       floating: true,
       backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
     },
@@ -149,7 +149,7 @@ $(document).ready(function () {
       // if(polygon) 
       //   json.value = polygon.getPath();
       console.log("json pentru stat",json);
-      chart.setTitle({text: "Statistica pentru perioada : "+selectedDate});
+      chart.setTitle({text: "Statistica pentru perioada : <br>"+selectedDate});
       $.ajax({
         async: true,
         type: "POST",
