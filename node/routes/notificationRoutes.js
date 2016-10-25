@@ -263,26 +263,6 @@ router.get('/senderRead/:notificationID', function(req, res, next) {
   });
   });
 
-router.get('/senderReview/:notificationID', function(req, res, next) {
-    /**
-    * Route to mark notifications as read by the sender,
-    * @name /receiverRead/:notificationID
-    * @param {String} :notificationID
-    */
-  var vehicle = "";
-  var sender_token = "";
-
-  MongoClient.connect(dbConfig.url, function(err, db) {
-    assert.equal(null, err);
-    findUsersByNotification(db, function(sender){console.log(sender); notificationSenderToken=sender.sender_token;
-      vehicle=sender.vehicle;
-        db.close();
-        res.status(200).send(req.params.notificationID)
-        sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "review", 0, 0, 0)
-      }, req.params.notificationID);      
-  });
-  });
-
 router.post('/receiverAnswered/:notificationID', function(req, res, next) {
     /**
     * Route to set answers,
