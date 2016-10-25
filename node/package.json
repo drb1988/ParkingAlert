@@ -32,6 +32,8 @@
     "nodemailer": "~2.6.4", 
     "chance": "~1.0.4",
     "multer": "~1.2.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "point-in-polygon": "~1.0.1",
+    "point-circle-collision": "~1.0.3"
   }
 }

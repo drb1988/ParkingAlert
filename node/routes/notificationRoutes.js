@@ -223,7 +223,6 @@ router.get('/receiverRead/:notificationID', function(req, res, next) {
       deleteCar(db, function() {
         db.close();
         res.status(200).send(req.params.notificationID)
-        sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "read", 0, 0, 0)
       });
       }, req.params.notificationID);      
   });
@@ -257,7 +256,6 @@ router.get('/senderRead/:notificationID', function(req, res, next) {
       deleteCar(db, function() {
         db.close();
         res.status(200).send(req.params.notificationID)
-        sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "read", 0, 0, 0)
       });
       }, req.params.notificationID);      
   });
