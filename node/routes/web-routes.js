@@ -473,7 +473,7 @@ module.exports = function(passport){
         return result.value;
      }
 
-  router.get('/generateQrCode/:userID', function(req, res, next) {
+  adminRouter.get('/generateQrCode/:userID', function(req, res, next) {
   var testCode = generateCode(req.params.userID);
   console.log("test decodare");
   console.log(decodeJwt(testCode));
