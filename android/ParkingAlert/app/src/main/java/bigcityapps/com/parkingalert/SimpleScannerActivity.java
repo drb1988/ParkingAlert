@@ -93,22 +93,23 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                        builder.setTitle(plates+" a fost notificat cu succes");
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-//                                Intent harta= new Intent(Scan.this, Map.class);
-//                                startActivity(harta);
-                                finish();
-                            }
-                        });
-//                        builder.setmMessage(rawResult.getText());
-                        AlertDialog alert1 = builder.create();
-                        alert1.show();
+//                        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+//                        builder.setTitle(plates+" a fost notificat cu succes");
+//                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+////                                Intent harta= new Intent(Scan.this, Map.class);
+////                                startActivity(harta);
+//                                finish();
+//                            }
+//                        });
+////                        builder.setmMessage(rawResult.getText());
+//                        AlertDialog alert1 = builder.create();
+//                        alert1.show();
                         Log.w("meniuu", "response:post notification" + response);
-//                        Intent harta= new Intent(Scan.this, Map.class);
-//                        startActivity(harta);
-//                        finish();
+
+                        Intent harta= new Intent(SimpleScannerActivity.this, MainActivity.class);
+                        startActivity(harta);
+                        finish();
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {

@@ -1,17 +1,18 @@
 package bigcityapps.com.parkingalert;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -36,9 +37,9 @@ import Util.Constants;
 import Util.SecurePreferences;
 
 /**
- * Created by fasu on 15/09/2016.
+ * Created by anupamchugh on 10/12/15.
  */
-public class Timer extends Activity implements View.OnClickListener {
+public class TimerFragmnet extends Fragment implements View.OnClickListener {
     ImageView image;
     private ProgressBar progBar;
     private TextView text;
@@ -55,29 +56,23 @@ public class Timer extends Activity implements View.OnClickListener {
     SharedPreferences prefs;
     Long estimetedTime, time , actualDate;
     Context ctx;
-    @Override
-    protected void onStop() {
-        run = false;
-        super.onStop();
+    boolean isActiv=true;
+    public TimerFragmnet() {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Calculate();
-    }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.timer);
-        ctx=this;
-        initcComponents();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        prefs = new SecurePreferences(this);
-        queue = Volley.newRequestQueue(this);
+        View rootView = inflater.inflate(bigcityapps.com.parkingalert.R.layout.timer, container, false);
+        ctx=rootView.getContext();
+        initcComponents(rootView);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        prefs = new SecurePreferences(rootView.getContext());
+        queue = Volley.newRequestQueue(rootView.getContext());
 
-        Intent iin = getIntent();
-        Bundle b = iin.getExtras();
+//        Intent iin = getActivity().getIntent();
+//        Bundle bundle = this.getArguments();
+        Bundle b = this.getArguments();
         if (b != null) {
             try {
                 Log.w("meniuu", "timer");
@@ -95,47 +90,12 @@ public class Timer extends Activity implements View.OnClickListener {
                 e.printStackTrace();
             }
         }
+        return rootView;
     }
-public void Calculate(){
-    try {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
-        Date myDate = simpleDateFormat.parse(ora);
-        time=myDate.getTime();
-        estimetedTime=(long)timer*60*1000;
-        time=time+estimetedTime;
-        Date date2 = new Date();
-        actualDate=date2.getTime();
-        long diff=time-actualDate;
-        diff = diff / 1000;
-        Log.w("meniuu","diff in timer:"+diff);
-        if (diff > 0) {
-            progBar.setMax(timer * 60);
-            mProgressStatus = (int) diff;
-            dosomething();
-        } else {
-            Intent harta = new Intent(Timer.this, Map.class);
-            harta.putExtra("mHour", ora);
-            harta.putExtra("mPlates", nr_carString);
-            harta.putExtra("time", timer);
-            harta.putExtra("lat", mLat);
-            harta.putExtra("lng", mLng);
-            harta.putExtra("image", mImage);
-            startActivity(harta);
-            finish();
-        }
-        Log.w("meniuu", "data mHour:" + ora);
-    } catch (Exception e) {
-        e.printStackTrace();
-        Log.w("meniuu0", "cahct");
-    }
-}
-    public void initcComponents() {
-        car_nr = (TextView) findViewById(R.id.car_nr_timer);
-        time_answer = (TextView) findViewById(R.id.answer_timer);
-//        back = (RelativeLayout) findViewById(R.id.back_timer);
-        back.setOnClickListener(this);
-        image = (ImageView) findViewById(R.id.mImage);
+    public void initcComponents(View rootView) {
+        car_nr = (TextView) rootView.findViewById(R.id.car_nr_timer);
+        time_answer = (TextView) rootView.findViewById(R.id.answer_timer);
+        image = (ImageView) rootView.findViewById(R.id.mImage);
         Glide.with(ctx).load(mImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
             protected void setResource(Bitmap resource) {
                 RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
@@ -143,8 +103,62 @@ public void Calculate(){
                 image.setImageDrawable(circularBitmapDrawable);
             }
         });
-        progBar = (ProgressBar) findViewById(R.id.progressBar);
-        text = (TextView) findViewById(R.id.textView1);
+        progBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        text = (TextView) rootView.findViewById(R.id.textView1);
+    }
+    public void Calculate(){
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+            Date myDate = simpleDateFormat.parse(ora);
+            time=myDate.getTime();
+            estimetedTime=(long)timer*60*1000;
+            time=time+estimetedTime;
+            Date date2 = new Date();
+            actualDate=date2.getTime();
+            long diff=time-actualDate;
+            diff = diff / 1000;
+            Log.w("meniuu","diff in timer:"+diff);
+            if (diff > 0) {
+                progBar.setMax(timer * 60);
+                mProgressStatus = (int) diff;
+                dosomething();
+            } else {
+                Fragment  fragment = new ReviewFragment();
+                Bundle harta = new Bundle();
+                harta.putString("mHour", ora);
+                harta.putString("mPlates", nr_carString);
+                harta.putString("time", timer+"");
+                harta.putString("lat", mLat);
+                harta.putString("lng", mLng);
+                harta.putString("image", mImage);
+                fragment.setArguments(harta);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+
+
+//                Intent harta = new Intent(getActivity(), Map.class);
+//                harta.putExtra("mHour", ora);
+//                harta.putExtra("mPlates", nr_carString);
+//                harta.putExtra("time", timer);
+//                harta.putExtra("lat", mLat);
+//                harta.putExtra("lng", mLng);
+//                harta.putExtra("image", mImage);
+//                startActivity(harta);
+//                finish();
+            }
+            Log.w("meniuu", "data mHour:" + ora);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("meniuu0", "cahct");
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        isActiv=false;
+        super.onDestroy();
     }
 
     public void dosomething() {
@@ -159,6 +173,20 @@ public void Calculate(){
                             progBar.setProgress(mProgressStatus);
                             int minutes = (mProgressStatus % 3600) / 60;
                             int sec = mProgressStatus % 60;
+                            if(mProgressStatus==0 & isActiv==true){
+                                Fragment  fragment = new ReviewFragment();
+                                Bundle harta = new Bundle();
+                                harta.putString("mHour", ora);
+                                harta.putString("mPlates", nr_carString);
+                                harta.putString("time", timer+"");
+                                harta.putString("lat", mLat);
+                                harta.putString("lng", mLng);
+                                harta.putString("image", mImage);
+                                harta.putString("notification_id", notification_id);
+                                fragment.setArguments(harta);
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                            }
                             if (minutes < 10) {
                                 car_nr.setText(nr_carString + " vine in " + minutes + " minute");
                                 if (sec < 10)
@@ -183,15 +211,14 @@ public void Calculate(){
             }
         }).start();
     }
-
+    @Override
     public void onClick(View view) {
 //        switch (view.getId()) {
 //            case R.id.back_timer:
-//                finish();
+////                finish();
 //                break;
 //        }
     }
-
     public void senderRead(String notification_id) {
         String url = Constants.URL + "notifications/senderRead/" + notification_id;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

@@ -328,6 +328,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         JSONArray coordinates=new JSONArray(location.getString("coordinates"));
                         modelNotification.setLat(coordinates.get(0).toString());
                         modelNotification.setLng(coordinates.get(1).toString());
+                        Log.w("meniuu","lat:"+coordinates.get(0).toString());
 
                         if(c.getString("sender_id").equals(id))
                         {  try {
@@ -565,6 +566,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         timer.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
                         timer.putExtra("lat", modelNotificationArrayList.get(position).getLat());
                         timer.putExtra("lng", modelNotificationArrayList.get(position).getLng());
+                        timer.putExtra("image", modelNotificationArrayList.get(position).getPicture());
                         startActivity(timer);
                     }else
                     if(modelNotificationArrayList.get(position).getmType()==1){
@@ -575,6 +577,8 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         harta.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
                         harta.putExtra("lat", modelNotificationArrayList.get(position).getLat());
                         harta.putExtra("lng", modelNotificationArrayList.get(position).getLng());
+                        harta.putExtra("image", modelNotificationArrayList.get(position).getPicture());
+
                         startActivity(harta);
                     }else
                     if(modelNotificationArrayList.get(position).getmType()==4) {
@@ -586,6 +590,8 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         timer.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
                         timer.putExtra("lat", modelNotificationArrayList.get(position).getLat());
                         timer.putExtra("lng", modelNotificationArrayList.get(position).getLng());
+                        timer.putExtra("image", modelNotificationArrayList.get(position).getPicture());
+                        Log.w("meniuu","image:"+ modelNotificationArrayList.get(position).getPicture());
                         startActivity(timer);
                     }
                 }
@@ -596,8 +602,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
             holder.mesaj.setText(item.getmMessage());
             if(!item.getPicture().equals("null")) {
                 Log.w("meniuu","picture:"+item.getPicture());
-                Glide.with(ctx).load(item.getPicture()).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.
-                                poza) {
+                Glide.with(ctx).load(item.getPicture()).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.poza) {
                     protected void setResource(Bitmap resource) {
                         RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
                         circularBitmapDrawable.setCircular(true);
@@ -605,6 +610,8 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                     }
                 });
             }
+            else
+                holder.poza.setImageResource(R.drawable.default_image_profile_round);
             if(item.getmType()==2) {
                 if(item.isSenderRead()==false) {
                     holder.bagde.setImageResource(R.drawable.cerculet_notif);

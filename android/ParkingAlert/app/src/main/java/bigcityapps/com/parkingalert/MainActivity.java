@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,7 +25,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.TimeZone;
+
 import Model.DataModel;
+import Util.Constants;
+import Util.SecurePreferences;
 
 public class MainActivity extends AppCompatActivity {
     static boolean active = false;
@@ -39,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
     String latitude = null, longitude = null;
     Context ctx;
-
+    RequestQueue queue;
+    SharedPreferences prefs;
+    Long estimetedTime, time , actualDate;
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             Bundle b = intent.getExtras();
@@ -52,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 latitude=b.getString("lat");
                 longitude=b.getString("lng");
                 Log.w("meniuu", "notificaion:" + notification_id);
+                Log.w("meniuu", "answered::" + answered_at);
                 updateUi();
             }catch (Exception e){
                 e.printStackTrace();
@@ -73,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param savedInstanceState
      */
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ///firebase receiver
@@ -83,28 +106,10 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         ctx=this;
+        prefs = new SecurePreferences(this);
+        queue = Volley.newRequestQueue(this);
         setupToolbar();
-
-//        PackageInfo info;
-//        try {
-//          String  PACKAGE_NAME = getApplicationContext().getPackageName();
-//            Log.w("meniuu","package name"+PACKAGE_NAME);
-//            info = getPackageManager().getPackageInfo(PACKAGE_NAME, PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md;
-//                md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                String something = new String(Base64.encode(md.digest(), 0));
-//                //String something = new String(Base64.encodeBytes(md.digest()));
-//                Log.e("meniuu","hash key:"+ something);
-//            }
-//        } catch (PackageManager.NameNotFoundException e1) {
-//            Log.e("meniuu","name not found"+ e1.toString());
-//        } catch (NoSuchAlgorithmException e) {
-//            Log.e("meniuu","no such edYear algorithm"+ e.toString());
-//        } catch (Exception e) {
-//            Log.e("exception", e.toString());
-//        }
+        getNotification(prefs.getString("user_id",null));
 
 
         DataModel[] drawerItem = new DataModel[10];
@@ -183,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = null;
         switch (position) {
             case 0:
+                Log.w("meniuu","bydefault");
                 fragment = new ConnectFragment();
                 break;
             case 1:
@@ -190,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(question);
                 break;
             case 2:
-                fragment = new TableFragment();
+                fragment = new ViewNotificationFragment();
                 break;
             case 4:
                 Intent user_profile= new Intent(MainActivity.this, User_profile.class);
@@ -207,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawer(mDrawerList);
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(bigcityapps.com.parkingalert.R.id.content_frame, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
@@ -292,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     void setupToolbar(){
-        toolbar = (Toolbar) findViewById(bigcityapps.com.parkingalert.R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
@@ -312,6 +318,226 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
     }
 
+    public void getNotification(final String id){
+        String url = Constants.URL+"users/getNotification/"+id;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                try {
+                    Log.w("meniuu","response getuser:"+response);
+                    ModelNotification modelNotification= new ModelNotification();
+                    JSONObject c =new JSONObject(json);
+                    modelNotification.setId(c.getString("_id"));
+                    JSONObject answer= new JSONObject(c.getString("answer"));
+                    modelNotification.setNr_car(c.getString("vehicle"));
+                    JSONObject location= new JSONObject(c.getString("location"));
+                    JSONArray coordinates=new JSONArray(location.getString("coordinates"));
+                    modelNotification.setLat(coordinates.get(0).toString());
+                    modelNotification.setLng(coordinates.get(1).toString());
+                    Log.w("meniuu","lat:"+coordinates.get(0).toString());
+                    Log.w("meniuu","lng:"+coordinates.get(1).toString());
 
+                    if(c.getString("sender_id").equals(id))
+                    {  try {
+                        modelNotification.setPicture(c.getString("receiver_picture"));
+                    }catch (Exception e){
+                        Log.w("meniuu","receiverul nu are poza");
+                        e.printStackTrace();
+                        modelNotification.setPicture("null");
+                    }
+                        if(answer.getString("estimated").equals("null"))
+                        {
+                            modelNotification.setTitle("Ai trimis notificare");
+                            modelNotification.setmMessage("M-ai blocat");
+                            modelNotification.setmType(1);
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                            Date myDate = simpleDateFormat.parse(c.getString("create_date"));
+                            Log.w("meniuu","data in get:"+myDate);
+                            modelNotification.setmHour(c.getString("create_date"));
+                            /// se schimba fragmentul cu mapa
+                            time=myDate.getTime();
+                            estimetedTime=(long)30*1000;
+                            time=time+estimetedTime;
+                            Date date2 = new Date();
+                            actualDate=date2.getTime();
+                            long diff=time-actualDate;
+                            diff = diff / 1000;
+                            if(diff>0) {
+                                Log.w("meniuu", "mapfragment");
+                                Fragment fragment = new MapFragment();
+                                Bundle harta = new Bundle();
+                                harta.putString("mHour", modelNotification.getmHour());
+                                harta.putString("mPlates", modelNotification.getNr_car());
+                                harta.putString("time", modelNotification.getEstimeted_time() + "");
+                                harta.putString("lat", modelNotification.getLat());
+                                harta.putString("lng", modelNotification.getLng());
+                                harta.putString("image", modelNotification.getPicture());
+                                fragment.setArguments(harta);
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                            }else
+                            {Review(modelNotification.getmHour(),modelNotification.getNr_car(),modelNotification.getEstimeted_time() + "",modelNotification.getLat(),modelNotification.getLng(), modelNotification.getPicture());
 
+                            }
+                        }else
+                        {
+                            modelNotification.setTitle("Ai primit raspuns");
+                            modelNotification.setmMessage("Vin in aprox "+answer.getString("estimated")+" minute");
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                            modelNotification.setEstimeted_time(answer.getString("estimated"));
+                            try{
+                                JSONArray extesions=new JSONArray(answer.getString("extesions"));
+                                JSONObject extesions1 = extesions.getJSONObject(0);
+                                modelNotification.setExtended(true);
+                                modelNotification.setEstimeted_time(extesions1.getString("extension_time"));
+                                modelNotification.setExtension_time(extesions1.getString("extended_at"));
+                            }catch (Exception e){
+                                modelNotification.setExtended(false);
+                                e.printStackTrace();
+                            }
+                            modelNotification.setmType(2);
+                            modelNotification.setmHour(answer.getString("answered_at"));
+                            if(c.getBoolean("sender_read"))
+                                modelNotification.setSenderRead(true);
+                            else
+                                modelNotification.setSenderRead(false);
+                            ///
+                            Log.w("meniuu","timerfragment");
+                            Fragment  fragment = new TimerFragmnet();
+                            Bundle timer = new Bundle();
+                            timer.putString("time", modelNotification.getEstimeted_time());
+                            timer.putString("mHour", modelNotification.getmHour());
+                            timer.putString("mPlates", modelNotification.getNr_car());
+                            timer.putString("notification_id", modelNotification.getId());
+                            timer.putString("lat", modelNotification.getLng());
+                            timer.putString("lng", modelNotification.getLng());
+                            fragment.setArguments(timer);
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        }
+                    }else
+                    if(c.getString("receiver_id").equals(id))
+                    { try {
+                        modelNotification.setPicture(c.getString("sender_picture"));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        Log.w("meniuu","senderul nu are poza");
+                        modelNotification.setPicture("null");
+                    }
+                        if(answer.getString("estimated").equals("null")) {
+                            modelNotification.setmType(3);
+                            if(c.getBoolean("receiver_read"))
+                                modelNotification.setReceiverRead(true);
+                            else
+                                modelNotification.setReceiverRead(false);
+                            modelNotification.setTitle("Ai primit notificare");
+                            modelNotification.setmMessage("Vino la masina pt ca m-ai blocat");
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                            modelNotification.setmHour(c.getString("create_date"));
+////
+                            Log.w("meniuu","viewnotiffragment");
+                            Fragment  fragment = new ViewNotificationFragment();
+                            Bundle vienotif = new Bundle();
+                            vienotif.putString("mDetails", modelNotification.getmDetails());
+                            vienotif.putString("notification_id", modelNotification.getId());
+                            vienotif.putString("mPlates", modelNotification.getNr_car());
+                            fragment.setArguments(vienotif);
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                            //
+                        }else
+                        {
+                            modelNotification.setmType(4);
+                            modelNotification.setTitle("Ai trimis raspuns");
+                            modelNotification.setmMessage("Vin in aprox "+answer.getString("estimated")+" minute");
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                            modelNotification.setmHour(answer.getString("answered_at"));
+                            modelNotification.setEstimeted_time(answer.getString("estimated"));
+                            try{
+                                JSONArray extesions=new JSONArray(answer.getString("extesions"));
+                                JSONObject extesions1 = extesions.getJSONObject(0);
+                                modelNotification.setExtended(true);
+                                modelNotification.setEstimeted_time(extesions1.getString("extension_time"));
+                                modelNotification.setExtension_time(extesions1.getString("extended_at"));
+                            }catch (Exception e){
+                                modelNotification.setExtended(false);
+                                e.printStackTrace();
+                            }
+                            ///
+                            Log.w("meniuu","timersendfragment");
+                            Fragment  fragment = new TimerSenderFragment();
+                            Bundle timerSender = new Bundle();
+                            timerSender.putString("time", modelNotification.getEstimeted_time());
+                            timerSender.putString("mHour", modelNotification.getmHour());
+                            timerSender.putString("mPlates", modelNotification.getNr_car());
+                            timerSender.putString("notification_id", modelNotification.getId());
+                            timerSender.putString("lat", modelNotification.getLat());
+                            timerSender.putString("lng", modelNotification.getLng());
+                            timerSender.putString("image", modelNotification.getPicture());
+                            fragment.setArguments(timerSender);
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                            //
+                        }
+                    }
+                }catch (Exception e)
+                {Log.w("meniuu","este catch");
+                    e.printStackTrace();
+                }
+            }
+        }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Log.w("meniuu","authtoken:"+auth_token_string);
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer "+auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    Response.ErrorListener ErrorListener = new Response.ErrorListener() {
+        public void onErrorResponse(VolleyError error) {
+            Log.w("meniuu", "error: errorlistener:" + error);
+        }
+    };
+
+    public void Review(final String ora, final String nr_carString, final String timer, final String mLat, final String mLng, final String mImage){
+        String url = Constants.URL+"notifications/sendReview/"+notification_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        Log.w("meniuu", "response:review" + response);
+                        Fragment  fragment = new SumarFragment();
+                        Bundle harta = new Bundle();
+                        harta.putString("mHour", ora);
+                        harta.putString("mPlates", nr_carString);
+                        harta.putString("time", timer+"");
+                        harta.putString("lat", mLat);
+                        harta.putString("lng", mLng);
+                        harta.putString("image", mImage);
+                        fragment.setArguments(harta);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("feedback",false+"");
+                return params;
+            }
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
 }

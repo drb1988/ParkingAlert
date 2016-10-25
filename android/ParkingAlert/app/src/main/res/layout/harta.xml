@@ -28,16 +28,10 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <fragment
-        android:id="@+id/map"
-        class="com.google.android.gms.maps.MapFragment"
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bottom"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_below="@+id/header" />
-
+        android:layout_height="match_parent" />
     <LinearLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"

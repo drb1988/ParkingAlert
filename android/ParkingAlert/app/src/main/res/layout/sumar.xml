@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Sumar"
+        android:textSize="@dimen/txt_size_bigger1" />
+
+    <TextView
+        android:id="@+id/report_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:text="Raportat de "
+        android:textSize="@dimen/txt_size" />
+
+    <TextView
+        android:id="@+id/data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/report_name"
+        android:textSize="@dimen/txt_size" />
+
+    <TextView
+        android:id="@+id/raspuns"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/data"
+        android:text="Raspuns:"
+        android:textSize="@dimen/txt_size" />
+
+    <TextView
+        android:id="@+id/data_raspuns"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/raspuns"
+        android:text="data:"
+        android:textSize="@dimen/txt_size" />
+
+    <TextView
+        android:id="@+id/feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/data_raspuns"
+        android:text="feedback:"
+        android:textSize="@dimen/txt_size" />
+
+    <TextView
+        android:id="@+id/ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="OK" />
+</RelativeLayout>

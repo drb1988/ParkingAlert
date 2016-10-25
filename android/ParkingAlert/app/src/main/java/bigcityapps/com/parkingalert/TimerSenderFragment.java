@@ -1,14 +1,15 @@
 package bigcityapps.com.parkingalert;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,9 +32,9 @@ import Util.Constants;
 import Util.SecurePreferences;
 
 /**
- * Created by Sistem1 on 01/10/2016.
+ * Created by anupamchugh on 10/12/15.
  */
-public class TimerSender extends Activity implements View.OnClickListener {
+public class TimerSenderFragment extends Fragment implements View.OnClickListener {
     RelativeLayout back;
     int timer;
     boolean run=true;
@@ -48,21 +49,19 @@ public class TimerSender extends Activity implements View.OnClickListener {
     SharedPreferences prefs;
     RelativeLayout extended;
     long time, estimetedTime, actualDate;
-    @Override
-    protected void onStop() {
-        run=false;
-        super.onStop();
+    public TimerSenderFragment() {
     }
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.timer_sender);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        queue = Volley.newRequestQueue(this);
-        prefs = new SecurePreferences(this);
-        ctx=this;
-        initComponents();
-        Intent iin= getIntent();
-        Bundle b = iin.getExtras();
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.timer_sender, container, false);
+        queue = Volley.newRequestQueue(getContext());
+        prefs = new SecurePreferences(getContext());
+        ctx=getContext();
+        initComponents(rootView);
+//        Intent iin= getActivity().getIntent();
+        Bundle b = this.getArguments();
         if(b!=null) {
             try {
                 timer = Integer.parseInt((String) b.get("time"));
@@ -75,21 +74,6 @@ public class TimerSender extends Activity implements View.OnClickListener {
                 image = b.getString("image");
                 Log.w("meniuu","mHour:"+ora);
                 try {
-//                    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-//                    Date d = df.parse(ora);
-//                    Date date2= new Date();
-//                    String actual_date=df.format(date2);
-//                    Log.w("meniuu","data_actuala:"+actual_date);
-//                    Date date_actual=df.parse(actual_date);
-//                    Calendar cal = Calendar.getInstance();
-//                    cal.setTime(d);
-//                    cal.add(Calendar.MINUTE, timer);
-//                    String newTime = df.format(cal.getTime());
-//                    Date date_plus=df.parse(newTime);
-//
-//
-//                    Log.w("meniuu","diff:"+ getDateDiff(date_actual,date_plus));
-//                    long diff=getDateDiff(date_plus,date_actual);
 
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
@@ -110,15 +94,19 @@ public class TimerSender extends Activity implements View.OnClickListener {
                         Log.w("meniuu","start");
                         dosomething();
                     }else {
-                        Intent harta = new Intent(TimerSender.this, Map.class);
-                        harta.putExtra("mHour", ora);
-                        harta.putExtra("mPlates", nr_carString);
-                        harta.putExtra("time", timer);
-                        harta.putExtra("lat", mLat);
-                        harta.putExtra("lng", mLng);
-                        harta.putExtra("image", image);
-                        startActivity(harta);
-                        finish();
+                        Fragment  fragment = new ReviewFragment();
+                        Bundle harta = new Bundle();
+                        harta.putString("mHour", ora);
+                        harta.putString("mPlates", nr_carString);
+                        harta.putString("time", timer+"");
+                        harta.putString("lat", mLat);
+                        harta.putString("lng", mLng);
+                        harta.putString("image", image);
+                        harta.putString("notification_id", notification_id);
+                        fragment.setArguments(harta);
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
                     }
                     Log.w("meniuu","data mHour:"+ora);
                 }catch (Exception e){
@@ -130,6 +118,7 @@ public class TimerSender extends Activity implements View.OnClickListener {
                 Log.w("meniuu","catch");
             }
         }
+        return rootView;
     }
     public void dosomething() {
         new Thread(new Runnable() {
@@ -187,12 +176,12 @@ public class TimerSender extends Activity implements View.OnClickListener {
         long diffInMillies = date1.getTime() - date2.getTime();
         return diffInMillies;
     }
-    public void initComponents(){
-//        back=(RelativeLayout)findViewById(R.id.back_timer_sender);
-        back.setOnClickListener(this);
-        progBar= (ProgressBar)findViewById(R.id.progressBar);
-        text = (TextView)findViewById(R.id.textView1);
-        extended=(RelativeLayout)findViewById(R.id.bottom);
+    public void initComponents(View rootview){
+//        back=(RelativeLayout)rootview.findViewById(R.id.back_timer_sender);
+//        back.setOnClickListener(this);
+        progBar= (ProgressBar)rootview.findViewById(R.id.progressBar);
+        text = (TextView)rootview.findViewById(R.id.textView1);
+        extended=(RelativeLayout)rootview.findViewById(R.id.bottom);
         extended.setOnClickListener(this);
     }
 
@@ -203,7 +192,7 @@ public class TimerSender extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
 //            case R.id.back_timer_sender:
-//                finish();
+////                finish();
 //                break;
             case R.id.bottom:
                 postExtended();
@@ -220,7 +209,7 @@ public class TimerSender extends Activity implements View.OnClickListener {
                         Log.w("meniuu", "response:post answer" + response);
 //                        Intent harta= new Intent(Scan.this, Map.class);
 //                        startActivity(harta);
-                        finish();
+//                        finish();
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -14,6 +15,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
@@ -25,9 +28,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -49,12 +53,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     TextView adress;
     private String provider;
     private LocationManager locationManager;
-    String mHour, mLat="", mLng="";
+    String mHour, mLat="", mLng="", image="";
     String mText;
     String mPlates;
 //    double mLongitude, mLatitude;
     String TAG = "meniuu";
     long  time, actualDate;
+    Context ctx;
 
     protected void onStop() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -90,19 +95,24 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             LayoutInflater inflater = (LayoutInflater) cw.getSystemService(LAYOUT_INFLATER_SERVICE);
             View v = inflater.inflate(R.layout.infoview, null);
             if (marker != null) {
-                ImageView image = (ImageView) v.findViewById(R.id.image_info_view);
+                final ImageView image = (ImageView) v.findViewById(R.id.image_info_view);
                 TextView tvTitle = ((TextView) v.findViewById(R.id.nr_masina_infoview));
                 tvTitle.setText("Notificat " + mPlates);
                 TextView tvSnippet = ((TextView) v.findViewById(R.id.time_info_view));
                 tvSnippet.setText(marker.getSnippet());
+
+//                Glide.with(ctx).load(marker.getTitle()).into(image);
+                Log.w("meniu","image in harta:"+marker.getTitle());
+                Glide.with(ctx).load(marker.getTitle()).asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        image.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
             }
             return v;
         }
-    }
-
-    public static long getDateDiff(Date date1, Date date2) {
-        long diffInMillies = date1.getTime() - date2.getTime();
-        return diffInMillies;
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +121,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         initComponents();
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
+        ctx=this;
         Log.w("meniuu", "map");
         if (b != null) {
             try {
@@ -118,7 +129,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 mPlates = (String) b.get("mPlates");
                 mLat = b.getString("lat");
                 mLng = b.getString("lng");
-                Log.w("meniuu","lat in map:"+mLat+" lng:"+mLng);
+                image = b.getString("image");
+                Log.w("meniuu","lat in map:"+mLat+" lng:"+mLng+" image:"+image);
 
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -150,7 +162,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                     else
                         mText = "Acum " + minutes + " ore";
                 } else if (diff > 86400) {
-                    minutes = (int) 60 / 60 / 24;
+                    minutes = (int)diff/ 60 / 60 / 24;
+                    Log.w("meniuu","time:"+minutes);
                     mText = "Acum " + minutes + " zile";
                 }
 
@@ -161,8 +174,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         }
 //        mMap = ((MapFragment) getFragmentManager().findFragmentById(bigcityapps.com.parkingalert.R.id.map)).getMap();
 //        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+//        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if(mLng.length()!=0)
             adress.setText(getAddress(Double.parseDouble(mLat), Double.parseDouble(mLng)));
@@ -182,7 +195,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 final LatLng CIU = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
                 LatLng sydney = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng)), 12.0f));
-                Marker marker = mMap.addMarker(new MarkerOptions().position(CIU).title("My Office").snippet(mText + ""));
+                Marker marker = mMap.addMarker(new MarkerOptions().position(CIU).title(image).snippet(mText + ""));
 //            mMap.addMarker(new MarkerOptions().position(CIU).tvTitle("My Office").snippet(mText+""));
                 marker.showInfoWindow();
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
@@ -245,12 +258,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
      */
     public void initComponents() {
         adress = (TextView) findViewById(R.id.adress);
-        back_maps = (RelativeLayout) findViewById(R.id.back_maps);
-        back_maps.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                finish();
-            }
-        });
+//        back_maps = (RelativeLayout) findViewById(R.id.back_maps);
+//        back_maps.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View view) {
+//                finish();
+//            }
+//        });
     }
 
     public void onMapReady(GoogleMap googleMap) {

@@ -1,8 +1,6 @@
 package bigcityapps.com.parkingalert;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,8 +8,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,16 +27,15 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import Util.Constants;
 import Util.SecurePreferences;
 
 /**
- * Created by fasu on 22/09/2016.
+ * Created by fasu on 10/12/15.
  */
-public class ViewNotification extends Activity implements View.OnClickListener{
-    TextView  zece, cinci, trei, nupot, car_nr_view_notification;
+public class ViewNotificationFragment extends Fragment implements View.OnClickListener {
+    TextView zece, cinci, trei, nupot, car_nr_view_notification;
     RelativeLayout inapoi;
     RequestQueue queue;
     SharedPreferences prefs;
@@ -42,67 +43,72 @@ public class ViewNotification extends Activity implements View.OnClickListener{
     String notification_id;
     double latitude, longitude;
     LocationManager locationManager;
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_notification);
-        initComponents();
-        ctx=this;
-        queue = Volley.newRequestQueue(this);
-        prefs = new SecurePreferences(this);
-        Intent iin = getIntent();
-        Bundle b = iin.getExtras();
+    public ViewNotificationFragment() {
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(bigcityapps.com.parkingalert.R.layout.view_notification, container, false);
+        initComponents(rootView);
+        ctx=rootView.getContext();
+        queue = Volley.newRequestQueue(rootView.getContext());
+        prefs = new SecurePreferences(rootView.getContext());
+//        Intent iin = getActivity().getIntent();
+        Bundle b = this.getArguments();
         if (b != null) {
             car_nr_view_notification.setText((String) b.get("mPlates")+" \n creaza o problema");
             notification_id=(String) b.get("notification_id");
             Log.w("meniuu","notification_id"+notification_id);
         }
-        locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return ;
+        locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(rootView.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(rootView.getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return rootView;
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, 0, locationListenerNetwork);
+        return rootView;
     }
-    public void initComponents(){
-        zece=(TextView)findViewById(R.id.zece);
+    public void initComponents(View rootView){
+        zece=(TextView)rootView.findViewById(R.id.zece);
         zece.setOnClickListener(this);
-        cinci=(TextView)findViewById(R.id.cinci);
+        cinci=(TextView)rootView.findViewById(R.id.cinci);
         cinci.setOnClickListener(this);
-        trei=(TextView)findViewById(R.id.trei);
+        trei=(TextView)rootView.findViewById(R.id.trei);
         trei.setOnClickListener(this);
-        nupot=(TextView)findViewById(R.id.nupot);
+        nupot=(TextView)rootView.findViewById(R.id.nupot);
         nupot.setOnClickListener(this);
-//        inapoi=(RelativeLayout) findViewById(R.id.inapoi_notificare);
-        inapoi.setOnClickListener(this);
-        car_nr_view_notification=(TextView)findViewById(R.id.car_nr_view_notification);
+//        inapoi=(RelativeLayout) rootView.findViewById(R.id.inapoi_notificare);
+//        inapoi.setOnClickListener(this);
+        car_nr_view_notification=(TextView)rootView.findViewById(R.id.car_nr_view_notification);
     }
     public void setClick(boolean set){
-    zece.setClickable(set);
-    cinci.setClickable(set);
-    trei.setClickable(set);
-    nupot.setClickable(set);
-}
+        zece.setClickable(set);
+        cinci.setClickable(set);
+        trei.setClickable(set);
+        nupot.setClickable(set);
+    }
+    @Override
     public void onClick(View view) {
-    switch (view.getId()){
-//        case R.id.inapoi_notificare:
-//            finish();
-//            break;
-        case R.id.zece:
-            setClick(false);
-            postAnswer("3");
-            break;
-        case R.id.cinci:
-            setClick(false);
-            postAnswer("5");
-            break;
+        switch (view.getId()){
+//            case R.id.inapoi_notificare:
+//                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+//                break;
+            case R.id.zece:
+                setClick(false);
+                postAnswer("3");
+                break;
+            case R.id.cinci:
+                setClick(false);
+                postAnswer("5");
+                break;
 
-        case R.id.trei:
-            setClick(false);
-            postAnswer("7");
-            break;
+            case R.id.trei:
+                setClick(false);
+                postAnswer("7");
+                break;
 
-        case R.id.nupot:
-            postAnswer("100");
-            break;
+            case R.id.nupot:
+                postAnswer("100");
+                break;
         }
     }
 
@@ -113,22 +119,25 @@ public class ViewNotification extends Activity implements View.OnClickListener{
                     public void onResponse(String response) {
                         String json = response;
                         Log.w("meniuu", "response:post answer" + response);
+                        Fragment  fragment = new MapFragment();
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 //                        Intent harta= new Intent(Scan.this, Map.class);
 //                        startActivity(harta);
-                        finish();
+//                        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
                     }
                 }, ErrorListener) {
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("latitude", latitude+"");
                 params.put("longitude", longitude+"");
                 params.put("estimated",time);
                 Log.w("meniuu","lat in receiver answered:"+latitude+" lng:"+longitude);
                 return params;
             }
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
                 String auth_token_string = prefs.getString("token", "");
-                Map<String, String> params = new HashMap<String, String>();
+                java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("Authorization","Bearer "+ auth_token_string);
                 return params;
             }
