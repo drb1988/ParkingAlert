@@ -131,7 +131,7 @@ router.post('/notification', function(req, res, next) {
   var insertDocument = function(db, callback) {
    db.collection('notifications').insertOne( {
       "status": req.body.status,
-      "is_active": req.body.is_active,
+      "is_active": true,
       "sender_read": true,
       "sender_deleted": false,
       "receiver_read": false,
@@ -455,5 +455,43 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
         });
       });
 });
+
+router.post('/sendReview/:notificationID', function(req, res, next) {
+    /**
+    * Route to send reviews,
+    * @name /sendReview/:notificationID
+    * @param {String} :notificationID
+    */
+
+  var vehicle = "";
+  var sender_token = "";
+  var deleteCar = function(db, callback) {   
+  var o_id = new ObjectId(req.params.notificationID);
+    db.collection('notifications').update({"_id": o_id}, 
+             {$set: { 
+                      "is_active": false,
+                      "review.feedback": req.body.feedback,
+                      "review.answered_at": toLocalTime(new Date()),
+
+                    }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Receiver has read "+req.params.notificationID);
+            callback();
+      });            
+  }
+   MongoClient.connect(dbConfig.url, function(err, db) {
+      assert.equal(null, err);
+      findUsersByNotification(db, function(sender){console.log(sender); notificationReceiverToken=sender.receiver_token;
+        vehicle=sender.vehicle;
+        deleteCar(db, function() {
+          db.close();
+          res.status(200).send(req.params.notificationID)
+          console.log("estimated "+req.body.estimated);
+          sendNotification(notificationReceiverToken, req.params.notificationID, vehicle, "review", req.body.estimated, 0, 0)
+        });
+        }, req.params.notificationID);     
+    });
+})
 
 module.exports = router;
