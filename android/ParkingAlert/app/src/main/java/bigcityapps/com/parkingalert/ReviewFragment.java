@@ -32,8 +32,7 @@ public class ReviewFragment extends Fragment implements View.OnClickListener {
     Context ctx;
     RequestQueue queue;
     SharedPreferences prefs;
-    RelativeLayout inapoi,anuleaza, nu, da;
-    String mNotification_id, mPlates;
+    RelativeLayout  nu, da;
     String ora, nr_carString, timer, mLat,mLng, mImage, notification_id;
     public ReviewFragment() {
     }
@@ -46,21 +45,15 @@ public class ReviewFragment extends Fragment implements View.OnClickListener {
         ctx = getContext();
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(ctx);
-//        Intent iin= getIntent();
         Bundle b = this.getArguments();
         if(b!=null) {
             try {
-                Log.w("meniuu", "timer");
+                Log.w("meniuu", "timer_sender");
                 timer = (String) b.get("time");
                 ora = (String) b.get("mHour");
                 nr_carString = (String) b.get("mPlates");
                 notification_id = b.getString("notification_id");
-                mLat = b.getString("lat");
-                mLng = b.getString("lng");
-//                time_answer.setText("Raspuns la " + ora);
-                mImage=b.getString("image");
-//                senderRead(notification_id);
-//                Calculate();
+                Log.w("meniuu","notification_id in review:"+notification_id);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -68,10 +61,6 @@ public class ReviewFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
     public void initcomponents(View rootview){
-        inapoi=(RelativeLayout)rootview.findViewById(R.id.inapoi_review);
-        inapoi.setOnClickListener(this);
-        anuleaza=(RelativeLayout)rootview.findViewById(R.id.anuleaza_review);
-        anuleaza.setOnClickListener(this);
         nu=(RelativeLayout)rootview.findViewById(R.id.nu_review);
         nu.setOnClickListener(this);
         da=(RelativeLayout)rootview.findViewById(R.id.da_review);
@@ -80,12 +69,6 @@ public class ReviewFragment extends Fragment implements View.OnClickListener {
 
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.inapoi_review:
-//                finish();
-                break;
-            case R.id.anuleaza_review:
-//                finish();
-                break;
             case R.id.nu_review:
                 Review(true);
                 break;
@@ -95,7 +78,7 @@ public class ReviewFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-    public void Review(final boolean feedback){
+    public void Review(final boolean feedback) {
         String url = Constants.URL+"notifications/sendReview/"+notification_id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -107,9 +90,6 @@ public class ReviewFragment extends Fragment implements View.OnClickListener {
                         harta.putString("mHour", ora);
                         harta.putString("mPlates", nr_carString);
                         harta.putString("time", timer+"");
-                        harta.putString("lat", mLat);
-                        harta.putString("lng", mLng);
-                        harta.putString("image", mImage);
                         fragment.setArguments(harta);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();

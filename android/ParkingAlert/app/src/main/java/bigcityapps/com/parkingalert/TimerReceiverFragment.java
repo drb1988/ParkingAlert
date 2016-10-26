@@ -34,7 +34,7 @@ import Util.SecurePreferences;
 /**
  * Created by anupamchugh on 10/12/15.
  */
-public class TimerSenderFragment extends Fragment implements View.OnClickListener {
+public class TimerReceiverFragment extends Fragment implements View.OnClickListener {
     RelativeLayout back;
     int timer;
     boolean run=true;
@@ -49,13 +49,14 @@ public class TimerSenderFragment extends Fragment implements View.OnClickListene
     SharedPreferences prefs;
     RelativeLayout extended;
     long time, estimetedTime, actualDate;
-    public TimerSenderFragment() {
+    boolean isActiv=true;
+    public TimerReceiverFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.timer_sender, container, false);
+        View rootView = inflater.inflate(R.layout.timer_receiver, container, false);
         queue = Volley.newRequestQueue(getContext());
         prefs = new SecurePreferences(getContext());
         ctx=getContext();
@@ -68,13 +69,10 @@ public class TimerSenderFragment extends Fragment implements View.OnClickListene
                 ora = (String) b.get("mHour");
                 mLat =b.getString("lat");
                 mLng =b.getString("lng");
-                Log.w("meniuu","lat:"+mLat);
                 nr_carString = (String) b.get("mPlates");
                 notification_id = (String) b.get("notification_id");
                 image = b.getString("image");
-                Log.w("meniuu","mHour:"+ora);
                 try {
-
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
                     Date myDate = simpleDateFormat.parse(ora);
@@ -86,7 +84,6 @@ public class TimerSenderFragment extends Fragment implements View.OnClickListene
                     long diff=time-actualDate;
 
                     diff=diff/1000;
-                    Log.w("meniuu","diff inainte:"+diff);
                     if(diff>0) {
                         Log.w("meniuu","diff in if:"+diff);
                         progBar.setMax(timer*60);
@@ -94,7 +91,8 @@ public class TimerSenderFragment extends Fragment implements View.OnClickListene
                         Log.w("meniuu","start");
                         dosomething();
                     }else {
-                        Fragment  fragment = new ReviewFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(TimerReceiverFragment.this).commit();
+                        Fragment  fragment = new SumarFragment();
                         Bundle harta = new Bundle();
                         harta.putString("mHour", ora);
                         harta.putString("mPlates", nr_carString);
@@ -134,16 +132,21 @@ public class TimerSenderFragment extends Fragment implements View.OnClickListene
                                 if(extended.getVisibility()==View.INVISIBLE)
                                     extended.setVisibility(View.VISIBLE);
                             }
-//                            if(mProgressStatus==0){
-//                                Intent harta = new Intent(TimerSender.this, Map.class);
-//                                harta.putExtra("mHour", ora);
-//                                harta.putExtra("mPlates", nr_carString);
-//                                harta.putExtra("time", timer);
-//                                harta.putExtra("lat", mLat);
-//                                harta.putExtra("lng", mLng);
-//                                startActivity(harta);
-//                                finish();
-//                            }
+                            if(mProgressStatus==0 && isActiv){
+                                getActivity().getSupportFragmentManager().beginTransaction().remove(TimerReceiverFragment.this).commit();
+                                Fragment  fragment = new SumarFragment();
+                                Bundle harta = new Bundle();
+                                harta.putString("mHour", ora);
+                                harta.putString("mPlates", nr_carString);
+                                harta.putString("time", timer+"");
+                                harta.putString("lat", mLat);
+                                harta.putString("lng", mLng);
+                                harta.putString("image", image);
+                                harta.putString("notification_id", notification_id);
+                                fragment.setArguments(harta);
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                            }
                             progBar.setProgress(mProgressStatus);
                             int minutes=(mProgressStatus%3600)/60;
                             int sec=mProgressStatus%60;
@@ -158,7 +161,6 @@ public class TimerSenderFragment extends Fragment implements View.OnClickListene
                                 else
                                     text.setText(minutes + ":" + sec);
                             }
-                            Log.w("meniuu","sec in timersender:"+sec+" min:"+minutes);
                         }
                     });
                     try {
@@ -199,7 +201,12 @@ public class TimerSenderFragment extends Fragment implements View.OnClickListene
                 break;
         }
     }
-
+    @Override
+    public void onDestroyView() {
+        Log.w("meniuu", "on destroyview in mapfragment");
+        isActiv=false;
+        super.onDestroyView();
+    }
     public void postExtended(){
         String url = Constants.URL+"notifications/receiverExtended/"+notification_id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,

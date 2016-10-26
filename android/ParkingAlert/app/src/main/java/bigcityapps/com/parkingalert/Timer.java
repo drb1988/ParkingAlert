@@ -69,7 +69,7 @@ public class Timer extends Activity implements View.OnClickListener {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.timer);
+        setContentView(R.layout.timer_sender);
         ctx=this;
         initcComponents();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

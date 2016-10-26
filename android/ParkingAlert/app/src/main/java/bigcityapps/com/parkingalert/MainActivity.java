@@ -8,12 +8,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +49,7 @@ import Util.Constants;
 import Util.SecurePreferences;
 
 public class MainActivity extends AppCompatActivity {
+    protected OnBackPressedListener onBackPressedListener;
     static boolean active = false;
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
@@ -61,31 +65,57 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue queue;
     SharedPreferences prefs;
     Long estimetedTime, time , actualDate;
+    boolean firtComm=true;
+    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
+        this.onBackPressedListener = onBackPressedListener;
+    }
+    @Override
+    public void onBackPressed() {
+        if (onBackPressedListener != null)
+            onBackPressedListener.doBack();
+        else
+            super.onBackPressed();
+    }
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            Bundle b = intent.getExtras();
-            try {
-                notification_type = b.getString("notification_type");
-                notification_id = b.getString("notification_id");
-                mPlates = b.getString("mPlates");
-                estimated_time = b.getString("estimated_time");
-                answered_at = b.getString("answered_at");
-                latitude=b.getString("lat");
-                longitude=b.getString("lng");
-                Log.w("meniuu", "notificaion:" + notification_id);
-                Log.w("meniuu", "answered::" + answered_at);
-                updateUi();
-            }catch (Exception e){
-                e.printStackTrace();
-                Log.w("meniuu","catch la luarea de la push");
-            }
+//            if(firtComm) {
+//                firtComm=false;
+                Bundle b = intent.getExtras();
+                try {
+                    notification_type = b.getString("notification_type");
+                    notification_id = b.getString("notification_id");
+                    mPlates = b.getString("mPlates");
+                    estimated_time = b.getString("estimated_time");
+                    answered_at = b.getString("answered_at");
+                    latitude = b.getString("lat");
+                    longitude = b.getString("lng");
+                    Log.w("meniuu", "notificaion:" + notification_id);
+                    Log.w("meniuu", "answered::" + answered_at);
+                    updateUi();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.w("meniuu", "catch la luarea de la push");
+                }
+//            }else
+//                firtComm=true;
         }
     };
     public void updateUi(){
-        badge_count.setVisibility(View.VISIBLE);
-        badge_count.setText("1");
-//        ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-//        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+        Log.w("meniuu","sa apelat updateui");
+//        badge_count.setVisibility(View.VISIBLE);
+//        badge_count.setText("1");
+        if(!notification_type.equals("review")) {
+            getNotification(prefs.getString("user_id", null));
+            Log.w("meniuu","nu e review");
+        }
+        else
+        {Log.w("meniuu","e review");
+            Fragment  fragment = new SumarFragment();
+            Bundle harta = new Bundle();
+            fragment.setArguments(harta);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        }
         MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification_sound);
         mp.start();
         Log.w("meniuu","ai primit un sms in main");
@@ -109,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         prefs = new SecurePreferences(this);
         queue = Volley.newRequestQueue(this);
         setupToolbar();
+        postToken(prefs.getString("user_id",null));
         getNotification(prefs.getString("user_id",null));
 
 
@@ -133,9 +164,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(bigcityapps.com.parkingalert.R.id.drawer_layout);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         setupDrawerToggle();
-        Fragment fragment= new ConnectFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(bigcityapps.com.parkingalert.R.id.content_frame, fragment).commit();
+
 
         mDrawerList.setItemChecked(0, true);
         mDrawerList.setSelection(0);
@@ -155,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        Log.w("meniuu","onpauza mainactivity implicit si actife e false");
         active = false;
         super.onPause();
     }
@@ -166,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         active = false;
+        Log.w("meniuu","onstop mainactivity implicit si actife e false");
         super.onStop();
     }
     @Override
@@ -184,19 +215,21 @@ public class MainActivity extends AppCompatActivity {
      * @param position
      */
     private void selectItem(int position) {
-        Log.w("meniuu","a intrat in selectitem");
+        Log.w("meniuu","a intrat in selectitem pos:"+position);
         Fragment fragment = null;
         switch (position) {
             case 0:
                 Log.w("meniuu","bydefault");
-                fragment = new ConnectFragment();
+//                fragment = new ConnectFragment();
+                getNotification(prefs.getString("user_id",null));
                 break;
             case 1:
                 Intent question = new Intent(MainActivity.this, Notifications.class);
                 startActivity(question);
                 break;
             case 2:
-                fragment = new ViewNotificationFragment();
+//                fragment = new ViewNotificationFragment();
+                getNotification(prefs.getString("user_id",null));
                 break;
             case 4:
                 Intent user_profile= new Intent(MainActivity.this, User_profile.class);
@@ -207,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(masini);
                 break;
             default:
-                fragment = new ConnectFragment();
+                getNotification(prefs.getString("user_id",null));
                 break;
         }
         mDrawerLayout.closeDrawer(mDrawerList);
@@ -320,11 +353,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void getNotification(final String id){
         String url = Constants.URL+"users/getNotification/"+id;
+        Log.w("meniuu","url in getnotif:"+url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             public void onResponse(String response) {
                 String json = response;
                 try {
-                    Log.w("meniuu","response getuser:"+response);
+                    Log.w("meniuu","response getnotification:"+response);
                     ModelNotification modelNotification= new ModelNotification();
                     JSONObject c =new JSONObject(json);
                     modelNotification.setId(c.getString("_id"));
@@ -373,13 +407,12 @@ public class MainActivity extends AppCompatActivity {
                                 harta.putString("lat", modelNotification.getLat());
                                 harta.putString("lng", modelNotification.getLng());
                                 harta.putString("image", modelNotification.getPicture());
+                                harta.putString("notification_id", modelNotification.getId());
                                 fragment.setArguments(harta);
                                 FragmentManager fragmentManager = getSupportFragmentManager();
                                 fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                             }else
-                            {Review(modelNotification.getmHour(),modelNotification.getNr_car(),modelNotification.getEstimeted_time() + "",modelNotification.getLat(),modelNotification.getLng(), modelNotification.getPicture());
-
-                            }
+                                Review(modelNotification.getId(),modelNotification.getmHour(),modelNotification.getNr_car() );
                         }else
                         {
                             modelNotification.setTitle("Ai primit raspuns");
@@ -405,7 +438,7 @@ public class MainActivity extends AppCompatActivity {
                                 modelNotification.setSenderRead(false);
                             ///
                             Log.w("meniuu","timerfragment");
-                            Fragment  fragment = new TimerFragmnet();
+                            Fragment  fragment = new TimerSenderFragmnet();
                             Bundle timer = new Bundle();
                             timer.putString("time", modelNotification.getEstimeted_time());
                             timer.putString("mHour", modelNotification.getmHour());
@@ -414,6 +447,7 @@ public class MainActivity extends AppCompatActivity {
                             timer.putString("lat", modelNotification.getLng());
                             timer.putString("lng", modelNotification.getLng());
                             fragment.setArguments(timer);
+                            Log.w("meniuu","notif_id: in maina:"+modelNotification.getId());
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                         }
@@ -444,6 +478,7 @@ public class MainActivity extends AppCompatActivity {
                             vienotif.putString("mDetails", modelNotification.getmDetails());
                             vienotif.putString("notification_id", modelNotification.getId());
                             vienotif.putString("mPlates", modelNotification.getNr_car());
+                            vienotif.putString("mHour", modelNotification.getmHour());
                             fragment.setArguments(vienotif);
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -468,8 +503,8 @@ public class MainActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             ///
-                            Log.w("meniuu","timersendfragment");
-                            Fragment  fragment = new TimerSenderFragment();
+                            Log.w("meniuu","TimerReceiverFragment");
+                            Fragment  fragment = new TimerReceiverFragment();
                             Bundle timerSender = new Bundle();
                             timerSender.putString("time", modelNotification.getEstimeted_time());
                             timerSender.putString("mHour", modelNotification.getmHour());
@@ -481,18 +516,19 @@ public class MainActivity extends AppCompatActivity {
                             fragment.setArguments(timerSender);
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-                            //
                         }
                     }
                 }catch (Exception e)
                 {Log.w("meniuu","este catch");
                     e.printStackTrace();
+                    Fragment fragment= new ConnectFragment();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                 }
             }
         }, ErrorListener) {
             public java.util.Map<String, String> getHeaders() throws AuthFailureError {
                 String auth_token_string = prefs.getString("token", "");
-                Log.w("meniuu","authtoken:"+auth_token_string);
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("Authorization", "Bearer "+auth_token_string);
                 return params;
@@ -506,29 +542,73 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public void Review(final String ora, final String nr_carString, final String timer, final String mLat, final String mLng, final String mImage){
-        String url = Constants.URL+"notifications/sendReview/"+notification_id;
+    public void Review(final  String id,final String ora, final String nr_carString){
+        String url = Constants.URL+"notifications/sendReview/"+id;
+        Log.w("meniuu","url review:"+url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
                         Log.w("meniuu", "response:review" + response);
-                        Fragment  fragment = new SumarFragment();
-                        Bundle harta = new Bundle();
-                        harta.putString("mHour", ora);
-                        harta.putString("mPlates", nr_carString);
-                        harta.putString("time", timer+"");
-                        harta.putString("lat", mLat);
-                        harta.putString("lng", mLng);
-                        harta.putString("image", mImage);
-                        fragment.setArguments(harta);
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        if(!response.equals("invalid notificationID"))
+                        {   Fragment  fragment = new SumarFragment();
+                            Bundle harta = new Bundle();
+                            harta.putString("mHour", ora);
+                            harta.putString("mPlates", nr_carString);
+                            harta.putString("feedback", false+"");
+                            fragment.setArguments(harta);
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        }
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("feedback",false+"");
+                return params;
+            }
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    public interface OnBackPressedListener {
+        public void doBack();
+    }
+    public class BaseBackPressedListener implements OnBackPressedListener {
+        private final FragmentActivity activity;
+
+        public BaseBackPressedListener(FragmentActivity activity) {
+            this.activity = activity;
+        }
+
+        @Override
+        public void doBack() {
+            activity.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+    public void postToken(String user_id) {
+        Log.w("meniuu","user_id:"+user_id+" device_token:"+prefs.getString("phone_token", ""));
+        prefs = new SecurePreferences(ctx);
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        String url = Constants.URL + "users/addSecurity/"+user_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+//                        postUser();
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("device_token", prefs.getString("phone_token", ""));
+                params.put("password", "nuamideecepltrebeaici");
+                params.put("reg_ip", ip);
                 return params;
             }
             public java.util.Map<String, String> getHeaders() throws AuthFailureError {

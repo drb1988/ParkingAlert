@@ -95,10 +95,12 @@ public class ConnectFragment extends Fragment {
                     if (!checkLocation())
                         return;
                     if(hasCar)
-                    {  Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
-                        intent.putExtra("lat",latitude+"");
-                        intent.putExtra("lng",longitude+"");
+                    {  if(latitude!=0 && longitude!=0) {
+                        Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
+                        intent.putExtra("lat", latitude + "");
+                        intent.putExtra("lng", longitude + "");
                         startActivity(intent);
+                    }
                     }else
                     {
                         Intent addCar= new Intent(getActivity(), Cars.class);

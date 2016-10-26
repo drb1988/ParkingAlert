@@ -12,7 +12,7 @@
         <!--android:gravity="center_vertical">-->
 
         <!--<RelativeLayout-->
-            <!--android:id="@+id/back_timer"-->
+            <!--android:id="@+id/back_timer_sender"-->
             <!--style="?android:borderlessButtonStyle"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="match_parent"-->
@@ -36,7 +36,6 @@
             <!--android:textColor="@android:color/white"-->
             <!--android:textSize="18dp" />-->
     <!--</RelativeLayout>-->
-
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -64,43 +63,23 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/blue_dark">
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/background_extinde_timpul"
+        android:visibility="invisible"
+        >
 
-        <ImageView
-            android:id="@+id/mImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+
+        <TextView
+            android:id="@+id/car_nr_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/com_facebook_profile_picture_blank_square" />
+            android:text="Extinde timpul cu 5 minute"
+            android:textColor="@color/alb"
+            android:textSize="22dp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/mImage"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/car_nr_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:text="BH12ABC vine in 10 minute"
-                android:textColor="@color/alb"
-                android:textSize="19dp" />
-
-            <TextView
-                android:id="@+id/answer_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/car_nr_timer"
-                android:text="Raspns la 10 :22"
-                android:textColor="@color/alb"
-                android:textSize="17dp" />
-        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

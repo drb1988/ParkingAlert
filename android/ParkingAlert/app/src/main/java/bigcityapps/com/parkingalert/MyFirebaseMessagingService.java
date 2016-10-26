@@ -42,13 +42,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         String nr_car = null, notification_id = null, notification_type = null, estimated_time = null, answered_at = null, date_neformated, latitude = null, longitude = null;
         JSONObject question = new JSONObject(remoteMessage.getData());
-
+        Log.w("meniuu","amprimit un push notification");
 
         try {
+
             Log.w("meniuu", "data:" + question);
             notification_id = question.getString("notification_id");
             checkSenderRead(notification_id);
             notification_type = question.getString("notification_type");
+            Log.w("meniuu","not type:"+notification_type);
             date_neformated = question.getString("answered_at");
             nr_car = question.getString("car_id");
             try {
@@ -178,7 +180,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent.putExtra("notification_id", notification_id);
             intent.putExtra("lat", latitude);
             intent.putExtra("lng", longitude);
-            Log.w("meniuu"," in timer: time:"+estimated_time+" mhour:"+answered_at+" mplates:"+nr_car+" notif_id:"+notification_id+" lat:"+latitude+" lng:"+longitude);
+            Log.w("meniuu"," in timer_sender: time:"+estimated_time+" mhour:"+answered_at+" mplates:"+nr_car+" notif_id:"+notification_id+" lat:"+latitude+" lng:"+longitude);
         } else if (notification_type.equals("extended")) {
             intent = new Intent(this, Timer.class);
             intent.putExtra("time", estimated_time);

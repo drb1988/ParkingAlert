@@ -17,19 +17,38 @@ import com.android.volley.VolleyError;
  */
 public class SumarFragment extends Fragment  {
     TextView ok;
+    TextView report, dataReport, answer, dataAnswer, feedback;
     public SumarFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.sumar, container, false);
+        Bundle b = this.getArguments();
+        if(b!=null) {
+            try {
+                Log.w("meniuu", "timer_sender");
+                report.setText("Raportat masina:"+b.getString("mPlates"));
+                dataReport.setText("La data:"+b.getString("mHour"));
+                dataAnswer.setText("Raspuns la:"+b.getString("mHour"));
+                feedback.setText("Feedback:");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         inicomponents(rootView);
         return rootView;
     }
 public void inicomponents(View rootview){
+    report=(TextView)rootview.findViewById(R.id.report_name);
+    dataReport=(TextView)rootview.findViewById(R.id.data);
+    answer=(TextView)rootview.findViewById(R.id.raspuns);
+    dataAnswer=(TextView)rootview.findViewById(R.id.data_raspuns);
+    feedback=(TextView)rootview.findViewById(R.id.feedback);
     ok=(TextView)rootview.findViewById(R.id.ok);
     ok.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
+            getActivity().getSupportFragmentManager().beginTransaction().remove(SumarFragment.this).commit();
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
         }

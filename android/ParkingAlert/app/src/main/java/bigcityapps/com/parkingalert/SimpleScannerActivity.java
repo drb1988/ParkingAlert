@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -93,20 +94,7 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
-//                        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-//                        builder.setTitle(plates+" a fost notificat cu succes");
-//                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-////                                Intent harta= new Intent(Scan.this, Map.class);
-////                                startActivity(harta);
-//                                finish();
-//                            }
-//                        });
-////                        builder.setmMessage(rawResult.getText());
-//                        AlertDialog alert1 = builder.create();
-//                        alert1.show();
                         Log.w("meniuu", "response:post notification" + response);
-
                         Intent harta= new Intent(SimpleScannerActivity.this, MainActivity.class);
                         startActivity(harta);
                         finish();
@@ -158,14 +146,17 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                 Log.w("meniuu", "response: getusersforcode" + response);
                 try {
                     JSONArray obj = new JSONArray(json);
-                    for (int i = 0; i < obj.length(); i++) {
-                        JSONObject c = obj.getJSONObject(i);
-                        JSONObject car = new JSONObject(c.getString("car"));
-                        user_id = c.getString("userID");
-                        plates = car.getString("plates");
-                        Log.w("meniuu", "user_id:" + user_id + " se apeleaza postnotification");
-                        postNotification(user_id);
-                    }
+                    if(obj.length()!=0) {
+                        for (int i = 0; i < obj.length(); i++) {
+                            JSONObject c = obj.getJSONObject(i);
+                            JSONObject car = new JSONObject(c.getString("car"));
+                            user_id = c.getString("userID");
+                            plates = car.getString("plates");
+                            Log.w("meniuu", "user_id:" + user_id + " se apeleaza postnotification");
+                            postNotification(user_id);
+                        }
+                    }else
+                        Toast.makeText(ctx,"nu exista user",Toast.LENGTH_LONG).show();
                 } catch (Throwable t) {
                     Log.w("meniuu", "cacth get questions");
                     t.printStackTrace();

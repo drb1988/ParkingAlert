@@ -1,6 +1,8 @@
 package bigcityapps.com.parkingalert;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +46,7 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
     String notification_id;
     double latitude, longitude;
     LocationManager locationManager;
+    String mPlates, mHour;
     public ViewNotificationFragment() {
     }
 
@@ -56,10 +60,13 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
 //        Intent iin = getActivity().getIntent();
         Bundle b = this.getArguments();
         if (b != null) {
+            mPlates=b.getString("mPlates");
             car_nr_view_notification.setText((String) b.get("mPlates")+" \n creaza o problema");
             notification_id=(String) b.get("notification_id");
+            mHour=b.getString("mHour");
             Log.w("meniuu","notification_id"+notification_id);
-        }
+        }else
+        Toast.makeText(ctx,"NU s-au putut lua datele",Toast.LENGTH_LONG).show();
         locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(rootView.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(rootView.getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return rootView;
@@ -94,16 +101,19 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
 //                break;
             case R.id.zece:
                 setClick(false);
-                postAnswer("3");
+                getNotification(prefs.getString("user_id",null), "3");
+//                postAnswer("3");
                 break;
             case R.id.cinci:
                 setClick(false);
-                postAnswer("5");
+                getNotification(prefs.getString("user_id",null), "5");
+//                postAnswer("5");
                 break;
 
             case R.id.trei:
                 setClick(false);
-                postAnswer("7");
+                getNotification(prefs.getString("user_id",null), "7");
+//                postAnswer("7");
                 break;
 
             case R.id.nupot:
@@ -114,12 +124,23 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
 
     public void postAnswer(final String time){
         String url = Constants.URL+"notifications/receiverAnswered/"+notification_id;
+        Log.w("meniuu","url receiveranswered:"+url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
                         Log.w("meniuu", "response:post answer" + response);
-                        Fragment  fragment = new MapFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(ViewNotificationFragment.this).commit();
+                        Fragment  fragment = new TimerReceiverFragment();
+                        Bundle timerSender = new Bundle();
+                        timerSender.putString("time", time);
+                        timerSender.putString("mHour", mHour);
+                        timerSender.putString("mPlates", mPlates);
+                        timerSender.putString("notification_id", notification_id);
+                        timerSender.putString("lat",latitude+"");
+                        timerSender.putString("lng", longitude+"");
+//                        timerSender.putString("image", modelNotification.getPicture());
+                        fragment.setArguments(timerSender);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 //                        Intent harta= new Intent(Scan.this, Map.class);
@@ -132,7 +153,6 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
                 params.put("latitude", latitude+"");
                 params.put("longitude", longitude+"");
                 params.put("estimated",time);
-                Log.w("meniuu","lat in receiver answered:"+latitude+" lng:"+longitude);
                 return params;
             }
             public java.util.Map<String, String> getHeaders() throws AuthFailureError {
@@ -157,10 +177,49 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
         public void onLocationChanged(Location location) {
             longitude = location.getLongitude();
             latitude = location.getLatitude();
-            Log.w("meniu", "long in locationlistener: " + longitude + " lat:" + latitude);
         }
         public void onStatusChanged(String s, int i, Bundle bundle) {}
         public void onProviderEnabled(String s) {}
         public void onProviderDisabled(String s) {}
     };
+    public void getNotification(final String id, final String time){
+        String url = Constants.URL+"users/getNotification/"+id;
+        Log.w("meniuu","url in getnotif:"+url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                Log.w("meniuu","response getnotification:"+response);
+                try {
+                    if(json.length()!=0)
+                        postAnswer(time);
+                    else
+                    {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                        builder.setTitle("Nu ai raspuns la timp!!");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                getActivity().getSupportFragmentManager().beginTransaction().remove(ViewNotificationFragment.this).commit();
+                                Intent main= new Intent(getActivity(),MainActivity.class);
+                                startActivity(main);
+                            }
+                        });
+                        AlertDialog alert1 = builder.create();
+                        alert1.show();
+                    }
+                }catch (Exception e)
+                {Log.w("meniuu","este catch");
+                    e.printStackTrace();
+                }
+            }
+        }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer "+auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
 }

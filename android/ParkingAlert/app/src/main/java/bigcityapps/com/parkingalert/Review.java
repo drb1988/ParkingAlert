@@ -37,10 +37,10 @@ public class Review extends Activity implements View.OnClickListener{
         }
     }
     public void initcomponents(){
-        inapoi=(RelativeLayout)findViewById(R.id.inapoi_review);
-        inapoi.setOnClickListener(this);
-        anuleaza=(RelativeLayout)findViewById(R.id.anuleaza_review);
-        anuleaza.setOnClickListener(this);
+//        inapoi=(RelativeLayout)findViewById(R.id.inapoi_review);
+//        inapoi.setOnClickListener(this);
+//        anuleaza=(RelativeLayout)findViewById(R.id.anuleaza_review);
+//        anuleaza.setOnClickListener(this);
         nu=(RelativeLayout)findViewById(R.id.nu_review);
         nu.setOnClickListener(this);
         da=(RelativeLayout)findViewById(R.id.da_review);
@@ -49,12 +49,6 @@ public class Review extends Activity implements View.OnClickListener{
 
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.inapoi_review:
-                finish();
-                break;
-            case R.id.anuleaza_review:
-                finish();
-                break;
             case R.id.nu_review:
 
                 break;
