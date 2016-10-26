@@ -13,7 +13,19 @@ var jwt = require('json-web-token');
 var Chance = require('chance');
 var chance = new Chance();
 var inside = require('point-in-polygon');
-var collide = require('point-circle-collision')
+var collide = require('point-circle-collision');
+var multer = require('multer');
+
+var storage =   multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './uploads');
+  },
+  filename: function (req, file, callback) {
+    var i = file.originalname.lastIndexOf('.');
+    var file_extension= (i < 0) ? '' : file.originalname.substr(i);
+    callback(null, file.fieldname + '-' + Date.now()+ file_extension);
+  }
+});
 
 var isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()){
