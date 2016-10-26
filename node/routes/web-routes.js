@@ -13,8 +13,24 @@ var jwt = require('json-web-token');
 var Chance = require('chance');
 var chance = new Chance();
 var inside = require('point-in-polygon');
+<<<<<<< HEAD
 var collide = require('point-circle-collision')
 var QRCode = require('qrcode-npm');
+=======
+var collide = require('point-circle-collision');
+var multer = require('multer');
+
+var storage =   multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './uploads');
+  },
+  filename: function (req, file, callback) {
+    var i = file.originalname.lastIndexOf('.');
+    var file_extension= (i < 0) ? '' : file.originalname.substr(i);
+    callback(null, file.fieldname + '-' + Date.now()+ file_extension);
+  }
+});
+>>>>>>> origin/feature/backend
 
 var isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()){
@@ -502,6 +518,108 @@ module.exports = function(passport){
       title: 'Friendly | QR Generator'
     });
   });
+
+  adminRouter.post('/updateAdmin/:userID', function(req, res, next) {
+  /**
+    * Route to update user information,
+    * @name /updateUser/:userID
+    * @param {String} :userId
+    */
+
+  const secret = 'Friendly';
+  const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
+  var findUser = function(db, callback) {   
+  var o_id = new ObjectId(req.params.userID);
+      db.collection('parkingAdmins').update({"_id": o_id},
+         {$set: { 
+                "first_name": req.body.first_name,
+                "last_name": req.body.last_name,
+                "email": req.body.email,
+                "password": hash
+                }
+             },
+        function(err, result) {
+              assert.equal(err, null);
+              console.log("Found user "+req.params.userID);
+              res.status(200).send(result)
+              callback();
+        });            
+    }
+    MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findUser(db, function() {
+            db.close();
+        });
+      });
+});
+
+  adminRouter.get('/getAdmin/:userID', function(req, res, next) {
+    /**
+      * Route to get and admin by ID,
+      * @name /getUser/:userID
+      * @param {String} :userId
+      */
+      var findUser = function(db, callback) {   
+    var o_id = new ObjectId(req.params.userID);
+      db.collection('parkingAdmins').findOne({"_id": o_id},
+        function(err, result) {
+              console.log(result)
+              assert.equal(err, null);
+              console.log("Found user "+req.params.userID);
+              res.status(200).send(result)
+              callback();
+        });            
+    }
+    MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findUser(db, function() {
+            db.close();
+        });
+      });
+});
+
+  var upload = multer({ storage : storage}).single('file');
+
+adminRouter.post('/setPicture/:userID', function(req, res) {
+  /**
+    * Route to update user information,
+    * @name /updateUser/:userID
+    * @param {String} :userId
+    */
+
+    var uploadPicture = function(db, profilePic, callback) {   
+    var o_id = new ObjectId(req.params.userID);
+      db.collection('parkingAdmins').update({"_id": o_id},
+         {$set: { 
+                    "profile_picture": "http://82.76.188.13:3000/"+profilePic 
+                    }
+             },
+        function(err, result) {
+              assert.equal(err, null);
+              console.log("Found user "+req.params.userID);
+              callback();
+        });            
+    }
+
+  upload(req,res,function(err) {
+    console.log(req.file)
+        if(err) {
+            return res.end("Error uploading file.");
+        }
+        else {
+          MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        uploadPicture(db, req.file.filename, function() {
+            db.close();
+        });
+      });
+        res.send({ 
+                    "profile_picture": "http://82.76.188.13:3000/"+req.file.filename  
+                });
+        }
+    });
+});
+
 
   return adminRouter;
 }

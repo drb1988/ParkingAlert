@@ -1,30 +1,16 @@
 {
 	"variables": [],
 	"info": {
-		"name": "MoneParti copy",
-		"_postman_id": "ff91f883-aa9d-c5a1-9fcf-764b53b66c9e",
+		"name": "Parking",
+		"_postman_id": "4a772a1e-135a-552a-b9a8-14935c8da3d2",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "localhost:3001/generateJwt",
+			"name": "localhost:3000/users/addCar/57e11909853b0122ac974e23",
 			"request": {
-				"url": "localhost:3001/generateJwt",
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": []
-				},
-				"description": "get jwt token"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/signup",
-			"request": {
-				"url": "localhost:3001/api/signup",
+				"url": "localhost:3000/users/addCar/57fe17798ef9141d0cc2e2ad",
 				"method": "POST",
 				"header": [
 					{
@@ -34,354 +20,284 @@
 					},
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjM0NSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIn0.ZUvG7rlK1CNF3vr7DjEtPuOhGcgYozsf2w2FD29ihVA",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"phoneNumber\": \"0040770263230\"\n}"
+					"raw": "{\n    \"plates\": \"BH65XXX\",\n    \"given_name\": \"Furia Gri\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"qr_code\": \"123456\",\n    \"year\": \"1991\"\n}"
 				},
 				"description": "post phone number, get response with validation code"
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/signup/validate",
+			"name": "localhost:3000/users/addSecurity/57e11909853b0122ac974e23",
 			"request": {
-				"url": "localhost:3001/api/signup/validate",
+				"url": "localhost:3000/users/addSecurity/57e11909853b0122ac974e23",
 				"method": "POST",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjM0NSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIn0.ZUvG7rlK1CNF3vr7DjEtPuOhGcgYozsf2w2FD29ihVA",
+						"key": "Content-Type",
+						"value": "application/json",
 						"description": ""
 					},
 					{
-						"key": "Content-Type",
-						"value": "application/json",
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"smsRequestId\": \"34a1bbc8bb37478987dd49ed881ecb13\",\n    \"pinNumber\":\"1673\",\n    \"phoneNumber\": \"0040720009354\"\n}"
+					"raw": "{\n    \"device_token\": \"cQ9ReZKzxDw:APA91bGAY3RDMtG6J8lnjvdaXYsTwYXoEbnZDKO9yeAfW0Q5tBqH0GONAwVPhESH-NwBa9r0Qrtd9r0BN3tvGcK4J73Ae9LoeXNWshdoJXOsPnvjTTpM_zn0caxR8Fvx7aJ-NDSEvswp\",\n    \"password\": \"MataAreCapDeBou\",\n    \"reg_ip\": \"192.168.1.1\"\n}"
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/signup/user-profile",
+			"name": "localhost:3000/users/getUser/57e11909853b0122ac974e23",
 			"request": {
-				"url": "localhost:3001/api/signup/user-profile",
-				"method": "POST",
+				"url": "localhost:3000/users/getUser/57e11909853b0122ac974e23",
+				"method": "GET",
 				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjM0NX0.rRcGoB_Q_ygrQAJ7gzVOXaEuJnVk7WnKTfXOd3HoPUI",
-						"description": ""
-					},
 					{
 						"key": "Content-Type",
 						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"fname\": \"testFname1\",\n    \"lname\": \"testFname1\",\n    \"phone_number\": \"0040770263235\",\n    \"postal_code\": \"11853\",\n    \"department_code\": \"11\",\n    \"email\": \"pemud@vaswos.la\",\n    \"gender\": 1,\n    \"birth_day\": \"1956-06-02\",\n    \"country\": \"France\",\n    \"nationality\": \"french\",\n    \"education_level\": \"student\",\n    \"marital_status_id\": 1,\n    \"political_preference_id\": 2,\n    \"professional_category_id\": 5,\n    \"profile_img_url\": \"http://avatarthelastairbenderonline.com/wp-content/uploads/2010/11/Sokka-becomes-disheartened-300x200.png\"\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
 				},
-				"description": "create user profile"
+				"description": "post phone number, get response with validation code"
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/signup/jwt-decode",
+			"name": "localhost:3000/users/getCars/57e11909853b0122ac974e23",
 			"request": {
-				"url": "localhost:3001/api/signup/jwt-decode",
-				"method": "POST",
+				"url": "localhost:3000/users/getCars/57fb950da02dc721a824a96c",
+				"method": "GET",
 				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjM0NX0.rRcGoB_Q_ygrQAJ7gzVOXaEuJnVk7WnKTfXOd3HoPUI",
-						"description": ""
-					},
 					{
 						"key": "Content-Type",
 						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MzgsImZuYW1lIjoiZk5hbWUgMyIsImxuYW1lIjoibE5hbWUgMyIsInBob25lX251bWJlciI6IjAwNDA3NzAyNjMyMzQ4IiwicG9zdGFsX2NvZGUiOjEyMzQ1fQ.27-d0AreETf-RsbdIcxJy9m-CQ79N7k1e3WoGVkIhZs\"\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/removeCar/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/removeCar/57e11909853b0122ac974e23",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plates\": \"BH69SEX\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/updateUser/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/updateUser/57ff7872e0ec5a14b844ad2a",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/editCar/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/editCar/57e11909853b0122ac974e23&BH69SEX",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plates\": \"BH71SEX\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"year\": \"1991\",\n    \"enable_notifications\": true,\n    \"is_owner\": true,\n    \"enable_others\": true\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/notification",
+			"request": {
+				"url": "localhost:3000/notifications/notification",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"3\",\n    \"is_active\": false,\n    \"latitude\": 24.0992,\n    \"longitude\": 44.8384,\n\t\"reverse_geocode\" : {\n\t\t\"address\" : \"soseaua vergului\",\n\t\t\"city\" : \"bucuresti\",\n\t\t\"country\" : \"romania\",\n\t\t\"zip\" : null\n\t},\n    \"vehicle\": \"plates\",\n    \"sender_id\": \"57ee2b1ba3286718482f8007\",\n    \"sender_nickname\": \"Cristi\",\n    \"receiver_id\": \"57ee16ce861974233479f3b7\",\n    \"receiver_nickname\": \"Vasile\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/receiverRead/57e381679b5e33272485a918",
+			"request": {
+				"url": "localhost:3000/notifications/receiverRead/57ea59deeec0a9156c328733",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"latitude\": 24.0992,\n    \"longitude\": 44.8384,\n    \"estimated\": 5\n}"
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/users/1",
+			"name": "localhost:3000/notifications/receiverDeleted/57e381679b5e33272485a918",
 			"request": {
-				"url": "localhost:3001/api/users/1/points",
+				"url": "localhost:3000/notifications/receiverDeleted/57e381679b5e33272485a918",
 				"method": "POST",
 				"header": [
 					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
 						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"action\": 1\n}"
+					"mode": "formdata",
+					"formdata": []
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/users/2",
+			"name": "localhost:3000/notifications/senderDeleted/57e381679b5e33272485a918",
 			"request": {
-				"url": "localhost:3001/api/users/2",
-				"method": "PATCH",
+				"url": "localhost:3000/notifications/senderDeleted/57e381679b5e33272485a918",
+				"method": "POST",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"fname\": \"fName test patch\",\n  \"lname\": \"lName test patch\",\n  \"postal_code\": \"02224\",\n  \"birth_day\": \"2016-08-03\",\n  \"professional_category_id\": \"1\",\n  \"nationality\": \"french\",\n  \"email\": \"fnamelname@patch.mx\"\n}"
+					"mode": "formdata",
+					"formdata": []
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/users/1/friends",
+			"name": "localhost:3000/notifications/getNotification/57e381679b5e33272485a918",
 			"request": {
-				"url": "localhost:3001/api/users/2/delete",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n}"
-				},
-				"description": "return a list of friends associated with user 1"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/friends/",
-			"request": {
-				"url": "localhost:3001/api/users/1/friends",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n \"phone_list\": [\n  \"01 30 18 84 25\",\n  \"01 30 27 10 71\",\n  \"01 30 35 49 24\"\n]\n}"
-				},
-				"description": "submit list of phone numbers from the users phone agenda here"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/register-activities/",
-			"request": {
-				"url": "localhost:3001/api/users/1/register-activities/",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"activity\": 3\n}"
-				},
-				"description": "use this route to increment users activity points\n\n\"activity\": 1 (share_count)\n\n\"activity\": 2 (invite_count)\n\n\"activity\": 3 (login_count)"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/favorite-categories",
-			"request": {
-				"url": "localhost:3001/api/users/1/favorite-categories",
+				"url": "localhost:3000/notifications/getNotification/57e381679b5e33272485a918",
 				"method": "GET",
 				"header": [
 					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
 						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"fname\": \"fname1\"\n}"
-				},
-				"description": "return a list of question categories preferenced by user 1"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/favorite-categories",
-			"request": {
-				"url": "localhost:3001/api/users/1/favorite-categories",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "[\n    2,\n    12,\n    15\n]"
-				},
-				"description": "post an array of categories ids (users favorite categories)\n\nreturn a list of created question categories favorite of user 1"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/unanswered-questions",
-			"request": {
-				"url": "localhost:3001/api/users/1/unanswered-questions",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"fname\": \"fname1\"\n}"
-				},
-				"description": "return a list of question ids not answered by user 1"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/phones/",
-			"request": {
-				"url": "localhost:3001/api/users/phones",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"fname\": \"fname1\"\n}"
-				},
-				"description": "returns a list phones(used for testing)\n\nwill be deleted in productions"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/",
-			"request": {
-				"url": "localhost:3001/api/questions/",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
+					"mode": "formdata",
+					"formdata": []
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/questions/",
+			"name": "localhost:3000/signup/user",
 			"request": {
-				"url": "localhost:3001/api/questions/",
-				"method": "GET",
+				"url": "localhost:3000/web-routes/addUser",
+				"method": "POST",
 				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
 					{
 						"key": "Content-Type",
 						"value": "application/json",
@@ -390,199 +306,203 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdandrb@gmail.com\",\n    \"password\": \"1234\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/getNotifications/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/getNotification/5808767737a04d27c0d4a7fc",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/receiverAnswered/57f14c6ecc3b0f20980f13e6",
+			"request": {
+				"url": "localhost:3000/notifications/receiverAnswered/57f14c6ecc3b0f20980f13e6",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"latitude\": 24.0992,\n    \"longitude\": 44.8384,\n    \"estimated\": 5\n}"
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/questions/?daily=1&userId=1",
+			"name": "localhost:3000/notifications/receiverExtended/57f14c6ecc3b0f20980f13e6",
 			"request": {
-				"url": "localhost:3001/api/questions/?daily=1&userId=1",
-				"method": "GET",
+				"url": "localhost:3000/notifications/receiverExtended/57f14c6ecc3b0f20980f13e6",
+				"method": "POST",
 				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
 					{
 						"key": "Content-Type",
 						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "feature - returns the daily question"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/?offset=3&limit=2 pagination filters",
-			"request": {
-				"url": "localhost:3001/api/questions/?offset=3&limit=2",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "feature - pagination filters (offset and limit can be used single or in combination)\nex: /?offset=3&limit=2"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/?popularity=ASC",
-			"request": {
-				"url": "localhost:3001/api/questions/?popularity=ASC",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "sort questions by popularity(vote count),\nuse ASC, DESC values for the \"popularity\" param\nalso works in combination whit pagination filters\nEx /?popularity=desc&limit=2&offset=1"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/?date=ASC",
-			"request": {
-				"url": "localhost:3001/api/questions/?date=DESC",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "sort questions by date (use ASC, DESC values with date param)\nthis filter works also in combination with pagination filters(Ex: ?date=ASC&limit=2&offset=3)"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/1/",
-			"request": {
-				"url": "localhost:3001/api/questions/1/",
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here... html block here...html block here...html block here...html block here...html block here...html block here...html block here...html block here...html block here...\"\n}"
+					"raw": "{\n  \"extension_time\": 5\n}"
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/questions/2/",
+			"name": "localhost:3000/notifications/senderRead/57f3698f1af708143c2fbb3b",
 			"request": {
-				"url": "localhost:3001/api/questions/1/",
+				"url": "localhost:3000/notifications/senderRead/57f3698f1af708143c2fbb3b",
 				"method": "GET",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
+						"key": "Content-Type",
+						"value": "application/json",
 						"description": ""
 					},
 					{
-						"key": "Content-Type",
-						"value": "application/json",
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here... html block here...html block here...html block here...html block here...html block here...html block here...html block here...html block here...html block here...\"\n}"
+					"raw": "{\n\t\n}"
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/questions/2/options/",
+			"name": "localhost:3000/users/disableNotifications/57f4b3a1ab2de50b380f7e95&BH65XXX",
 			"request": {
-				"url": "localhost:3001/api/questions/1/options",
+				"url": "localhost:3000/users/disableNotifications/57f4b3a1ab2de50b380f7e95&BH65XXX",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plates\": \"BH71SEX\",\n    \"given_name\": \"Furia Gri\",\n    \"make\": \"Volkswagen\",\n    \"model\": \"Passat\",\n    \"year\": \"1991\" \n}"
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/enableNotifications/57f4b3a1ab2de50b380f7e95&BH65XXX",
+			"request": {
+				"url": "localhost:3000/users/enableNotifications/57f4b3a1ab2de50b380f7e95&BH65XXX",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/getNotifications",
+			"request": {
+				"url": "localhost:3000/web-routes/getNotifications",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
-					},
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/senderReview/57f6103fa9f1d81d5c0d7d7a",
+			"request": {
+				"url": "localhost:3000/notifications/senderReview/57f6103fa9f1d81d5c0d7d7a",
+				"method": "GET",
+				"header": [
 					{
 						"key": "Content-Type",
 						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
+					"raw": "{\n\t\"latitude\": 24.0992,\n    \"longitude\": 44.8384,\n    \"estimated\": 5\n}"
 				},
-				"description": "returns options associated with question_id=2"
+				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/questions/2/comments/",
+			"name": "localhost:3000/signup/sendEmailVerification",
 			"request": {
-				"url": "localhost:3001/api/questions/2/comments/",
+				"url": "localhost:3000/signup/sendEmailVerification",
 				"method": "POST",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
 						"key": "Content-Type",
 						"value": "application/json",
 						"description": ""
@@ -590,23 +510,52 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"user_id\": 2,\n    \"text\": \"test comment through api\"\n}"
+					"raw": "{\n\t\"email\": \"bogdandrb@gmail.com\"\n}"
 				},
-				"description": "create comments\nif it is comment with media(picture or video) first use /upload service and post here with the recieved media_id "
+				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/questions/2/proposals/",
+			"name": "localhost:3000/signup/verifyEmail/57fb72b99089430c90a53643",
 			"request": {
-				"url": "localhost:3001/api/questions/2/proposals/",
+				"url": "localhost:3000/signup/verifyEmail/57fb75af62e9af0648418a4b",
 				"method": "POST",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
+						"key": "Content-Type",
+						"value": "application/json",
 						"description": ""
-					},
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"bogdandrb@gmail.com\",\n  \"token\": \"a5b0b6\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/signup/login/mugurel.mitrut@gmail.com&plm",
+			"request": {
+				"url": "localhost:3000/signup/login/mugurel.mitrut@gmail.com&plm",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/facebookLogin",
+			"request": {
+				"url": "localhost:3000/signup/facebookLogin",
+				"method": "POST",
+				"header": [
 					{
 						"key": "Content-Type",
 						"value": "application/json",
@@ -615,23 +564,80 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"user_id\": 2,\n    \"text\": \"test proposal through api 12\"\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdan_drb@gmail.com\",\n    \"photo\": \"sec91@gmail.com\",\n    \"facebookID\": \"babanaluicristi16\",\n    \"platform\": \"Android\"\n}"
 				},
-				"description": "create proposals\nif it is comment with media(picture or video) first use /upload service and post here with the recieved media_id "
+				"description": "post phone number, get response with validation code"
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/questions/2/stats/",
+			"name": "localhost:3000/signup/resetPassword/bogdandrb@gmail.com",
 			"request": {
-				"url": "localhost:3001/api/questions/2/stats/",
+				"url": "localhost:3000/signup/resetPassword/bogdandrb@gmail.com",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/getUsers",
+			"request": {
+				"url": "localhost:3000/web-routes/getAdmin/",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
-					},
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/banUser/57fcbb11d99917071090d3b8",
+			"request": {
+				"url": "localhost:3000/web-routes/banUser/57fcbb11d99917071090d3b8",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/unbanUser/57fcbb11d99917071090d3b8",
+			"request": {
+				"url": "localhost:3000/web-routes/unbanUser/57fcbb11d99917071090d3b8",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/addUser",
+			"request": {
+				"url": "localhost:3000/web-routes/addUser",
+				"method": "POST",
+				"header": [
 					{
 						"key": "Content-Type",
 						"value": "application/json",
@@ -640,196 +646,154 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Cristian\",\n    \"email\": \"bogdandrb@gmail.com\",\n    \"password\": \"1234\"\n}"
 				},
-				"description": "returns statistics needed for the Vote Results Page"
+				"description": "post phone number, get response with validation code"
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/questions/2/stats-by-department/",
+			"name": "localhost:3000/web-routes/login/bogdandrb@gmail.com&1234",
 			"request": {
-				"url": "localhost:3001/api/questions/2/stats-by-department/",
+				"url": "localhost:3000/web-routes/login/bogdandrb@gmail.com&1234",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/getUsersForCode/123456",
+			"request": {
+				"url": "localhost:3000/users/getUsersForCode/123456",
 				"method": "GET",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
+						"key": "Content-Type",
+						"value": "application/json",
 						"description": ""
 					},
 					{
-						"key": "Content-Type",
-						"value": "application/json",
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
 				},
-				"description": "returns statistics needed for the department map after the voting procces is complete"
+				"description": "post phone number, get response with validation code"
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/questions/2/stats-by-department/03/",
+			"name": "localhost:3000/users/generateCarCode/57fe17798ef9141d0cc2e2ad",
 			"request": {
-				"url": "localhost:3001/api/questions/2/stats-by-department/03/",
+				"url": "localhost:3000/users/generateCarCode/57fe17798ef9141d0cc2e2ad",
 				"method": "GET",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
+						"key": "Content-Type",
+						"value": "application/json",
 						"description": ""
 					},
 					{
-						"key": "Content-Type",
-						"value": "application/json",
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
 				},
-				"description": "returns statistics needed for the department map after the voting procces is complete"
+				"description": "post phone number, get response with validation code"
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/api/questions/2/user-has-voted",
+			"name": "localhost:3000/users/allowOthers/57fe17798ef9141d0cc2e2ad&BH65XXX&true",
 			"request": {
-				"url": "localhost:3001/api/questions/2/user-has-voted",
+				"url": "localhost:3000/users/allowOthers/57fe17798ef9141d0cc2e2ad&BH65XXX&true",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/chanceQR/57ff7872e0ec5a14b844ad2a&BH89FSSU",
+			"request": {
+				"url": "localhost:3000/users/chanceQR/57ff7872e0ec5a14b844ad2a&BH89FSSU",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"qr_code\": \"loremipsumdolor\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/getNotificationsExtended/5&5",
+			"request": {
+				"url": "localhost:3000/web-routes/getNotificationsExtended/5&5",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/setPicture/57ff7872e0ec5a14b844ad2a",
+			"request": {
+				"url": "localhost:3000/users/setPicture/57ff7872e0ec5a14b844ad2a",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
 						"description": ""
 					},
 					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"user_id\": 1\n}"
-				},
-				"description": "post here the user id when the user has finished asnwering to all the options"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/comments/2/alert",
-			"request": {
-				"url": "localhost:3001/api/comments/2/alert",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"user_id\": 1,\n    \"alert_id\": 3\n}"
-				},
-				"description": "use this route to add reports(alert) on comments"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/options/2/",
-			"request": {
-				"url": "localhost:3001/api/options/2/",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"rating_id\": 5,\n    \"user_id\": 1,\n    \"question_id\": 1\n}"
-				},
-				"description": "get option by id param"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/options/2/rating",
-			"request": {
-				"url": "localhost:3001/api/options/2/rating",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"rating_id\": 5,\n    \"user_id\": 1,\n    \"question_id\": 1\n}"
-				},
-				"description": "use this route to submit user's rating choise for this option"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/categories/",
-			"request": {
-				"url": "localhost:3001/api/categories/?date=ASC",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"rating_id\": 5,\n    \"user_id\": 1,\n    \"question_id\": 1\n}"
-				},
-				"description": "get categories"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/upload/",
-			"request": {
-				"url": "http://138.201.92.226:3001/api/upload",
-				"method": "POST",
-				"header": [
-					{
-						"key": "//Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
+						"key": "//Content-Type",
+						"value": "application/x-www-form-urlencoded",
 						"description": ""
 					}
 				],
@@ -839,886 +803,117 @@
 						{
 							"key": "file",
 							"type": "file",
+							"enabled": true,
+							"value": "3pe3.png"
+						}
+					]
+				},
+				"description": "post phone number, get response with validation code"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/users/getNotification/57e11909853b0122ac974e23",
+			"request": {
+				"url": "localhost:3000/users/getNotification/5808767737a04d27c0d4a7fc",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Stan\",\n    \"last_name\": \"Crisrian\",\n    \"nickname\": \"Stan\",\n    \"email\": \"sec91@gmail.com\",\n    \"driver_license\": \"BH69SEX\",\n    \"photo\": \"sec91@gmail.com\",\n    \"platform\": \"Android\",\n    \"user_city\": \"Oradea\"\n}"
+				},
+				"description": "get one notification"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/notifications/sendReview/580de4a4732f7c11dc6909a5",
+			"request": {
+				"url": "localhost:3000/notifications/sendReview/580de4a4732f7c11dc6909a5",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"feedback\": true\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/getAdmin/57fceaa64521512290f2b37b",
+			"request": {
+				"url": "localhost:3000/web-routes/getAdmin/57fceaa64521512290f2b37b",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/updateAdmin/57fceaa64521512290f2b37b",
+			"request": {
+				"url": "localhost:3000/web-routes/updateAdmin/57fceaa64521512290f2b37b",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"first_name\": \"Ionut\",\n    \"last_name\": \"Popescu\",\n    \"email\": \"stan@gmail.com\",\n    \"password\": \"123\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/web-routes/setPicture/580de4a4732f7c11dc6909a5",
+			"request": {
+				"url": "localhost:3000/web-routes/setPicture/580de4a4732f7c11dc6909a5",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"value": "turbocharger-subaru-impreza.jpg",
+							"type": "file",
 							"enabled": true
 						}
 					]
 				},
-				"description": "!!! remember to change file from \"choose file\" button when testing this service"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/marital_status",
-			"request": {
-				"url": "localhost:3001/api/users/marital_status",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\": \"Education\",\n    \"parent_id\": \"0\"\n}"
-				},
 				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/signup/countries",
-			"request": {
-				"url": "localhost:3001/api/signup/countries",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjM0NSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIn0.ZUvG7rlK1CNF3vr7DjEtPuOhGcgYozsf2w2FD29ihVA",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"smsRequestId\": \"3c1d81f18843473dbc183219a670b1be\",\n    \"pinNumber\":\"9078\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/signup/professional_category",
-			"request": {
-				"url": "localhost:3001/api/signup/professional_category",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjM0NSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIn0.ZUvG7rlK1CNF3vr7DjEtPuOhGcgYozsf2w2FD29ihVA",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"smsRequestId\": \"3c1d81f18843473dbc183219a670b1be\",\n    \"pinNumber\":\"9078\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/signup/education-level",
-			"request": {
-				"url": "localhost:3001/api/signup/education-level",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjM0NSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIn0.ZUvG7rlK1CNF3vr7DjEtPuOhGcgYozsf2w2FD29ihVA",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"smsRequestId\": \"3c1d81f18843473dbc183219a670b1be\",\n    \"pinNumber\":\"9078\"\n}"
-				},
-				"description": "get the predefined list of education levels"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/signup/marital-status",
-			"request": {
-				"url": "localhost:3001/api/signup/marital-status",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjM0NSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIn0.ZUvG7rlK1CNF3vr7DjEtPuOhGcgYozsf2w2FD29ihVA",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"smsRequestId\": \"3c1d81f18843473dbc183219a670b1be\",\n    \"pinNumber\":\"9078\"\n}"
-				},
-				"description": "get the predefined list of education levels"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/2/voting-history-id",
-			"request": {
-				"url": "localhost:3001/api/users/2/voting-history-id/",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"fname\": \"fname1\"\n}"
-				},
-				"description": "user voting history service by ID\n"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/proposals/?popularity=DESC",
-			"request": {
-				"url": "localhost:3001/api/questions/proposals/?popularity=DESC",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "if used with query param \"type=proposal\" returns all proposals associated with question_id=1\n\nfeature - pagination filters (offset and limit can be used single or in combination) ex: /?offset=3&limit=2"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/proposals/?date=ASC",
-			"request": {
-				"url": "localhost:3001/api/questions/proposals/?date=ASC",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "localhost:3001/api/questions/proposals/?date=ASC"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/1/comments/?type=comment&filter=NEUTRE&user_id=2",
-			"request": {
-				"url": "localhost:3001/api/questions/1/comments/?type=comment&filter=NEUTRE&user_id=2",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "filter the comments (get all comments with NEUTRE vote)"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/1/comments/?type=comment&filter=POUR&user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/1/comments/?type=comment&filter=POUR&user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "filter the comments (get all comments with pour vote)"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/1/comments/?type=comment&filter=CONTRE&user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/1/comments/?type=comment&filter=CONTRE&user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "filter the comments (get all comments with contre vote)"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/1/comments/?type=proposal&popularity=ASC&user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/1/comments/?type=proposal&popularity=ASC&user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "if used with query param \"type=proposal\" returns all proposals associated with question_id=1\n\nfeature - pagination filters (offset and limit can be used single or in combination) ex: /?offset=3&limit=2"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/1/comments/?type=proposal&date=ASC&user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/1/comments/?type=proposal&date=ASC&user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/1/comments/?type=proposal&date=DESC&user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/1/comments/?type=proposal&date=DESC&user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/2/comments/?date=DESC&user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/2/comments/?date=DESC&user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/1/comments/?type=proposal&user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/1/comments/?type=proposal&user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "if used with query param \"type=proposal\" returns all proposals"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/2/comments/?offset=1&limit=1&user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/2/comments/?offset=1&limit=1&user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "returns all comments(togheter with users and theyr votes) associated with question_id=2\n\nfeature - pagination filters (offset and limit can be used single or in combination) ex: /?offset=3&limit=2"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/2/comments/?user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/2/comments/?user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "returns all comments(togheter with users and theyr votes) associated with question_id=2\n\nfeature - pagination filters (offset and limit can be used single or in combination) ex: /?offset=3&limit=2"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/unanswered-questions-extended/?popularity=DESC",
-			"request": {
-				"url": "localhost:3001/api/users/1/unanswered-questions-extended/?popularity=DESC",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"user_id\": 1\n}"
-				},
-				"description": "unanswered-questions ordered by popularity DESC"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/unanswered-questions-extended/?date=ASC",
-			"request": {
-				"url": "localhost:3001/api/users/1/unanswered-questions-extended/?date=ASC",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"user_id\": 1\n}"
-				},
-				"description": "unanswered-questions ordered by date ASC"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/categories/?date=DESC",
-			"request": {
-				"url": "localhost:3001/api/categories/?date=DESC",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"rating_id\": 5,\n    \"user_id\": 1,\n    \"question_id\": 1\n}"
-				},
-				"description": "get categories ordered by date DESC"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/2/voting-history-id/?limit=2&offset=2",
-			"request": {
-				"url": "localhost:3001/api/users/2/voting-history-id/?limit=2&offset=2",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"fname\": \"fname1\"\n}"
-				},
-				"description": "user voting history service\n\nservice can be paginated with \"limit\" and \"offset\" query params (Ex: /?limit=2&offset=1)"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/9/stats-by-region/?optionId=23",
-			"request": {
-				"url": "localhost:3001/api/questions/9/stats-by-region/?optionId=23",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "stats by region with optionId"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/9/stats-by-region/11/?optionId=22",
-			"request": {
-				"url": "localhost:3001/api/questions/9/stats-by-region/11/?optionId=22",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "returns statistics needed for the regions map after the voting procces is complete"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/9/stats-region-percentage/?regionCode=11",
-			"request": {
-				"url": "localhost:3001/api/questions/9/stats-region-percentage/?regionCode=11",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "returns statistics needed for the regions map after the voting procces is complete\nby the regionId"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/9/stats-department-percentage/?departmentCode=01",
-			"request": {
-				"url": "localhost:3001/api/questions/9/stats-department-percentage/?departmentCode=01",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "returns statistics needed for the regions map after the voting procces is complete\n--\ndepartmentCode"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/2/comments/?type=comment&filter=MEDIA&user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/2/comments/?type=comment&filter=MEDIA&user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"What do you think of the current situation nr 25\",\n    \"description\": \"html block here...\",\n    \"multiple_answers\": 0,\n    \"is_daily\": 1,\n    \"active_date\": \"2016-05-15\",\n    \"category_id\": 3\n}"
-				},
-				"description": "filter the comments (get all comments with pour vote)"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/questions/1/comments/?popularity=ASC&user_id=1",
-			"request": {
-				"url": "localhost:3001/api/questions/1/comments/?popularity=ASC&user_id=1",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"user_id\": 2,\n    \"text\": \"test comment through api\"\n}"
-				},
-				"description": "create comments\nif it is comment with media(picture or video) first use /upload service and post here with the recieved media_id "
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/comments/2/likes/",
-			"request": {
-				"url": "localhost:3001/api/comments/2/likes",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"user_id\": 1\n}"
-				},
-				"description": "use this route for comment likes"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/points",
-			"request": {
-				"url": "localhost:3001/api/users/1/points",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"activity_id\": 1\n}"
-				},
-				"description": "points for user"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/2 - notification settings",
-			"request": {
-				"url": "localhost:3001/api/users/2",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"allow_notification\": \"1\",\n  \"daily_notification\": \"0\",\n  \"weekly_notification\": \"0\",\n  \"monthly_notification\": \"1\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/2 - TOKEN for notifications",
-			"request": {
-				"url": "localhost:3001/api/users/2",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"phone_token\": \"SADFJKSAGNUASEH34265IF34JIT64RNGJ5I4O6U75U8IOU6HJ5656VB456\",\n  \"phone_type\": \"1\"\n}"
-				},
-				"description": "\"phone_type\" = 1 => andorid\n\"phone_type\" = 2 => iOS"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/friends?after_signup=true",
-			"request": {
-				"url": "localhost:3001/api/users/1/friends/?after_signup=true",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n \"phone_list\": [\n  \"01 45 40 50 45\"\n]\n}"
-				},
-				"description": "submit list of phone numbers from the users phone agenda here\nafter signup"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/delete-category",
-			"request": {
-				"url": "localhost:3001/api/users/1/delete-category",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"category_id\": 1\n}"
-				},
-				"description": "delete category of user"
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3001/api/users/1/insert-category",
-			"request": {
-				"url": "localhost:3001/api/users/1/insert-category",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiZm5hbWUiOiJ0ZXN0Rm5hbWUxIiwibG5hbWUiOiJ0ZXN0Rm5hbWUxIiwicGhvbmVfbnVtYmVyIjoiMDA0MDc3MDI2MzIzMDExMiIsInBvc3RhbF9jb2RlIjoiMTIzNDU2In0.Pmyr_Yg4P3syyYJ-lBMzdY-cA7QsxH7L0tp1Ov8cZP8",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"category_id\": 1\n}"
-				},
-				"description": "insert category of user"
 			},
 			"response": []
 		}
