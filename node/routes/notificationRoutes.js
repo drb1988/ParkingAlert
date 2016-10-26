@@ -69,6 +69,8 @@ var findUsersByNotification = function(db, callback, notificationID) {
     * @name findUsersByNotification
     * @param {String} :notificationID
     */   
+
+    if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
     var o_id = new ObjectId(notificationID);
       db.collection('notifications').findOne({"_id": o_id},
         function(err, result) {
@@ -85,7 +87,11 @@ var findUsersByNotification = function(db, callback, notificationID) {
               response = null;  
 
             callback(response);
-        });           
+        }); 
+      }
+      else {
+        callback("");
+      }          
     }
 
 var findUserToken = function(db, callback, userID) {
@@ -94,8 +100,8 @@ var findUserToken = function(db, callback, userID) {
     * @name findUserToken
     * @param {String} :userId
     */ 
-    console.log("aici "+userID); 
-    var o_id = new ObjectId(userID);
+    if(/[a-f0-9]{24}/.test(userID)) {
+      var o_id = new ObjectId(userID);
       db.collection('parking').findOne({"_id": o_id},
         function(err, result) {
               assert.equal(err, null);
@@ -113,7 +119,9 @@ var findUserToken = function(db, callback, userID) {
                 callback("")
                 }
               }
-        });            
+        });   
+    }
+    else{callback("");}       
     }
 
 /* GET home page. */
@@ -202,8 +210,9 @@ router.get('/receiverRead/:notificationID', function(req, res, next) {
     * @param {String} :notificationID
     */
   var vehicle = "";
-  var sender_token = "";
-  var deleteCar = function(db, callback) {   
+  var sender_token = "";   
+  if(/[a-f0-9]{24}/.test(req.params.id)) {
+  var deleteCar = function(db, callback) {
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
@@ -226,6 +235,10 @@ router.get('/receiverRead/:notificationID', function(req, res, next) {
       });
       }, req.params.notificationID);      
   });
+  }
+  else {
+    res.status(200).send("invalid notification ID")
+    }
   });
 
 router.get('/senderRead/:notificationID', function(req, res, next) {
@@ -267,10 +280,9 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
     * @name /receiverRead/:notificationID
     * @param {String} :notificationID
     */
-  console.log(req.body);
-  console.log("claudia fute "+req.params.notificationID);
   var vehicle = "";
   var sender_token = "";
+  if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
   var deleteCar = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
@@ -308,6 +320,10 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
         });
         }, req.params.notificationID);     
     });
+  }
+  else {
+    res.status(200).send("invalid notificationID")
+  }
 })
 
 router.post('/receiverExtended/:notificationID', function(req, res, next) {
@@ -383,6 +399,8 @@ router.post('/senderDeleted/:notificationID', function(req, res, next) {
     * @name /senderDeleted/:notificationID
     * @param {String} :notificationID
     */
+
+  if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
   var deleteCar = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
@@ -402,6 +420,8 @@ router.post('/senderDeleted/:notificationID', function(req, res, next) {
           res.status(200).send(req.params.notificationID)
       });
     });
+  }
+  res.status(200).send()
 })
 
 router.get('/getNotification/:notificationID', function(req, res, next) {
@@ -410,6 +430,8 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
     * @name /getNotification/:notificationID
     * @param {String} :notificationID
     */
+
+    if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
     var findNotification = function(db, callback) {   
     var o_id = new ObjectId(req.params.notificationID);
       db.collection('notifications').findOne({"_id": o_id},
@@ -432,6 +454,10 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
             db.close();
         });
       });
+  }
+  else {
+    res.status(200).send("invalid notificationID")
+  }
 });
 
 router.post('/sendReview/:notificationID', function(req, res, next) {
@@ -442,8 +468,9 @@ router.post('/sendReview/:notificationID', function(req, res, next) {
     */
 
   var vehicle = "";
-  var sender_token = "";
-  var sendReview = function(db, callback) {   
+  var sender_token = "";   
+  if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
+  var sendReview = function(db, callback) {
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
@@ -469,6 +496,10 @@ router.post('/sendReview/:notificationID', function(req, res, next) {
         });
         }, req.params.notificationID);     
     });
+}
+else {
+  res.status(200).send("invalid notificationID");
+}
 })
 
 module.exports = router;
