@@ -13,10 +13,10 @@ var jwt = require('json-web-token');
 var Chance = require('chance');
 var chance = new Chance();
 var inside = require('point-in-polygon');
-<<<<<<< HEAD
+
 var collide = require('point-circle-collision')
 var QRCode = require('qrcode-npm');
-=======
+
 var collide = require('point-circle-collision');
 var multer = require('multer');
 
@@ -30,7 +30,7 @@ var storage =   multer.diskStorage({
     callback(null, file.fieldname + '-' + Date.now()+ file_extension);
   }
 });
->>>>>>> origin/feature/backend
+
 
 var isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()){
@@ -39,7 +39,16 @@ var isAuthenticated = function (req, res, next) {
   }
   res.redirect('/web-routes/login');
 }
-
+function unique(arr) {
+    var hash = {}, result = [];
+    for ( var i = 0, l = arr.length; i < l; ++i ) {
+        if ( !hash.hasOwnProperty(arr[i]) ) {
+            hash[ arr[i] ] = true;
+            result.push(arr[i]);
+        }
+    }
+    return result;
+}
 module.exports = function(passport){
 
   adminRouter.get('/login', function(req, res, next) {
@@ -139,7 +148,7 @@ module.exports = function(passport){
     var findNotifications = function(db, callback) {   
       var o_id = new ObjectId(req.params.userID);
         var result = [];
-          var cursor =db.collection('notifications').find().sort({ _id: -1}).skip(parseInt(req.params.offset)).limit(parseInt(req.params.limit));
+          var cursor = db.collection('notifications').find().sort({ _id: -1}).skip(parseInt(req.params.offset)).limit(parseInt(req.params.limit));
           cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
@@ -173,8 +182,9 @@ module.exports = function(passport){
                 }
               }
             } else {
-               callback(); 
-               console.log("result: ",result);
+                callback();
+                console.log("result: ",result);
+
                res.status(200).send(result)
             }
 
@@ -201,11 +211,12 @@ module.exports = function(passport){
         req.body.polygon[i][0]=parseFloat(req.body.polygon[i][0]);
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
-    console.log("body request", req.body);
-    var findNotifications = function(db, callback) {   
+    console.log("body request users", req.body);
+      var user_ids = [];
+        var findNotifications = function(db, callback) {
       var o_id = new ObjectId(req.params.userID);
         var result = [];
-          var cursor =db.collection('notifications').find().sort({ _id: -1}).skip(parseInt(req.params.offset)).limit(parseInt(req.params.limit));
+          var cursor = db.collection('notifications').find().sort({ _id: -1}).skip(parseInt(req.params.offset)).limit(parseInt(req.params.limit));
           cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
@@ -215,44 +226,59 @@ module.exports = function(passport){
                 ) {
                 if(req.body.polygon)
                   if(inside([ doc.location.coordinates[0], doc.location.coordinates[1] ], req.body.polygon) && (doc.sender_id || doc.reciver_id)) {
-                    db.collection('parking').findOne({"_id": { $in: [doc.sender_id, doc.reciver_id]}},
-                      function(err, user) {
-                        console.log(result.email)
-                        assert.equal(err, null);
-                        result.push(user);
-                        callback();
-                      });
-                    }
+                      user_ids.push(new ObjectId(doc.sender_id));
+                      user_ids.push(new ObjectId(doc.reciver_id));
+                  }
                 if(req.body.circle) {
                   var circle = [parseFloat(req.body.circle.center.lat), parseFloat(req.body.circle.center.lng)],
                   radius =  parseFloat(req.body.circle.radius),
                   point = [doc.location.coordinates[0], doc.location.coordinates[1]]
                   console.log("is in circle: "+collide(point, circle, radius));
                   if(collide(point, circle, radius)){
-                    db.collection('parking').findOne({"_id": { $in: [doc.sender_id, doc.reciver_id]}},
-                      function(err, user) {
-                        console.log(result.email)
-                        assert.equal(err, null);
-                        result.push(user);
-                        callback();
-                    });
+                      user_ids.push(new ObjectId(doc.sender_id));
+                      user_ids.push(new ObjectId(doc.reciver_id));
                   }
                 }
               }
             } else {
-               callback(); 
-               console.log("result: ",result);
+                callback();
+                console.log("result: ",result);
+                var uniqueUserIds = unique(user_ids);
+                console.log("user_ids: ",unique(user_ids));
+
+                var findUsers = function(db, callbackUser) {
+                    var result = [];
+                    console.log("unique(user_ids)",unique(user_ids));
+
+                    var cursor = db.collection('parking').find({"_id": unique(user_ids)});
+                    cursor.each(function(err, doc) {
+                        assert.equal(err, null);
+                        if (doc != null) {
+                            result.push(doc);
+                        } else {
+                            callbackUser();
+                            console.log("aici in result", result);
+                        }
+                    });
+                };
+                findUsers(db, function() {
+                    db.close();
+                });
+                console.log("result: ",result);
                res.status(200).send(result)
             }
 
          });
-      };  
+
+      };
+
 
       MongoClient.connect(dbConfig.url, function(err, db) {
         assert.equal(null, err);
-        findNotifications(db, function() {
-            db.close();
-        });
+          findNotifications(db, function() {
+              db.close();
+          });
+
       });
   });
 
@@ -519,29 +545,27 @@ module.exports = function(passport){
     });
   });
 
-  adminRouter.post('/updateAdmin/:userID', function(req, res, next) {
+  adminRouter.post('/admin', isAuthenticated, function(req, res, next) {
   /**
-    * Route to update user information,
-    * @name /updateUser/:userID
-    * @param {String} :userId
+    * Route to update admin information,
+    * @name /admin
     */
 
   const secret = 'Friendly';
-  const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
+  // const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
   var findUser = function(db, callback) {   
-  var o_id = new ObjectId(req.params.userID);
+  var o_id = new ObjectId(req.user._id);
       db.collection('parkingAdmins').update({"_id": o_id},
          {$set: { 
                 "first_name": req.body.first_name,
                 "last_name": req.body.last_name,
-                "email": req.body.email,
-                "password": hash
+                "email": req.body.email
                 }
              },
         function(err, result) {
               assert.equal(err, null);
               console.log("Found user "+req.params.userID);
-              res.status(200).send(result)
+              res.redirect("/web-routes/dashboard");
               callback();
         });            
     }
@@ -553,29 +577,25 @@ module.exports = function(passport){
       });
 });
 
-  adminRouter.get('/getAdmin/:userID', function(req, res, next) {
+  adminRouter.get('/admin', isAuthenticated, function(req, res, next) {
     /**
-      * Route to get and admin by ID,
-      * @name /getUser/:userID
-      * @param {String} :userId
+      * Route to return the admin who is log in,
+      * @name /admin
       */
-      var findUser = function(db, callback) {   
-    var o_id = new ObjectId(req.params.userID);
-      db.collection('parkingAdmins').findOne({"_id": o_id},
-        function(err, result) {
-              console.log(result)
-              assert.equal(err, null);
-              console.log("Found user "+req.params.userID);
-              res.status(200).send(result)
-              callback();
-        });            
+    var result = {
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      email: req.user.email,
+      password: req.user.password
     }
-    MongoClient.connect(dbConfig.url, function(err, db) {
-        assert.equal(null, err);
-        findUser(db, function() {
-            db.close();
-        });
-      });
+    res.render('admin', { 
+      title: 'Friendly | Profil',
+      admin: result,
+      user: {
+        name: req.user.first_name+" "+req.user.last_name,
+        email: req.user.email
+      }
+    });
 });
 
   var upload = multer({ storage : storage}).single('file');

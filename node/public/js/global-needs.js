@@ -33,10 +33,6 @@ function makeAjaxCall() {
         json.polygon.push([vertices.getNorthEast().lat(), vertices.getNorthEast().lng()]);
         json.polygon.push([vertices.getNorthEast().lat(), vertices.getSouthWest().lng()]);
         json.polygon.push([vertices.getSouthWest().lat(), vertices.getSouthWest().lng()]);
-
-        // console.log('getNorthEast lng: ',  rectangle.getBounds().getNorthEast().lng());
-        // console.log('getSouthWest lat: ',  rectangle.getBounds().getSouthWest().lat());
-        // console.log('getSouthWest lng: ',  rectangle.getBounds().getSouthWest().lng());
       }
       if(circle) {
       	json.circle = {
@@ -87,7 +83,20 @@ function makeAjaxCall() {
        },
        error: function(XMLHttpRequest, textStatus, errorThrown) { 
         alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-    }   
+      }   
+      });
+      $.ajax({
+        async: true,
+        type: "POST",
+        url: "/web-routes/UsersAjaxCallback", 
+        data: json,
+        success: function(result) {
+          console.log("merge users result in ajax", result);
+          
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+          alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+        }   
       });
     }
 }
