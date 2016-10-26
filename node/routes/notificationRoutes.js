@@ -79,7 +79,7 @@ var findUsersByNotification = function(db, callback, notificationID) {
                 "receiver_id": result.receiver_id,
                 "sender_token": result.sender_token,
                 "vehicle": result.vehicle,
-                "receiver_token": result.sender_token
+                "receiver_token": result.receiver_token
               }
             else
               response = null;  
@@ -304,7 +304,7 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
           db.close();
           res.status(200).send(req.params.notificationID)
           console.log("estimated "+req.body.estimated);
-          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "receiver", req.body.estimated, 0, 0)
+        //  sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "receiver", req.body.estimated, 0, 0)
         });
         }, req.params.notificationID);     
     });
@@ -443,7 +443,7 @@ router.post('/sendReview/:notificationID', function(req, res, next) {
 
   var vehicle = "";
   var sender_token = "";
-  var deleteCar = function(db, callback) {   
+  var sendReview = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
@@ -460,13 +460,12 @@ router.post('/sendReview/:notificationID', function(req, res, next) {
   }
    MongoClient.connect(dbConfig.url, function(err, db) {
       assert.equal(null, err);
-      findUsersByNotification(db, function(sender){console.log(sender); notificationReceiverToken=sender.receiver_token;
+      findUsersByNotification(db, function(sender){console.log("token "+sender.receiver_token); notificationReceiverToken=sender.receiver_token;
         vehicle=sender.vehicle;
-        deleteCar(db, function() {
+        sendReview(db, function() {
           db.close();
           res.status(200).send(req.params.notificationID)
-          console.log("estimated "+req.body.estimated);
-          sendNotification(notificationReceiverToken, req.params.notificationID, vehicle, "review", req.body.estimated, 0, 0)
+          sendNotification(notificationReceiverToken, req.params.notificationID, vehicle, "review", 0, 0, 0)
         });
         }, req.params.notificationID);     
     });
