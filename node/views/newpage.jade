@@ -12,7 +12,8 @@ block content
               h3 Harta
               p Harta pentru anumite regiune.
             .icon
-              i.ion.ion-ios-location
+              // i.ion.ion-ios-location
+              i.ion.ion-ios-navigate
             a.small-box-footer(href='#')
               | Vezi Harta  
               i.fa.fa-arrow-circle-right
@@ -105,6 +106,30 @@ block content
                   h4.modal-title Utilizatori Friendly
                 .modal-body
                   iframe(src="/web-routes/users" style='width:100%;height:100%' frameBorder="0")
+                    p Your browser does not support iframes./p
+                  // include heatmap_ajax
+                .modal-footer
+                  button.btn.btn-default(type='button', data-dismiss='modal') Close 
+        .col-lg-3.col-xs-6
+          // small box
+          .small-box.bg-purple(data-toggle='modal', data-target='#QRGeneratorModal')
+            .inner
+              h3 QR Code
+              p Genereaza cod QR.
+            .icon
+              i.ion.ion-qr-scanner
+            a.small-box-footer(href='#')
+              | Vezi Generator 
+              i.fa.fa-arrow-circle-right
+          #QRGeneratorModal.modal.fade(role='dialog' )
+            .modal-dialog(style='max-width: 800px; width: 90%;')
+              // Modal content
+              .modal-content
+                .modal-header
+                  button.close(type='button', data-dismiss='modal') ×
+                  h4.modal-title Utilizatori Friendly
+                .modal-body
+                  iframe(src="/web-routes/qr" style='width:100%;height:100%' frameBorder="0")
                     p Your browser does not support iframes./p
                   // include heatmap_ajax
                 .modal-footer

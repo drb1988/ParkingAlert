@@ -14,6 +14,7 @@ var Chance = require('chance');
 var chance = new Chance();
 var inside = require('point-in-polygon');
 var collide = require('point-circle-collision')
+var QRCode = require('qrcode-npm');
 
 var isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()){
@@ -21,23 +22,6 @@ var isAuthenticated = function (req, res, next) {
     return next();
   }
   res.redirect('/web-routes/login');
-}
-
-var verifyIfIsInsideACircle = function (CircleCenterLat, CircleCenterLng, PointLat, PointLng) {
-  var rad = function(x) {
-    return x * Math.PI / 180;
-  };
-
-  var R = 6378137; // Earth’s mean radius in meter
-  var dLat = rad(CircleCenterLat - PointLat);
-  var dLong = rad(CircleCenterLng - PointLng);
-  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(rad(CircleCenterLat)) * Math.cos(rad(CircleCenterLng)) *
-    Math.sin(dLong / 2) * Math.sin(dLong / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = R * c;
-  console.log("dddddddddddddddddddddu: "+d);
-  return d
 }
 
 module.exports = function(passport){
@@ -88,8 +72,36 @@ module.exports = function(passport){
 //     });
 //   });
 // });
+    var findUsers = function(db, callback) {   
+        var result = [];
+          var cursor = db.collection('parking').find();
+          cursor.each(function(err, doc) {
+            assert.equal(err, null);
+            if (doc != null) {
+               result.push(doc);
+            } else {
+                callback();
+                console.log("aici");
+               res.render('heatmap_ajax', { title: 'Express',
+                users: result,
+                message: null,
+                message_type: null 
+              });
+            }
+         });
+      };  
 
-  res.render('heatmap_ajax', { title: 'Express' });
+      MongoClient.connect(dbConfig.url, function(err, db) {
+          assert.equal(null, err);
+          findUsers(db, function() {
+              db.close();
+          });
+        });
+
+  // res.render('heatmap_ajax', { title: 'Express',
+  // users: result,
+  // message: null,
+  // message_type: null });
 });
 
   adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
@@ -302,7 +314,7 @@ module.exports = function(passport){
       	* @param {String} :userId
       	*/
 
-      	var findUsers = function(db, callback) {   
+      var findUsers = function(db, callback) {   
   	 	var o_id = new ObjectId(req.params.userID);
   	 		var result = [];
   		    var cursor =db.collection('parking').find();
@@ -421,6 +433,7 @@ module.exports = function(passport){
   //       });
   // });
 
+
   adminRouter.post('/addUser', function(req, res, next) {
       /**
       * Route to get users by ID,
@@ -473,14 +486,22 @@ module.exports = function(passport){
         return result.value;
      }
 
-  router.get('/generateQrCode/:userID', function(req, res, next) {
-  var testCode = generateCode(req.params.userID);
-  console.log("test decodare");
-  console.log(decodeJwt(testCode));
-  res.status(200).send({
-    "carCode":  generateCode(req.params.userID) 
-  })
-});
+  adminRouter.post('/generateQrCode', isAuthenticated, function(req, res, next) {
+    var qr = QRCode.qrcode(4, 'M');
+    qr.addData(req.user._id);
+    qr.make();
+    var qr_code = qr.createImgTag(4);
+    console.log("qr_code:",qr_code);
+    res.status(200).send({
+      "QRCode": generateCode(req.user._id)
+    })
+  });
+
+  adminRouter.get('/qr', isAuthenticated, function(req, res, next) {
+    res.render('qr-generator', { 
+      title: 'Friendly | QR Generator'
+    });
+  });
 
   return adminRouter;
 }

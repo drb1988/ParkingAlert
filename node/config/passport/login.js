@@ -8,7 +8,7 @@ var dbConfig = require('../../db.js');
 var db = require('mongoskin').db(dbConfig.url);
 
 module.exports = function(passport){
-    console.log("App passport login working");
+    // console.log("App passport login working");
     passport.use('login', new LocalStrategy({
         usernameField: 'email',
         passwordField: 'password',
@@ -19,7 +19,7 @@ module.exports = function(passport){
         db.collection('parkingAdmins').findOne({"email": req.body.email}, function(err, result) {
             if(err)
                 return done(null, false);
-            console.log("Found email "+result._id);
+            // console.log("Found email "+result._id);
             var payload = result;
             var response = {
               "userID": result._id

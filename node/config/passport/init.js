@@ -20,7 +20,7 @@ module.exports = function(passport){
         var o_id = new ObjectId(_id);
         db.collection('parkingAdmins').findOne({"_id": o_id},
           function(err, result) {
-            console.log(result)
+            // console.log(result)
             assert.equal(err, null);
             // console.log("Found user "+result);
             done(null, result);

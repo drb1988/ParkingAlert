@@ -1,13 +1,11 @@
 extends dashboard-layout-users
 block content
-      .row
+      .row#users
         .col-lg-12
           .panel.panel-default
             .panel-body
               .dataTable_wrapper
                 table.table.table-striped.table-bordered.table-hover#dataTables-content
-                  if (message && message.length > 0)
-                    div.alert(class='#{message_type}') #{message} 
                   thead
                     tr
                       th Name

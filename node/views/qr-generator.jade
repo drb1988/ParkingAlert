@@ -1,0 +1,53 @@
+extends dashboard-layout-users
+block content
+	script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
+	script(src='http://davidshimjs.github.io/qrcodejs/qrcode.min.js')
+	sceipt(src='http://requirejs.org/docs/release/2.1.8/minified/require.js')
+	button.btn.btn-info#QR Genereaza!
+	button.btn.btn-danger#printQR Printeaza!
+	#QRCodeResult
+	#qrcode(style="margin-top:20px")
+	script.
+		var qrcode = new QRCode("qrcode");
+		var wasPrinted = false;
+		$("#printQR").click(function(){
+			if(!wasPrinted) {
+				wasPrinted = true;
+				printcontent($("#qrcode").html());
+				console.log("was not printed")
+			} else {
+				alert("Acest cod a fost printat o data, genereaza altul!");
+			}
+		})
+
+		$("#QR").click(function(){
+		console.log('clicked');
+		$.ajax({
+		async: true,
+		type: "POST",
+		data: [],
+		url: "/web-routes/generateQrCode", 
+		success: function(result) {
+		console.log("merge users result in ajax");
+		console.log(result);
+		if(result){
+			console.log("qrcode.makeCode(result.QRCode)");
+			$("#QRCodeResult").html(qrcode.makeCode(result.QRCode));
+			wasPrinted = false;
+		}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) { 
+		alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+		}   
+		});
+		});
+		function printcontent(content)
+		{
+		    var mywindow = window.open('', '', '');
+		    mywindow.document.write('<html><title>Cod QR pentru aplicatia Friendly.</title><body>');
+		    mywindow.document.write(content);
+		    mywindow.document.write('</body></html>');
+		    mywindow.document.close();
+		    mywindow.print();
+		    return true;
+		}

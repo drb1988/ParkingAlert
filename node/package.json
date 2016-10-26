@@ -21,17 +21,12 @@
     "mocha": "~3.0.2",
     "mongoose": "~4.6.0",
     "morgan": "~1.7.0",
+    "multer": "~1.2.0",
     "nodemailer": "~2.6.4",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pretty": "^1.0.0",
-    "mocha": "~3.0.2",
-    "mongoose": "~4.6.0",
-    "morgan": "~1.7.0",
-    "serve-favicon": "~2.3.0", 
-    "nodemailer": "~2.6.4", 
-    "chance": "~1.0.4",
-    "multer": "~1.2.0",
+    "qrcode-npm": "0.0.3",
     "serve-favicon": "~2.3.0"
   }
 }
