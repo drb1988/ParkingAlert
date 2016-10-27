@@ -384,30 +384,34 @@ module.exports = function(passport){
               }
             } else {
                 callback();
-                console.log("result: ",result);
                 var uniqueUserIds = unique(user_ids);
-             //   console.log("user_ids: ",unique(user_ids));
-
-                var findUsers = function(db, callbackUser) {
+                console.log("user_ids: ",unique(user_ids));
+                var findUsers = function(db, callback) {
                     var result = [];
-                 //   console.log("unique(user_ids)",unique(user_ids));
-
-                    var cursor = db.collection('parking').find({"_id": unique(user_ids)});
+                    var cursor = db.collection('parking').find({"_id": { $in: uniqueUserIds}});
                     cursor.each(function(err, doc) {
                         assert.equal(err, null);
                         if (doc != null) {
                             result.push(doc);
                         } else {
-                            callbackUser();
-                            console.log("aici in result", result);
+                            callback();
+                            //res.status(200).send(result);
+                            console.log("result user in finduser", result);
+                            res.status(200).send(result)
                         }
                     });
                 };
-                findUsers(db, function() {
-                    db.close();
+
+                MongoClient.connect(dbConfig.url, function(err, db) {
+                    assert.equal(null, err);
+                    findUsers(db, function() {
+                        db.close();
+                    });
                 });
              //   console.log("result: ",result);
                res.status(200).send(result)
+               console.log("result: ",result);
+                // res.status(200).send(result)
             }
 
          });
@@ -420,7 +424,6 @@ module.exports = function(passport){
           findNotifications(db, function() {
               db.close();
           });
-
       });
   });
 

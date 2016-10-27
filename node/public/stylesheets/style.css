@@ -6,7 +6,7 @@ html, body {
   // background: url('/img/large-background.jpg') no-repeat fixed center;
 }
 #map-content {
-  height: 430px;
+  height: 270px;
   }
 iframe {
   border:none;

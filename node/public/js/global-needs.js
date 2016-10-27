@@ -85,6 +85,7 @@ function makeAjaxCall() {
         alert("Status: " + textStatus); alert("Error: " + errorThrown); 
       }   
       });
+      console.log("json pentru useri: ", json);
       $.ajax({
         async: true,
         type: "POST",
@@ -92,7 +93,24 @@ function makeAjaxCall() {
         data: json,
         success: function(result) {
           console.log("merge users result in ajax", result);
-          
+          $(function () {
+            var content = '';
+            for (var i = 0; i < result.length; i++) {
+              content += '<tr>';
+              content += '<td>' + result[i].first_name +' '+ result[i].last_name + '</td>';
+              content += '<td>' + result[i].email + '</td>';
+              var displayCity = result[i].city ? result[i].city : ' ';
+              content += '<td>' + displayCity + '</td>';
+              var displayText= result[i].is_banned ? 'Unban' : 'Ban',
+                  displayType = result[i].is_banned ? 'btn-warning' : 'btn-danger';
+              content += '<td><a href="javascript: ConfirmDialog("'+result[i]._id +'", "'+result[i].is_banned+'")" class="btn btn-xs '+displayType+'">'+displayText+'</a></td>';
+              content += '</tr>';
+
+              // <a href="javascript: ConfirmDialog("5808767737a04d27c0d4a7fc", "false")" class="btn btn-xs btn-danger"></a>
+            }
+            $('#dataTables-content tbody').html(content);
+          });
+
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) { 
           alert("Status: " + textStatus); alert("Error: " + errorThrown); 
