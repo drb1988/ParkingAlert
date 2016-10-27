@@ -13,18 +13,7 @@ block content
                       th City
                       th Banned
                   tbody
-                    each user in users
-                      tr
-                        td #{user.first_name} #{user.last_name}
-                        td
-                          = user.email
-                        td
-                          = user.user_city
-                        td
-                          -var redirect = user.is_banned ? 'Unban' : 'Ban'
-                          -var btnclass = user.is_banned ? 'btn-warning' : 'btn-danger'
-                          a(class='btn btn-xs '+btnclass href='javascript: ConfirmDialog("#{user._id}", "#{user.is_banned}")') 
-                            = user.is_banned=='1' ? 'Ban' : 'Unban'
+
 
 block scripts
   script(src='/js/datatables/jquery.dataTables.min.js' type="text/javascript")
@@ -35,18 +24,18 @@ block scripts
       var answer = confirm('Are you sure that you want to unban this user?');
     else
       var answer = confirm('Are you sure that you want to ban this user?');
-    if (answer)
-    {
-    console.log('yes');
-    if(is_banned)
-      document.location.href="/web-routes/users/unban/" + id;
-    else
-      document.location.href="/web-routes/users/ban/"+ id;
-    }
-    else
-    {
-    console.log('cancel');
-    }
+      if (answer)
+      {
+        console.log('yes');
+        if(is_banned)
+          document.location.href="/web-routes/users/unban/" + id;
+        else
+          document.location.href="/web-routes/users/ban/"+ id;
+      }
+      else
+      {
+        console.log('cancel');
+      }
     };
   script.
     $(document).ready(function() {
