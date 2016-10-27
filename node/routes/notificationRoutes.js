@@ -32,10 +32,32 @@ var toLocalTime = function(time) {
   return n;
 };
 
-var sendNotification = function(token, notification, car, type, time, lat, longit){
+var sendNotification = function(token, notification, car, type, time, lat, longit, time, review){
         var serverKey = 'AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4';
         var fcm = new FCM("AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4");
-        var message = {
+        if (time && review){
+          var message = {
+          to: token, 
+          data: {
+            notification_id: notification,
+            car_id: car,
+            is_ontime: time,
+            feedback: review,
+            notification_type: type,
+            answered_at: new Date,
+            estimated_time: time,
+            latitude: lat,
+            longitude: longit,
+          },
+          notification: {
+            title: 'Parking-Alert',
+            body: 'Ati primit notificare', 
+            sound: 'enabled'
+          }
+        };
+        }
+        else {
+          var message = {
           to: token, 
           data: {
             notification_id: notification,
@@ -52,6 +74,8 @@ var sendNotification = function(token, notification, car, type, time, lat, longi
             sound: 'enabled'
           }
         };
+        }
+        
         console.log("token "+token);
         console.log(notification+" car "+car+" type "+type+" time "+time+" lat "+lat+" long "+longit);
         fcm.send(message, function(err, response){
@@ -495,7 +519,7 @@ router.post('/sendReview/:notificationID', function(req, res, next) {
         sendReview(db, function() {
           db.close();
           res.status(200).send(req.params.notificationID)
-          sendNotification(notificationReceiverToken, req.params.notificationID, vehicle, "review", 0, 0, 0)
+          sendNotification(notificationReceiverToken, req.params.notificationID, vehicle, "review", 0, 0, 0, req.body.is_ontime, req.body.feedback)
         });
         }, req.params.notificationID);     
     });
