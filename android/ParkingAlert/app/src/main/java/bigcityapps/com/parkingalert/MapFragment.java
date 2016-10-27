@@ -64,7 +64,7 @@ import Util.SecurePreferences;
 /**
  * Created by fasu on 10/12/15.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment {
     RelativeLayout back_maps;
     private GoogleMap mMap;
     TextView adress, tvTime;
@@ -91,15 +91,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.harta, container, false);
         initComponents(rootView);
-//        ((Activity)activity).setOnBackPressedListener(new BaseBackPressedListener(activity));
-
-//        Intent iin = getActivity().getIntent();
+        Constants.isActivMap=true;
         Bundle b = this.getArguments();
-//        Bundle b = iin.getExtras();
         ctx = getContext();
         prefs = new SecurePreferences(getContext());
         queue = Volley.newRequestQueue(getContext());
-        Log.w("meniuu", "map");
+        Log.w("meniuu", "mapfragment");
         if (b != null) {
             try {
                 mHour = (String) b.get("mHour");
@@ -120,7 +117,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 long diff = time - actualDate;
                 diff = diff / 1000;
                 mProgressStatus = (int) diff;
-                Log.w("meniuu", "diff in maps");
                 dosomething();
                 Log.w("meniuu", "diff in harta:" + diff);
                 int minutes = 0;
@@ -162,13 +158,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
                     googleMap.setMyLocationEnabled(true);
 
-                    // For dropping a marker at a point on the Map
-//                    LatLng sydney = new LatLng(-34, 151);
-//                    googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-//
-//                    // For zooming automatically to the location of the marker
-//                    CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-//                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                     if (mLng.length() != 0)
                         adress.setText(getAddress(Double.parseDouble(mLat), Double.parseDouble(mLng)));
                     mMap.setInfoWindowAdapter(new MyInfoWindowAdapter());
@@ -194,31 +183,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return rootView;
     }
 
-//    private final LocationListener locationListenerNetwork = new LocationListener() {
-//        public void onLocationChanged(Location location) {
-//            if(mLng.length()!=0) {
-//                mLng = location.getLongitude() + "";
-//                mLat = location.getLatitude() + "";
-//                adress.setText(getAddress(Double.parseDouble(mLat), Double.parseDouble(mLng)));
-//                final LatLng CIU = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
-//                LatLng sydney = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng)), 12.0f));
-//                Marker marker = mMap.addMarker(new MarkerOptions().position(CIU).title(image).snippet(mText + ""));
-////            mMap.addMarker(new MarkerOptions().position(CIU).tvTitle("My Office").snippet(mText+""));
-//                marker.showInfoWindow();
-//                mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-//            }
-//        }
-//
-//        public void onStatusChanged(String s, int i, Bundle bundle) {
-//        }
-//
-//        public void onProviderEnabled(String s) {
-//        }
-//
-//        public void onProviderDisabled(String s) {
-//        }
-//    };
 
     private void showAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(ctx);
@@ -249,17 +213,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return isLocationEnabled();
     }
 
-//    @Override
-//    protected void onResume() {
-//
-//        if (!checkLocation())
-//            return;
-//        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            return;
-//        }
-//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListenerNetwork);
-//        super.onResume();
-//    }
 
     /**
      *
@@ -363,16 +316,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         new Thread(new Runnable() {
             public void run() {
                 while (mProgressStatus > 0) {
-                    Log.w("meniuu", "in while");
-//                    if (run == false)
-//                        mProgressStatus = 1;
                     mProgressStatus -= 1;
-                    if (mProgressStatus == 0 && isActiv) {
+                    Log.w("meniuu","COnstants.isactivmap:"+Constants.isActivMap);
+                    if (mProgressStatus == 0 && Constants.isActivMap) {
+                        Log.w("meniuu","in map se apeleaza review");
                         Review(notification_id,mHour,mPlates,time + "",mLat,mLng, image);
                     }
                     mHandler.post(new Runnable() {
                         public void run() {
-                            tvTime.setText("Incercam sa il localizam proprietarul:"+mProgressStatus);
+                            tvTime.setText("Incercam sa il localizam proprietar:"+mProgressStatus);
                             Log.w("meniuu", "incercam sa il localizam pe receiver:" + mProgressStatus);
                         }
                     });
@@ -393,7 +345,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onDestroyView();
     }
 
-    public void Review(final  String id,final String ora, final String nr_carString, final String timer, final String mLat, final String mLng, final String mImage){
+    @Override
+    public void onPause() {
+        isActiv=false;
+        super.onPause();
+    }
+
+    public void Review(final  String id, final String ora, final String nr_carString, final String timer, final String mLat, final String mLng, final String mImage){
         String url = Constants.URL+"notifications/sendReview/"+id;
         Log.w("meniuu","url review:"+url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -402,17 +360,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         String json = response;
                         Log.w("meniuu", "response:review" + response);
 //                        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-                        Fragment  fragment = new SumarFragment();
-                        Bundle harta = new Bundle();
-                        harta.putString("mHour", ora);
-                        harta.putString("mPlates", nr_carString);
-                        harta.putString("time", timer+"");
-                        harta.putString("lat", mLat);
-                        harta.putString("lng", mLng);
-                        harta.putString("image", mImage);
-                        fragment.setArguments(harta);
-                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        if(isActiv) {
+                            Log.w("meniuu","se deschide fragmentul sumar din harta");
+                            Fragment fragment = new SumarFragment();
+                            Bundle harta = new Bundle();
+                            harta.putString("mHour", ora);
+                            harta.putString("mPlates", nr_carString);
+                            harta.putString("time", timer + "");
+                            harta.putString("feedback", "Nu a venit la masina");
+                            fragment.setArguments(harta);
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        }
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {

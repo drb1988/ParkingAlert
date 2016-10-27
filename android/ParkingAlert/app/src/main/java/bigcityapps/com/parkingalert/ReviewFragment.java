@@ -90,6 +90,10 @@ public class ReviewFragment extends Fragment implements View.OnClickListener {
                         harta.putString("mHour", ora);
                         harta.putString("mPlates", nr_carString);
                         harta.putString("time", timer+"");
+                        if(feedback)
+                            harta.putString("feedback", "A venit la masina");
+                        else
+                            harta.putString("feedback", "Nu a venit la masina");
                         fragment.setArguments(harta);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();

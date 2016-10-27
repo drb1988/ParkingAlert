@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import Util.SecurePreferences;
 
@@ -19,7 +18,7 @@ public class SplashScreen extends Activity {
     SharedPreferences prefs;
     private static int SPLASH_TIME_OUT = 2000;
     Context ctx;
-    String nr_car, notification_id,notification_type,estimated_time,answered_at,mPlates;
+    String nr_car, notification_id,notification_type,estimated_time,answered_at,mPlates,feedback;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
@@ -28,36 +27,69 @@ public class SplashScreen extends Activity {
         ctx=this;
 
         if(x!=null) {
+            Log.w("meniuu","x!=null");
             try{
-            notification_type = (String) x.getString("notification_type");
-            nr_car = (String) x.getString("car_id");
-            notification_id = (String) x.getString("notification_id");
-            estimated_time = (String) x.getString("estimated_time");
-            answered_at = (String) x.getString("answered_at");
-            mPlates = (String) x.getString("mPlates");
-
-            if (notification_type.equals("sender")) {
-                Intent intent = new Intent(this, ViewNotification.class);
-                intent.putExtra("mPlates", nr_car);
-                intent.putExtra("notification_id", notification_id);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-            } else if (notification_type.equals("receiver")) {
-                Intent timer = new Intent(SplashScreen.this, Timer.class);
-                timer.putExtra("time", estimated_time);
-                timer.putExtra("mHour", answered_at);
-                timer.putExtra("mPlates", mPlates);
-                startActivity(timer);
-                finish();
-            } else if (notification_type.equals("review")) {
-                Intent timer = new Intent(SplashScreen.this, Review.class);
-                timer.putExtra("mHour", answered_at);
-                timer.putExtra("mPlates", mPlates);
-                startActivity(timer);
-                finish();
-                Toast.makeText(ctx, "revieew", Toast.LENGTH_LONG).show();
-            }
+                notification_type = (String) x.getString("notification_type");
+                nr_car = (String) x.getString("car_id");
+                notification_id = (String) x.getString("notification_id");
+                estimated_time = (String) x.getString("estimated_time");
+                answered_at = (String) x.getString("answered_at");
+                mPlates = (String) x.getString("mPlates");
+                feedback = (String) x.getString("feedback");
+                if(!notification_type.equals("review")) {
+                    Log.w("meniuu","diferit de review");
+                    if (prefs.getString("token", null) == null) {
+                        Intent i = new Intent(SplashScreen.this, FirstScreen.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        finish();
+                    } else {
+                        Intent i = new Intent(SplashScreen.this, MainActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        finish();
+                    }
+                }
+                else
+                {   Log.w("meniuu","intra in mainactivity pt ca notification_type");
+                    Intent i = new Intent(SplashScreen.this, MainActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.putExtra("notification_type",notification_type);
+                    i.putExtra("mHour",answered_at);
+                    i.putExtra("mPlates",nr_car);
+                    i.putExtra("feedback",feedback);
+                    startActivity(i);
+                    finish();
+                }
+//            notification_type = (String) x.getString("notification_type");
+//            nr_car = (String) x.getString("car_id");
+//            notification_id = (String) x.getString("notification_id");
+//            estimated_time = (String) x.getString("estimated_time");
+//            answered_at = (String) x.getString("answered_at");
+//            mPlates = (String) x.getString("mPlates");
+//
+//            if (notification_type.equals("sender")) {
+//                Intent intent = new Intent(this, ViewNotification.class);
+//                intent.putExtra("mPlates", nr_car);
+//                intent.putExtra("notification_id", notification_id);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(intent);
+//                finish();
+//            } else if (notification_type.equals("receiver")) {
+//                Intent timer = new Intent(SplashScreen.this, Timer.class);
+//                timer.putExtra("time", estimated_time);
+//                timer.putExtra("mHour", answered_at);
+//                timer.putExtra("mPlates", mPlates);
+//                startActivity(timer);
+//                finish();
+//            } else if (notification_type.equals("review")) {
+//                Intent timer = new Intent(SplashScreen.this, Review.class);
+//                timer.putExtra("mHour", answered_at);
+//                timer.putExtra("mPlates", mPlates);
+//                startActivity(timer);
+//                finish();
+//                Toast.makeText(ctx, "revieew", Toast.LENGTH_LONG).show();
+//            }
         }catch (Exception e){
                 Intent i = new Intent(SplashScreen.this, MainActivity.class);
                 startActivity(i);

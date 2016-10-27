@@ -97,10 +97,8 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
                         harta.putString("mHour", ora);
                         harta.putString("mPlates", nr_carString);
                         harta.putString("time", timer+"");
-                        harta.putString("lat", mLat);
-                        harta.putString("lng", mLng);
-                        harta.putString("image", image);
                         harta.putString("notification_id", notification_id);
+                        harta.putString("feedback", "A expirat timpul");
                         fragment.setArguments(harta);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -132,17 +130,15 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
                                 if(extended.getVisibility()==View.INVISIBLE)
                                     extended.setVisibility(View.VISIBLE);
                             }
-                            if(mProgressStatus==0 && isActiv){
+                            if(mProgressStatus==0 && isActiv ){
                                 getActivity().getSupportFragmentManager().beginTransaction().remove(TimerReceiverFragment.this).commit();
                                 Fragment  fragment = new SumarFragment();
                                 Bundle harta = new Bundle();
                                 harta.putString("mHour", ora);
                                 harta.putString("mPlates", nr_carString);
                                 harta.putString("time", timer+"");
-                                harta.putString("lat", mLat);
-                                harta.putString("lng", mLng);
-                                harta.putString("image", image);
                                 harta.putString("notification_id", notification_id);
+                                harta.putString("feedback", "A expirat timpul");
                                 fragment.setArguments(harta);
                                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                                 fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -239,4 +235,5 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
             Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
         }
     };
+
 }

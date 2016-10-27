@@ -24,6 +24,7 @@ public class SumarFragment extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.sumar, container, false);
+        inicomponents(rootView);
         Bundle b = this.getArguments();
         if(b!=null) {
             try {
@@ -31,12 +32,13 @@ public class SumarFragment extends Fragment  {
                 report.setText("Raportat masina:"+b.getString("mPlates"));
                 dataReport.setText("La data:"+b.getString("mHour"));
                 dataAnswer.setText("Raspuns la:"+b.getString("mHour"));
-                feedback.setText("Feedback:");
+                feedback.setText("Feedback:"+b.getString("feedback"));
             } catch (Exception e) {
+                Log.w("meniuu","cacth in sumarfragment");
                 e.printStackTrace();
             }
         }
-        inicomponents(rootView);
+
         return rootView;
     }
 public void inicomponents(View rootview){
@@ -50,6 +52,7 @@ public void inicomponents(View rootview){
         public void onClick(View view) {
             getActivity().getSupportFragmentManager().beginTransaction().remove(SumarFragment.this).commit();
             Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
     });

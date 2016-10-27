@@ -12,5 +12,7 @@ public class Constants {
     public  static String URL="http://82.76.188.13:3000/";
     public  static String plates;
     public static Activity ctx;
+    public  static String notificationId;
     public static boolean change=false;
+    public static boolean isActivMap=false;
 }

@@ -43,9 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String nr_car = null, notification_id = null, notification_type = null, estimated_time = null, answered_at = null, date_neformated, latitude = null, longitude = null;
         JSONObject question = new JSONObject(remoteMessage.getData());
         Log.w("meniuu","amprimit un push notification");
-
         try {
-
             Log.w("meniuu", "data:" + question);
             notification_id = question.getString("notification_id");
             checkSenderRead(notification_id);
@@ -72,12 +70,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Log.w("meniuu", "catch la formatarea datei");
             }
 
-            if (notification_type.equals("sender")) {
-                notification_id = question.getString("notification_id");
-                if (Notifications.active) {
-                    Intent intent = new Intent(INTENT_FILTER_Notificari);
-                    sendBroadcast(intent);
-                } else if (MainActivity.active) {
+            if (MainActivity.active) {
+                    Log.w("meniuu","este sender");
                     Intent intent = new Intent(INTENT_FILTER);
                     intent.putExtra("notification_id", notification_id);
                     intent.putExtra("mPlates", nr_car);
@@ -91,72 +85,98 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     sendNotification(notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
                     Log.w("meniuu", "se trimite notificare");
                 }
-            }
 
-            /////receiverul
-            else if (notification_type.equals("receiver")) {
-                estimated_time = question.getString("estimated_time");
-                notification_id = question.getString("notification_id");
 
-                if (Notifications.active) {
-                    Intent intent = new Intent(INTENT_FILTER_Notificari);
-                    sendBroadcast(intent);
-                } else if (MainActivity.active) {
-                    Intent intent = new Intent(INTENT_FILTER);
-                    intent.putExtra("estimated_time", estimated_time);
-                    intent.putExtra("mPlates", nr_car);
-                    intent.putExtra("notification_type", notification_type);
-                    intent.putExtra("answered_at", answered_at);
-                    intent.putExtra("notification_id", notification_id);
-                    intent.putExtra("lat", latitude);
-                    intent.putExtra("lng", longitude);
-                    sendBroadcast(intent);
-                } else {
-                    sendNotification(notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
-                    Log.w("meniuu", "se trimite notificare");
-                }
-            } else if (notification_type.equals("extended")) {
-                estimated_time = question.getString("estimated_time");
-                notification_id = question.getString("notification_id");
 
-                if (Notifications.active) {
-                    Intent intent = new Intent(INTENT_FILTER_Notificari);
-                    sendBroadcast(intent);
-                } else if (MainActivity.active) {
-                    Intent intent = new Intent(INTENT_FILTER);
-                    intent.putExtra("estimated_time", estimated_time);
-                    intent.putExtra("mPlates", nr_car);
-                    intent.putExtra("notification_type", notification_type);
-                    intent.putExtra("answered_at", answered_at);
-                    intent.putExtra("notification_id", notification_id);
-                    intent.putExtra("lat", latitude);
-                    intent.putExtra("lng", longitude);
-                    sendBroadcast(intent);
-                } else {
-                    sendNotification(notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
-                    Log.w("meniuu", "se trimite notificare");
-                }
-            } else if (notification_type.equals("review")) {
-                notification_id = question.getString("notification_id");
-
-                if (Notifications.active) {
-                    Intent intent = new Intent(INTENT_FILTER_Notificari);
-                    sendBroadcast(intent);
-                } else if (MainActivity.active) {
-                    Intent intent = new Intent(INTENT_FILTER);
-                    intent.putExtra("mPlates", nr_car);
-                    intent.putExtra("notification_id", notification_id);
-                    intent.putExtra("notification_type", notification_type);
-                    intent.putExtra("answered_at", answered_at);
-                    intent.putExtra("notification_id", notification_id);
-                    intent.putExtra("lat", latitude);
-                    intent.putExtra("lng", longitude);
-                    sendBroadcast(intent);
-                } else {
-                    sendNotification(notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
-                    Log.w("meniuu", "se trimite notificare");
-                }
-            }
+//            if (notification_type.equals("sender")) {
+//                notification_id = question.getString("notification_id");
+//                if (Notifications.active) {
+//                    Intent intent = new Intent(INTENT_FILTER_Notificari);
+//                    sendBroadcast(intent);
+//                } else if (MainActivity.active) {
+//                    Log.w("meniuu","este sender");
+//                    Intent intent = new Intent(INTENT_FILTER);
+//                    intent.putExtra("notification_id", notification_id);
+//                    intent.putExtra("mPlates", nr_car);
+//                    intent.putExtra("notification_type", notification_type);
+//                    intent.putExtra("notification_id", notification_id);
+//                    intent.putExtra("lat", latitude);
+//                    intent.putExtra("lng", longitude);
+//                    sendBroadcast(intent);
+//                } else {
+//                    checkSenderRead(notification_id);
+//                    sendNotification(notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
+//                    Log.w("meniuu", "se trimite notificare");
+//                }
+//            }
+//
+//            /////receiverul
+//            else if (notification_type.equals("receiver")) {
+//                estimated_time = question.getString("estimated_time");
+//                notification_id = question.getString("notification_id");
+//
+//                if (Notifications.active) {
+//                    Intent intent = new Intent(INTENT_FILTER_Notificari);
+//                    sendBroadcast(intent);
+//                } else if (MainActivity.active) {
+//                    Log.w("meniuu","este receiver");
+//                    Intent intent = new Intent(INTENT_FILTER);
+//                    intent.putExtra("estimated_time", estimated_time);
+//                    intent.putExtra("mPlates", nr_car);
+//                    intent.putExtra("notification_type", notification_type);
+//                    intent.putExtra("answered_at", answered_at);
+//                    intent.putExtra("notification_id", notification_id);
+//                    intent.putExtra("lat", latitude);
+//                    intent.putExtra("lng", longitude);
+//                    sendBroadcast(intent);
+//                } else {
+//                    sendNotification(notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
+//                    Log.w("meniuu", "se trimite notificare");
+//                }
+//            } else if (notification_type.equals("extended")) {
+//                estimated_time = question.getString("estimated_time");
+//                notification_id = question.getString("notification_id");
+//
+//                if (Notifications.active) {
+//                    Intent intent = new Intent(INTENT_FILTER_Notificari);
+//                    sendBroadcast(intent);
+//                } else if (MainActivity.active) {
+//                    Log.w("meniuu","este extendet");
+//                    Intent intent = new Intent(INTENT_FILTER);
+//                    intent.putExtra("estimated_time", estimated_time);
+//                    intent.putExtra("mPlates", nr_car);
+//                    intent.putExtra("notification_type", notification_type);
+//                    intent.putExtra("answered_at", answered_at);
+//                    intent.putExtra("notification_id", notification_id);
+//                    intent.putExtra("lat", latitude);
+//                    intent.putExtra("lng", longitude);
+//                    sendBroadcast(intent);
+//                } else {
+//                    sendNotification(notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
+//                    Log.w("meniuu", "se trimite notificare");
+//                }
+//            } else if (notification_type.equals("review")) {
+//                notification_id = question.getString("notification_id");
+//
+//                if (Notifications.active) {
+//                    Intent intent = new Intent(INTENT_FILTER_Notificari);
+//                    sendBroadcast(intent);
+//                } else if (MainActivity.active) {
+//                    Log.w("meniuu","este review");
+//                    Intent intent = new Intent(INTENT_FILTER);
+//                    intent.putExtra("mPlates", nr_car);
+//                    intent.putExtra("notification_id", notification_id);
+//                    intent.putExtra("notification_type", notification_type);
+//                    intent.putExtra("answered_at", answered_at);
+//                    intent.putExtra("notification_id", notification_id);
+//                    intent.putExtra("lat", latitude);
+//                    intent.putExtra("lng", longitude);
+//                    sendBroadcast(intent);
+//                } else {
+//                    sendNotification(notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
+//                    Log.w("meniuu", "se trimite notificare");
+//                }
+//            }
 
         } catch (JSONException e) {
             Log.w("meniuu", "catch la firebase");
@@ -168,32 +188,39 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendNotification(String notification_type, String messageBody, String title, String notification_id, String nr_car, String estimated_time, String answered_at, String latitude, String longitude) {
         Log.w("meniuu", " ora in constructia notificarii:" + answered_at);
         Intent intent = null;
-        if (notification_type.equals("sender")) {
-            intent = new Intent(this, ViewNotification.class);
-            intent.putExtra("notification_id", notification_id);
-            intent.putExtra("mPlates", nr_car);
-        } else if (notification_type.equals("receiver")) {
-            intent = new Intent(this, Timer.class);
+            intent = new Intent(this, MainActivity.class);
             intent.putExtra("time", estimated_time);
             intent.putExtra("mHour", answered_at);
             intent.putExtra("mPlates", nr_car);
             intent.putExtra("notification_id", notification_id);
             intent.putExtra("lat", latitude);
             intent.putExtra("lng", longitude);
-            Log.w("meniuu"," in timer_sender: time:"+estimated_time+" mhour:"+answered_at+" mplates:"+nr_car+" notif_id:"+notification_id+" lat:"+latitude+" lng:"+longitude);
-        } else if (notification_type.equals("extended")) {
-            intent = new Intent(this, Timer.class);
-            intent.putExtra("time", estimated_time);
-            intent.putExtra("mHour", answered_at);
-            intent.putExtra("mPlates", nr_car);
-            intent.putExtra("notification_id", notification_id);
-            intent.putExtra("lat", latitude);
-            intent.putExtra("lng", longitude);
-        } else if (notification_type.equals("review")) {
-            intent = new Intent(this, Review.class);
-            intent.putExtra("notification_id", notification_id);
-            intent.putExtra("mPlates", nr_car);
-        }
+//        if (notification_type.equals("sender")) {
+//            intent = new Intent(this, ViewNotification.class);
+//            intent.putExtra("notification_id", notification_id);
+//            intent.putExtra("mPlates", nr_car);
+//        } else if (notification_type.equals("receiver")) {
+//            intent = new Intent(this, Timer.class);
+//            intent.putExtra("time", estimated_time);
+//            intent.putExtra("mHour", answered_at);
+//            intent.putExtra("mPlates", nr_car);
+//            intent.putExtra("notification_id", notification_id);
+//            intent.putExtra("lat", latitude);
+//            intent.putExtra("lng", longitude);
+//            Log.w("meniuu"," in timer_sender: time:"+estimated_time+" mhour:"+answered_at+" mplates:"+nr_car+" notif_id:"+notification_id+" lat:"+latitude+" lng:"+longitude);
+//        } else if (notification_type.equals("extended")) {
+//            intent = new Intent(this, Timer.class);
+//            intent.putExtra("time", estimated_time);
+//            intent.putExtra("mHour", answered_at);
+//            intent.putExtra("mPlates", nr_car);
+//            intent.putExtra("notification_id", notification_id);
+//            intent.putExtra("lat", latitude);
+//            intent.putExtra("lng", longitude);
+//        } else if (notification_type.equals("review")) {
+//            intent = new Intent(this, Review.class);
+//            intent.putExtra("notification_id", notification_id);
+//            intent.putExtra("mPlates", nr_car);
+//        }
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -219,7 +246,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     public void onResponse(String response) {
                         String json = response;
                         try {
-                            Log.w("meniuu", "response: receiveranswer" + response);
+//                            Log.w("meniuu", "response: receiveranswer" + response);
                             JSONObject notif= new JSONObject(json);
                              senderRead=notif.getBoolean("sender_read");
                         } catch (JSONException e) {
@@ -236,34 +263,34 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         };
         queue.add(stringRequest);
     }
-    public void checkReceiverRead(String notification_id){
-        prefs = new SecurePreferences(this);
-        queue = Volley.newRequestQueue(this);
-        Log.w("meniuu","notification id:"+notification_id);
-        String url = Constants.URL+"notifications/getNotification/"+notification_id;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    public void onResponse(String response) {
-                        String json = response;
-                        try {
-                            Log.w("meniuu", "response: receiveranswer" + response);
-                            JSONObject notif= new JSONObject(json);
-                            receiverRead=notif.getBoolean("receiver_read");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, ErrorListener) {
-            public java.util.Map getHeaders() throws AuthFailureError {
-                String auth_token_string = prefs.getString("token", "");
-                java.util.Map params = new HashMap<String, String>();
-                params.put("Authorization", "Bearer "+auth_token_string);
-                return params;
-            }
-        };
-        queue.add(stringRequest);
-    }
+//    public void checkReceiverRead(String notification_id){
+//        prefs = new SecurePreferences(this);
+//        queue = Volley.newRequestQueue(this);
+//        Log.w("meniuu","notification id:"+notification_id);
+//        String url = Constants.URL+"notifications/getNotification/"+notification_id;
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+//                new Response.Listener<String>() {
+//                    public void onResponse(String response) {
+//                        String json = response;
+//                        try {
+//                            Log.w("meniuu", "response: receiveranswer" + response);
+//                            JSONObject notif= new JSONObject(json);
+//                            receiverRead=notif.getBoolean("receiver_read");
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    }
+//                }, ErrorListener) {
+//            public java.util.Map getHeaders() throws AuthFailureError {
+//                String auth_token_string = prefs.getString("token", "");
+//                java.util.Map params = new HashMap<String, String>();
+//                params.put("Authorization", "Bearer "+auth_token_string);
+//                return params;
+//            }
+//        };
+//        queue.add(stringRequest);
+//    }
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
             Log.w("meniuu", "error: errorlistener:" + error);

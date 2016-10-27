@@ -67,6 +67,7 @@ public class ConnectFragment extends Fragment {
                         .setDuration(Snackbar.LENGTH_INDEFINITE)
                         .setAction("SETARI", new View.OnClickListener() {
                             public void onClick(View view) {
+                                Log.w("meniuu","sa dat click");
                                 startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
                             }
                         });

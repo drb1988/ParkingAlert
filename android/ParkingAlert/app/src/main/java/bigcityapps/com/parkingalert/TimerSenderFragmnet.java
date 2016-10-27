@@ -54,25 +54,29 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
     RequestQueue queue;
     String mLat, mLng;
     SharedPreferences prefs;
-    Long estimetedTime, time , actualDate;
+    Long estimetedTime, time, actualDate;
     Context ctx;
-    boolean isActiv=true;
+    boolean isActiv = true;
+
     public TimerSenderFragmnet() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(bigcityapps.com.parkingalert.R.layout.timer_sender, container, false);
-        ctx=rootView.getContext();
+        View rootView = inflater.inflate(R.layout.timer_sender, container, false);
+        container.clearDisappearingChildren();
+        ctx = rootView.getContext();
         initcComponents(rootView);
+        Constants.isActivMap = false;
+        Log.w("meniuu", "oncreate in timersenderfragm");
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         prefs = new SecurePreferences(rootView.getContext());
         queue = Volley.newRequestQueue(rootView.getContext());
         Bundle b = this.getArguments();
         if (b != null) {
             try {
-                Log.w("meniuu", "timer_sender");
+                Log.w("meniuu", "acuma suntem in timer_senderfragment");
                 timer = Integer.parseInt((String) b.get("time"));
                 ora = (String) b.get("mHour");
                 nr_carString = (String) b.get("mPlates");
@@ -80,18 +84,21 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                 mLat = b.getString("lat");
                 mLng = b.getString("lng");
                 time_answer.setText("Raspuns la " + ora);
-                mImage=b.getString("image");
-                Log.w("meniuu","notifin timerragment:"+notification_id);
+                mImage = b.getString("image");
+                Log.w("meniuu", "notifin timerragment:" + notification_id);
 //                senderRead(notification_id);
                 Calculate();
             } catch (Exception e) {
+                Log.w("meniuu","catch la luare in timersenderfr");
                 e.printStackTrace();
             }
-        }
+        }else
+        Log.w("meniuu","e nulll");
         return rootView;
     }
+
     public void initcComponents(View rootView) {
-        rl_come=(RelativeLayout)rootView.findViewById(R.id.rl_come);
+        rl_come = (RelativeLayout) rootView.findViewById(R.id.rl_come);
         rl_come.setOnClickListener(this);
         car_nr = (TextView) rootView.findViewById(R.id.car_nr_timer);
         time_answer = (TextView) rootView.findViewById(R.id.answer_timer);
@@ -106,35 +113,36 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
         progBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         text = (TextView) rootView.findViewById(R.id.textView1);
     }
-    public void Calculate(){
+
+    public void Calculate() {
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
             Date myDate = simpleDateFormat.parse(ora);
-            time=myDate.getTime();
-            estimetedTime=(long)timer*60*1000;
-            time=time+estimetedTime;
+            time = myDate.getTime();
+            estimetedTime = (long) timer * 60 * 1000;
+            time = time + estimetedTime;
             Date date2 = new Date();
-            actualDate=date2.getTime();
-            long diff=time-actualDate;
+            actualDate = date2.getTime();
+            long diff = time - actualDate;
             diff = diff / 1000;
-            Log.w("meniuu","diff in timer_sender:"+diff);
+            Log.w("meniuu", "diff in timer_sender:" + diff);
             if (diff > 0) {
                 progBar.setMax(timer * 60);
                 mProgressStatus = (int) diff;
                 dosomething();
             } else {
+                Log.w("meniuu","se trece in review din timersendfr");
                 getActivity().getSupportFragmentManager().beginTransaction().remove(TimerSenderFragmnet.this).commit();
-                Fragment  fragment = new ReviewFragment();
+                Fragment fragment = new ReviewFragment();
                 Bundle harta = new Bundle();
                 harta.putString("mHour", ora);
                 harta.putString("mPlates", nr_carString);
-                harta.putString("time", timer+"");
+                harta.putString("time", timer + "");
                 harta.putString("notification_id", notification_id);
                 fragment.setArguments(harta);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
 
 
 //                Intent harta = new Intent(getActivity(), Map.class);
@@ -156,8 +164,15 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
 
     @Override
     public void onDestroy() {
-        isActiv=false;
+        isActiv = false;
+        Log.w("meniuu", "ondestroy timersenderfrag");
         super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        Log.w("meniuu", "onpausa timersenderfr");
+        super.onPause();
     }
 
     public void dosomething() {
@@ -172,21 +187,8 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                             progBar.setProgress(mProgressStatus);
                             int minutes = (mProgressStatus % 3600) / 60;
                             int sec = mProgressStatus % 60;
-                            if(mProgressStatus==0 & isActiv==true){
-                                getActivity().getSupportFragmentManager().beginTransaction().remove(TimerSenderFragmnet.this).commit();
-                                Fragment  fragment = new ReviewFragment();
-                                Bundle harta = new Bundle();
-                                harta.putString("mHour", ora);
-                                harta.putString("mPlates", nr_carString);
-                                harta.putString("time", timer+"");
-                                harta.putString("lat", mLat);
-                                harta.putString("lng", mLng);
-                                harta.putString("image", mImage);
-                                harta.putString("notification_id", notification_id);
-                                fragment.setArguments(harta);
-                                Log.e("meniuu","notif in timerfragmnet:"+notification_id);
-                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                            if (mProgressStatus == 0 ) {
+                                reviewExpirat();
                             }
                             if (minutes < 10) {
                                 car_nr.setText(nr_carString + " vine in " + minutes + " minute");
@@ -212,6 +214,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
             }
         }).start();
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -220,18 +223,21 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                 break;
         }
     }
+
     public void Review() {
-        String url = Constants.URL+"notifications/sendReview/"+notification_id;
+        String url = Constants.URL + "notifications/sendReview/" + notification_id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
                         Log.w("meniuu", "response:review" + response);
-                        Fragment  fragment = new SumarFragment();
+                        Fragment fragment = new SumarFragment();
                         Bundle harta = new Bundle();
                         harta.putString("mHour", ora);
                         harta.putString("mPlates", nr_carString);
-                        harta.putString("time", timer+"");
+                        harta.putString("time", timer + "");
+                        harta.putString("feedback", "A venit la masina");
+
                         fragment.setArguments(harta);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -239,25 +245,68 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
                 java.util.Map<String, String> params = new HashMap<String, String>();
-                params.put("feedback",true+"");
+                params.put("feedback", true + "");
                 return params;
             }
+
             public java.util.Map<String, String> getHeaders() throws AuthFailureError {
                 String auth_token_string = prefs.getString("token", "");
                 java.util.Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization","Bearer "+ auth_token_string);
+                params.put("Authorization", "Bearer " + auth_token_string);
                 return params;
             }
         };
         queue.add(stringRequest);
     }
+    public void reviewExpirat() {
+        String url = Constants.URL + "notifications/sendReview/" + notification_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        Log.w("meniuu", "response:review" + response);
+                        if(isActiv) {
+                            Log.w("meniuu", "intra in review din timersenderfragment");
+                            getActivity().getSupportFragmentManager().beginTransaction().remove(TimerSenderFragmnet.this).commit();
+                            Fragment fragment = new ReviewFragment();
+                            Bundle harta = new Bundle();
+                            harta.putString("mHour", ora);
+                            harta.putString("mPlates", nr_carString);
+                            harta.putString("time", timer + "");
+                            harta.putString("lat", mLat);
+                            harta.putString("lng", mLng);
+                            harta.putString("image", mImage);
+                            harta.putString("notification_id", notification_id);
+                            fragment.setArguments(harta);
+                            Log.e("meniuu", "notif in timerfragmnet:" + notification_id);
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        }
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("is_ontime", false + "");
+                return params;
+            }
+
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
     public void senderRead(String notification_id) {
         String url = Constants.URL + "notifications/senderRead/" + notification_id;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
-                        Log.w("meniuu", "response: receiveranswer" + response);
+                        Log.w("meniuu", "response: receiveranswer:" + response);
                     }
                 }, ErrorListener) {
             public java.util.Map getHeaders() throws AuthFailureError {
