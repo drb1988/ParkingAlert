@@ -9,7 +9,6 @@ block content
                   thead
                     tr
                       th Name
-                      th Nickname
                       th eMail
                       th City
                       th Banned
@@ -17,8 +16,6 @@ block content
                     each user in users
                       tr
                         td #{user.first_name} #{user.last_name}
-                        td
-                          = user.nickname
                         td
                           = user.email
                         td
