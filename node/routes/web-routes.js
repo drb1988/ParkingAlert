@@ -69,15 +69,21 @@ module.exports = function(passport){
   });
 
 
-  adminRouter.get('/dashboard', isAuthenticated, function(req, res, next) {
-    res.render('newpage', { 
-      title: 'Express',
-      user: {
-        name: req.user.first_name + " " + req.user.last_name,
-        email: req.user.email
-      }
+    adminRouter.get('/dashboard', isAuthenticated, function(req, res, next) {
+        res.render('newpage', {
+            title: 'Express',
+            user: {
+                name: req.user.first_name + " " + req.user.last_name,
+                email: req.user.email
+            }
+        });
     });
-  });
+
+    adminRouter.get('/add/admin', isAuthenticated, function(req, res, next) {
+        res.render('user', {
+            title: 'Friendly | Add admin'
+        });
+    });
 
   adminRouter.get('/users-cars', isAuthenticated, function(req, res, next) {
     res.render('users-cars', { 
@@ -408,14 +414,8 @@ module.exports = function(passport){
                         db.close();
                     });
                 });
-             //   console.log("result: ",result);
-               res.status(200).send(result)
-               console.log("result: ",result);
-                // res.status(200).send(result)
             }
-
          });
-
       };
 
 
