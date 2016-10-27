@@ -52,7 +52,8 @@ var sendNotification = function(token, notification, car, type, time, lat, longi
             sound: 'enabled'
           }
         };
-        console.log(notification+" "+car+" "+type+" "+time);
+        console.log("token "+token);
+        console.log(notification+" car "+car+" type "+type+" time "+time+" lat "+lat+" long "+longit);
         fcm.send(message, function(err, response){
           if (err) {
               console.log("Something has gone wrong!");
@@ -70,7 +71,7 @@ var findUsersByNotification = function(db, callback, notificationID) {
     * @param {String} :notificationID
     */   
 
-    if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
+    if(/[a-f0-9]{24}/.test(notificationID)) {
     var o_id = new ObjectId(notificationID);
       db.collection('notifications').findOne({"_id": o_id},
         function(err, result) {
@@ -140,6 +141,7 @@ router.post('/notification', function(req, res, next) {
    db.collection('notifications').insertOne( {
       "status": req.body.status,
       "is_active": true,
+      "is_ontime": true,
       "sender_read": true,
       "sender_deleted": false,
       "receiver_read": false,
@@ -177,8 +179,7 @@ router.post('/notification', function(req, res, next) {
       "sender_picture": senderPicture,
       "receiver_id": new ObjectId(req.body.receiver_id),
       "receiver_nickname": req.body.receiver_nickname,
-      "receiver_picture": receiverPicture,
-      "is_ontime": true
+      "receiver_picture": receiverPicture
    }, function(err, result) {
     car_id = req.body.vehicle;
     assert.equal(err, null);
@@ -316,7 +317,7 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
           db.close();
           res.status(200).send(req.params.notificationID)
           console.log("estimated "+req.body.estimated);
-        //  sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "receiver", req.body.estimated, 0, 0)
+          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "receiver", req.body.estimated, 0, 0)
         });
         }, req.params.notificationID);     
     });
@@ -360,7 +361,7 @@ router.post('/receiverExtended/:notificationID', function(req, res, next) {
         deleteCar(db, function() {
           db.close();
           res.status(200).send(req.params.notificationID)
-          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "extended", req.body.extension_time, 0, 0)
+          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "extended", 0, 0, 0)
         });
         }, req.params.notificationID);     
       });
@@ -475,6 +476,7 @@ router.post('/sendReview/:notificationID', function(req, res, next) {
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
                       "is_active": false,
+                      "is_ontime": req.body.is_ontime,
                       "review.feedback": req.body.feedback,
                       "review.answered_at": toLocalTime(new Date()),
 
