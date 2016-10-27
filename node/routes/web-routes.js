@@ -129,7 +129,7 @@ module.exports = function(passport){
   // message_type: null });
 });
 
-  adminRouter.post('/MapAjaxCallback2', isAuthenticated, function(req, res, next) {
+  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
       * @MapAjaxCallback /
@@ -193,7 +193,7 @@ module.exports = function(passport){
       });
   });
 
-  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
+  adminRouter.post('/StatisticsAjaxCallback', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
       * @MapAjaxCallback /
@@ -271,9 +271,63 @@ module.exports = function(passport){
               }
             } else {
                 callback();
-                console.log("result: ",result);
-
-               res.status(200).send(result)
+                var filteredResult = {}
+              for (var i in result){
+                var objName = result[i].year+"-"+result[i].month+"-"+result[i].day+"_"+result[i].hour;
+                if(!filteredResult[objName])
+                {
+                  var obj = {
+                    "positive_feedback": 0,
+                    "negative_feedback": 0,
+                    "no_feedback": 0,
+                    "answered": 0,
+                    "unanswered": 0
+                  };
+                  if(result[i].is_ontime != false && result[i].is_ontime != null){
+                    obj.unanswered = 1;
+                  }
+                  else {
+                    obj.answered = 1;
+                  }  
+                  if(result[i].feedback == true)
+                  {
+                    obj.positive_feedback=1;
+                  }
+                  else {
+                    if(result[i].feedback == false)
+                    {
+                      obj.negative_feedback=1;
+                    }
+                    else {
+                      obj.no_feedback=1;
+                    }
+                  }
+                  filteredResult[objName] = obj;
+                }
+                else {
+                  if(result[i].is_ontime != false && result[i].is_ontime != null){
+                    filteredResult[objName].unanswered = filteredResult[objName].unanswered + 1;
+                  }
+                  else {
+                    filteredResult[objName].answered = filteredResult[objName].answered + 1;
+                  } 
+                if(result[i].feedback == true)
+                  {
+                    filteredResult[objName].positive_feedback=filteredResult[objName].positive_feedback + 1;
+                  }
+                  else {
+                    if(result[i].feedback == false)
+                    {
+                      filteredResult[objName].negative_feedback=filteredResult[objName].negative_feedback + 1;
+                    }
+                    else {
+                      filteredResult[objName].no_feedback=filteredResult[objName].no_feedback + 1;
+                    }
+                  }   
+                }
+              }
+              console.log("filtrat ",filteredResult)
+               res.status(200).send(filteredResult)
             }
 
          });
