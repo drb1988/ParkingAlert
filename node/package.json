@@ -38,6 +38,5 @@
     "serve-favicon": "~2.3.0",
     "point-in-polygon": "~1.0.1",
     "point-circle-collision": "~1.0.3"
->>>>>>> origin/feature/backend
   }
 }

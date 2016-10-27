@@ -129,7 +129,7 @@ module.exports = function(passport){
   // message_type: null });
 });
 
-  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
+  adminRouter.post('/MapAjaxCallback2', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
       * @MapAjaxCallback /
@@ -162,23 +162,111 @@ module.exports = function(passport){
                       "lat": doc.location.coordinates[0],
                       "lng": doc.location.coordinates[1]
                     });
-                    // db.collection('parking').findOne({"_id": { $in: [doc.sender_id, doc.reciver_id]}},
-                    //   function(err, result) {
-                    //     console.log(result.email)
-                    //     assert.equal(err, null);
-                    //     callback();
-                    //   });
                   }
                 if(req.body.circle) {
                   var circle = [parseFloat(req.body.circle.center.lat), parseFloat(req.body.circle.center.lng)],
                   radius =  parseFloat(req.body.circle.radius),
                   point = [doc.location.coordinates[0], doc.location.coordinates[1]]
-                  console.log("is in circle: "+collide(point, circle, radius));
+                //  console.log("is in circle: "+collide(point, circle, radius));
                   if(collide(point, circle, radius))
                     result.push({
                       "lat": doc.location.coordinates[0],
                       "lng": doc.location.coordinates[1]
                     });
+                }
+              }
+            } else {
+                callback();
+              //  console.log("result: ",result);
+
+               res.status(200).send(result)
+            }
+
+         });
+      };  
+
+      MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findNotifications(db, function() {
+            db.close();
+        });
+      });
+  });
+
+  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
+    /**
+      * Base route,
+      * @MapAjaxCallback /
+      */
+    req.body.startDateTime = new Date(req.body.startDateTime);
+    req.body.endDateTime = new Date(req.body.endDateTime);
+    if(req.body.polygon)
+      for(var i=0;i<req.body.polygon.length;i++) {
+        req.body.polygon[i][0]=parseFloat(req.body.polygon[i][0]);
+        req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
+      }
+    console.log("body request", req.body);
+    if(req.user) {
+      console.log("req.user",req.user);
+    }
+    var findNotifications = function(db, callback) {   
+      var o_id = new ObjectId(req.params.userID);
+        var result = [];
+        var startDate = new Date(req.body.startDateTime.toISOString());
+        var endDate = new Date(req.body.endDateTime.toISOString());
+          var cursor = db.collection('notifications').aggregate(
+              {
+                "$match": {
+                    create_date: {
+                        $gte: startDate,
+                        $lte: endDate
+                    }
+                }
+              },
+              { "$project": {
+                "y":{"$year":"$create_date"},
+                "m":{"$month":"$create_date"},
+                "d":{"$dayOfMonth":"$create_date"},
+                "h":{"$hour":"$create_date"},
+                "is_ontime": 1,
+                "review.feedback": 1,
+                "location.coordinates": 1
+                }
+              },
+              { "$group":{ 
+                 "_id": { "year":"$y","month":"$m","day":"$d","hour":"$h"}
+             }
+           });
+          cursor.each(function(err, doc) {
+            assert.equal(err, null);
+            if (doc != null) {
+              if(doc.location.coordinates[0] && doc.location.coordinates[1]) {
+                if(req.body.polygon)
+                  if(inside([ doc.location.coordinates[0], doc.location.coordinates[1] ], req.body.polygon)) {
+                    result.push({
+                      "is_ontime": doc.is_ontime,
+                      "feedback": doc.review.feedback,
+                      "year": doc.y,
+                      "month": doc.m,
+                      "day": doc.d,
+                      "hour": doc.h
+                    });
+                  }
+                if(req.body.circle) {
+                  var circle = [parseFloat(req.body.circle.center.lat), parseFloat(req.body.circle.center.lng)],
+                  radius =  parseFloat(req.body.circle.radius),
+                  point = [doc.location.coordinates[0], doc.location.coordinates[1]]
+                  if(collide(point, circle, radius))
+                  {
+                    result.push({
+                      "is_ontime": doc.is_ontime,
+                      "feedback": doc.review.feedback,
+                      "year": doc.y,
+                      "month": doc.m,
+                      "day": doc.d,
+                      "hour": doc.h
+                    });
+                  }
                 }
               }
             } else {
@@ -233,7 +321,7 @@ module.exports = function(passport){
                   var circle = [parseFloat(req.body.circle.center.lat), parseFloat(req.body.circle.center.lng)],
                   radius =  parseFloat(req.body.circle.radius),
                   point = [doc.location.coordinates[0], doc.location.coordinates[1]]
-                  console.log("is in circle: "+collide(point, circle, radius));
+               //   console.log("is in circle: "+collide(point, circle, radius));
                   if(collide(point, circle, radius)){
                       user_ids.push(new ObjectId(doc.sender_id));
                       user_ids.push(new ObjectId(doc.reciver_id));
@@ -244,11 +332,11 @@ module.exports = function(passport){
                 callback();
                 console.log("result: ",result);
                 var uniqueUserIds = unique(user_ids);
-                console.log("user_ids: ",unique(user_ids));
+             //   console.log("user_ids: ",unique(user_ids));
 
                 var findUsers = function(db, callbackUser) {
                     var result = [];
-                    console.log("unique(user_ids)",unique(user_ids));
+                 //   console.log("unique(user_ids)",unique(user_ids));
 
                     var cursor = db.collection('parking').find({"_id": unique(user_ids)});
                     cursor.each(function(err, doc) {
@@ -264,7 +352,7 @@ module.exports = function(passport){
                 findUsers(db, function() {
                     db.close();
                 });
-                console.log("result: ",result);
+             //   console.log("result: ",result);
                res.status(200).send(result)
             }
 

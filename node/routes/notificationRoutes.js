@@ -474,7 +474,8 @@ router.post('/sendReview/:notificationID', function(req, res, next) {
   var sendReview = function(db, callback) {
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
-             {$set: { 
+             {
+              $set: { 
                       "is_active": false,
                       "is_ontime": req.body.is_ontime,
                       "review.feedback": req.body.feedback,
