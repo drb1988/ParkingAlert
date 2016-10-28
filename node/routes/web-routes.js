@@ -660,17 +660,23 @@ module.exports = function(passport){
   });
   });
 
-  var generateCode = function (user)
-     {  
-      var secret = "Friendly2016"
-      var seed = chance.integer({min: 100000, max: 999999}).toString();
-      var payload = {
-            "user_id"   : user,
-            "seed"     : seed,
-            "usage": "QRCode"
-        };
-        var result = jwt.encode( secret, payload);
-        return result.value;
+  var generateCode = function (user, count)
+     { 
+      var results = {};
+      for(var i=0; i<count; i++)
+      {
+        var secret = "Friendly2016";
+        var seed = chance.integer({min: 100000, max: 999999}).toString();
+        var payload = {
+              "user_id"   : user,
+              "seed"     : seed,
+              "usage": "QRCode",
+              "timestamp": new Date()
+          };
+          var result = jwt.encode( secret, payload);
+          results.push(result.value);
+      }
+      res.status(200).send(results);
      }
 
   adminRouter.post('/generateQrCode', isAuthenticated, function(req, res, next) {
@@ -680,7 +686,7 @@ module.exports = function(passport){
     var qr_code = qr.createImgTag(4);
     console.log("qr_code:",qr_code);
     res.status(200).send({
-      "QRCode": generateCode(req.user._id)
+      "QRCode": generateCode(req.user._id, req.body.count)
     })
   });
 
