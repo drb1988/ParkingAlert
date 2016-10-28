@@ -81,7 +81,11 @@ module.exports = function(passport){
 
     adminRouter.get('/add/admin', isAuthenticated, function(req, res, next) {
         res.render('user', {
-            title: 'Friendly | Add admin'
+            title: 'Friendly | Add admin',
+            user: {
+                name: req.user.first_name+" "+req.user.last_name,
+                email: req.user.email
+            }
         });
     });
 
@@ -621,7 +625,7 @@ module.exports = function(passport){
   // });
 
 
-  adminRouter.post('/addUser', function(req, res, next) {
+  adminRouter.post('/addUser', isAuthenticated, function(req, res, next) {
       /**
       * Route to get users by ID,
       * @name /users/:userId
@@ -655,7 +659,7 @@ module.exports = function(passport){
     var result = {
       "userID": userID
     }
-        res.status(200).send(result)
+        res.status(200).send("The admin user was inserted")
     });
   });
   });
