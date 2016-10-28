@@ -129,7 +129,7 @@ module.exports = function(passport){
   // message_type: null });
 });
 
-  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
+  adminRouter.post('/MapAjaxCallback2', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
       * @MapAjaxCallback /
@@ -193,7 +193,7 @@ module.exports = function(passport){
       });
   });
 
-  adminRouter.post('/StatisticsAjaxCallback', isAuthenticated, function(req, res, next) {
+  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
       * @MapAjaxCallback /
@@ -207,7 +207,7 @@ module.exports = function(passport){
       }
     console.log("body request", req.body);
     if(req.user) {
-      console.log("req.user",req.user);
+   //   console.log("req.user",req.user);
     }
     var findNotifications = function(db, callback) {   
       var o_id = new ObjectId(req.params.userID);
@@ -271,59 +271,27 @@ module.exports = function(passport){
               }
             } else {
                 callback();
-                var filteredResult = {}
+                var filteredResult = {
+                  positive_feedback: [],
+                  negative_feedback: [],
+                  no_feedback: []
+                }
               for (var i in result){
+                console.log("result "+i,result[i])
                 var objName = result[i].year+"-"+result[i].month+"-"+result[i].day+"_"+result[i].hour;
-                if(!filteredResult[objName])
+                if(result[i].feedback == true)
                 {
-                  var obj = {
-                    "positive_feedback": 0,
-                    "negative_feedback": 0,
-                    "no_feedback": 0,
-                    "answered": 0,
-                    "unanswered": 0
-                  };
-                  if(result[i].is_ontime != false && result[i].is_ontime != null){
-                    obj.unanswered = 1;
-                  }
-                  else {
-                    obj.answered = 1;
-                  }  
-                  if(result[i].feedback == true)
-                  {
-                    obj.positive_feedback=1;
-                  }
-                  else {
-                    if(result[i].feedback == false)
-                    {
-                      obj.negative_feedback=1;
-                    }
-                    else {
-                      obj.no_feedback=1;
-                    }
-                  }
-                  filteredResult[objName] = obj;
+                  filteredResult.positive_feedback.push(objName)
                 }
                 else {
-                  if(result[i].is_ontime != false && result[i].is_ontime != null){
-                    filteredResult[objName].unanswered = filteredResult[objName].unanswered + 1;
-                  }
-                  else {
-                    filteredResult[objName].answered = filteredResult[objName].answered + 1;
-                  } 
-                if(result[i].feedback == true)
-                  {
-                    filteredResult[objName].positive_feedback=filteredResult[objName].positive_feedback + 1;
-                  }
-                  else {
-                    if(result[i].feedback == false)
+                  if(result[i].feedback == false)
                     {
-                      filteredResult[objName].negative_feedback=filteredResult[objName].negative_feedback + 1;
+                      filteredResult.positive_feedback.push(objName)
                     }
-                    else {
-                      filteredResult[objName].no_feedback=filteredResult[objName].no_feedback + 1;
+                  else 
+                    {
+                      filteredResult.no_feedback.push(objName)
                     }
-                  }   
                 }
               }
               console.log("filtrat ",filteredResult)
@@ -385,7 +353,6 @@ module.exports = function(passport){
             } else {
                 callback();
                 var uniqueUserIds = unique(user_ids);
-                console.log("user_ids: ",unique(user_ids));
                 var findUsers = function(db, callback) {
                     var result = [];
                     var cursor = db.collection('parking').find({"_id": { $in: uniqueUserIds}});
@@ -395,9 +362,7 @@ module.exports = function(passport){
                             result.push(doc);
                         } else {
                             callback();
-                            //res.status(200).send(result);
-                            console.log("result user in finduser", result);
-                            res.status(200).send(result)
+                      //      console.log("result user in finduser", result);
                         }
                     });
                 };
@@ -408,10 +373,7 @@ module.exports = function(passport){
                         db.close();
                     });
                 });
-             //   console.log("result: ",result);
                res.status(200).send(result)
-               console.log("result: ",result);
-                // res.status(200).send(result)
             }
 
          });
@@ -442,8 +404,6 @@ module.exports = function(passport){
   		    cursor.each(function(err, doc) {
   		      assert.equal(err, null);
   		      if (doc != null) {
-  		         console.log(doc.location.coordinates[0]);
-  		         console.log(doc.create_date);
   		         result.push({"latitude": doc.location.coordinates[0],
   		         		"longitude": doc.location.coordinates[1],
   		         		"create_date": doc.create_date});
@@ -475,8 +435,6 @@ module.exports = function(passport){
           cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
-               console.log(doc.location.coordinates[0]);
-               console.log(doc.create_date);
                result.push({"latitude": doc.location.coordinates[0],
                   "longitude": doc.location.coordinates[1],
                   "create_date": doc.create_date});
@@ -543,7 +501,6 @@ module.exports = function(passport){
                },
   	    	function(err, result) {
   					    assert.equal(err, null);
-  					    console.log("Found user "+req.params.userID);
   					    res.status(200).send(result)
   					    callback();
   				});            
@@ -571,7 +528,6 @@ module.exports = function(passport){
                },
   	    	function(err, result) {
   					    assert.equal(err, null);
-  					    console.log("Found user "+req.params.userID);
   					    res.status(200).send(result)
   					    callback();
   				});            
@@ -639,7 +595,6 @@ module.exports = function(passport){
      }, function(err, result) {
       assert.equal(err, null);
       userID = result.insertedId;
-      console.log("Inserted a user in the admins collection. "+result.insertedId);
       callback();
     });
   };

@@ -1,3 +1,4 @@
+
 var express = require('express');
 var router = express.Router();
 var dbConfig = require('../db');
@@ -161,7 +162,6 @@ router.get('/getNotifications/:userID', function(req, res, next) {
 		    cursor.each(function(err, doc) {
 		      assert.equal(err, null);
 		      if (doc != null) {
-		         console.log("doc "+doc);
 		         result.push(doc);
 		      } else {
 		         callback();
