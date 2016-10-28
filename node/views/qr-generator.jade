@@ -3,6 +3,27 @@ block content
 	script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
 	script(src='http://davidshimjs.github.io/qrcodejs/qrcode.min.js')
 	sceipt(src='http://requirejs.org/docs/release/2.1.8/minified/require.js')
+	.row
+		.col-lg-12
+			h1.page-header QR code generator
+	.row
+		.col-lg-12
+			.panel.panel-default
+				.panel-heading Print QR
+
+				.panel-body
+					.row
+						form(role='form' method='post')
+							if (message && message.length > 0)
+								div.alert(class='#{message_type}') #{message}
+							.col-lg-6
+								.form-group
+									label Number of QR code:
+									input.form-control(type='text' name='pices' placeholder='Number of QR code')
+								button(type='submit') Submit
+							// /.col-lg-6
+
+
 	button.btn.btn-info#QR Genereaza!
 	button.btn.btn-danger#printQR Printeaza!
 	#QRCodeResult

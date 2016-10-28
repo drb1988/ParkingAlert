@@ -2,8 +2,9 @@ var qWERTY = 0;
 var prevArrMarkers = '',
 	prevArr = '',
 	theArr = '',
-	typeOfMap = false;
-
+	typeOfMap = false
+    ;
+var chart;
 function makeAjaxCall() {
 	var selectedDate = $("input[name=daterange]").val() ? $("input[name=daterange]").val() : false;
     console.log("selected date: "+selectedDate);
