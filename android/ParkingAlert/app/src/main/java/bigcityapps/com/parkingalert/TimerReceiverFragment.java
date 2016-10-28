@@ -67,7 +67,11 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
         Bundle b = this.getArguments();
         if(b!=null) {
             try {
-                extented_time=Integer.parseInt(b.getString("extension_time"));
+                try {
+                    extented_time = Integer.parseInt(b.getString("extension_time"));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 timer = Integer.parseInt((String) b.get("time"));
                 ora = (String) b.get("mHour");
                 mLat =b.getString("lat");
@@ -197,7 +201,7 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
 ////                finish();
 //                break;
             case R.id.bottom:
-                postExtended();
+//                postExtended();
                 break;
         }
     }

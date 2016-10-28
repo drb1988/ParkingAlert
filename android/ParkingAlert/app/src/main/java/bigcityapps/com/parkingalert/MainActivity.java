@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
     }
 
+
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             Bundle b = intent.getExtras();
@@ -215,23 +216,16 @@ public class MainActivity extends AppCompatActivity {
             mPlates=bundle.getString("mPlates");
             answered_at=bundle.getString("mHour");
             feedback=bundle.getString("feedback");
-            Log.w("meniuu","feedback:"+feedback);
+            Log.w("meniuu","feedback:"+feedback+" notif_type:"+notif_type);
 
             if(notif_type.equals("review")) {
                 getNotificationAll(notification_id);
-//                Fragment  fragment = new SumarFragment();
-//                Bundle sumar = new Bundle();
-//                sumar.putString("mHour", answered_at);
-//                sumar.putString("mPlates", mPlates);
-//                if (feedback != null)
-//                    sumar.putString("feedback", feedback);
-//                else
-//                    sumar.putString("feedback", is_ontime);
-//                fragment.setArguments(sumar);
-//                FragmentManager fragmentManager = getSupportFragmentManager();
-//                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
             }else
                 getNotification(prefs.getString("user_id", null));
+            getIntent().removeExtra("notification_id");
+            getIntent().removeExtra("notification_type");
+            getIntent().removeExtra("mPlates");
+            getIntent().removeExtra("feedback");
         }
         else
             getNotification(prefs.getString("user_id", null));
@@ -282,13 +276,6 @@ public class MainActivity extends AppCompatActivity {
     /**
      * onstop method
      */
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-//        savedInstanceState.putString(null);
-        // Always call the superclass so it can save the view hierarchy state
-        Log.w("meniuu","onsaveinstancestate.............");
-        super.onSaveInstanceState(savedInstanceState);
-    }
     @Override
     protected void onStop() {
         active = false;
@@ -755,12 +742,23 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 String json = response;
                 try {
+                    Fragment  fragment = new SumarFragment();
+                    Bundle sumar = new Bundle();
                     Log.w("meniuu", "response getnotificationAll:" + json);
                     JSONObject c = new JSONObject(json);
                     String created_at=c.getString("create_date");
                     JSONObject review= new JSONObject(c.getString("review"));
                     String mPlates=c.getString("vehicle");
-                    String feedback=review.getString("feedback");
+                    try {
+                        boolean feedback = review.getBoolean("feedback");
+                        if(feedback)
+                            sumar.putString("feedback", "Ai venit la masina");
+                        else
+                            sumar.putString("feedback", "Nu ai venit la masina");
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        sumar.putString("feedback","A expirat timpul");
+                    }
                     String answer_at="";
                     try {
                         JSONObject answer = new JSONObject(c.getString("answer"));
@@ -770,15 +768,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //// deschid fragment
                     Log.w("meniuu","deschid sumarfragment");
-                    Fragment  fragment = new SumarFragment();
-                    Bundle sumar = new Bundle();
+
+
                     sumar.putString("mHour", created_at);
                     sumar.putString("mPlates", mPlates);
                     sumar.putString("answered_at", answer_at);
-                    if (feedback != null)
-                        sumar.putString("feedback", feedback);
-                    else
-                        sumar.putString("feedback", is_ontime);
+
                     fragment.setArguments(sumar);
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();

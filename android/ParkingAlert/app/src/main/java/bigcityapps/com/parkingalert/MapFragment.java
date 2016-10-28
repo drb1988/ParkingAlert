@@ -98,7 +98,7 @@ public class MapFragment extends Fragment {
         ctx = getContext();
         prefs = new SecurePreferences(getContext());
         queue = Volley.newRequestQueue(getContext());
-        Log.w("meniuu", "mapfragment");
+        Log.w("meniuu", "oncreate mapfragment");
         if (b != null) {
             try {
                 mHour = (String) b.get("mHour");
@@ -108,7 +108,6 @@ public class MapFragment extends Fragment {
                 image = b.getString("image");
                 answered_at = b.getString("answered_at");
                 notification_id=b.getString("notification_id");
-                Log.w("meniuu", "lat:" + mLat + " mlng:" + mLng);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
                 Date myDate = simpleDateFormat.parse(mHour);

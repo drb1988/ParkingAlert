@@ -55,6 +55,7 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
         View rootView = inflater.inflate(bigcityapps.com.parkingalert.R.layout.view_notification, container, false);
         initComponents(rootView);
         ((MainActivity) getActivity()).setTitle("Raspunde");
+        MainActivity.active=true;
         ctx=rootView.getContext();
         queue = Volley.newRequestQueue(rootView.getContext());
         prefs = new SecurePreferences(rootView.getContext());

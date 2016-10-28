@@ -88,11 +88,11 @@ public class ReviewFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.nu_review:
-                Review(true);
+                Review(false);
                 break;
 
             case R.id.da_review:
-                Review(false);
+                Review(true);
                 break;
         }
     }

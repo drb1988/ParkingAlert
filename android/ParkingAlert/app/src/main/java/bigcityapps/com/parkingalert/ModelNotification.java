@@ -13,6 +13,16 @@ public class ModelNotification {
     boolean extended;
     boolean receiverRead;
 
+    public boolean isFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(boolean feedback) {
+        this.feedback = feedback;
+    }
+
+    boolean feedback;
+
     public String getPicture() {
         return picture;
     }

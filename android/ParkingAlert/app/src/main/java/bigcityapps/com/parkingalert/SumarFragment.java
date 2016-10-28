@@ -36,11 +36,20 @@ public class SumarFragment extends Fragment  {
         if(b!=null) {
             try {
                 report.setText(b.getString("mPlates"));
-
-                if(b.getString("answered_at").equals("null"))
-                    tablerow.setVisibility(View.GONE);
-                else
-                    dataAnswer.setText(b.getString("answered_at"));
+                try {
+                    if (b.getString("answered_at").equals("null"))
+                        tablerow.setVisibility(View.GONE);
+                    else {
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                        Date myDate = simpleDateFormat.parse(b.getString("answered_at"));
+                        SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                        String data = format1.format(myDate);
+                        dataAnswer.setText(data);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 feedback.setText(b.getString("feedback"));
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");

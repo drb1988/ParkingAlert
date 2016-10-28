@@ -15,16 +15,19 @@
 
             <TextView
                 android:id="@+id/report"
+                android:layout_gravity="left|center_vertical"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="20dip"
-                android:text="Raportat de:" />
+                android:text="Raportat de:"
+                android:textSize="@dimen/txt_size_mic" />
 
             <TextView
                 android:id="@+id/report_name"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:padding="20dip" />
+                android:padding="20dip"
+                android:textSize="@dimen/txt_size_mic" />
         </TableRow>
 
         <TableRow
@@ -35,13 +38,15 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="20dip"
-                android:text="La data:" />
+                android:text="La data:"
+                android:textSize="@dimen/txt_size_mic" />
 
             <TextView
                 android:id="@+id/data"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:padding="20dip" />
+                android:padding="20dip"
+                android:textSize="@dimen/txt_size_mic" />
         </TableRow>
 
         <TableRow
@@ -53,13 +58,15 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="20dip"
-                android:text="Raspuns la data:" />
+                android:text="Raspuns la data:"
+                android:textSize="@dimen/txt_size_mic" />
 
             <TextView
                 android:id="@+id/data_raspuns"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:padding="20dip" />
+                android:padding="20dip"
+                android:textSize="@dimen/txt_size_mic" />
         </TableRow>
 
         <TableRow
@@ -70,13 +77,15 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="20dip"
-                android:text="Feedback:" />
+                android:text="Feedback:"
+                android:textSize="@dimen/txt_size_mic" />
 
             <TextView
                 android:id="@+id/feedback"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:padding="20dip" />
+                android:padding="20dip"
+                android:textSize="@dimen/txt_size_mic" />
         </TableRow>
     </TableLayout>
 

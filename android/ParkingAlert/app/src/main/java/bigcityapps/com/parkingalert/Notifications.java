@@ -323,6 +323,12 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                         JSONObject answer= new JSONObject(c.getString("answer"));
                         modelNotification.setNr_car(c.getString("vehicle"));
                         JSONObject location= new JSONObject(c.getString("location"));
+                        try {
+                            JSONObject review = new JSONObject(c.getString("review"));
+                            modelNotification.setFeedback(review.getBoolean("feedback"));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                         JSONArray coordinates=new JSONArray(location.getString("coordinates"));
                         modelNotification.setLat(coordinates.get(0).toString());
                         modelNotification.setLng(coordinates.get(1).toString());
@@ -595,7 +601,10 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
             final ModelNotification item = moviesList.get(position);
             holder.titlu.setText(item.getTitle());
 //            holder.detalii.setText(item.getmDetails());
-            holder.mesaj.setText(item.getmMessage());
+            if(item.isFeedback())
+                holder.mesaj.setText("Notificare rezolvata");
+            else
+                holder.mesaj.setText("Notificare nerezolvata");
             if(!item.getPicture().equals("null")) {
                 Log.w("meniuu","picture:"+item.getPicture());
                 Glide.with(ctx).load(item.getPicture()).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.poza) {

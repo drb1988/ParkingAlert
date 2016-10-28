@@ -28,6 +28,8 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,6 +60,12 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
     Context ctx;
     boolean isActiv = true;
 
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        getNotificationAll(notification_id);
+//    }
+
     public TimerSenderFragmnet() {
     }
 
@@ -77,19 +85,22 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
         Bundle b = this.getArguments();
         if (b != null) {
             try {
-                Log.w("meniuu", "acuma suntem in timer_senderfragment");
-                timer = Integer.parseInt((String) b.get("time"));
-                ora = (String) b.get("mHour");
-                nr_carString = (String) b.get("mPlates");
+//                Log.w("meniuu", "acuma suntem in timer_senderfragment");
+//                timer = Integer.parseInt((String) b.get("time"));
+//                ora = (String) b.get("mHour");
+//                nr_carString = (String) b.get("mPlates");
                 notification_id = b.getString("notification_id");
-                mLat = b.getString("lat");
-                mLng = b.getString("lng");
-                time_answer.setText("Raspuns la " + ora);
-                mImage = b.getString("image");
-                answered_at = b.getString("answered_at");
+//                mLat = b.getString("lat");
+//                mLng = b.getString("lng");
+//                time_answer.setText("Raspuns la " + ora);
+//                mImage = b.getString("image");
+//                answered_at = b.getString("answered_at");
                 Log.w("meniuu", "notifin timerragment:" + notification_id);
+
+                getNotificationAll(notification_id);
+
 //                senderRead(notification_id);
-                Calculate();
+//                Calculate();
             } catch (Exception e) {
                 Log.w("meniuu","catch la luare in timersenderfr");
                 e.printStackTrace();
@@ -145,17 +156,6 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                 fragment.setArguments(harta);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-
-//                Intent harta = new Intent(getActivity(), Map.class);
-//                harta.putExtra("mHour", ora);
-//                harta.putExtra("mPlates", nr_carString);
-//                harta.putExtra("time", timer_sender);
-//                harta.putExtra("lat", mLat);
-//                harta.putExtra("lng", mLng);
-//                harta.putExtra("image", mImage);
-//                startActivity(harta);
-//                finish();
             }
             Log.w("meniuu", "data mHour:" + ora);
         } catch (Exception e) {
@@ -164,6 +164,41 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
         }
     }
 
+    public void getNotificationAll(final String id ) {
+        String url = Constants.URL + "notifications/getNotification/" + id;
+        Log.w("meniuu", "url in getnotif:" + url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                try {
+                    Log.w("meniuu", "response getnotificationAll:" + json);
+                    JSONObject c = new JSONObject(json);
+                    ora=c.getString("create_date");
+                    JSONObject review= new JSONObject(c.getString("review"));
+                    nr_carString=c.getString("vehicle");
+                    try {
+                        JSONObject answer = new JSONObject(c.getString("answer"));
+                        answered_at = answer.getString("answered_at");
+                        timer=Integer.parseInt(answer.getString("estimated"));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    Calculate();
+                    //// deschid fragment
+                } catch (Exception e) {
+                    Log.w("meniuu", "este catchla get notificationAll");
+                }
+            }
+        }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
     @Override
     public void onDestroy() {
         isActiv = false;

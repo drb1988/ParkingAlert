@@ -43,6 +43,7 @@
                 android:textSize="18dp" />
 
             <RelativeLayout
+                android:visibility="gone"
                 android:id="@+id/istoric"
                 style="?android:borderlessButtonStyle"
                 android:layout_width="wrap_content"

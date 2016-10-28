@@ -245,13 +245,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         String json = response;
                         try {
                             JSONObject notif= new JSONObject(json);
-                             senderRead=notif.getBoolean("sender_read");
-                            if(senderRead==false){
+                             senderRead=notif.getBoolean("receiver_read");
+//                            if(senderRead==false){
                                 Log.w("meniuu", "se trimite notificare");
                                 sendNotification(notification_type, messageBody, title, notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
-                            }
-                            else
-                                Log.w("meniuu","numai trimit notifcicare pt ca deja e citita");
+//                            }
+//                            else
+//                                Log.w("meniuu","numai trimit notifcicare pt ca deja e citita id notif:"+notification_id);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
