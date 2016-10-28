@@ -36,7 +36,7 @@ import Util.SecurePreferences;
  */
 public class TimerReceiverFragment extends Fragment implements View.OnClickListener {
     RelativeLayout back;
-    int timer;
+    int timer, extented_time=0;
     boolean run=true;
     String ora,nr_carString,notification_id;
     private Handler mHandler = new Handler();
@@ -44,12 +44,13 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
     private int mProgressStatus=0;
     TextView text;
     Context ctx;
-    String mLat, mLng,image;
+    String mLat, mLng,image,answered_at;
     RequestQueue queue;
     SharedPreferences prefs;
     RelativeLayout extended;
     long time, estimetedTime, actualDate;
     boolean isActiv=true;
+
     public TimerReceiverFragment() {
     }
 
@@ -57,6 +58,7 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.timer_receiver, container, false);
+        MainActivity.active=true;
         queue = Volley.newRequestQueue(getContext());
         prefs = new SecurePreferences(getContext());
         ctx=getContext();
@@ -65,6 +67,7 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
         Bundle b = this.getArguments();
         if(b!=null) {
             try {
+                extented_time=Integer.parseInt(b.getString("extension_time"));
                 timer = Integer.parseInt((String) b.get("time"));
                 ora = (String) b.get("mHour");
                 mLat =b.getString("lat");
@@ -72,12 +75,13 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
                 nr_carString = (String) b.get("mPlates");
                 notification_id = (String) b.get("notification_id");
                 image = b.getString("image");
+                answered_at=b.getString("answered_at");
                 try {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
                     Date myDate = simpleDateFormat.parse(ora);
                     time=myDate.getTime();
-                    estimetedTime=(long)timer*60*1000;
+                    estimetedTime=(long)timer*60*1000+(long)extented_time*60+1000;
                     time=time+estimetedTime;
                     Date date2 = new Date();
                     actualDate=date2.getTime();
@@ -96,7 +100,7 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
                         Bundle harta = new Bundle();
                         harta.putString("mHour", ora);
                         harta.putString("mPlates", nr_carString);
-                        harta.putString("time", timer+"");
+                        harta.putString("answered_at", answered_at);
                         harta.putString("notification_id", notification_id);
                         harta.putString("feedback", "A expirat timpul");
                         fragment.setArguments(harta);
@@ -136,7 +140,7 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
                                 Bundle harta = new Bundle();
                                 harta.putString("mHour", ora);
                                 harta.putString("mPlates", nr_carString);
-                                harta.putString("time", timer+"");
+                                harta.putString("answered_at", answered_at);
                                 harta.putString("notification_id", notification_id);
                                 harta.putString("feedback", "A expirat timpul");
                                 fragment.setArguments(harta);

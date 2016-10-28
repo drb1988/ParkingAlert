@@ -7,10 +7,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by fasu on 10/12/15.
@@ -18,21 +23,32 @@ import com.android.volley.VolleyError;
 public class SumarFragment extends Fragment  {
     TextView ok;
     TextView report, dataReport, answer, dataAnswer, feedback;
+    TableRow tablerow;
     public SumarFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.sumar, container, false);
+        View rootView = inflater.inflate(R.layout.sumar2, container, false);
         inicomponents(rootView);
+        ((MainActivity) getActivity()).setTitle("Sumar");
         Bundle b = this.getArguments();
         if(b!=null) {
             try {
-                Log.w("meniuu", "timer_sender");
-                report.setText("Raportat masina:"+b.getString("mPlates"));
-                dataReport.setText("La data:"+b.getString("mHour"));
-                dataAnswer.setText("Raspuns la:"+b.getString("mHour"));
-                feedback.setText("Feedback:"+b.getString("feedback"));
+                report.setText(b.getString("mPlates"));
+
+                if(b.getString("answered_at").equals("null"))
+                    tablerow.setVisibility(View.GONE);
+                else
+                    dataAnswer.setText(b.getString("answered_at"));
+                feedback.setText(b.getString("feedback"));
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                Date myDate = simpleDateFormat.parse(b.getString("mHour"));
+                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                String data = format1.format(myDate);
+                dataReport.setText(data);
             } catch (Exception e) {
                 Log.w("meniuu","cacth in sumarfragment");
                 e.printStackTrace();
@@ -42,6 +58,7 @@ public class SumarFragment extends Fragment  {
         return rootView;
     }
 public void inicomponents(View rootview){
+    tablerow=(TableRow)rootview.findViewById(R.id.tablerow);
     report=(TextView)rootview.findViewById(R.id.report_name);
     dataReport=(TextView)rootview.findViewById(R.id.data);
     answer=(TextView)rootview.findViewById(R.id.raspuns);

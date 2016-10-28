@@ -83,6 +83,7 @@ public class ConnectFragment extends Fragment {
         prefs = new SecurePreferences(getContext());
         queue = Volley.newRequestQueue(getContext());
         getCars(prefs.getString("user_id", ""));
+        MainActivity.active=true;
         coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinatorLayout);
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

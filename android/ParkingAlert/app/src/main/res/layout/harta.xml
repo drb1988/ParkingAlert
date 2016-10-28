@@ -96,10 +96,20 @@
             android:background="@color/blue_dark">
 
             <TextView
+                android:id="@+id/time_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Incercam sa il localizam pe proprietar"
+                android:textColor="@color/alb"
+                android:textSize="17dp" />
+
+            <TextView
                 android:id="@+id/time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_below="@+id/time_text"
+                android:gravity="center"
                 android:textColor="@color/alb"
                 android:textSize="17dp" />
 

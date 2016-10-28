@@ -42,13 +42,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         String nr_car = null, notification_id = null, notification_type = null, estimated_time = null, answered_at = null, date_neformated, latitude = null, longitude = null;
         JSONObject question = new JSONObject(remoteMessage.getData());
-        Log.w("meniuu","amprimit un push notification");
+        Log.w("meniuu","amprimit un push notification in firebase: "+question);
         try {
-            Log.w("meniuu", "data:" + question);
             notification_id = question.getString("notification_id");
-            checkSenderRead(notification_id);
             notification_type = question.getString("notification_type");
-            Log.w("meniuu","not type:"+notification_type);
             date_neformated = question.getString("answered_at");
             nr_car = question.getString("car_id");
             try {
@@ -57,7 +54,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            try{
+                estimated_time = question.getString("estimated_time");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             try {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
@@ -69,21 +70,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 e.printStackTrace();
                 Log.w("meniuu", "catch la formatarea datei");
             }
-
             if (MainActivity.active) {
-                    Log.w("meniuu","este sender");
                     Intent intent = new Intent(INTENT_FILTER);
                     intent.putExtra("notification_id", notification_id);
-                    intent.putExtra("mPlates", nr_car);
                     intent.putExtra("notification_type", notification_type);
-                    intent.putExtra("notification_id", notification_id);
-                    intent.putExtra("lat", latitude);
-                    intent.putExtra("lng", longitude);
+                    intent.putExtra("mPlates", nr_car);
+                    intent.putExtra("mHour", date_neformated);
+                    intent.putExtra("estimated_time", estimated_time);
                     sendBroadcast(intent);
                 } else {
-                    checkSenderRead(notification_id);
-                    sendNotification(notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
-                    Log.w("meniuu", "se trimite notificare");
+                    checkSenderRead(notification_id,notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), nr_car, estimated_time, answered_at, latitude, longitude);
+//                    sendNotification(notification_type, remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle(), notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
                 }
 
 
@@ -195,6 +192,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent.putExtra("notification_id", notification_id);
             intent.putExtra("lat", latitude);
             intent.putExtra("lng", longitude);
+            intent.putExtra("notification_type", notification_type);
 //        if (notification_type.equals("sender")) {
 //            intent = new Intent(this, ViewNotification.class);
 //            intent.putExtra("notification_id", notification_id);
@@ -236,7 +234,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify(0, notificationBuilder.build());
     }
 
-    public void checkSenderRead(String notification_id){
+    public void checkSenderRead(final String notification_id, final String notification_type, final String messageBody, final String title, final String nr_car, final String estimated_time, final String answered_at, final String latitude, final String longitude){
         prefs = new SecurePreferences(this);
         queue = Volley.newRequestQueue(this);
         Log.w("meniuu","notification id:"+notification_id);
@@ -246,9 +244,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     public void onResponse(String response) {
                         String json = response;
                         try {
-//                            Log.w("meniuu", "response: receiveranswer" + response);
                             JSONObject notif= new JSONObject(json);
                              senderRead=notif.getBoolean("sender_read");
+                            if(senderRead==false){
+                                Log.w("meniuu", "se trimite notificare");
+                                sendNotification(notification_type, messageBody, title, notification_id, nr_car, estimated_time, answered_at, latitude, longitude);
+                            }
+                            else
+                                Log.w("meniuu","numai trimit notifcicare pt ca deja e citita");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -48,7 +48,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
     RelativeLayout rl_come;
     int timer;
     String TAG = "meniuu";
-    String ora, nr_carString, notification_id, mImage;
+    String ora, nr_carString, notification_id, mImage,answered_at;
     boolean run = true;
     TextView car_nr, time_answer;
     RequestQueue queue;
@@ -65,8 +65,9 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.timer_sender, container, false);
-        container.clearDisappearingChildren();
         ctx = rootView.getContext();
+        MainActivity.active=true;
+        ((MainActivity) getActivity()).setTitle("Timer");
         initcComponents(rootView);
         Constants.isActivMap = false;
         Log.w("meniuu", "oncreate in timersenderfragm");
@@ -85,6 +86,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                 mLng = b.getString("lng");
                 time_answer.setText("Raspuns la " + ora);
                 mImage = b.getString("image");
+                answered_at = b.getString("answered_at");
                 Log.w("meniuu", "notifin timerragment:" + notification_id);
 //                senderRead(notification_id);
                 Calculate();
@@ -235,7 +237,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                         Bundle harta = new Bundle();
                         harta.putString("mHour", ora);
                         harta.putString("mPlates", nr_carString);
-                        harta.putString("time", timer + "");
+                        harta.putString("answered_at", answered_at);
                         harta.putString("feedback", "A venit la masina");
 
                         fragment.setArguments(harta);
@@ -278,7 +280,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                             harta.putString("image", mImage);
                             harta.putString("notification_id", notification_id);
                             fragment.setArguments(harta);
-                            Log.e("meniuu", "notif in timerfragmnet:" + notification_id);
+                            Log.e("meniuu", "notif in timerfragmnet:" + notification_id+" nr_car:"+nr_carString+" time:"+timer+" ora:"+ora);
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                         }

@@ -18,7 +18,8 @@ public class SplashScreen extends Activity {
     SharedPreferences prefs;
     private static int SPLASH_TIME_OUT = 2000;
     Context ctx;
-    String nr_car, notification_id,notification_type,estimated_time,answered_at,mPlates,feedback;
+    String nr_car, notification_id,notification_type,estimated_time,answered_at,mPlates;
+    boolean feedback;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
@@ -29,13 +30,13 @@ public class SplashScreen extends Activity {
         if(x!=null) {
             Log.w("meniuu","x!=null");
             try{
-                notification_type = (String) x.getString("notification_type");
-                nr_car = (String) x.getString("car_id");
-                notification_id = (String) x.getString("notification_id");
-                estimated_time = (String) x.getString("estimated_time");
-                answered_at = (String) x.getString("answered_at");
-                mPlates = (String) x.getString("mPlates");
-                feedback = (String) x.getString("feedback");
+                notification_type =  x.getString("notification_type");
+                nr_car =  x.getString("car_id");
+                notification_id =  x.getString("notification_id");
+                estimated_time =  x.getString("estimated_time");
+                answered_at =  x.getString("answered_at");
+                mPlates =  x.getString("mPlates");
+                feedback = x.getBoolean("feedback");
                 if(!notification_type.equals("review")) {
                     Log.w("meniuu","diferit de review");
                     if (prefs.getString("token", null) == null) {
@@ -57,7 +58,10 @@ public class SplashScreen extends Activity {
                     i.putExtra("notification_type",notification_type);
                     i.putExtra("mHour",answered_at);
                     i.putExtra("mPlates",nr_car);
-                    i.putExtra("feedback",feedback);
+                    if(feedback)
+                        i.putExtra("feedback","A venit la masina");
+                    else
+                        i.putExtra("feedback","Nu a venit la masina");
                     startActivity(i);
                     finish();
                 }

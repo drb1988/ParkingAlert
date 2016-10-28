@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/nr_masina_infoview"
             android:layout_centerHorizontal="true"
-            android:text="Acum 4 minute"
             android:textSize="@dimen/txt_size" />
     </RelativeLayout>
 </LinearLayout>

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -52,7 +51,7 @@ import Util.SecurePreferences;
 
 public class MainActivity extends AppCompatActivity {
     protected OnBackPressedListener onBackPressedListener;
-    static boolean active = false;
+    static boolean active = true;
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -86,75 +85,102 @@ public class MainActivity extends AppCompatActivity {
 
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-
             Bundle b = intent.getExtras();
             try {
+                notification_id=b.getString("notification_id");
                 notification_type = b.getString("notification_type");
-                notification_id = b.getString("notification_id");
-                Log.w("meniuu", "notif_id:" + notification_id + " notifId:" + Constants.notificationId);
-                if (!notification_id.equals(Constants.notificationId)) {
-                    Constants.notificationId = notification_id;
-                    Log.w("meniuu", "notifID: in broadcastreceiver" + notificationId);
-                    mPlates = b.getString("mPlates");
-                    estimated_time = b.getString("estimated_time");
-                    answered_at = b.getString("answered_at");
-                    latitude = b.getString("lat");
-                    longitude = b.getString("lng");
-                    try{
-                    feedback=b.getString("feedback");
-                    }catch (Exception e){
-                         e.printStackTrace();
-                    }
-                    try{
-                        is_ontime=b.getString("is_ontime");
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    updateUi();
-                } else
-                    Constants.notificationId = notification_id;
+//                answered_at=b.getString("mHour");
+//                mPlates=b.getString("mPlates");
+//                feedback = b.getString("feedback");
+                Log.w("meniuu","notiftype:"+notification_type+" answer:"+answered_at+" mplates:"+mPlates+" feed:"+feedback);
+                if(notification_type.equals("review")){
+                    getNotificationAll(notification_id);
+                }else
+                {   Log.w("meniuu","finish");
+                    Intent main=new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(main);
+                    finish();
 
-            } catch (Exception e) {
+                }
+            }catch (Exception e){
                 e.printStackTrace();
-                Log.w("meniuu", "catch la luarea de la push");
             }
+
+
+//            int fragments = getSupportFragmentManager().getBackStackEntryCount();
+//            Log.w("meniuu","nr fragments:"+fragments);
+//            if (fragments == 1) {
+//                finish();
+//                return;
+//            }
+//            Bundle b = intent.getExtras();
+//            try {
+//                notification_type = b.getString("notification_type");
+//                notification_id = b.getString("notification_id");
+//                Log.w("meniuu", "notif_id:" + notification_id + " notifId:" + Constants.notificationId);
+//                if (!notification_id.equals(Constants.notificationId)) {
+//                    Constants.notificationId = notification_id;
+//                    Log.w("meniuu", "notifID: in broadcastreceiver" + notificationId);
+//                    mPlates = b.getString("mPlates");
+//                    estimated_time = b.getString("estimated_time");
+//                    answered_at = b.getString("answered_at");
+//                    latitude = b.getString("lat");
+//                    longitude = b.getString("lng");
+//                    try{
+//                        feedback=b.getString("feedback");
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                    }
+//                    try{
+//                        is_ontime=b.getString("is_ontime");
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                    }
+//                    updateUi();
+//                } else
+//                    Constants.notificationId = notification_id;
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                Log.w("meniuu", "catch la luarea de la push");
+//            }
         }
     };
 
-    public void updateUi() {
-        Log.w("meniuu", "sa apelat updateui");
-//        badge_count.setVisibility(View.VISIBLE);
-//        badge_count.setText("1");
-//        removeYourFragment(fragment);
-        if (firtComm) {
-            firtComm=false;
-            if(!notification_type.equals("review"))
-                getNotification(prefs.getString("user_id", null));
-            else
-            {
-                Log.w("meniuu", "e review");
-                fragment = new SumarFragment();
-                Bundle sumar = new Bundle();
-                sumar.putString("mHour", answered_at);
-                sumar.putString("mPlates", mPlates);
-                if(feedback!=null)
-                    sumar.putString("feedback", feedback);
-                else
-                    sumar.putString("feedback", is_ontime);
-                fragment.setArguments(sumar);
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
-            }
-            Log.w("meniuu", "nu e review");
-        } else
-            firtComm=true;
-
-
-
-        MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification_sound);
-        mp.start();
-        Log.w("meniuu", "ai primit un sms in main");
-    }
+//    public void updateUi() {
+//        Log.w("meniuu", "sa apelat updateui");
+////        badge_count.setVisibility(View.VISIBLE);
+////        badge_count.setText("1");
+////        removeYourFragment(fragment);
+//        if (firtComm) {
+//            firtComm=false;
+//            if(!notification_type.equals("review"))
+//                getNotification(prefs.getString("user_id", null));
+//            else
+//            {
+//                Log.w("meniuu", "e review");
+//                Fragment   fragment = new SumarFragment();
+//                Bundle sumar = new Bundle();
+//                sumar.putString("mHour", answered_at);
+//                sumar.putString("mPlates", mPlates);
+//                if(feedback!=null)
+//                    sumar.putString("feedback", feedback);
+//                else
+//                    sumar.putString("feedback", is_ontime);
+//                fragment.setArguments(sumar);
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
+//            }
+//            Log.w("meniuu", "nu e review");
+//        } else
+//            firtComm=true;
+//
+//
+//
+//        MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification_sound);
+//        mp.start();
+//        Log.w("meniuu", "ai primit un sms in main");
+//    }
 
     /**
      * @param savedInstanceState
@@ -164,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ///firebase receiver
+        Log.w("meniuu","oncreate mainactivity");
         registerReceiver(myReceiver, new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER));
         setContentView(R.layout.activity_main);
         mTitle = mDrawerTitle = getTitle();
@@ -183,23 +210,26 @@ public class MainActivity extends AppCompatActivity {
         Log.w("meniuu","in mainactivity");
         if(bundle != null){
             Log.w("meniuu","bundle!null si se deschide sumar");
+            notification_id=bundle.getString("notification_id");
             notif_type = bundle.getString("notification_type");
             mPlates=bundle.getString("mPlates");
             answered_at=bundle.getString("mHour");
             feedback=bundle.getString("feedback");
+            Log.w("meniuu","feedback:"+feedback);
 
             if(notif_type.equals("review")) {
-                fragment = new SumarFragment();
-                Bundle sumar = new Bundle();
-                sumar.putString("mHour", answered_at);
-                sumar.putString("mPlates", mPlates);
-                if (feedback != null)
-                    sumar.putString("feedback", feedback);
-                else
-                    sumar.putString("feedback", is_ontime);
-                fragment.setArguments(sumar);
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
+                getNotificationAll(notification_id);
+//                Fragment  fragment = new SumarFragment();
+//                Bundle sumar = new Bundle();
+//                sumar.putString("mHour", answered_at);
+//                sumar.putString("mPlates", mPlates);
+//                if (feedback != null)
+//                    sumar.putString("feedback", feedback);
+//                else
+//                    sumar.putString("feedback", is_ontime);
+//                fragment.setArguments(sumar);
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
             }else
                 getNotification(prefs.getString("user_id", null));
         }
@@ -252,7 +282,13 @@ public class MainActivity extends AppCompatActivity {
     /**
      * onstop method
      */
-
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+//        savedInstanceState.putString(null);
+        // Always call the superclass so it can save the view hierarchy state
+        Log.w("meniuu","onsaveinstancestate.............");
+        super.onSaveInstanceState(savedInstanceState);
+    }
     @Override
     protected void onStop() {
         active = false;
@@ -268,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        active=false;
         unregisterReceiver(myReceiver);
         super.onDestroy();
     }
@@ -279,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void selectItem(int position) {
         Log.w("meniuu", "a intrat in selectitem pos:" + position);
-         fragment = null;
+        Fragment  fragment = null;
         switch (position) {
             case 0:
                 Log.w("meniuu", "bydefault");
@@ -416,19 +453,23 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerToggle.syncState();
     }
-
-    public void getNotification(final String id) {
+    public interface VolleyCallback{
+        void onSuccess(String string, String id);
+    }
+    public void getNotification(final String id ) {
         String url = Constants.URL + "users/getNotification/" + id;
         Log.w("meniuu", "url in getnotif:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             public void onResponse(String response) {
                 String json = response;
+//                callback.onSuccess(response, id);
                 try {
-                    Log.w("meniuu", "response getnotification:" + response);
+                    Log.w("meniuu", "response getnotification:" + json);
                     ModelNotification modelNotification = new ModelNotification();
                     JSONObject c = new JSONObject(json);
                     modelNotification.setId(c.getString("_id"));
                     JSONObject answer = new JSONObject(c.getString("answer"));
+                    answered_at=answer.getString("answered_at");
                     modelNotification.setNr_car(c.getString("vehicle"));
                     JSONObject location = new JSONObject(c.getString("location"));
                     JSONArray coordinates = new JSONArray(location.getString("coordinates"));
@@ -461,7 +502,7 @@ public class MainActivity extends AppCompatActivity {
                             diff = diff / 1000;
                             if (diff > 0) {
                                 Log.w("meniuu", "mapfragment");
-                                 fragment = new MapFragment();
+                                fragment = new MapFragment();
                                 Bundle harta = new Bundle();
                                 harta.putString("mHour", modelNotification.getmHour());
                                 harta.putString("mPlates", modelNotification.getNr_car());
@@ -469,11 +510,11 @@ public class MainActivity extends AppCompatActivity {
                                 harta.putString("lat", modelNotification.getLat());
                                 harta.putString("lng", modelNotification.getLng());
                                 harta.putString("image", modelNotification.getPicture());
+                                harta.putString("answered_at", answered_at);
                                 harta.putString("notification_id", modelNotification.getId());
                                 fragment.setArguments(harta);
                                 FragmentManager fragmentManager = getSupportFragmentManager();
                                 fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
-
                             } else
                                 Review(modelNotification.getId(), modelNotification.getmHour(), modelNotification.getNr_car());
                         } else {
@@ -501,12 +542,12 @@ public class MainActivity extends AppCompatActivity {
                             ///
                             Log.w("meniuu", "timerfragment");
 //                            removeYourFragment(fragment);
-                            if (container != null) {
-                                container.removeAllViews();
-                                Log.w("meniuu","sa sters tot din container");
-                            }
-
-                            fragment = new TimerSenderFragmnet();
+//                            if (container != null) {
+//                                container.removeAllViews();
+//                                Log.w("meniuu","sa sters tot din container");
+//                            }
+//                                    getSupportFragmentManager().beginTransaction().remove(fragment).commitAllowingStateLoss();
+                            Fragment    fragment = new TimerSenderFragmnet();
                             Bundle timer = new Bundle();
                             timer.putString("time", modelNotification.getEstimeted_time());
                             timer.putString("mHour", modelNotification.getmHour());
@@ -514,9 +555,10 @@ public class MainActivity extends AppCompatActivity {
                             timer.putString("notification_id", modelNotification.getId());
                             timer.putString("lat", modelNotification.getLng());
                             timer.putString("lng", modelNotification.getLng());
+                            timer.putString("answered_at", answered_at);
                             fragment.setArguments(timer);
                             FragmentManager fragmentManager = getSupportFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
                         }
                     } else if (c.getString("receiver_id").equals(id)) {
                         try {
@@ -539,7 +581,7 @@ public class MainActivity extends AppCompatActivity {
                             modelNotification.setmHour(c.getString("create_date"));
 ////
                             Log.w("meniuu", "viewnotiffragment");
-                             fragment = new ViewNotificationFragment();
+                            Fragment fragment = new ViewNotificationFragment();
                             Bundle vienotif = new Bundle();
                             vienotif.putString("mDetails", modelNotification.getmDetails());
                             vienotif.putString("notification_id", modelNotification.getId());
@@ -569,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             ///
                             Log.w("meniuu", "TimerReceiverFragment");
-                             fragment = new TimerReceiverFragment();
+                            Fragment    fragment = new TimerReceiverFragment();
                             Bundle timerSender = new Bundle();
                             timerSender.putString("time", modelNotification.getEstimeted_time());
                             timerSender.putString("mHour", modelNotification.getmHour());
@@ -578,6 +620,8 @@ public class MainActivity extends AppCompatActivity {
                             timerSender.putString("lat", modelNotification.getLat());
                             timerSender.putString("lng", modelNotification.getLng());
                             timerSender.putString("image", modelNotification.getPicture());
+                            timerSender.putString("answered_at", answered_at);
+                            timerSender.putString("extension_time", modelNotification.getExtension_time());
                             fragment.setArguments(timerSender);
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
@@ -586,7 +630,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.w("meniuu", "este catch");
                     e.printStackTrace();
-                     fragment = new ConnectFragment();
+                    Fragment   fragment = new ConnectFragment();
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
                 }
@@ -625,11 +669,12 @@ public class MainActivity extends AppCompatActivity {
                         String json = response;
                         Log.w("meniuu", "response:review" + response);
                         if (!response.equals("invalid notificationID")) {
-                             fragment = new SumarFragment();
+                            Fragment    fragment = new SumarFragment();
                             Bundle harta = new Bundle();
                             harta.putString("mHour", ora);
                             harta.putString("mPlates", nr_carString);
                             harta.putString("feedback", "A expirat timpul");
+                            harta.putString("answered_at", answered_at);
                             fragment.setArguments(harta);
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -690,6 +735,62 @@ public class MainActivity extends AppCompatActivity {
                 return params;
             }
 
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
+
+
+    ///getnotifictaion false/true
+    public void getNotificationAll(final String id ) {
+        String url = Constants.URL + "notifications/getNotification/" + id;
+        Log.w("meniuu", "url in getnotif:" + url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                try {
+                    Log.w("meniuu", "response getnotificationAll:" + json);
+                    JSONObject c = new JSONObject(json);
+                    String created_at=c.getString("create_date");
+                    JSONObject review= new JSONObject(c.getString("review"));
+                    String mPlates=c.getString("vehicle");
+                    String feedback=review.getString("feedback");
+                    String answer_at="";
+                    try {
+                        JSONObject answer = new JSONObject(c.getString("answer"));
+                        answer_at = answer.getString("answered_at");
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    //// deschid fragment
+                    Log.w("meniuu","deschid sumarfragment");
+                    Fragment  fragment = new SumarFragment();
+                    Bundle sumar = new Bundle();
+                    sumar.putString("mHour", created_at);
+                    sumar.putString("mPlates", mPlates);
+                    sumar.putString("answered_at", answer_at);
+                    if (feedback != null)
+                        sumar.putString("feedback", feedback);
+                    else
+                        sumar.putString("feedback", is_ontime);
+                    fragment.setArguments(sumar);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
+                } catch (Exception e) {
+                    Log.w("meniuu", "este catchla get notificationAll");
+                    e.printStackTrace();
+                    Fragment   fragment = new ConnectFragment();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
+                }
+            }
+        }, ErrorListener) {
             public java.util.Map<String, String> getHeaders() throws AuthFailureError {
                 String auth_token_string = prefs.getString("token", "");
                 java.util.Map<String, String> params = new HashMap<String, String>();

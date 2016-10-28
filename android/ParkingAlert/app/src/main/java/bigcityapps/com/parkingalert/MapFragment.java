@@ -67,10 +67,10 @@ import Util.SecurePreferences;
 public class MapFragment extends Fragment {
     RelativeLayout back_maps;
     private GoogleMap mMap;
-    TextView adress, tvTime;
+    TextView adress, tvTime, tvTimeDetails;
     private String provider;
     private LocationManager locationManager;
-    String mHour, mLat = "", mLng = "", image = "", notification_id;
+    String mHour, mLat = "", mLng = "", image = "", notification_id, answered_at;
     String mText;
     String mPlates;
     //    double mLongitude, mLatitude;
@@ -90,7 +90,9 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.harta, container, false);
+        MainActivity.active=true;
         initComponents(rootView);
+        ((MainActivity) getActivity()).setTitle("Notificari");
         Constants.isActivMap=true;
         Bundle b = this.getArguments();
         ctx = getContext();
@@ -104,6 +106,7 @@ public class MapFragment extends Fragment {
                 mLat = b.getString("lat");
                 mLng = b.getString("lng");
                 image = b.getString("image");
+                answered_at = b.getString("answered_at");
                 notification_id=b.getString("notification_id");
                 Log.w("meniuu", "lat:" + mLat + " mlng:" + mLng);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -220,6 +223,7 @@ public class MapFragment extends Fragment {
     public void initComponents(View rootview) {
         adress = (TextView) rootview.findViewById(R.id.adress);
         tvTime = (TextView) rootview.findViewById(R.id.time);
+        tvTimeDetails = (TextView) rootview.findViewById(R.id.time_text);
         back_maps = (RelativeLayout) rootview.findViewById(R.id.back_maps);
         back_maps.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -320,11 +324,11 @@ public class MapFragment extends Fragment {
                     Log.w("meniuu","COnstants.isactivmap:"+Constants.isActivMap);
                     if (mProgressStatus == 0 && Constants.isActivMap) {
                         Log.w("meniuu","in map se apeleaza review");
-                        Review(notification_id,mHour,mPlates,time + "",mLat,mLng, image);
+                        Review(notification_id,mHour,mPlates,answered_at + "",mLat,mLng, image);
                     }
                     mHandler.post(new Runnable() {
                         public void run() {
-                            tvTime.setText("Incercam sa il localizam proprietar:"+mProgressStatus);
+                            tvTime.setText(mProgressStatus+"");
                             Log.w("meniuu", "incercam sa il localizam pe receiver:" + mProgressStatus);
                         }
                     });
@@ -367,6 +371,7 @@ public class MapFragment extends Fragment {
                             harta.putString("mHour", ora);
                             harta.putString("mPlates", nr_carString);
                             harta.putString("time", timer + "");
+                            harta.putString("answered_at", answered_at);
                             harta.putString("feedback", "Nu a venit la masina");
                             fragment.setArguments(harta);
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

@@ -54,6 +54,7 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(bigcityapps.com.parkingalert.R.layout.view_notification, container, false);
         initComponents(rootView);
+        ((MainActivity) getActivity()).setTitle("Raspunde");
         ctx=rootView.getContext();
         queue = Volley.newRequestQueue(rootView.getContext());
         prefs = new SecurePreferences(rootView.getContext());
@@ -64,7 +65,7 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
             car_nr_view_notification.setText((String) b.get("mPlates")+" \n creaza o problema");
             notification_id=(String) b.get("notification_id");
             mHour=b.getString("mHour");
-            Log.w("meniuu","notification_id"+notification_id);
+            Log.w("meniuu","notification_id in viewnotificationfrag:"+notification_id);
         }else
         Toast.makeText(ctx,"NU s-au putut lua datele",Toast.LENGTH_LONG).show();
         locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
