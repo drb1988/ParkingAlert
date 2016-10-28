@@ -46,27 +46,23 @@ block content
 		$("#QR").click(function(){
 		console.log('clicked');
 			var json = {
-				number: $("#NumberOfQrCode").val()
+				count: $("#NumberOfQrCode").val()
 			};
 			console.log("json result qrrrr : ",json);
 		$.ajax({
 		async: true,
 		type: "POST",
-		data: [],
+		data: json,
 		url: "/web-routes/generateQrCode", 
 		success: function(result) {
 		console.log("merge users result in ajax");
 		console.log(result);
 		if(result){
-			result = [];
-			for(i=1;i<=json.number;i++) {
-				console.log("Sample code" + i);
-
-				$('#QRCodeResult').prepend('<div class="col-md-12" id="qrcode'+i+'"></div><br>');
-
+			console.log("result qr: ",result);
+			for(i=1;i<result.length;i++) {
+				$('#QRCodeResult').prepend('<div id="row"><div class="col-md-12" id="qrcode'+i+'"><br><br></div></div>');
 				var qrcode = new QRCode("qrcode"+i);
-				qrcode.makeCode("Sample code");
-				//$("#QRCodeResult").add('<div class="col-md-12">'+qrcode.makeCode("Sample code")+'</div>');
+				qrcode.makeCode(result[i]);
 			}
 			console.log("result: ", result);
 			console.log("qrcode.makeCode(result.QRCode)");

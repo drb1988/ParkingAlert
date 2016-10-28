@@ -662,7 +662,7 @@ module.exports = function(passport){
 
   var generateCode = function (user, count)
      { 
-      var results = {};
+      var results = [];
       for(var i=0; i<count; i++)
       {
         var secret = "Friendly2016";
@@ -676,7 +676,7 @@ module.exports = function(passport){
           var result = jwt.encode( secret, payload);
           results.push(result.value);
       }
-      res.status(200).send(results);
+      return(results);
      }
 
   adminRouter.post('/generateQrCode', isAuthenticated, function(req, res, next) {
@@ -684,10 +684,9 @@ module.exports = function(passport){
     qr.addData(req.user._id);
     qr.make();
     var qr_code = qr.createImgTag(4);
-    console.log("qr_code:",qr_code);
-    res.status(200).send({
-      "QRCode": generateCode(req.user._id, req.body.count)
-    })
+    console.log("body qr:",req.body);
+      console.log(generateCode(req.user._id, parseInt(req.body.count)));
+    res.status(200).send(generateCode(req.user._id, parseInt(req.body.count)))
   });
 
   adminRouter.get('/qr', isAuthenticated, function(req, res, next) {
