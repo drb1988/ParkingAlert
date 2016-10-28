@@ -129,6 +129,76 @@ module.exports = function(passport){
   // message_type: null });
 });
 
+  adminRouter.post('/map/', function(req, res) {
+    var type = req.body.type;
+    var lat = req.body.lat;
+    var lon = req.body.lon;
+    var rad = req.body.rad;
+    var poly = req.body.polygonPoints;
+ 
+    requests.saveCoordinates(type, lat, lon, rad, poly, function(callback) {
+        res.send(callback);
+    });
+  });
+
+  var notifications;
+var admins;
+var users;
+ 
+MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, database) {
+    if(err) throw err;
+    db = database;
+    admins = db.collection('parkingAdmins');
+    users = db.collection('parking');
+    notifications = db.collection('notifications');
+ 
+    admins.find({}).toArray(function (err, items) {
+     if(items){
+         console.log('admins', items);
+     }
+    });
+ 
+    users.find({}).toArray(function (err, items) {
+        if(items){
+            console.log('users', items);
+        }
+    });
+});
+ 
+ 
+ 
+exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
+ 
+    var zone;
+ 
+    switch (gtype) {
+        case 'circle':
+             zone = {
+                    'center': new Object({
+                        'lat': lat,
+                        'lng': lon,
+                        'radius': rad
+                    }),
+                 type: gtype
+            };
+            break;
+        case 'polygon':
+             zone = {
+                    'center': polygonPoints,
+                 type: gtype
+            };
+            break;
+    }
+    console.log('zone', zone);
+    admins.update({'_id': new ObjectId('57fceaa64521512290f2b37b')},
+        {$push: {
+           zone: zone
+           }
+        }
+    );
+    callback({'ok': 200});
+};
+
   adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
