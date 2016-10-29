@@ -110,7 +110,7 @@ public class ModifyCar extends Activity implements View.OnClickListener{
     }
     private boolean validateNr() {
         String email = edNr.getText().toString().trim();
-        if (email.isEmpty() || email.length()!=7) {
+        if (email.isEmpty() || email.length()<6) {
             inputCar.setError(getString(R.string.err_msg_car_nr));
             requestFocus(edNr);
             return false;
@@ -330,7 +330,7 @@ public class ModifyCar extends Activity implements View.OnClickListener{
     public void UpdateCar(final String id){
         String url = Constants.URL + "users/editCar/" + id + "&" + mPLatesOriginal;
         Log.w("meniuu","url:"+url);
-        if( edNr.getText().length()<7 )
+        if( edNr.getText().toString().trim().length()<6 )
             Toast.makeText(ctx,"Trebuie sa completezi numarul de inmatriculare",Toast.LENGTH_LONG).show();
         else{
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,

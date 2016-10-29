@@ -47,7 +47,7 @@ public class ShowQRCode extends Activity implements OnClickListener {
     TextView tvNextStep;
     SharedPreferences prefs;
     String qrcode;
-
+    Bitmap bmp;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_qrcode);
@@ -70,7 +70,7 @@ public class ShowQRCode extends Activity implements OnClickListener {
             BitMatrix bitMatrix = writer.encode(qrcode, BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
-            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+             bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
@@ -92,6 +92,7 @@ public class ShowQRCode extends Activity implements OnClickListener {
         else {
             tvNextStep.setText("Ok");
             UpdateQr(prefs.getString("user_id", ""));
+            MediaStore.Images.Media.insertImage(getContentResolver(), bmp, "qrcode_" + Constants.plates + ".png" , "");
         }
         tvNextStep.setOnClickListener(this);
     }

@@ -58,6 +58,7 @@ public class SplashScreen extends Activity {
                     i.putExtra("notification_type",notification_type);
                     i.putExtra("mHour",answered_at);
                     i.putExtra("mPlates",nr_car);
+                    i.putExtra("notification_id",notification_id);
                     if(feedback)
                         i.putExtra("feedback","A venit la masina");
                     else

@@ -98,7 +98,6 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                 Log.w("meniuu", "notifin timerragment:" + notification_id);
 
                 getNotificationAll(notification_id);
-
 //                senderRead(notification_id);
 //                Calculate();
             } catch (Exception e) {
@@ -108,6 +107,12 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
         }else
         Log.w("meniuu","e nulll");
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
     }
 
     public void initcComponents(View rootView) {
@@ -199,10 +204,18 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
         };
         queue.add(stringRequest);
     }
+
+    @Override
+    public void onDestroyView() {
+        Log.w("meniuu", "ondestroy timersenderfrag");
+        isActiv = false;
+        super.onDestroyView();
+    }
+
     @Override
     public void onDestroy() {
-        isActiv = false;
-        Log.w("meniuu", "ondestroy timersenderfrag");
+
+
         super.onDestroy();
     }
 

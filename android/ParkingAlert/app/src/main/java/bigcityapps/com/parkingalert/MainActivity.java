@@ -617,9 +617,13 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.w("meniuu", "este catch");
                     e.printStackTrace();
-                    Fragment   fragment = new ConnectFragment();
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
+                    try {
+                        Fragment fragment = new ConnectFragment();
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
+                    }catch (Exception e1){
+
+                    }
                 }
             }
         }, ErrorListener) {

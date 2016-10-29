@@ -216,7 +216,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
     }
 
     public void verifyEmail(final String email, final String token) {
-        String url = Constants.URL + "signup/sendEmailVerification";
+        String url = Constants.URL + "signup/verifyEmail/"+token;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
@@ -229,7 +229,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 Log.w("meniuu","email:"+email+" token:"+token);
                 params.put("email", email);
-                params.put("token", token);
+                params.put("token", edValidationCode.getText().toString());
                 return params;
             }
         };

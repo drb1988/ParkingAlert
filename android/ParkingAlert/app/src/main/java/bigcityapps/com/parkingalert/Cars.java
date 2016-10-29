@@ -76,7 +76,7 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
         ctx = this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
-        getCars(prefs.getString("user_id", ""));
+//        getCars(prefs.getString("user_id", ""));
 //        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //            Intent vizualizare= new Intent(Cars.this,ViewCar.class);

@@ -278,7 +278,7 @@ public class AddCar extends Activity implements View.OnClickListener {
 //    }
     public void addCar(final String id, final String qrcode) {
         String url = Constants.URL + "users/addCar/" + id;
-        if (edNr.getText().length()<7)
+        if (edNr.getText().length()<6)
             Toast.makeText(ctx, "Trebuie sa completezi numarul de inmatriculare", Toast.LENGTH_LONG).show();
         else {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -287,6 +287,8 @@ public class AddCar extends Activity implements View.OnClickListener {
                             String json = response;
                             Log.w("meniuu", "response:post user" + response);
                             saveImageToExternalStorageQrcode();
+                            Intent main= new Intent(AddCar.this, MainActivity.class);
+                            startActivity(main);
                             finish();
                         }
                     }, ErrorListener) {
@@ -316,7 +318,7 @@ public class AddCar extends Activity implements View.OnClickListener {
     }
     private boolean validateNr() {
         String email = edNr.getText().toString().trim();
-        if (email.isEmpty() || email.length()!=7) {
+        if (email.isEmpty() || email.length()<6) {
             input_car.setError(getString(R.string.err_msg_car_nr));
             requestFocus(edNr);
             return false;
@@ -594,7 +596,7 @@ public class AddCar extends Activity implements View.OnClickListener {
             fOut.close();
 
             MediaStore.Images.Media.insertImage(ctx.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-
+            MediaStore.Images.Media.insertImage(getContentResolver(), bmp, "qrcode_" + edNr.getText().toString() + ".png" , "");
             return true;
 
         } catch (Exception e) {

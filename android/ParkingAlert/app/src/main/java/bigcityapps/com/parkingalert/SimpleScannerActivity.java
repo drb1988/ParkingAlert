@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -155,10 +154,34 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                             Log.w("meniuu", "user_id:" + user_id + " se apeleaza postnotification");
                             postNotification(user_id);
                         }
-                    }else
-                        Toast.makeText(ctx,"nu exista user",Toast.LENGTH_LONG).show();
+                    }else {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                        builder.setTitle("Aceasta masina nu poate fi notificata");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                        AlertDialog alert1 = builder.create();
+                        alert1.show();
+                        finish();
+                    }
                 } catch (Throwable t) {
                     Log.w("meniuu", "cacth get questions");
+                    if(plates.equals("disabled"))
+                    {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                        builder.setTitle("Aceasta masina nu poate fi notificata");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                        AlertDialog alert1 = builder.create();
+                        alert1.show();
+                    }
                     t.printStackTrace();
                 }
             }
