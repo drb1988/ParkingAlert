@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:text="Notificat bh12abc"
+            android:text="Notificat hardcodat"
             android:textSize="@dimen/txt_size_bigger"
             android:textStyle="bold" />
 

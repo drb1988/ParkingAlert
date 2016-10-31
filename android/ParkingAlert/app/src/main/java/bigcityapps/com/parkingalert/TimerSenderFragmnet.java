@@ -28,6 +28,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -50,7 +51,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
     RelativeLayout rl_come;
     int timer;
     String TAG = "meniuu";
-    String ora, nr_carString, notification_id, mImage,answered_at;
+    String ora, nr_carString, notification_id, mImage, answered_at;
     boolean run = true;
     TextView car_nr, time_answer;
     RequestQueue queue;
@@ -59,6 +60,8 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
     Long estimetedTime, time, actualDate;
     Context ctx;
     boolean isActiv = true;
+    int extented_time = 0;
+    boolean running = true;
 
 //    @Override
 //    public void onResume() {
@@ -70,12 +73,18 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        MainActivity.active=true;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.timer_sender, container, false);
         ctx = rootView.getContext();
-        MainActivity.active=true;
-        ((MainActivity) getActivity()).setTitle("Timer");
+        MainActivity.active = true;
+        ((MainActivity) getActivity()).setTitle("Notificari");
         initcComponents(rootView);
         Constants.isActivMap = false;
         Log.w("meniuu", "oncreate in timersenderfragm");
@@ -92,7 +101,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                 notification_id = b.getString("notification_id");
 //                mLat = b.getString("lat");
 //                mLng = b.getString("lng");
-//                time_answer.setText("Raspuns la " + ora);
+                time_answer.setText("Raspuns la " + ora);
 //                mImage = b.getString("image");
 //                answered_at = b.getString("answered_at");
                 Log.w("meniuu", "notifin timerragment:" + notification_id);
@@ -101,11 +110,11 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
 //                senderRead(notification_id);
 //                Calculate();
             } catch (Exception e) {
-                Log.w("meniuu","catch la luare in timersenderfr");
+                Log.w("meniuu", "catch la luare in timersenderfr");
                 e.printStackTrace();
             }
-        }else
-        Log.w("meniuu","e nulll");
+        } else
+            Log.w("meniuu", "e nulll");
         return rootView;
     }
 
@@ -138,7 +147,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
             Date myDate = simpleDateFormat.parse(ora);
             time = myDate.getTime();
-            estimetedTime = (long) timer * 60 * 1000;
+            estimetedTime = (long) timer * 60 * 1000 + ((long) extented_time * 60 * 1000);
             time = time + estimetedTime;
             Date date2 = new Date();
             actualDate = date2.getTime();
@@ -146,11 +155,12 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
             diff = diff / 1000;
             Log.w("meniuu", "diff in timer_sender:" + diff);
             if (diff > 0) {
+                progBar.setVisibility(View.VISIBLE);
                 progBar.setMax(timer * 60);
                 mProgressStatus = (int) diff;
                 dosomething();
             } else {
-                Log.w("meniuu","se trece in review din timersendfr");
+                Log.w("meniuu", "se trece in review din timersendfr");
                 getActivity().getSupportFragmentManager().beginTransaction().remove(TimerSenderFragmnet.this).commit();
                 Fragment fragment = new ReviewFragment();
                 Bundle harta = new Bundle();
@@ -169,23 +179,32 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
         }
     }
 
-    public void getNotificationAll(final String id ) {
+    public void getNotificationAll(final String id) {
         String url = Constants.URL + "notifications/getNotification/" + id;
-        Log.w("meniuu", "url in getnotif:" + url);
+        Log.w("meniuu", "url in getnotifall:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             public void onResponse(String response) {
                 String json = response;
                 try {
                     Log.w("meniuu", "response getnotificationAll:" + json);
                     JSONObject c = new JSONObject(json);
-                    ora=c.getString("create_date");
-                    JSONObject review= new JSONObject(c.getString("review"));
-                    nr_carString=c.getString("vehicle");
+                    ora = c.getString("create_date");
+                    JSONObject review = new JSONObject(c.getString("review"));
+                    nr_carString = c.getString("vehicle");
                     try {
                         JSONObject answer = new JSONObject(c.getString("answer"));
                         answered_at = answer.getString("answered_at");
-                        timer=Integer.parseInt(answer.getString("estimated"));
-                    }catch (Exception e){
+                        timer = Integer.parseInt(answer.getString("estimated"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        JSONArray extesions = new JSONArray(c.getString("extesions"));
+                        JSONObject extesions1 = extesions.getJSONObject(0);
+                        extented_time = Integer.parseInt(extesions1.getString("extension_time"));
+                        Log.w("meniuu", "sa luat timextension:" + extented_time);
+                    } catch (Exception e) {
+                        Log.w("meniuu", "cacth la luarea extensiontime");
                         e.printStackTrace();
                     }
                     Calculate();
@@ -226,9 +245,19 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
     }
 
     public void dosomething() {
-        new Thread(new Runnable() {
+        if (Constants.threadTimer != null) {
+            if (Constants.threadTimer.isAlive()) {
+                Log.w("meniuu", "se inchide threadul vechi");
+                Constants.threadTimer.interrupt();
+                Constants.threadTimer=null;
+            } else
+                Log.w("meniuu", "threadul nu este alive");
+        } else
+            Log.w("meniuu", "threadul nu este null");
+       Constants.threadTimer=  new Thread(new Runnable() {
             public void run() {
-                while (mProgressStatus > 0) {
+                while (mProgressStatus > 0 && running == true ) {
+                    Log.w("meniuu", "thredaul din timersend functioneaza");
                     if (run == false)
                         mProgressStatus = 1;
                     mProgressStatus -= 1;
@@ -237,7 +266,8 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                             progBar.setProgress(mProgressStatus);
                             int minutes = (mProgressStatus % 3600) / 60;
                             int sec = mProgressStatus % 60;
-                            if (mProgressStatus == 0 ) {
+                            Log.w("meniuu","mproressstatus in timersendfr:"+mProgressStatus);
+                            if (mProgressStatus == 0) {
                                 reviewExpirat();
                             }
                             if (minutes < 10) {
@@ -262,13 +292,15 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                     }
                 }
             }
-        }).start();
+        });
+        Constants.threadTimer.start();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_come:
+                running = false;
                 Review();
                 break;
         }
@@ -308,6 +340,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
         };
         queue.add(stringRequest);
     }
+
     public void reviewExpirat() {
         String url = Constants.URL + "notifications/sendReview/" + notification_id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -315,7 +348,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                     public void onResponse(String response) {
                         String json = response;
                         Log.w("meniuu", "response:review" + response);
-                        if(isActiv) {
+                        if (isActiv) {
                             Log.w("meniuu", "intra in review din timersenderfragment");
                             getActivity().getSupportFragmentManager().beginTransaction().remove(TimerSenderFragmnet.this).commit();
                             Fragment fragment = new ReviewFragment();
@@ -328,7 +361,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                             harta.putString("image", mImage);
                             harta.putString("notification_id", notification_id);
                             fragment.setArguments(harta);
-                            Log.e("meniuu", "notif in timerfragmnet:" + notification_id+" nr_car:"+nr_carString+" time:"+timer+" ora:"+ora);
+                            Log.e("meniuu", "notif in timerfragmnet:" + notification_id + " nr_car:" + nr_carString + " time:" + timer + " ora:" + ora);
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                         }

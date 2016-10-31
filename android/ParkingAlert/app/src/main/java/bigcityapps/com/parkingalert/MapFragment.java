@@ -14,6 +14,7 @@ import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -70,7 +71,7 @@ public class MapFragment extends Fragment {
     TextView adress, tvTime, tvTimeDetails;
     private String provider;
     private LocationManager locationManager;
-    String mHour, mLat = "", mLng = "", image = "", notification_id, answered_at;
+    String mHour, mLat = "", mLng = "", imageString = "", notification_id, answered_at;
     String mText;
     String mPlates;
     //    double mLongitude, mLatitude;
@@ -105,7 +106,7 @@ public class MapFragment extends Fragment {
                 mPlates = (String) b.get("mPlates");
                 mLat = b.getString("lat");
                 mLng = b.getString("lng");
-                image = b.getString("image");
+                imageString = b.getString("image");
                 answered_at = b.getString("answered_at");
                 notification_id=b.getString("notification_id");
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -155,9 +156,29 @@ public class MapFragment extends Fragment {
                 public void onMapReady(GoogleMap mMap) {
                     googleMap = mMap;
                     // For showing a move to my location button
-                    if (ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        return;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                            // Should we show an explanation?
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+                                builder.setTitle("Acces locatie");
+                                builder.setPositiveButton(android.R.string.ok, null);
+                                builder.setMessage("Te rog confirma accesul la locatie");//TODO put real question
+                                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                    public void onDismiss(DialogInterface dialog) {
+                                        requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                                    }
+                                });
+                                builder.show();
+                            } else {
+                                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                            }
+                        } else {
+                            googleMap.setMyLocationEnabled(true);
+                        }
                     }
+                    else
                     googleMap.setMyLocationEnabled(true);
 
                     if (mLng.length() != 0)
@@ -166,7 +187,7 @@ public class MapFragment extends Fragment {
                     final LatLng CIU = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
                     LatLng sydney = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng)), 12.0f));
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(CIU).title(image).snippet(mText + ""));
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(CIU).title(imageString).snippet(mText + ""));
                     marker.showInfoWindow();
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
                 }
@@ -215,7 +236,36 @@ public class MapFragment extends Fragment {
         return isLocationEnabled();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    googleMap.setMyLocationEnabled(true);
+                    // permission was granted, yay! do the
+                    // calendar task you need to do.
 
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Permisiune");
+                    builder.setMessage("Ca sa poti folosi aplicatia trebuie sa dai permisiunea la accesul locatiei. Multumesc");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert1 = builder.create();
+                    alert1.show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'switch' lines to check for other
+            // permissions this app might request
+        }
+    }
     /**
      *
      */
@@ -295,21 +345,24 @@ public class MapFragment extends Fragment {
             LayoutInflater inflater = (LayoutInflater) cw.getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
             View v = inflater.inflate(R.layout.infoview, null);
             if (marker != null) {
+                try{
+                Log.w("meniuu", "marker diferit de null:" + imageString);
                 final ImageView image = (ImageView) v.findViewById(R.id.image_info_view);
                 TextView tvTitle = ((TextView) v.findViewById(R.id.nr_masina_infoview));
                 tvTitle.setText("Notificat " + mPlates);
-//                TextView tvSnippet = ((TextView) v.findViewById(R.id.time_info_view));
-//                tvSnippet.setText(marker.getSnippet());
-
-//                Glide.with(ctx).load(marker.getTitle()).into(image);
-                Log.w("meniu", "image in harta:" + marker.getTitle());
-                Glide.with(ctx).load(marker.getTitle()).asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
+                Log.w("meniu", "image in harta:" + marker.getTitle() + " im:" + imageString);
+                Glide.with(getContext()).load(imageString).asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
                     protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
                         circularBitmapDrawable.setCircular(true);
                         image.setImageDrawable(circularBitmapDrawable);
+                        Log.w("meniuu","in glide:"+imageString);
                     }
                 });
+            }catch (Exception e){
+                    Log.w("meniuu","catch la infoview");
+                    e.printStackTrace();
+                }
             }
             return v;
         }
@@ -323,7 +376,7 @@ public class MapFragment extends Fragment {
                     Log.w("meniuu","COnstants.isactivmap:"+Constants.isActivMap);
                     if (mProgressStatus == 0 && Constants.isActivMap) {
                         Log.w("meniuu","in map se apeleaza review");
-                        Review(notification_id,mHour,mPlates,answered_at + "",mLat,mLng, image);
+                        Review(notification_id,mHour,mPlates,answered_at + "",mLat,mLng, imageString);
                     }
                     mHandler.post(new Runnable() {
                         public void run() {
@@ -374,7 +427,7 @@ public class MapFragment extends Fragment {
                             harta.putString("feedback", "Nu a venit la masina");
                             fragment.setArguments(harta);
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
                         }
                     }
                 }, ErrorListener) {

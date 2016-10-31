@@ -45,12 +45,11 @@
         android:gravity="center">
 
         <ProgressBar
+            android:visibility="invisible"
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="320dp"
             android:layout_height="320dp"
-
-
             android:indeterminate="false"
             android:progressDrawable="@drawable/circular_progress_bar" />
 
@@ -60,10 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:gravity="center"
             android:textColor="@android:color/black"
             android:textSize="35dp" />
-
     </RelativeLayout>
 
     <RelativeLayout

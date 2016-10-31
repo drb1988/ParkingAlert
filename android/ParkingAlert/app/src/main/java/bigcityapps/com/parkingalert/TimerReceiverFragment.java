@@ -1,6 +1,7 @@
 package bigcityapps.com.parkingalert;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,6 +60,7 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
 
         View rootView = inflater.inflate(R.layout.timer_receiver, container, false);
         MainActivity.active=true;
+        ((MainActivity) getActivity()).setTitle("Notificari");
         queue = Volley.newRequestQueue(getContext());
         prefs = new SecurePreferences(getContext());
         ctx=getContext();
@@ -69,7 +71,9 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
             try {
                 try {
                     extented_time = Integer.parseInt(b.getString("extension_time"));
+                    Log.w("meniuu","extended_time:"+extented_time);
                 }catch (Exception e){
+                    Log.w("meniuu","catch la luarea extendet_time");
                     e.printStackTrace();
                 }
                 timer = Integer.parseInt((String) b.get("time"));
@@ -85,7 +89,8 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
                     simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
                     Date myDate = simpleDateFormat.parse(ora);
                     time=myDate.getTime();
-                    estimetedTime=(long)timer*60*1000+(long)extented_time*60+1000;
+                    Log.w("meniuu","extendet_time:"+extented_time);
+                    estimetedTime=(long)timer*60*1000+((long)extented_time*60*1000);
                     time=time+estimetedTime;
                     Date date2 = new Date();
                     actualDate=date2.getTime();
@@ -201,10 +206,18 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
 ////                finish();
 //                break;
             case R.id.bottom:
-//                postExtended();
+                Log.w("meniuu","sa dat click");
+                postExtended();
                 break;
         }
     }
+
+    @Override
+    public void onPause() {
+        isActiv=false;
+        super.onPause();
+    }
+
     @Override
     public void onDestroyView() {
         Log.w("meniuu", "on destroyview in mapfragment");
@@ -213,14 +226,15 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
     }
     public void postExtended(){
         String url = Constants.URL+"notifications/receiverExtended/"+notification_id;
+        Log.w("meniuu","url extended"+url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
-                        Log.w("meniuu", "response:post answer" + response);
-//                        Intent harta= new Intent(Scan.this, Map.class);
-//                        startActivity(harta);
-//                        finish();
+                        Log.w("meniuu", "response:post receiver extended" + response);
+                        Intent main= new Intent(getActivity(), MainActivity.class);
+                        startActivity(main);
+                        getActivity().finish();
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
@@ -243,5 +257,4 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
             Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
         }
     };
-
 }

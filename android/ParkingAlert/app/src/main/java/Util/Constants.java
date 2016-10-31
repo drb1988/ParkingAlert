@@ -15,4 +15,5 @@ public class Constants {
     public  static String notificationId;
     public static boolean change=false;
     public static boolean isActivMap=false;
+    public   static Thread threadTimer=null;
 }

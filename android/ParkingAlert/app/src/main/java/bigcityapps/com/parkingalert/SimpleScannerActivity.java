@@ -155,6 +155,7 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                             postNotification(user_id);
                         }
                     }else {
+                        Log.w("meniuu","nu exista userul");
                         final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
                         builder.setTitle("Aceasta masina nu poate fi notificata");
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -165,7 +166,6 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                         });
                         AlertDialog alert1 = builder.create();
                         alert1.show();
-                        finish();
                     }
                 } catch (Throwable t) {
                     Log.w("meniuu", "cacth get questions");

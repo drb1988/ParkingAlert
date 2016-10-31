@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 //                answered_at=b.getString("mHour");
 //                mPlates=b.getString("mPlates");
 //                feedback = b.getString("feedback");
-                Log.w("meniuu","notiftype:"+notification_type+" answer:"+answered_at+" mplates:"+mPlates+" feed:"+feedback);
+                Log.w("meniuu","notifid::"+notification_id+" answer:"+answered_at+" mplates:"+mPlates+" feed:"+feedback);
                 if(notification_type.equals("review")){
                     getNotificationAll(notification_id);
                 }else
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         Log.w("meniuu","in mainactivity");
         if(bundle != null){
-            Log.w("meniuu","bundle!null si se deschide sumar");
+            Log.w("meniuu","bundle!=null");
             notification_id=bundle.getString("notification_id");
             notif_type = bundle.getString("notification_type");
             mPlates=bundle.getString("mPlates");
@@ -219,7 +219,9 @@ public class MainActivity extends AppCompatActivity {
             Log.w("meniuu","feedback:"+feedback+" notif_type:"+notif_type);
 
             if(notif_type.equals("review")) {
+                Log.w("meniuu","notificarea este de tip review in bundle:"+notification_id);
                 getNotificationAll(notification_id);
+
             }else
                 getNotification(prefs.getString("user_id", null));
             getIntent().removeExtra("notification_id");
@@ -367,32 +369,32 @@ public class MainActivity extends AppCompatActivity {
         badge_count = (TextView) notificaitons.findViewById(R.id.hotlist_hot);
         badge_count.setVisibility(View.INVISIBLE);
         RelativeLayout clopot_layout = (RelativeLayout) notificaitons.findViewById(R.id.clopot_layout);
-        clopot_layout.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                if (notification_id != null) {
-                    badge_count.setVisibility(View.INVISIBLE);
-                    if (notification_type.equals("sender")) {
-                        Intent viewNotification = new Intent(MainActivity.this, ViewNotification.class);
-                        viewNotification.putExtra("notification_id", notification_id);
-                        viewNotification.putExtra("mPlates", mPlates);
-                        startActivity(viewNotification);
-                    } else if (notification_type.equals("receiver")) {
-                        Intent timer = new Intent(MainActivity.this, Timer.class);
-                        timer.putExtra("time", estimated_time);
-                        timer.putExtra("mHour", answered_at);
-                        timer.putExtra("mPlates", mPlates);
-                        timer.putExtra("notification_id", notification_id);
-                        timer.putExtra("lat", latitude);
-                        timer.putExtra("lng", longitude);
-                        startActivity(timer);
-
-                    } else if (notification_type.equals("review")) {
-                        Toast.makeText(ctx, "Review", Toast.LENGTH_LONG).show();
-                    }
-                } else
-                    Log.w("meniuu", "e null");
-            }
-        });
+//        clopot_layout.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View view) {
+//                if (notification_id != null) {
+//                    badge_count.setVisibility(View.INVISIBLE);
+//                    if (notification_type.equals("sender")) {
+//                        Intent viewNotification = new Intent(MainActivity.this, ViewNotification.class);
+//                        viewNotification.putExtra("notification_id", notification_id);
+//                        viewNotification.putExtra("mPlates", mPlates);
+//                        startActivity(viewNotification);
+//                    } else if (notification_type.equals("receiver")) {
+//                        Intent timer = new Intent(MainActivity.this, Timer.class);
+//                        timer.putExtra("time", estimated_time);
+//                        timer.putExtra("mHour", answered_at);
+//                        timer.putExtra("mPlates", mPlates);
+//                        timer.putExtra("notification_id", notification_id);
+//                        timer.putExtra("lat", latitude);
+//                        timer.putExtra("lng", longitude);
+//                        startActivity(timer);
+//
+//                    } else if (notification_type.equals("review")) {
+//                        Toast.makeText(ctx, "Review", Toast.LENGTH_LONG).show();
+//                    }
+//                } else
+//                    Log.w("meniuu", "e null");
+//            }
+//        });
 //        badge_count.setText("3");
         return true;
     }
@@ -505,47 +507,56 @@ public class MainActivity extends AppCompatActivity {
                             } else
                                 Review(modelNotification.getId(), modelNotification.getmHour(), modelNotification.getNr_car());
                         } else {
-                            modelNotification.setTitle("Ai primit raspuns");
-                            modelNotification.setmMessage("Vin in aprox " + answer.getString("estimated") + " minute");
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
-                            modelNotification.setEstimeted_time(answer.getString("estimated"));
-                            try {
-                                JSONArray extesions = new JSONArray(answer.getString("extesions"));
-                                JSONObject extesions1 = extesions.getJSONObject(0);
-                                modelNotification.setExtended(true);
-                                modelNotification.setEstimeted_time(extesions1.getString("extension_time"));
-                                modelNotification.setExtension_time(extesions1.getString("extended_at"));
-                            } catch (Exception e) {
-                                modelNotification.setExtended(false);
-                                e.printStackTrace();
+                            if (Integer.parseInt(answer.getString("estimated")) == 100) {
+                                Log.w("meniuu", "nu vine la masina, feedback negativ si il trimitem la sumar");
+                                ReviewFalse(c.getString("create_date"),c.getString("vehicle"),answer.getString("answered_at"));
+                            }else
+                            {
+                                modelNotification.setTitle("Ai primit raspuns");
+                                modelNotification.setmMessage("Vin in aprox " + answer.getString("estimated") + " minute");
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                                modelNotification.setEstimeted_time(answer.getString("estimated"));
+                                try {
+                                    JSONArray extesions = new JSONArray(c.getString("extesions"));
+                                    JSONObject extesions1 = extesions.getJSONObject(0);
+                                    modelNotification.setExtended(true);
+                                    modelNotification.setEstimeted_time(extesions1.getString("extension_time"));
+                                    modelNotification.setExtension_time(extesions1.getString("extended_at"));
+                                    Log.w("meniuu","sa pus extended time");
+                                } catch (Exception e) {
+                                    modelNotification.setExtended(false);
+                                    Log.w("meniuu","nu s-a putut lua extended time");
+                                    e.printStackTrace();
+                                }
+                                modelNotification.setmType(2);
+                                modelNotification.setmHour(answer.getString("answered_at"));
+                                if (c.getBoolean("sender_read"))
+                                    modelNotification.setSenderRead(true);
+                                else
+                                    modelNotification.setSenderRead(false);
+                                ///
+                                Log.w("meniuu", "timerfragment");
+    //                            removeYourFragment(fragment);
+    //                            if (container != null) {
+    //                                container.removeAllViews();
+    //                                Log.w("meniuu","sa sters tot din container");
+    //                            }
+    //                                    getSupportFragmentManager().beginTransaction().remove(fragment).commitAllowingStateLoss();
+                                Fragment fragment = new TimerSenderFragmnet();
+                                Bundle timer = new Bundle();
+                                timer.putString("time", modelNotification.getEstimeted_time());
+                                timer.putString("mHour", modelNotification.getmHour());
+                                timer.putString("mPlates", modelNotification.getNr_car());
+                                timer.putString("notification_id", modelNotification.getId());
+                                timer.putString("lat", modelNotification.getLng());
+                                timer.putString("lng", modelNotification.getLng());
+                                timer.putString("answered_at", answered_at);
+                                timer.putString("extension_time", modelNotification.getExtension_time());
+                                fragment.setArguments(timer);
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
                             }
-                            modelNotification.setmType(2);
-                            modelNotification.setmHour(answer.getString("answered_at"));
-                            if (c.getBoolean("sender_read"))
-                                modelNotification.setSenderRead(true);
-                            else
-                                modelNotification.setSenderRead(false);
-                            ///
-                            Log.w("meniuu", "timerfragment");
-//                            removeYourFragment(fragment);
-//                            if (container != null) {
-//                                container.removeAllViews();
-//                                Log.w("meniuu","sa sters tot din container");
-//                            }
-//                                    getSupportFragmentManager().beginTransaction().remove(fragment).commitAllowingStateLoss();
-                            Fragment    fragment = new TimerSenderFragmnet();
-                            Bundle timer = new Bundle();
-                            timer.putString("time", modelNotification.getEstimeted_time());
-                            timer.putString("mHour", modelNotification.getmHour());
-                            timer.putString("mPlates", modelNotification.getNr_car());
-                            timer.putString("notification_id", modelNotification.getId());
-                            timer.putString("lat", modelNotification.getLng());
-                            timer.putString("lng", modelNotification.getLng());
-                            timer.putString("answered_at", answered_at);
-                            fragment.setArguments(timer);
-                            FragmentManager fragmentManager = getSupportFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
                         }
                     } else if (c.getString("receiver_id").equals(id)) {
                         try {
@@ -587,11 +598,10 @@ public class MainActivity extends AppCompatActivity {
                             modelNotification.setmHour(answer.getString("answered_at"));
                             modelNotification.setEstimeted_time(answer.getString("estimated"));
                             try {
-                                JSONArray extesions = new JSONArray(answer.getString("extesions"));
+                                JSONArray extesions = new JSONArray(c.getString("extesions"));
                                 JSONObject extesions1 = extesions.getJSONObject(0);
                                 modelNotification.setExtended(true);
-                                modelNotification.setEstimeted_time(extesions1.getString("extension_time"));
-                                modelNotification.setExtension_time(extesions1.getString("extended_at"));
+                                modelNotification.setExtension_time(extesions1.getString("extension_time"));
                             } catch (Exception e) {
                                 modelNotification.setExtended(false);
                                 e.printStackTrace();
@@ -609,6 +619,7 @@ public class MainActivity extends AppCompatActivity {
                             timerSender.putString("image", modelNotification.getPicture());
                             timerSender.putString("answered_at", answered_at);
                             timerSender.putString("extension_time", modelNotification.getExtension_time());
+                            Log.w("meniuu","extensiontimein mainact:"+modelNotification.getExtension_time());
                             fragment.setArguments(timerSender);
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
@@ -642,6 +653,13 @@ public class MainActivity extends AppCompatActivity {
             Log.w("meniuu", "error: errorlistener:" + error);
         }
     };
+
+    @Override
+    protected void onResume() {
+        active=true;
+        super.onResume();
+    }
+
     public void removeYourFragment(Fragment yourFragment){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (yourFragment != null) {
@@ -790,6 +808,40 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
+    public void ReviewFalse(final String mHour, final String mPlates, final String answered_at ) {
+        String url = Constants.URL + "notifications/sendReview/" + notification_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        Log.w("meniuu", "response:review" + response);
+                        Fragment fragment = new SumarFragment();
+                        Bundle harta = new Bundle();
+                        harta.putString("mHour", mHour);
+                        harta.putString("mPlates", mPlates);
+                        harta.putString("answered_at", answered_at);
+                        harta.putString("feedback", "Nu poate veni la masina");
+                        fragment.setArguments(harta);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("feedback", false + "");
+                return params;
+            }
+
             public java.util.Map<String, String> getHeaders() throws AuthFailureError {
                 String auth_token_string = prefs.getString("token", "");
                 java.util.Map<String, String> params = new HashMap<String, String>();

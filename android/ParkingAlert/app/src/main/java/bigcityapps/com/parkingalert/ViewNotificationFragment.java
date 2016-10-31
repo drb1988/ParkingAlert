@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -70,9 +71,29 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
         }else
         Toast.makeText(ctx,"NU s-au putut lua datele",Toast.LENGTH_LONG).show();
         locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(rootView.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(rootView.getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return rootView;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+                    builder.setTitle("Acces locatie");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setMessage("Te rog confirma accesul la locatie");//TODO put real question
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        public void onDismiss(DialogInterface dialog) {
+                            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                        }
+                    });
+                    builder.show();
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
+            } else {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, 0, locationListenerNetwork);
+            }
         }
+        else
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, 0, locationListenerNetwork);
         return rootView;
     }
@@ -103,7 +124,7 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
 //                break;
             case R.id.zece:
                 setClick(false);
-                getNotification(prefs.getString("user_id",null), "3");
+                getNotification(prefs.getString("user_id",null), "1");
 //                postAnswer("3");
                 break;
             case R.id.cinci:
@@ -223,5 +244,23 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
             }
         };
         queue.add(stringRequest);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, 0, locationListenerNetwork);
+                    // permission was granted, yay! do the
+                    // calendar task you need to do.
+
+                } else {
+                }
+                return;
+            }
+
+            // other 'switch' lines to check for other
+            // permissions this app might request
+        }
     }
 }

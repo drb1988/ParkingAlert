@@ -34,6 +34,7 @@ public class SplashScreen extends Activity {
                 nr_car =  x.getString("car_id");
                 notification_id =  x.getString("notification_id");
                 estimated_time =  x.getString("estimated_time");
+                Log.w("meniuu","estimated_time in splash screen:"+estimated_time);
                 answered_at =  x.getString("answered_at");
                 mPlates =  x.getString("mPlates");
                 feedback = x.getBoolean("feedback");

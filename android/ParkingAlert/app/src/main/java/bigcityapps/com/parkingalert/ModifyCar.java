@@ -1,41 +1,28 @@
 package bigcityapps.com.parkingalert;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -228,98 +215,98 @@ public class ModifyCar extends Activity implements View.OnClickListener{
             case R.id.gata_adauga_masina:
                 UpdateCar(prefs.getString("user_id",""));
                 break;
-            case R.id.poza_masina:
-                final Dialog dialog = new Dialog(ctx);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                dialog.setContentView(bigcityapps.com.parkingalert.R.layout.dialog_user_profile);
-
-                TextView take_photo = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.take_photo);
-                TextView biblioteca = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.biblioteca);
-                take_photo.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View view) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
-                                    builder.setPositiveButton(android.R.string.ok, null);
-                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
-                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                        @TargetApi(Build.VERSION_CODES.M)
-                                        public void onDismiss(DialogInterface dialog) {
-                                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                        }
-                                    });
-                                    builder.show();
-                                } else {
-                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                }
-                            }else{
-                                String fileName = "Camera_Example.jpg";
-                                ContentValues values = new ContentValues();
-                                values.put(MediaStore.Images.Media.TITLE, fileName);
-                                values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
-                                imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                                dialog.dismiss();
-                            }
-                        }
-                        else{
-                            String fileName = "Camera_Example.jpg";
-                            ContentValues values = new ContentValues();
-                            values.put(MediaStore.Images.Media.TITLE, fileName);
-                            values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
-                            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                biblioteca.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View view) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
-                                    builder.setPositiveButton(android.R.string.ok, null);
-                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
-                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                        @TargetApi(Build.VERSION_CODES.M)
-                                        public void onDismiss(DialogInterface dialog) {requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                        }
-                                    });
-                                    builder.show();
-                                } else {
-                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                }
-                            }else{
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType("image/*");
-                                startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
-                                dialog.dismiss();
-                            }
-                        }else {
-                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                            intent.setType("image/*");
-                            startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                TextView dialogButton = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.anuler);
-                dialogButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-                break;
+//            case R.id.poza_masina:
+//                final Dialog dialog = new Dialog(ctx);
+//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//                dialog.setContentView(bigcityapps.com.parkingalert.R.layout.dialog_user_profile);
+//
+//                TextView take_photo = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.take_photo);
+//                TextView biblioteca = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.biblioteca);
+//                take_photo.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View view) {
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+//                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
+//                                    builder.setPositiveButton(android.R.string.ok, null);
+//                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
+//                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                                        @TargetApi(Build.VERSION_CODES.M)
+//                                        public void onDismiss(DialogInterface dialog) {
+//                                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                        }
+//                                    });
+//                                    builder.show();
+//                                } else {
+//                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                }
+//                            }else{
+//                                String fileName = "Camera_Example.jpg";
+//                                ContentValues values = new ContentValues();
+//                                values.put(MediaStore.Images.Media.TITLE, fileName);
+//                                values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+//                                imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//                                dialog.dismiss();
+//                            }
+//                        }
+//                        else{
+//                            String fileName = "Camera_Example.jpg";
+//                            ContentValues values = new ContentValues();
+//                            values.put(MediaStore.Images.Media.TITLE, fileName);
+//                            values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+//                            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//                            dialog.dismiss();
+//                        }
+//                    }
+//                });
+//                biblioteca.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View view) {
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+//                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
+//                                    builder.setPositiveButton(android.R.string.ok, null);
+//                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
+//                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                                        @TargetApi(Build.VERSION_CODES.M)
+//                                        public void onDismiss(DialogInterface dialog) {requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                        }
+//                                    });
+//                                    builder.show();
+//                                } else {
+//                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                }
+//                            }else{
+//                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                                intent.setType("image/*");
+//                                startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
+//                                dialog.dismiss();
+//                            }
+//                        }else {
+//                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                            intent.setType("image/*");
+//                            startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
+//                            dialog.dismiss();
+//                        }
+//                    }
+//                });
+//                TextView dialogButton = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.anuler);
+//                dialogButton.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View v) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                dialog.show();
+//                break;
         }
     }
 
@@ -530,5 +517,41 @@ public class ModifyCar extends Activity implements View.OnClickListener{
         }
         return directory.getAbsolutePath();
     }
-
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+//        switch (requestCode) {
+//            case 1: {
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    String fileName = "Camera_Example.jpg";
+//                    ContentValues values = new ContentValues();
+//                    values.put(MediaStore.Images.Media.TITLE, fileName);
+//                    values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+//                    imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//                    // permission was granted, yay! do the
+//                    // calendar task you need to do.
+//
+//                } else {
+//                    final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ctx);
+//                    builder.setTitle("Permisiune");
+//                    builder.setMessage("Ca sa poti folosi aplicatia trebuie sa dai permisiunea la accesul locatiei. Multumesc");
+//                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    android.support.v7.app.AlertDialog alert1 = builder.create();
+//                    alert1.show();
+//                    // permission denied, boo! Disable the
+//                    // functionality that depends on this permission.
+//                }
+//                return;
+//            }
+//
+//            // other 'switch' lines to check for other
+//            // permissions this app might request
+//        }
+//    }
 }
