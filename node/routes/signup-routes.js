@@ -245,11 +245,11 @@ router.get('/login/:email&:password', function(req, res, next) {
           res.status(200).send(response)
       }
       else 
-          res.status(200).send({"error": "Invalid password"})
+          res.status(202).send({"error": "Invalid password"})
       callback();
         }
       else {
-          res.status(200).send({"error": "Invalid email"})
+          res.status(201).send({"error": "Invalid email"})
       }
       });            
     }
