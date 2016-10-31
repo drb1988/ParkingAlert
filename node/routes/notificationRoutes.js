@@ -32,16 +32,20 @@ var toLocalTime = function(time) {
   return n;
 };
 
-var sendNotification = function(token, notification, car, type, time, lat, longit, time, review){
+var sendNotification = function(token, notification, car, type, time, lat, longit, ontime, review){
         var serverKey = 'AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4';
         var fcm = new FCM("AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4");
+        if(review)  {
+          console.log("time ", time);
+        }
         if (time && review){
+          console.log("aici ar trebui sa intre la review")
           var message = {
           to: token, 
           data: {
             notification_id: notification,
             car_id: car,
-            is_ontime: time,
+            is_ontime: ontime,
             feedback: review,
             notification_type: type,
             answered_at: new Date,
