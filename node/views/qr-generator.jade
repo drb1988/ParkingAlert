@@ -3,17 +3,40 @@ block content
 	script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
 	script(src='http://davidshimjs.github.io/qrcodejs/qrcode.min.js')
 	sceipt(src='http://requirejs.org/docs/release/2.1.8/minified/require.js')
-	button.btn.btn-info#QR Genereaza!
-	button.btn.btn-danger#printQR Printeaza!
+	.row
+		.col-lg-12
+			h1.page-header QR code generator
+	.row
+		.col-lg-12
+			.panel.panel-default
+				.panel-heading Print QR
+
+				.panel-body
+					.row
+							if (message && message.length > 0)
+								div.alert(class='#{message_type}') #{message}
+							.col-lg-6
+								.form-group
+									label Number of QR code:
+									input.form-control#NumberOfQrCode(type='number' name='pices' placeholder='Number of QR code')
+					.row
+						.col-lg-6
+							button.btn.btn-info#QR(type='submit') Generate!
+							button.btn.btn-danger#printQR Print!
+							// /.col-lg-6
+
+
+	//button.btn.btn-info#QR Genereaza!
+	//button.btn.btn-danger#printQR Printeaza!
 	#QRCodeResult
-	#qrcode(style="margin-top:20px")
+	selection#qrcode(style="margin-top:20px")
 	script.
-		var qrcode = new QRCode("qrcode");
+
 		var wasPrinted = false;
 		$("#printQR").click(function(){
 			if(!wasPrinted) {
 				wasPrinted = true;
-				printcontent($("#qrcode").html());
+				printcontent($("#QRCodeResult").html());
 				console.log("was not printed")
 			} else {
 				alert("Acest cod a fost printat o data, genereaza altul!");
@@ -22,17 +45,29 @@ block content
 
 		$("#QR").click(function(){
 		console.log('clicked');
+			var json = {
+				count: $("#NumberOfQrCode").val()
+			};
+			console.log("json result qrrrr : ",json);
 		$.ajax({
 		async: true,
 		type: "POST",
-		data: [],
+		data: json,
 		url: "/web-routes/generateQrCode", 
 		success: function(result) {
 		console.log("merge users result in ajax");
 		console.log(result);
 		if(result){
+			console.log("result qr: ",result);
+			for(i=1;i<result.length;i++) {
+				$('#QRCodeResult').prepend('<div id="row"><div class="col-md-12" id="qrcode'+i+'"><br><br></div></div>');
+				var qrcode = new QRCode("qrcode"+i);
+				qrcode.makeCode(result[i]);
+			}
+			console.log("result: ", result);
 			console.log("qrcode.makeCode(result.QRCode)");
-			$("#QRCodeResult").html(qrcode.makeCode(result.QRCode));
+
+			//$("#QRCodeResult").html(htmlCodes);
 			wasPrinted = false;
 		}
 		},

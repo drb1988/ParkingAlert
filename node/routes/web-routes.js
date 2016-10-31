@@ -69,15 +69,25 @@ module.exports = function(passport){
   });
 
 
-  adminRouter.get('/dashboard', isAuthenticated, function(req, res, next) {
-    res.render('newpage', { 
-      title: 'Express',
-      user: {
-        name: req.user.first_name + " " + req.user.last_name,
-        email: req.user.email
-      }
+    adminRouter.get('/dashboard', isAuthenticated, function(req, res, next) {
+        res.render('newpage', {
+            title: 'Express',
+            user: {
+                name: req.user.first_name + " " + req.user.last_name,
+                email: req.user.email
+            }
+        });
     });
-  });
+
+    adminRouter.get('/add/admin', isAuthenticated, function(req, res, next) {
+        res.render('user', {
+            title: 'Friendly | Add admin',
+            user: {
+                name: req.user.first_name+" "+req.user.last_name,
+                email: req.user.email
+            }
+        });
+    });
 
   adminRouter.get('/users-cars', isAuthenticated, function(req, res, next) {
     res.render('users-cars', { 
@@ -478,14 +488,8 @@ exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callbac
                         db.close();
                     });
                 });
-             //   console.log("result: ",result);
-               res.status(200).send(result)
-               console.log("result: ",result);
-                // res.status(200).send(result)
             }
-
          });
-
       };
 
 
@@ -691,7 +695,7 @@ exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callbac
   // });
 
 
-  adminRouter.post('/addUser', function(req, res, next) {
+  adminRouter.post('/addUser', isAuthenticated, function(req, res, next) {
       /**
       * Route to get users by ID,
       * @name /users/:userId
@@ -725,14 +729,14 @@ exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callbac
     var result = {
       "userID": userID
     }
-        res.status(200).send(result)
+        res.status(200).send("The admin user was inserted")
     });
   });
   });
 
   var generateCode = function (user, count)
      { 
-      var results = {};
+      var results = [];
       for(var i=0; i<count; i++)
       {
         var secret = "Friendly2016";
@@ -746,7 +750,7 @@ exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callbac
           var result = jwt.encode( secret, payload);
           results.push(result.value);
       }
-      res.status(200).send(results);
+      return(results);
      }
 
   adminRouter.post('/generateQrCode', isAuthenticated, function(req, res, next) {
@@ -754,10 +758,9 @@ exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callbac
     qr.addData(req.user._id);
     qr.make();
     var qr_code = qr.createImgTag(4);
-    console.log("qr_code:",qr_code);
-    res.status(200).send({
-      "QRCode": generateCode(req.user._id, req.body.count)
-    })
+    console.log("body qr:",req.body);
+      console.log(generateCode(req.user._id, parseInt(req.body.count)));
+    res.status(200).send(generateCode(req.user._id, parseInt(req.body.count)))
   });
 
   adminRouter.get('/qr', isAuthenticated, function(req, res, next) {
