@@ -31,7 +31,7 @@ block content
                 .modal-footer
                   button.btn.btn-default(type='button', data-dismiss='modal') Close 
         // ./col
-        .col-lg-3.col-xs-6.hidden
+        .col-lg-3.col-xs-6
           // small box
           .small-box.bg-green(data-toggle='modal', data-target='#ChartModal')
             .inner
@@ -51,7 +51,7 @@ block content
                   button.close(type='button', data-dismiss='modal') ×
                   h4.modal-title Friendly
                 .modal-body
-                  iframe(src="/web-routes/heatmaps_ajax" style='width:100%;height:100%' frameBorder="0")
+                  iframe(src="/web-routes/stats" style='width:100%;height:100%' frameBorder="0")
                     p Your browser does not support iframes./p
                   // include heatmap_ajax
                 .modal-footer
