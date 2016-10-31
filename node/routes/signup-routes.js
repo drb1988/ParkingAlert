@@ -230,7 +230,6 @@ router.get('/login/:email&:password', function(req, res, next) {
       db.collection('parking').findOne({"email": req.params.email},
         function(err, result) {
               assert.equal(err, null);
-              console.log("Found email "+result._id);
               var payload = {
               "user_id"   : result._id,
               "email"     : result.email

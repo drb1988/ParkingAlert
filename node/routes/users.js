@@ -1,3 +1,4 @@
+
 var express = require('express');
 var router = express.Router();
 var dbConfig = require('../db');
@@ -9,6 +10,9 @@ var jwt = require('json-web-token');
 var Chance = require('chance');
 var chance = new Chance();
 var multer = require('multer');
+var nodemailer = require('nodemailer');
+var QRCode = require('qrcode-npm');
+var qr = require('qr-image');
 
 var storage =   multer.diskStorage({
   destination: function (req, file, callback) {
@@ -20,6 +24,36 @@ var storage =   multer.diskStorage({
     callback(null, file.fieldname + '-' + Date.now()+ file_extension);
   }
 });
+
+var sendMail = function(email, QRString){
+	var qr_svg = qr.image(QRString, { type: 'svg' });
+	qr_svg.pipe(require('fs').createWriteStream('uploads/'+email+'carQR.svg'));
+ 	var svg_string = qr.imageSync(QRString, { type: 'svg' });
+	var transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+              user: 'mugurel.mitrut@gmail.com', // Your email id
+              pass: 'banana1!' // Your password
+            }
+          });
+  	var mailOptions = {
+            from: '"Parking Alert" <mugurel.mitrut@gmail.com>', // sender address
+            to: email,// list of receivers
+            subject: 'Notification', // Subject line
+            attachments: [  
+		        {   
+		            filename: email+'carQR.svg',    
+		            path: 'http://82.76.188.13:3000/'+email+'carQR.svg'   
+		          //  cid: cid    
+		        }   
+	        ]   
+          };
+  	transporter.sendMail(mailOptions, function(error, info){if(error){
+              return console.log(error);  
+            } else {
+              return console.log(info);  
+            }});   
+}
 
 var decodeJwt = function (token) {
 	var secret = "Friendly2016";
@@ -161,7 +195,6 @@ router.get('/getNotifications/:userID', function(req, res, next) {
 		    cursor.each(function(err, doc) {
 		      assert.equal(err, null);
 		      if (doc != null) {
-		         console.log("doc "+doc);
 		         result.push(doc);
 		      } else {
 		         callback();
@@ -538,11 +571,28 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 });
 
 router.get('/generateCarCode/:userID', function(req, res, next) {
-	var testCode = generateCode(req.params.userID);
-	console.log("test decodare");
-	console.log(decodeJwt(testCode));
+	var carCode = generateCode(req.params.userID);
+	var findUser = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	    db.collection('parking').findOne({"_id": o_id},
+	    	function(err, result) {
+					    assert.equal(err, null);
+					    console.log("Found user "+req.params.userID);
+					    callback(result);
+				});            
+		}
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findUser(db, function(user) {
+			  	console.log(user.email);
+			  	if (user.email){
+			  		sendMail(user.email, carCode);
+			  	}
+			      db.close();
+			  });
+			});
 	res.status(200).send({
-		"carCode":  generateCode(req.params.userID) 
+		"carCode": carCode 
 	})
 });
 

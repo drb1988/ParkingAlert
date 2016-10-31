@@ -139,6 +139,76 @@ module.exports = function(passport){
   // message_type: null });
 });
 
+  adminRouter.post('/map/', function(req, res) {
+    var type = req.body.type;
+    var lat = req.body.lat;
+    var lon = req.body.lon;
+    var rad = req.body.rad;
+    var poly = req.body.polygonPoints;
+ 
+    requests.saveCoordinates(type, lat, lon, rad, poly, function(callback) {
+        res.send(callback);
+    });
+  });
+
+  var notifications;
+var admins;
+var users;
+ 
+MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, database) {
+    if(err) throw err;
+    db = database;
+    admins = db.collection('parkingAdmins');
+    users = db.collection('parking');
+    notifications = db.collection('notifications');
+ 
+    admins.find({}).toArray(function (err, items) {
+     if(items){
+         console.log('admins', items);
+     }
+    });
+ 
+    users.find({}).toArray(function (err, items) {
+        if(items){
+            console.log('users', items);
+        }
+    });
+});
+ 
+ 
+ 
+exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
+ 
+    var zone;
+ 
+    switch (gtype) {
+        case 'circle':
+             zone = {
+                    'center': new Object({
+                        'lat': lat,
+                        'lng': lon,
+                        'radius': rad
+                    }),
+                 type: gtype
+            };
+            break;
+        case 'polygon':
+             zone = {
+                    'center': polygonPoints,
+                 type: gtype
+            };
+            break;
+    }
+    console.log('zone', zone);
+    admins.update({'_id': new ObjectId('57fceaa64521512290f2b37b')},
+        {$push: {
+           zone: zone
+           }
+        }
+    );
+    callback({'ok': 200});
+};
+
   adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
@@ -217,7 +287,7 @@ module.exports = function(passport){
       }
     console.log("body request", req.body);
     if(req.user) {
-      console.log("req.user",req.user);
+   //   console.log("req.user",req.user);
     }
     var findNotifications = function(db, callback) {   
       var o_id = new ObjectId(req.params.userID);
@@ -233,6 +303,7 @@ module.exports = function(passport){
                     }
                 }
               },
+              { "$sort": { create_date: 1 } },
               { "$project": {
                 "y":{"$year":"$create_date"},
                 "m":{"$month":"$create_date"},
@@ -281,59 +352,46 @@ module.exports = function(passport){
               }
             } else {
                 callback();
-                var filteredResult = {}
+                var filteredResult = {
+                  positive_feedback: [],
+                  negative_feedback: [],
+                  no_feedback: []
+                }
               for (var i in result){
-                var objName = result[i].year+"-"+result[i].month+"-"+result[i].day+"_"+result[i].hour;
-                if(!filteredResult[objName])
+                console.log("result "+i,result[i])
+                // var objName = result[i].year+"-"+result[i].month+"-"+result[i].day+"_"+result[i].hour;
+                var objName = Date.UTC(result[i].year, result[i].month, result[i].day, result[i].hour)
+                if(result[i].feedback == true || result[i].feedback == 'true')
                 {
-                  var obj = {
-                    "positive_feedback": 0,
-                    "negative_feedback": 0,
-                    "no_feedback": 0,
-                    "answered": 0,
-                    "unanswered": 0
-                  };
-                  if(result[i].is_ontime != false && result[i].is_ontime != null){
-                    obj.unanswered = 1;
+                  if(filteredResult.positive_feedback.length>0 && filteredResult.positive_feedback[filteredResult.positive_feedback.length-1][0]==objName )
+                        {
+                          filteredResult.positive_feedback[filteredResult.positive_feedback.length-1][1] = filteredResult.positive_feedback[filteredResult.positive_feedback.length-1][1] + 1;
+                        }
+                  else{
+                    filteredResult.positive_feedback.push([objName,1])
                   }
-                  else {
-                    obj.answered = 1;
-                  }  
-                  if(result[i].feedback == true)
-                  {
-                    obj.positive_feedback=1;
-                  }
-                  else {
-                    if(result[i].feedback == false)
-                    {
-                      obj.negative_feedback=1;
-                    }
-                    else {
-                      obj.no_feedback=1;
-                    }
-                  }
-                  filteredResult[objName] = obj;
                 }
                 else {
-                  if(result[i].is_ontime != false && result[i].is_ontime != null){
-                    filteredResult[objName].unanswered = filteredResult[objName].unanswered + 1;
-                  }
-                  else {
-                    filteredResult[objName].answered = filteredResult[objName].answered + 1;
-                  } 
-                if(result[i].feedback == true)
-                  {
-                    filteredResult[objName].positive_feedback=filteredResult[objName].positive_feedback + 1;
-                  }
-                  else {
-                    if(result[i].feedback == false)
+                  if(result[i].feedback == false || result[i].feedback == 'false')
                     {
-                      filteredResult[objName].negative_feedback=filteredResult[objName].negative_feedback + 1;
+                      if(filteredResult.negative_feedback.length>0 && filteredResult.negative_feedback[filteredResult.negative_feedback.length-1][0]==objName )
+                        {
+                          filteredResult.negative_feedback[filteredResult.negative_feedback.length-1][1] = filteredResult.negative_feedback[filteredResult.negative_feedback.length-1][1] + 1;
+                        }
+                      else{
+                        filteredResult.negative_feedback.push([objName,1]) 
+                      }
                     }
-                    else {
-                      filteredResult[objName].no_feedback=filteredResult[objName].no_feedback + 1;
+                  else 
+                    {
+                      if(filteredResult.no_feedback.length>0 && filteredResult.no_feedback[filteredResult.no_feedback.length-1][0]==objName )
+                      {
+                        filteredResult.no_feedback[filteredResult.no_feedback.length-1][1] = filteredResult.no_feedback[filteredResult.no_feedback.length-1][1] + 1;
+                      }
+                      else {
+                        filteredResult.no_feedback.push([objName,1])
+                      }
                     }
-                  }   
                 }
               }
               console.log("filtrat ",filteredResult)
@@ -395,7 +453,6 @@ module.exports = function(passport){
             } else {
                 callback();
                 var uniqueUserIds = unique(user_ids);
-                console.log("user_ids: ",unique(user_ids));
                 var findUsers = function(db, callback) {
                     var result = [];
                     var cursor = db.collection('parking').find({"_id": { $in: uniqueUserIds}});
@@ -405,9 +462,7 @@ module.exports = function(passport){
                             result.push(doc);
                         } else {
                             callback();
-                            //res.status(200).send(result);
-                            console.log("result user in finduser", result);
-                            res.status(200).send(result)
+                      //      console.log("result user in finduser", result);
                         }
                     });
                 };
@@ -446,8 +501,6 @@ module.exports = function(passport){
   		    cursor.each(function(err, doc) {
   		      assert.equal(err, null);
   		      if (doc != null) {
-  		         console.log(doc.location.coordinates[0]);
-  		         console.log(doc.create_date);
   		         result.push({"latitude": doc.location.coordinates[0],
   		         		"longitude": doc.location.coordinates[1],
   		         		"create_date": doc.create_date});
@@ -479,8 +532,6 @@ module.exports = function(passport){
           cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
-               console.log(doc.location.coordinates[0]);
-               console.log(doc.create_date);
                result.push({"latitude": doc.location.coordinates[0],
                   "longitude": doc.location.coordinates[1],
                   "create_date": doc.create_date});
@@ -547,7 +598,6 @@ module.exports = function(passport){
                },
   	    	function(err, result) {
   					    assert.equal(err, null);
-  					    console.log("Found user "+req.params.userID);
   					    res.status(200).send(result)
   					    callback();
   				});            
@@ -575,7 +625,6 @@ module.exports = function(passport){
                },
   	    	function(err, result) {
   					    assert.equal(err, null);
-  					    console.log("Found user "+req.params.userID);
   					    res.status(200).send(result)
   					    callback();
   				});            
@@ -643,7 +692,6 @@ module.exports = function(passport){
      }, function(err, result) {
       assert.equal(err, null);
       userID = result.insertedId;
-      console.log("Inserted a user in the admins collection. "+result.insertedId);
       callback();
     });
   };
