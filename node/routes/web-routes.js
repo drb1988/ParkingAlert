@@ -129,7 +129,7 @@ module.exports = function(passport){
   // message_type: null });
 });
 
-  adminRouter.post('/MapAjaxCallback2', isAuthenticated, function(req, res, next) {
+  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
       * @MapAjaxCallback /
@@ -193,7 +193,7 @@ module.exports = function(passport){
       });
   });
 
-  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
+  adminRouter.post('/StatisticsAjaxCallback', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
       * @MapAjaxCallback /
@@ -223,6 +223,7 @@ module.exports = function(passport){
                     }
                 }
               },
+              { "$sort": { create_date: 1 } },
               { "$project": {
                 "y":{"$year":"$create_date"},
                 "m":{"$month":"$create_date"},
@@ -278,19 +279,38 @@ module.exports = function(passport){
                 }
               for (var i in result){
                 console.log("result "+i,result[i])
-                var objName = result[i].year+"-"+result[i].month+"-"+result[i].day+"_"+result[i].hour;
-                if(result[i].feedback == true)
+                // var objName = result[i].year+"-"+result[i].month+"-"+result[i].day+"_"+result[i].hour;
+                var objName = Date.UTC(result[i].year, result[i].month, result[i].day, result[i].hour)
+                if(result[i].feedback == true || result[i].feedback == 'true')
                 {
-                  filteredResult.positive_feedback.push(objName)
+                  if(filteredResult.positive_feedback.length>0 && filteredResult.positive_feedback[filteredResult.positive_feedback.length-1][0]==objName )
+                        {
+                          filteredResult.positive_feedback[filteredResult.positive_feedback.length-1][1] = filteredResult.positive_feedback[filteredResult.positive_feedback.length-1][1] + 1;
+                        }
+                  else{
+                    filteredResult.positive_feedback.push([objName,1])
+                  }
                 }
                 else {
-                  if(result[i].feedback == false)
+                  if(result[i].feedback == false || result[i].feedback == 'false')
                     {
-                      filteredResult.positive_feedback.push(objName)
+                      if(filteredResult.negative_feedback.length>0 && filteredResult.negative_feedback[filteredResult.negative_feedback.length-1][0]==objName )
+                        {
+                          filteredResult.negative_feedback[filteredResult.negative_feedback.length-1][1] = filteredResult.negative_feedback[filteredResult.negative_feedback.length-1][1] + 1;
+                        }
+                      else{
+                        filteredResult.negative_feedback.push([objName,1]) 
+                      }
                     }
                   else 
                     {
-                      filteredResult.no_feedback.push(objName)
+                      if(filteredResult.no_feedback.length>0 && filteredResult.no_feedback[filteredResult.no_feedback.length-1][0]==objName )
+                      {
+                        filteredResult.no_feedback[filteredResult.no_feedback.length-1][1] = filteredResult.no_feedback[filteredResult.no_feedback.length-1][1] + 1;
+                      }
+                      else {
+                        filteredResult.no_feedback.push([objName,1])
+                      }
                     }
                 }
               }
