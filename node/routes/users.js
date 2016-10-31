@@ -27,7 +27,7 @@ var storage =   multer.diskStorage({
 
 var sendMail = function(email, QRString){
 	var qr_svg = qr.image(QRString, { type: 'svg' });
-	qr_svg.pipe(require('fs').createWriteStream('carQR.svg'));
+	qr_svg.pipe(require('fs').createWriteStream('uploads/'+email+'carQR.svg'));
  	var svg_string = qr.imageSync(QRString, { type: 'svg' });
 	var transporter = nodemailer.createTransport({
           service: 'Gmail',
@@ -40,11 +40,10 @@ var sendMail = function(email, QRString){
             from: '"Parking Alert" <mugurel.mitrut@gmail.com>', // sender address
             to: email,// list of receivers
             subject: 'Notification', // Subject line
-            html: '<h>Generated QR Code</h>',
             attachments: [  
 		        {   
-		            filename: "carQR.svg",    
-		            contents: new Buffer(svg_string, 'base64')   
+		            filename: email+'carQR.svg',    
+		            path: 'http://82.76.188.13:3000/'+email+'carQR.svg'   
 		          //  cid: cid    
 		        }   
 	        ]   
