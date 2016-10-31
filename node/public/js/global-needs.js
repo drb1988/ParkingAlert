@@ -118,58 +118,5 @@ function makeAjaxCall() {
         }   
       });
     }
-  $('#SaveFigure').click(function(){
-    console.log("save figure ");
-    if(!polygon && !circle && !rectangle)
-      alert("You need to draw a shape to save!");
-    else {
-      var json = {
-        type: null,
-        lat: null,
-        lon: null,
-        rad: null,
-        polygonPoints: []
-      };
-      if(polygon) {
-        json.type = 'polygon';
-        var vertices = polygon.getPath();
-        for (var i =0; i < vertices.getLength(); i++) {
-          var xy = vertices.getAt(i);
-          json.polygonPoints.push([xy.lat(), xy.lng()]);
-        }
-      }
-
-      if(rectangle) {
-        json.type = 'polygon';
-        json.polygon = [];
-        var vertices = rectangle.getBounds();
-        json.polygonPoints.push([vertices.getSouthWest().lat(), vertices.getNorthEast().lng()]);
-        json.polygonPoints.push([vertices.getNorthEast().lat(), vertices.getNorthEast().lng()]);
-        json.polygonPoints.push([vertices.getNorthEast().lat(), vertices.getSouthWest().lng()]);
-        json.polygonPoints.push([vertices.getSouthWest().lat(), vertices.getSouthWest().lng()]);
-      }
-      if(circle) {
-        json.type = 'circle';
-        json.lat = circle.getCenter().lat();
-        json.log = circle.getCenter().lng();
-        json.rad = circle.getRadius()/63781;
-      }
-
-      $.ajax({
-        async: true,
-        type: "POST",
-        url: "/web-routes/SaveShape",
-        data: json,
-        success: function (result) {
-          alert("The shape was set.");
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-          // alert("Status: " + textStatus);
-          // alert("Error: " + errorThrown);
-          alert("Something wrong happened. Please try again.");
-        }
-      });
-    }
-  })
 
 }

@@ -139,21 +139,21 @@ module.exports = function(passport){
   // message_type: null });
 });
 
-  adminRouter.post('/map/', function(req, res) {
+  adminRouter.post('/SaveShape/',isAuthenticated, function(req, res) {
     var type = req.body.type;
     var lat = req.body.lat;
     var lon = req.body.lon;
     var rad = req.body.rad;
     var poly = req.body.polygonPoints;
  
-    requests.saveCoordinates(type, lat, lon, rad, poly, function(callback) {
+    saveCoordinates(type, lat, lon, rad, poly, function(callback) {
         res.send(callback);
     });
   });
 
-  var notifications;
-var admins;
-var users;
+    var notifications;
+    var admins;
+    var users;
  
 MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, database) {
     if(err) throw err;
@@ -177,10 +177,8 @@ MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, databas
  
  
  
-exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
- 
+var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
     var zone;
- 
     switch (gtype) {
         case 'circle':
              zone = {
