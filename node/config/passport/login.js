@@ -28,8 +28,10 @@ module.exports = function(passport){
                 var response = {
                     "userID": result._id
                 }
-                if(result.password == hash)
+                if(result.password == hash){
+                    console.log("payload",payload);
                     return done(null, payload)
+                }
                 else
                     return done(null, false)
                 callback();
