@@ -229,6 +229,7 @@ router.get('/login/:email&:password', function(req, res, next) {
       var findUser = function(db, callback) {
       db.collection('parking').findOne({"email": req.params.email},
         function(err, result) {
+          if(result){
               assert.equal(err, null);
               var payload = {
               "user_id"   : result._id,
@@ -244,9 +245,13 @@ router.get('/login/:email&:password', function(req, res, next) {
           res.status(200).send(response)
       }
       else 
-          res.status(200).send({"error": "Invalid email or password"})
+          res.status(202).send({"error": "Invalid password"})
       callback();
-        });            
+        }
+      else {
+          res.status(201).send({"error": "Invalid email"})
+      }
+      });            
     }
     MongoClient.connect(dbConfig.url, function(err, db) {
         assert.equal(null, err);
