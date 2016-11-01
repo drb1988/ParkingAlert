@@ -11,7 +11,7 @@ $("input#ajaxDate").change(function(){
 function makeAjaxCall() {
 	var selectedDate = $("input[name=daterange]").val() ? $("input[name=daterange]").val() : false;
     console.log("selected date: "+selectedDate);
-    if(selectedDate && selectedDate!="2016-01-01 01:00:00 - 2016-12-30 24:00:00") {
+
       var date = selectedDate.split(" - ");
       var startDateTime = date[0],
           endDateTime = date[1];
@@ -138,7 +138,7 @@ function makeAjaxCall() {
           alert(errMsg);
         }
       });
-    }
+
 
 
 
