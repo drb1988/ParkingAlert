@@ -50,7 +50,9 @@ function initMap() {
 				lng: position.coords.longitude
 			};
 			var infoWindow = new google.maps.InfoWindow();
-			infoWindow.setPosition(pos); // infoWindow.setContent('Locatia ta.');
+			infoWindow.setPosition(pos);
+			console.log("you pos", pos);
+			infoWindow.setContent('Locatia ta.');
 			map.setCenter(pos);
 		}, function() {
 			handleLocationError(true, infoWindow, map.getCenter());

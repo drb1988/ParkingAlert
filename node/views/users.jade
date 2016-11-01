@@ -14,33 +14,91 @@ block content
                       th Banned
                   tbody
 
-
 block scripts
-  script(src='/js/datatables/jquery.dataTables.min.js' type="text/javascript")
-  script.
-    function ConfirmDialog(id, is_banned){
-    console.log("aici: "+is_banned);
-    if(is_banned)
-      var answer = confirm('Are you sure that you want to unban this user?');
-    else
-      var answer = confirm('Are you sure that you want to ban this user?');
-      if (answer)
-      {
-        console.log('yes');
-        if(is_banned)
-          document.location.href="/web-routes/users/unban/" + id;
-        else
-          document.location.href="/web-routes/users/ban/"+ id;
-      }
+    script(src='/js/datatables/jquery.dataTables.min.js' type="text/javascript")
+    script.
+      function ConfirmDialog(id, is_banned){
+      if(is_banned)
+        var answer = confirm('Are you sure that you want to unban this user?');
       else
-      {
-        console.log('cancel');
-      }
-    };
-  script.
-    $(document).ready(function() {
-    $('#dataTables-content').DataTable({
-    responsive: true
-    });
-    });
- 
+        var answer = confirm('Are you sure that you want to ban this user?');
+        if (answer)
+        {
+          if(is_banned)
+            document.location.href="/web-routes/users/unban/" + id;
+          else
+            document.location.href="/web-routes/users/ban/"+ id;
+        }
+      };
+    script(src = '/plugins/jQuery/jquery-2.2.3.min.js')
+    // jQuery UI 1.11.4
+    script(src = 'https://code.jquery.com/ui/1.11.4/jquery-ui.min.js')
+    // Resolve conflict in jQuery UI tooltip with Bootstrap tooltip
+    script.$.widget.bridge('uibutton', $.ui.button);
+    // Bootstrap 3.3.6
+    script(src = '/bootstrap/js/bootstrap.min.js')
+    // Morris.js charts
+    script(src = 'https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js')
+    script(src = '/plugins/morris/morris.min.js')
+    link(rel = 'stylesheet', href = '//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css')
+    // Sparkline
+    script(src = '/plugins/sparkline/jquery.sparkline.min.js')
+    // jvectormap
+    script(src = '/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js')
+    script(src = '/plugins/jvectormap/jquery-jvectormap-world-mill-en.js')
+    // jQuery Knob Chart
+    script(src = '/plugins/knob/jquery.knob.js')
+    // daterangepicker
+    script(src = 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js')
+    script(src = '/plugins/daterangepicker/daterangepicker.js')
+    // datepicker
+    script(src = '/plugins/datepicker/bootstrap-datepicker.js')
+    // Bootstrap WYSIHTML5
+    script(src = '/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js')
+    // Slimscroll
+    script(src = '/plugins/slimScroll/jquery.slimscroll.min.js')
+    // FastClick
+    script(src = '/plugins/fastclick/fastclick.js')
+    // AdminLTE App
+    script(src = '/dist/js/app.min.js')
+    // AdminLTE dashboard demo (This is only for demo purposes)
+    script(src = '/dist/js/pages/dashboard.js')
+    // AdminLTE for demo purposes
+    script(src = '/dist/js/demo.js')
+    script.
+      $(document).ready(function() {
+      $('#dataTables-content').DataTable({
+      responsive: true
+      });
+        json = [];
+        $.ajax({
+          async: true,
+          type: "POST",
+          url: "/web-routes/UsersAjaxCallback",
+          data: json,
+          success: function (result) {
+            $(function () {
+              var content = '';
+              for (var i = 0; i < result.length; i++) {
+                content += '<tr>';
+                content += '<td>' + result[i].first_name + ' ' + result[i].last_name + '</td>';
+                content += '<td>' + result[i].email + '</td>';
+                var displayCity = result[i].city ? result[i].city : ' ';
+                content += '<td>' + displayCity + '</td>';
+                var displayText = result[i].is_banned ? 'Unban' : 'Ban',
+                        displayType = result[i].is_banned ? 'btn-warning' : 'btn-danger';
+                content += '<td><a href="javascript: ConfirmDialog("' + result[i]._id + '", "' + result[i].is_banned + '")" class="btn btn-xs ' + displayType + '">' + displayText + '</a></td>';
+                content += '</tr>';
+
+                // <a href="javascript: ConfirmDialog("5808767737a04d27c0d4a7fc", "false")" class="btn btn-xs btn-danger"></a>
+              }
+              $('#dataTables-content tbody').html(content);
+            });
+
+          },
+          error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert("Status: " + textStatus);
+            alert("Error: " + errorThrown);
+          }
+        });
+      });

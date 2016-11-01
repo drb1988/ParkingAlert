@@ -118,5 +118,20 @@ function makeAjaxCall() {
         }   
       });
     }
+  $.ajax({
+    async: true,
+    type: "POST",
+    url: "/web-routes/StatisticsAjaxCallback",
+    data: json,
+    success: function(result) {
+      console.log("result stat", result);
+      chart.series[0].setData(result.positive_feedback);
+      chart.series[1].setData(result.negative_feedback);
+      chart.series[2].setData(result.no_feedback);
+    },
+    failure: function (errMsg) {
+      alert(errMsg);
+    }
+  });
 
 }
