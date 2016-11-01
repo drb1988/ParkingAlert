@@ -20,8 +20,7 @@ html
     link(rel='stylesheet', href='/dist/css/skins/_all-skins.min.css')
     // iCheck
     link(rel='stylesheet', href='/plugins/iCheck/flat/blue.css')
-    // Morris chart
-    link(rel='stylesheet', href='/plugins/morris/morris.css')
+
     // jvectormap
     link(rel='stylesheet', href='/plugins/jvectormap/jquery-jvectormap-1.2.2.css')
     // Date Picker
@@ -106,21 +105,21 @@ html
               // User Account: style can be found in dropdown.less
               li.dropdown.user.user-menu
                 a.dropdown-toggle(href='#', data-toggle='dropdown')
-                  img.user-image(src='/dist/img/user3-128x128.jpg', alt='User Image')
+                  img.user-image.hidden(src='/dist/img/user3-128x128.jpg', alt='User Image')
                   span.hidden-xs #{user.name}
                 ul.dropdown-menu
                   // User image
                   li.user-header
-                    img.img-circle(src='/dist/img/user3-128x128.jpg', alt='User Image')
+                    img.img-circle.hidden(src='/dist/img/user3-128x128.jpg', alt='User Image')
                     p
                       | #{user.name}
-                      small Esti logat cu #{user.email}.
+                      small You are logged in with #{user.email}.
                   // Menu Body
                   li.user-footer
                     .pull-left
-                      a.btn.btn-default.btn-flat(href='/web-routes/admin') Profil
+                      a.btn.btn-default.btn-flat(href='/web-routes/admin') Profile
                     .pull-right
-                      a.btn.btn-default.btn-flat(href='logout') Iesire
+                      a.btn.btn-default.btn-flat(href='logout') Log out
               // Control Sidebar Toggle Button
       // Left side column. contains the logo and sidebar
       aside.main-sidebar

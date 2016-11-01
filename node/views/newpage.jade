@@ -9,13 +9,13 @@ block content
           // small box
           .small-box.bg-aqua(data-toggle='modal', data-target='#MapModal')
             .inner
-              h3 Harta
-              p Harta pentru anumite regiune.
+              h3 Map
+              p Heatmap region.
             .icon
               // i.ion.ion-ios-location
               i.ion.ion-ios-navigate
             a.small-box-footer(href='#')
-              | Vezi Harta  
+              | See Map
               i.fa.fa-arrow-circle-right
           #MapModal.modal.fade(role='dialog' )
             .modal-dialog(style='max-width: 1200px; width: 90%;')
@@ -31,17 +31,17 @@ block content
                 .modal-footer
                   button.btn.btn-default(type='button', data-dismiss='modal') Close 
         // ./col
-        .col-lg-3.col-xs-6.hidden
+        .col-lg-3.col-xs-6
           // small box
           .small-box.bg-green(data-toggle='modal', data-target='#ChartModal')
             .inner
               h3
-                | Statistica
-              p Vizualizeaza si printeaza statistici.
+                | Statistics
+              p View and print statistics.
             .icon
               i.ion.ion-stats-bars
             a.small-box-footer(href='#')
-              | Vezi statistica 
+              | View statistics
               i.fa.fa-arrow-circle-right
           #ChartModal.modal.fade(role='dialog' )
             .modal-dialog(style='max-width: 1200px; width: 90%;')
@@ -51,7 +51,7 @@ block content
                   button.close(type='button', data-dismiss='modal') ×
                   h4.modal-title Friendly
                 .modal-body
-                  iframe(src="/web-routes/heatmaps_ajax" style='width:100%;height:100%' frameBorder="0")
+                  iframe(src="/web-routes/stats" style='width:100%;height:100%' frameBorder="0")
                     p Your browser does not support iframes./p
                   // include heatmap_ajax
                 .modal-footer
@@ -63,11 +63,11 @@ block content
             .container(style='color: #000000')
             .inner
               h3 Admin
-              p Adauga administratori.
+              p Add admin.
             .icon
               i.ion.ion-person-add
             a.small-box-footer(href='#')
-              | Editeaza administratori 
+              | Add admin
               i.fa.fa-arrow-circle-right
           #AdminModal.modal.fade(role='dialog' )
             .modal-dialog(style='max-width: 1200px; width: 90%;')
@@ -87,12 +87,12 @@ block content
           // small box
           .small-box.bg-red(data-toggle='modal', data-target='#UsersModal')
             .inner
-              h3 Utilizatori
-              p Utilizatorii aplicatiei Andoid si iOS.
+              h3 Users
+              p Android and iOS users of the application.
             .icon
               i.ion.ion-ios-people
             a.small-box-footer(href='#')
-              | Vezi utilizatori 
+              | View users
               i.fa.fa-arrow-circle-right
           #UsersModal.modal.fade(role='dialog' )
             .modal-dialog(style='max-width: 1200px; width: 90%;')
@@ -112,11 +112,11 @@ block content
           .small-box.bg-purple(data-toggle='modal', data-target='#QRGeneratorModal')
             .inner
               h3 QR Code
-              p Genereaza cod QR.
+              p Generate and print QR code.
             .icon
               i.ion.ion-qr-scanner
             a.small-box-footer(href='#')
-              | Vezi Generator 
+              | View generator
               i.fa.fa-arrow-circle-right
           #QRGeneratorModal.modal.fade(role='dialog' )
             .modal-dialog(style='max-width: 1200px; width: 90%;')
@@ -342,8 +342,8 @@ block scripts
     // Bootstrap 3.3.6
     script(src='/bootstrap/js/bootstrap.min.js')
     // Morris.js charts
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js')
     script(src='/plugins/morris/morris.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js')
     link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css')
     // Sparkline
     script(src='/plugins/sparkline/jquery.sparkline.min.js')

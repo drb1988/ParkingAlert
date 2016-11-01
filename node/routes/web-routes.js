@@ -155,21 +155,21 @@ module.exports = function(passport){
   // message_type: null });
 });
 
-  adminRouter.post('/map/', function(req, res) {
+  adminRouter.post('/SaveShape/',isAuthenticated, function(req, res) {
     var type = req.body.type;
     var lat = req.body.lat;
     var lon = req.body.lon;
     var rad = req.body.rad;
     var poly = req.body.polygonPoints;
  
-    requests.saveCoordinates(type, lat, lon, rad, poly, function(callback) {
+    saveCoordinates(type, lat, lon, rad, poly, function(callback) {
         res.send(callback);
     });
   });
 
-  var notifications;
-var admins;
-var users;
+    var notifications;
+    var admins;
+    var users;
  
 MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, database) {
     if(err) throw err;
@@ -193,10 +193,8 @@ MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, databas
  
  
  
-exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
- 
+var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
     var zone;
- 
     switch (gtype) {
         case 'circle':
              zone = {
@@ -929,6 +927,41 @@ adminRouter.post('/setPicture/:userID', function(req, res) {
     });
 });
 
+    adminRouter.get('/stats', isAuthenticated, function(req, res, next) {
+        /**
+         * Route to return the admin who is log in,
+         * @name /stats
+         */
+        var result = {
+            positive_feedback: [
+                [Date.UTC(2013,5,16,1), 1],
+                [Date.UTC(2013,5,17,3), 2],
+                [Date.UTC(2013,5,18.4), 3],
+                [Date.UTC(2013,5,19,1), 4]
+            ],
+            negative_feedback: [
+                [Date.UTC(2013,5,23,1), 2],
+                [Date.UTC(2013,5,24,1), 1],
+                [Date.UTC(2013,5,25,1), 5],
+                [Date.UTC(2013,5,26,1), 1],
+                [Date.UTC(2013,5,27,1), 2],
+                [Date.UTC(2013,5,28,1), 1]
+            ],
+            no_feedback: [
+                [Date.UTC(2013,5,28,1), 1],
+                [Date.UTC(2013,5,30,1), 3],
+                [Date.UTC(2013,6,1,1), 5],
+                [Date.UTC(2013,6,2,1), 6],
+                [Date.UTC(2013,6,3,1), 2],
+                [Date.UTC(2013,6,4,1), 1],
+                [Date.UTC(2013,6,5,1), 1]
+            ]
+        };
+
+        res.render('stats', {
+            resources: result
+        });
+    });
 
   return adminRouter;
 }

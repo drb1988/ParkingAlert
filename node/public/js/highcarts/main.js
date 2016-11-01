@@ -1,8 +1,5 @@
 $.getScript("/./js/global-needs.js", function(){
-  console.log("qWERTY: "+qWERTY);
-
   $(function () {
-    $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=usdeur.json&callback=?', function (data) {
 
       chart = new Highcharts.Chart({
         chart: {
@@ -112,7 +109,24 @@ $.getScript("/./js/global-needs.js", function(){
           }
           ]
       });
-    });
+    // $.ajax({
+    //   async: true,
+    //   type: "POST",
+    //   url: "/web-routes/StatisticsAjaxCallback",
+    //   data: [],
+    //   success: function(result) {
+    //     console.log("aici primul raspuns la chart:::: ", result);
+    //     chart.series[0].setData(result.positive_feedback);
+    //     chart.series[1].setData(result.negative_feedback);
+    //     chart.series[2].setData(result.no_feedback);
+    //
+    //   },
+    //   failure: function (errMsg) {
+    //     alert(errMsg);
+    //   }
+    // });
+  });
+
 // $(document).ready(function () {
 //   chart = new Highcharts.Chart({
 //     chart: {
@@ -218,66 +232,8 @@ $.getScript("/./js/global-needs.js", function(){
 //   });
 
   $("input#ajaxDate").change(function(){
-    var selectedDate = $("input[name=daterange]").val() ? $("input[name=daterange]").val() : false;
-    console.log("data daterange val: "+selectedDate);
-    qWERTY=5;
-    if(selectedDate) {
-      var date = selectedDate.split(" - ");
-      var startDateTime = date[0],
-          endDateTime = date[1];
-      var json = {
-        "startDateTime": startDateTime,
-        "endDateTime" : endDateTime
-      };
-      if(polygon) {
-        json.polygon = [];
-        var vertices = polygon.getPath();
-        for (var i =0; i < vertices.getLength(); i++) {
-          var xy = vertices.getAt(i);
-          console.log("typeeeee: "+ typeof xy.lat());
-          json.polygon.push([xy.lat(), xy.lng()]);
-        }
-      }
-
-      if(rectangle) {
-        json.polygon = [];
-        var vertices = rectangle.getBounds();
-        console.log("vertices:",vertices);
-        json.polygon.push([vertices.getSouthWest().lat(), vertices.getNorthEast().lng()]);
-        json.polygon.push([vertices.getNorthEast().lat(), vertices.getNorthEast().lng()]);
-        json.polygon.push([vertices.getNorthEast().lat(), vertices.getSouthWest().lng()]);
-        json.polygon.push([vertices.getSouthWest().lat(), vertices.getSouthWest().lng()]);
-      }
-      if(circle) {
-        json.circle = {
-          center: {
-            lat: circle.getCenter().lat(),
-            lng: circle.getCenter().lng()
-          },
-          radius: circle.getRadius()/63781
-        };
-      }
-      console.log("json pentru statistica",json);
-      chart.setTitle({text: "Statistica pentru perioada : <br>"+selectedDate});
-      $.ajax({
-        async: true,
-        type: "POST",
-        url: "/web-routes/StatsAjaxCallback",
-        data: json,
-        success: function(result) {
-          console.log("result statistica: ", result);
-
-          chart.series[0].setData(result.positive_feedback);
-          chart.series[1].setData(result.negative_feedback);
-          chart.series[2].setData(result.no_feedback);
-
-       },
-       failure: function (errMsg) {
-        alert(errMsg);
-      }
-      });
-    }
-  })
+    makeAjaxCall();
+  });
 
   $("input[name='checkbox_1']").change(function () {
     showHideSerie(0);
@@ -297,4 +253,3 @@ $.getScript("/./js/global-needs.js", function(){
 
 });
 
-});

@@ -5,6 +5,9 @@ var prevArrMarkers = '',
 	typeOfMap = false
     ;
 var chart;
+$("input#ajaxDate").change(function(){
+  makeAjaxCall();
+});
 function makeAjaxCall() {
 	var selectedDate = $("input[name=daterange]").val() ? $("input[name=daterange]").val() : false;
     console.log("selected date: "+selectedDate);
@@ -86,7 +89,9 @@ function makeAjaxCall() {
         alert("Status: " + textStatus); alert("Error: " + errorThrown); 
       }   
       });
+
       console.log("json pentru useri: ", json);
+
       $.ajax({
         async: true,
         type: "POST",
@@ -117,5 +122,24 @@ function makeAjaxCall() {
           alert("Status: " + textStatus); alert("Error: " + errorThrown); 
         }   
       });
+
+      $.ajax({
+        async: true,
+        type: "POST",
+        url: "/web-routes/StatisticsAjaxCallback",
+        data: json,
+        success: function(result) {
+          console.log("result stat", result);
+          chart.series[0].setData(result.positive_feedback);
+          chart.series[1].setData(result.negative_feedback);
+          chart.series[2].setData(result.no_feedback);
+        },
+        failure: function (errMsg) {
+          alert(errMsg);
+        }
+      });
     }
+
+
+
 }

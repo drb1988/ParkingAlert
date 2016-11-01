@@ -17,7 +17,7 @@ block content
 								div.alert(class='#{message_type}') #{message}
 							.col-lg-6
 								.form-group
-									label Number of QR code:
+									label Number of QR codes:
 									input.form-control#NumberOfQrCode(type='number' name='pices' placeholder='Number of QR code')
 					.row
 						.col-lg-6
@@ -37,37 +37,27 @@ block content
 			if(!wasPrinted) {
 				wasPrinted = true;
 				printcontent($("#QRCodeResult").html());
-				console.log("was not printed")
 			} else {
 				alert("Acest cod a fost printat o data, genereaza altul!");
 			}
 		})
 
 		$("#QR").click(function(){
-		console.log('clicked');
 			var json = {
 				count: $("#NumberOfQrCode").val()
 			};
-			console.log("json result qrrrr : ",json);
 		$.ajax({
 		async: true,
 		type: "POST",
 		data: json,
 		url: "/web-routes/generateQrCode", 
 		success: function(result) {
-		console.log("merge users result in ajax");
-		console.log(result);
 		if(result){
-			console.log("result qr: ",result);
 			for(i=1;i<result.length;i++) {
 				$('#QRCodeResult').prepend('<div id="row"><div class="col-md-12" id="qrcode'+i+'"><br><br></div></div>');
 				var qrcode = new QRCode("qrcode"+i);
 				qrcode.makeCode(result[i]);
 			}
-			console.log("result: ", result);
-			console.log("qrcode.makeCode(result.QRCode)");
-
-			//$("#QRCodeResult").html(htmlCodes);
 			wasPrinted = false;
 		}
 		},

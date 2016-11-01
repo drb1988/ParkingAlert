@@ -1,0 +1,15 @@
+include map
+include chart
+include users
+block content
+    // only to connect the map and char
+block script
+    script.
+            console.log("chartttt");
+            $(".chart-cosen").addClass(' active');
+            $(".map-cosen").removeClass(' active');
+            $(".users-cosen").removeClass(' active');
+            $("#map-content").fadeOut();
+            $(".chart-container").removeClass(' content-hidden');
+            $(".chart-container").fadeIn(1000);
+
