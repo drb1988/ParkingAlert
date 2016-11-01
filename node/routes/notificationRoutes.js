@@ -362,7 +362,8 @@ router.post('/receiverExtended/:notificationID', function(req, res, next) {
     * @param {String} :notificationID
     */
   var vehicle = "";
-  var sender_token = "";
+  var notificationSenderToken = "";
+  if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
   var deleteCar = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
@@ -384,8 +385,11 @@ router.post('/receiverExtended/:notificationID', function(req, res, next) {
   }
    MongoClient.connect(dbConfig.url, function(err, db) {
       assert.equal(null, err);
-      findUsersByNotification(db, function(sender){console.log(sender); notificationSenderToken=sender.sender_token;
-        vehicle=sender.vehicle;
+      findUsersByNotification(db, function(sender){ 
+          if(sender && sender.sender_token)
+              notificationSenderToken=sender.sender_token;
+          if(sender && sender.vehicle)
+              vehicle=sender.vehicle;
         deleteCar(db, function() {
           db.close();
           res.status(200).send(req.params.notificationID)
@@ -393,6 +397,10 @@ router.post('/receiverExtended/:notificationID', function(req, res, next) {
         });
         }, req.params.notificationID);     
       });
+  }
+  else {
+    res.status(200).send("invalid notificationID")
+  }
 })
 
 router.post('/receiverDeleted/:notificationID', function(req, res, next) {
@@ -476,7 +484,9 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
         findNotification(db, function() {
             var senderID;
             findUsersByNotification(db, function(notificationSenderID){
-            senderID = notificationSenderID.sender_id;
+              if(notificationSenderID.sender_id){
+                senderID = notificationSenderID.sender_id;
+              }
             }, req.params.notificationID);
             db.close();
         });
