@@ -232,59 +232,8 @@ $.getScript("/./js/global-needs.js", function(){
 //   });
 
   $("input#ajaxDate").change(function(){
-    var selectedDate = $("input[name=daterange]").val() ? $("input[name=daterange]").val() : false;
-    if(selectedDate) {
-      var date = selectedDate.split(" - ");
-      var startDateTime = date[0],
-          endDateTime = date[1];
-      var json = {
-        "startDateTime": startDateTime,
-        "endDateTime" : endDateTime
-      };
-      if(polygon) {
-        json.polygon = [];
-        var vertices = polygon.getPath();
-        for (var i =0; i < vertices.getLength(); i++) {
-          var xy = vertices.getAt(i);
-          json.polygon.push([xy.lat(), xy.lng()]);
-        }
-      }
-
-      if(rectangle) {
-        json.polygon = [];
-        var vertices = rectangle.getBounds();
-        json.polygon.push([vertices.getSouthWest().lat(), vertices.getNorthEast().lng()]);
-        json.polygon.push([vertices.getNorthEast().lat(), vertices.getNorthEast().lng()]);
-        json.polygon.push([vertices.getNorthEast().lat(), vertices.getSouthWest().lng()]);
-        json.polygon.push([vertices.getSouthWest().lat(), vertices.getSouthWest().lng()]);
-      }
-      if(circle) {
-        json.circle = {
-          center: {
-            lat: circle.getCenter().lat(),
-            lng: circle.getCenter().lng()
-          },
-          radius: circle.getRadius()/63781
-        };
-      }
-      chart.setTitle({text: "Statistica pentru perioada : <br>"+selectedDate});
-      $.ajax({
-        async: true,
-        type: "POST",
-        url: "/web-routes/StatisticsAjaxCallback",
-        data: json,
-        success: function(result) {
-          console.log("result stat", result);
-          chart.series[0].setData(result.positive_feedback);
-          chart.series[1].setData(result.negative_feedback);
-          chart.series[2].setData(result.no_feedback);
-       },
-       failure: function (errMsg) {
-        alert(errMsg);
-      }
-      });
-    }
-  })
+    makeAjaxCall();
+  });
 
   $("input[name='checkbox_1']").change(function () {
     showHideSerie(0);

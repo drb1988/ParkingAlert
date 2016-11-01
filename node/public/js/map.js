@@ -40,7 +40,7 @@ function initMap() {
 		'rgba(255, 0, 0, 1)'
 	]
 	heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-	var infoWindow = new google.maps.InfoWindow({map: map});
+	//var infoWindow = new google.maps.InfoWindow({map: map});
 
 	// Try HTML5 geolocation.
 	if (navigator.geolocation) {
@@ -49,17 +49,24 @@ function initMap() {
 				lat: position.coords.latitude,
 				lng: position.coords.longitude
 			};
-			var infoWindow = new google.maps.InfoWindow();
-			infoWindow.setPosition(pos);
-			console.log("you pos", pos);
-			infoWindow.setContent('Locatia ta.');
+			var markerMain = new google.maps.Marker({
+				position: pos,
+				center: pos,
+				map: map
+			});
+
+			//var infoWindow = new google.maps.InfoWindow();
+			//infoWindow.setPosition(pos);
+			//console.log("you pos", pos);
+			//infoWindow.setContent('Locatia ta.');
 			map.setCenter(pos);
+			console.log("position:"+pos);
 		}, function() {
-			handleLocationError(true, infoWindow, map.getCenter());
+			handleLocationError(true, markerMain, map.getCenter());
 		});
 	} else {
 		// Browser doesn't support Geolocation
-		handleLocationError(false, infoWindow, map.getCenter());
+		handleLocationError(false, markerMain, map.getCenter());
 	}
 	
 	var input = document.getElementById('pac-input');
