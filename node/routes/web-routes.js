@@ -13,10 +13,8 @@ var jwt = require('json-web-token');
 var Chance = require('chance');
 var chance = new Chance();
 var inside = require('point-in-polygon');
-
 var collide = require('point-circle-collision')
 var QRCode = require('qrcode-npm');
-
 var collide = require('point-circle-collision');
 var multer = require('multer');
 
@@ -30,6 +28,24 @@ var storage =   multer.diskStorage({
     callback(null, file.fieldname + '-' + Date.now()+ file_extension);
   }
 });
+
+var findUserZone = function(db, callback, email) {
+    /**
+    * Function to get userID by email address,
+    * @name findUserToken
+    * @param {String} :userId
+    */ 
+      db.collection('parking').findOne({"email": email},
+        function(err, result) {
+              assert.equal(err, null);
+              if(result != null){
+              callback(result._id);
+              }
+              else {
+                callback("404")
+              }
+        });            
+    }
 
 
 var isAuthenticated = function (req, res, next) {
@@ -214,16 +230,38 @@ exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callbac
       * Base route,
       * @MapAjaxCallback /
       */
-    req.body.startDateTime = new Date(req.body.startDateTime);
-    req.body.endDateTime = new Date(req.body.endDateTime);
+    if(req.body.startDateTime && req.body.endDateTime){
+      req.body.startDateTime = new Date(req.body.startDateTime);
+      req.body.endDateTime = new Date(req.body.endDateTime);
+    }
+    else {
+      req.body.endDateTime = new Date();
+      req.body.startDateTime = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
+    }    
     if(req.body.polygon)
       for(var i=0;i<req.body.polygon.length;i++) {
         req.body.polygon[i][0]=parseFloat(req.body.polygon[i][0]);
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
-    console.log("body request", req.body);
     if(req.user) {
-      console.log("req.user",req.user);
+        console.log("req.user",req.user.zone[0]);
+      if(!req.body.polygon && !req.body.circle){
+        if(req.user.zone[0].type == "circle"){  
+          req.body.circle = {
+            "center": {
+              "lat": req.user.zone[0].center.lat,
+              "lng": req.user.zone[0].center.lng
+            },
+            "radius": req.user.zone[0].center.radius
+          } 
+        }
+        if(req.user.zone[0].type == "polygon"){
+          for(var i=0;i<req.user.zone[0].center.length;i++) {
+              req.body.polygon[i][0]=parseFloat(req.user.zone[0].center[i][0]);
+              req.body.polygon[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
+            }
+          }
+        }
     }
     var findNotifications = function(db, callback) {   
       var o_id = new ObjectId(req.params.userID);
@@ -254,6 +292,7 @@ exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callbac
                       "lng": doc.location.coordinates[1]
                     });
                 }
+
               }
             } else {
                 callback();
@@ -278,16 +317,38 @@ exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callbac
       * Base route,
       * @MapAjaxCallback /
       */
-    req.body.startDateTime = new Date(req.body.startDateTime);
-    req.body.endDateTime = new Date(req.body.endDateTime);
+    if(req.body.startDateTime && req.body.endDateTime){
+      req.body.startDateTime = new Date(req.body.startDateTime);
+      req.body.endDateTime = new Date(req.body.endDateTime);
+    }
+    else {
+      req.body.endDateTime = new Date();
+      req.body.startDateTime = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
+    }    
     if(req.body.polygon)
       for(var i=0;i<req.body.polygon.length;i++) {
         req.body.polygon[i][0]=parseFloat(req.body.polygon[i][0]);
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
-    console.log("body request", req.body);
     if(req.user) {
-   //   console.log("req.user",req.user);
+        console.log("req.user",req.user.zone[0]);
+      if(!req.body.polygon && !req.body.circle){
+        if(req.user.zone[0].type == "circle"){  
+          req.body.circle = {
+            "center": {
+              "lat": req.user.zone[0].center.lat,
+              "lng": req.user.zone[0].center.lng
+            },
+            "radius": req.user.zone[0].center.radius
+          } 
+        }
+        if(req.user.zone[0].type == "polygon"){
+          for(var i=0;i<req.user.zone[0].center.length;i++) {
+              req.body.polygon[i][0]=parseFloat(req.user.zone[0].center[i][0]);
+              req.body.polygon[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
+            }
+          }
+        }
     }
     var findNotifications = function(db, callback) {   
       var o_id = new ObjectId(req.params.userID);
@@ -414,14 +475,39 @@ exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callbac
       * Base route,
       * @MapAjaxCallback /
       */
-    req.body.startDateTime = new Date(req.body.startDateTime);
-    req.body.endDateTime = new Date(req.body.endDateTime);
+    if(req.body.startDateTime && req.body.endDateTime){
+      req.body.startDateTime = new Date(req.body.startDateTime);
+      req.body.endDateTime = new Date(req.body.endDateTime);
+    }
+    else {
+      req.body.endDateTime = new Date();
+      req.body.startDateTime = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
+    }    
     if(req.body.polygon)
       for(var i=0;i<req.body.polygon.length;i++) {
         req.body.polygon[i][0]=parseFloat(req.body.polygon[i][0]);
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
-    console.log("body request users", req.body);
+    if(req.user) {
+        console.log("req.user",req.user.zone[0]);
+      if(!req.body.polygon && !req.body.circle){
+        if(req.user.zone[0].type == "circle"){  
+          req.body.circle = {
+            "center": {
+              "lat": req.user.zone[0].center.lat,
+              "lng": req.user.zone[0].center.lng
+            },
+            "radius": req.user.zone[0].center.radius
+          } 
+        }
+        if(req.user.zone[0].type == "polygon"){
+          for(var i=0;i<req.user.zone[0].center.length;i++) {
+              req.body.polygon[i][0]=parseFloat(req.user.zone[0].center[i][0]);
+              req.body.polygon[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
+            }
+          }
+        }
+    }
       var user_ids = [];
         var findNotifications = function(db, callback) {
       var o_id = new ObjectId(req.params.userID);

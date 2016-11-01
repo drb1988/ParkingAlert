@@ -389,7 +389,7 @@ router.post('/receiverExtended/:notificationID', function(req, res, next) {
         deleteCar(db, function() {
           db.close();
           res.status(200).send(req.params.notificationID)
-          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "extended", 0, 0, 0)
+          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "extended", req.body.extension_time, 0, 0)
         });
         }, req.params.notificationID);     
       });
