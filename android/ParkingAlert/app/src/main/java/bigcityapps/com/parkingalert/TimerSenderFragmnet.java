@@ -40,7 +40,7 @@ import Util.Constants;
 import Util.SecurePreferences;
 
 /**
- * Created by anupamchugh on 10/12/15.
+ * Created by fasu on 10/12/15.
  */
 public class TimerSenderFragmnet extends Fragment implements View.OnClickListener {
     ImageView image;
@@ -57,18 +57,17 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
     RequestQueue queue;
     String mLat, mLng;
     SharedPreferences prefs;
-    Long estimetedTime, time, actualDate;
+    long estimetedTime, time, actualDate;
     Context ctx;
     boolean isActiv = true;
     int extented_time = 0;
     boolean running = true;
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        getNotificationAll(notification_id);
-//    }
-
+    public void onResume() {
+        Log.w("meniuu","on resume timersender");
+        MainActivity.active=true;
+        super.onResume();
+    }
     public TimerSenderFragmnet() {
     }
 
@@ -84,6 +83,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
         View rootView = inflater.inflate(R.layout.timer_sender, container, false);
         ctx = rootView.getContext();
         MainActivity.active = true;
+        Constants.isrunning=true;
         ((MainActivity) getActivity()).setTitle("Notificari");
         initcComponents(rootView);
         Constants.isActivMap = false;
@@ -96,16 +96,23 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
             try {
 //                Log.w("meniuu", "acuma suntem in timer_senderfragment");
 //                timer = Integer.parseInt((String) b.get("time"));
-//                ora = (String) b.get("mHour");
+                ora = (String) b.get("mHour");
 //                nr_carString = (String) b.get("mPlates");
                 notification_id = b.getString("notification_id");
 //                mLat = b.getString("lat");
 //                mLng = b.getString("lng");
-                time_answer.setText("Raspuns la " + ora);
-//                mImage = b.getString("image");
+//                time_answer.setText("Raspuns la " + ora);
+                mImage = b.getString("image");
+                Glide.with(ctx).load(mImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        image.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
 //                answered_at = b.getString("answered_at");
                 Log.w("meniuu", "notifin timerragment:" + notification_id);
-
+                senderRead(notification_id);
                 getNotificationAll(notification_id);
 //                senderRead(notification_id);
 //                Calculate();
@@ -118,25 +125,13 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
         return rootView;
     }
 
-    @Override
-    public void onResume() {
-
-        super.onResume();
-    }
-
     public void initcComponents(View rootView) {
         rl_come = (RelativeLayout) rootView.findViewById(R.id.rl_come);
         rl_come.setOnClickListener(this);
         car_nr = (TextView) rootView.findViewById(R.id.car_nr_timer);
         time_answer = (TextView) rootView.findViewById(R.id.answer_timer);
         image = (ImageView) rootView.findViewById(R.id.mImage);
-        Glide.with(ctx).load(mImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
-                image.setImageDrawable(circularBitmapDrawable);
-            }
-        });
+
         progBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         text = (TextView) rootView.findViewById(R.id.textView1);
     }
@@ -156,8 +151,8 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
             Log.w("meniuu", "diff in timer_sender:" + diff);
             if (diff > 0) {
                 progBar.setVisibility(View.VISIBLE);
-                progBar.setMax(timer * 60);
-                mProgressStatus = (int) diff;
+                progBar.setMax((int)diff );
+                mProgressStatus = (int)diff;
                 dosomething();
             } else {
                 Log.w("meniuu", "se trece in review din timersendfr");
@@ -170,7 +165,7 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                 harta.putString("notification_id", notification_id);
                 fragment.setArguments(harta);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
             }
             Log.w("meniuu", "data mHour:" + ora);
         } catch (Exception e) {
@@ -194,6 +189,22 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                     try {
                         JSONObject answer = new JSONObject(c.getString("answer"));
                         answered_at = answer.getString("answered_at");
+
+
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                            Date myDate = simpleDateFormat.parse(answered_at);
+                            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                            String data=format1.format(myDate);
+
+//            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
+                            SimpleDateFormat format2 = new SimpleDateFormat("HH:mm");
+                            Date date = null;
+
+                            date = format1.parse(data);
+                            String ora=format2.format(date);
+                        Log.w("meniuu","la ora:"+answered_at+"oraaaa: ora");
+                        time_answer.setText("Raspuns la " + ora);
                         timer = Integer.parseInt(answer.getString("estimated"));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -254,10 +265,10 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                 Log.w("meniuu", "threadul nu este alive");
         } else
             Log.w("meniuu", "threadul nu este null");
-       Constants.threadTimer=  new Thread(new Runnable() {
+     Constants.threadTimer =   new Thread(new Runnable() {
             public void run() {
-                while (mProgressStatus > 0 && running == true ) {
-                    Log.w("meniuu", "thredaul din timersend functioneaza");
+                while (mProgressStatus > 0 && running == true && Constants.isrunning ) {
+                    Log.w("meniuu", "thred-ul din timersend functioneaza");
                     if (run == false)
                         mProgressStatus = 1;
                     mProgressStatus -= 1;
@@ -268,7 +279,8 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
                             int sec = mProgressStatus % 60;
                             Log.w("meniuu","mproressstatus in timersendfr:"+mProgressStatus);
                             if (mProgressStatus == 0) {
-                                reviewExpirat();
+                                getNotificationForTest(notification_id);
+//                                reviewExpirat();
                             }
                             if (minutes < 10) {
                                 car_nr.setText(nr_carString + " vine in " + minutes + " minute");
@@ -407,4 +419,57 @@ public class TimerSenderFragmnet extends Fragment implements View.OnClickListene
             Log.w("meniuu", "error: errorlistener:" + error);
         }
     };
+
+    public void getNotificationForTest(final String id ) {
+        String url = Constants.URL + "notifications/getNotification/" + id;
+        Log.w("meniuu", "url in getnotif for test:" + url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                try {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+                    ModelNotification modelNotification = new ModelNotification();
+                    JSONObject c = new JSONObject(json);
+                    modelNotification.setId(c.getString("_id"));
+                    JSONObject answer = new JSONObject(c.getString("answer"));
+                    int t1= Integer.parseInt(answer.getString("estimated"));
+                    int t2=0;
+                    try {
+                        JSONArray extesions = new JSONArray(c.getString("extesions"));
+                        JSONObject extesions1 = extesions.getJSONObject(0);
+                        t2 = Integer.parseInt(extesions1.getString("extension_time"));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    Log.w("meniuu","t1:"+t1+" t2:"+t2);
+                    Date myDate = simpleDateFormat.parse(c.getString("create_date"));
+                    long  create = myDate.getTime();
+                    long   estimetedTime = (long) t1 * 60 * 1000 + ((long) t2 * 60 * 1000);
+                    Log.w("meniuu","timpul estimat"+estimetedTime);
+                    create = create + estimetedTime;
+                    Date date2 = new Date();
+                    long  thisDate = date2.getTime();
+                    long diff = create - thisDate;
+                    diff=diff/1000;
+                    if(diff<10) {
+                        reviewExpirat();
+                        Log.w("meniuu","diff e<10 si se apeleaza review expirat");
+                    }else
+                        Log.w("meniuu","diff:"+diff);
+                } catch (Exception e) {
+                }
+            }
+        }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
+
 }

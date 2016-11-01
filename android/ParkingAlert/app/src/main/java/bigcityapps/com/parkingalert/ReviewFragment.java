@@ -46,7 +46,11 @@ public class ReviewFragment extends Fragment implements View.OnClickListener {
         isActiv=false;
         super.onDestroyView();
     }
-
+    public void onResume() {
+        Log.w("meniuu","on resume reviewfr");
+        MainActivity.active=true;
+        super.onResume();
+    }
     public ReviewFragment() {
     }
 

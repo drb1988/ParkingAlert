@@ -1,6 +1,5 @@
 package bigcityapps.com.parkingalert;
 
-import android.*;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,7 +15,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,7 +44,7 @@ import Util.Utils;
  *
  * Created by fasu on 1 19/09/2016.
  */
-public class ConnectFragment extends Fragment {
+public class ConnectFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     RelativeLayout notificaProprietar;
     double latitude, longitude;
     TextView notify_maker;
@@ -54,7 +53,7 @@ public class ConnectFragment extends Fragment {
     LocationManager locationManager;
     boolean hasCar=false;
     RequestQueue queue;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
     public ConnectFragment() {
     }
 
@@ -112,7 +111,7 @@ public class ConnectFragment extends Fragment {
         }
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(bigcityapps.com.parkingalert.R.layout.notifica_proprietar, container, false);
+        View rootView = inflater.inflate(R.layout.notifica_proprietar, container, false);
         notify_maker=(TextView)rootView.findViewById(R.id.notify_maker);
         prefs = new SecurePreferences(getContext());
         queue = Volley.newRequestQueue(getContext());
@@ -120,7 +119,8 @@ public class ConnectFragment extends Fragment {
         MainActivity.active=true;
         coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinatorLayout);
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setOnRefreshListener(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
                 // Should we show an explanation?
@@ -150,8 +150,10 @@ public class ConnectFragment extends Fragment {
             public void onClick(View view) {
                 Log.w("meniuu","click pe notifica proprietar");
                 if (Utils.isNetworkAvailable(getContext())) {
-                    if (!checkLocation())
+                    if (!checkLocation()) {
+                        Log.w("meniuu","nu are locatie");
                         return;
+                    }
                     if(hasCar)
                     {  if(latitude!=0 && longitude!=0) {
                         Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
@@ -276,4 +278,13 @@ public class ConnectFragment extends Fragment {
             Log.w("meniuu", "error: errorlistener:" + error);
         }
     };
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+      Intent main= new Intent(getActivity(), MainActivity.class);
+        startActivity(main);
+        swipeRefreshLayout.setRefreshing(false);
+
+    }
 }

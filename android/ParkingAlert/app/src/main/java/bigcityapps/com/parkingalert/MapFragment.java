@@ -50,6 +50,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -85,6 +86,7 @@ public class MapFragment extends Fragment {
     boolean isActiv=true;
     RequestQueue queue;
     SharedPreferences prefs;
+    int timeToWait=40;
     public MapFragment() {
     }
 
@@ -113,7 +115,7 @@ public class MapFragment extends Fragment {
                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
                 Date myDate = simpleDateFormat.parse(mHour);
                 time = myDate.getTime();
-                time = time + 30 * 1000;
+                time = time + timeToWait * 1000;
                 Date date2 = new Date();
                 actualDate = date2.getTime();
 
@@ -351,7 +353,8 @@ public class MapFragment extends Fragment {
                 TextView tvTitle = ((TextView) v.findViewById(R.id.nr_masina_infoview));
                 tvTitle.setText("Notificat " + mPlates);
                 Log.w("meniu", "image in harta:" + marker.getTitle() + " im:" + imageString);
-                Glide.with(getContext()).load(imageString).asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
+//                    Picasso.with(ctx).load(imageString).into(image);
+                Glide.with(ctx).load("http://82.76.188.13:3000/file-1476958406884.jpg").asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
                     protected void setResource(Bitmap resource) {
                         RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
                         circularBitmapDrawable.setCircular(true);

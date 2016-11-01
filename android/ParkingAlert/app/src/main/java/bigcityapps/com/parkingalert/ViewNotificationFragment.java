@@ -50,7 +50,11 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
     String mPlates, mHour;
     public ViewNotificationFragment() {
     }
-
+    public void onResume() {
+        Log.w("meniuu","on resume viewnotif");
+        MainActivity.active=true;
+        super.onResume();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(bigcityapps.com.parkingalert.R.layout.view_notification, container, false);
@@ -66,6 +70,7 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
             mPlates=b.getString("mPlates");
             car_nr_view_notification.setText((String) b.get("mPlates")+" \n creaza o problema");
             notification_id=(String) b.get("notification_id");
+            receiverRead(notification_id);
             mHour=b.getString("mHour");
             Log.w("meniuu","notification_id in viewnotificationfrag:"+notification_id);
         }else
@@ -124,7 +129,7 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
 //                break;
             case R.id.zece:
                 setClick(false);
-                getNotification(prefs.getString("user_id",null), "1");
+                getNotification(prefs.getString("user_id",null), "3");
 //                postAnswer("3");
                 break;
             case R.id.cinci:
@@ -262,5 +267,31 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
             // other 'switch' lines to check for other
             // permissions this app might request
         }
+    }
+    public void receiverRead(String notification_id){
+        Log.w("meniuu","notification id:"+notification_id);
+        String url = Constants.URL+"notifications/receiverRead/"+notification_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        Log.w("meniuu", "response: receiveranswer" + response);
+                    }
+                }, ErrorListener) {
+//                protected java.util.Map getParams() {
+//                    java.util.Map params = new HashMap<String, String>();
+//                    params.put("mLatitude", "24");
+//                    params.put("mLongitude", "24");
+//                    return params;
+//                }
+
+            public java.util.Map getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer "+auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
     }
 }

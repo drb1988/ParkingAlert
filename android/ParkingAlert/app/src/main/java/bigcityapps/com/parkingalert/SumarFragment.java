@@ -26,7 +26,11 @@ public class SumarFragment extends Fragment  {
     TableRow tablerow;
     public SumarFragment() {
     }
-
+    public void onResume() {
+        Log.w("meniuu","on resume sumarfr");
+        MainActivity.active=true;
+        super.onResume();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.sumar2, container, false);

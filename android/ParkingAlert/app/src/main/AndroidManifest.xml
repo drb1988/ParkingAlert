@@ -18,8 +18,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+
         android:theme="@style/AppTheme">
         <activity
+            android:screenOrientation="portrait"
             android:name="bigcityapps.com.parkingalert.SplashScreen"
             android:label="@string/app_name">
             <intent-filter>
@@ -27,29 +29,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="bigcityapps.com.parkingalert.Notifications"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.Scan"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.Timer"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.Map"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.Cars"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.AddCar"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.User_profile"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.History"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.ViewNotification"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.MainActivity"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.TimerSender"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.Review"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.SimpleScannerActivity"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.LoginNew"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.Signup"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.EmailValidation"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.FirstScreen"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.ViewCar"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.PasswordReset"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.AddQR"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.ShowQRCode"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.ViewQr"></activity>
-        <activity android:name="bigcityapps.com.parkingalert.ModifyCar"></activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name="bigcityapps.com.parkingalert.Notifications"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.Scan"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.Timer"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.Map"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.Cars"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.AddCar"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.User_profile"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.History"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.ViewNotification"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.MainActivity"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.TimerSender"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.Review"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.SimpleScannerActivity"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.LoginNew"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.Signup"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.EmailValidation"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.FirstScreen"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.ViewCar"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.PasswordReset"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.AddQR"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.ShowQRCode"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.ViewQr"></activity>
+        <activity  android:screenOrientation="portrait" android:name="bigcityapps.com.parkingalert.ModifyCar"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

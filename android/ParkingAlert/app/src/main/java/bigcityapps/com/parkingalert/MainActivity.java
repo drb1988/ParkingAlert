@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -48,6 +50,7 @@ import java.util.TimeZone;
 import Model.DataModel;
 import Util.Constants;
 import Util.SecurePreferences;
+import Util.Utils;
 
 public class MainActivity extends AppCompatActivity {
     protected OnBackPressedListener onBackPressedListener;
@@ -61,28 +64,15 @@ public class MainActivity extends AppCompatActivity {
     TextView badge_count;
     String notification_id = null, mPlates = null, notification_type, estimated_time, answered_at, feedback, is_ontime;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
-    String latitude = null, longitude = null;
     Context ctx;
     RequestQueue queue;
     SharedPreferences prefs;
     Long estimetedTime, time, actualDate;
-    boolean firtComm = true;
-    String notificationId = "";
     Fragment fragment;
     FrameLayout container;
     String notif_type;
-    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
-        this.onBackPressedListener = onBackPressedListener;
-    }
 
-    @Override
-    public void onBackPressed() {
-        if (onBackPressedListener != null)
-            onBackPressedListener.doBack();
-        else
-            super.onBackPressed();
-    }
-
+CoordinatorLayout coordinatorLayout;
 
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -198,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinatorLayout);
         ctx = this;
         prefs = new SecurePreferences(this);
         queue = Volley.newRequestQueue(this);
@@ -220,17 +211,72 @@ public class MainActivity extends AppCompatActivity {
 
             if(notif_type.equals("review")) {
                 Log.w("meniuu","notificarea este de tip review in bundle:"+notification_id);
+                if (!Utils.isNetworkAvailable(ctx)) {
+                    Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, "Nu exista conexiune la internet!", Snackbar.LENGTH_LONG)
+                            .setDuration(Snackbar.LENGTH_INDEFINITE)
+                            .setAction("SETARI", new View.OnClickListener() {
+                                public void onClick(View view) {
+                                    Log.w("meniuu","sa dat click");
+                                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                                }
+                            });
+                    snackbar.show();
+                }
+                else
                 getNotificationAll(notification_id);
 
-            }else
+            }else {
+                if (!Utils.isNetworkAvailable(ctx)) {
+                    Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, "Nu exista conexiune la internet!", Snackbar.LENGTH_LONG)
+                            .setDuration(Snackbar.LENGTH_INDEFINITE)
+                            .setAction("SETARI", new View.OnClickListener() {
+                                public void onClick(View view) {
+                                    Log.w("meniuu","sa dat click");
+                                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                                }
+                            });
+                    snackbar.show();
+                }
+                else
                 getNotification(prefs.getString("user_id", null));
+            }
             getIntent().removeExtra("notification_id");
             getIntent().removeExtra("notification_type");
             getIntent().removeExtra("mPlates");
             getIntent().removeExtra("feedback");
         }
-        else
-            getNotification(prefs.getString("user_id", null));
+        else {
+            if (!Utils.isNetworkAvailable(ctx)) {
+                Snackbar snackbar = Snackbar
+                        .make(coordinatorLayout, "Nu exista conexiune la internet!", Snackbar.LENGTH_LONG)
+                        .setDuration(Snackbar.LENGTH_INDEFINITE)
+                        .setAction("SETARI", new View.OnClickListener() {
+                            public void onClick(View view) {
+                                Log.w("meniuu","sa dat click");
+                                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                            }
+                        });
+                snackbar.show();
+            }
+            else {
+                if (!Utils.isNetworkAvailable(ctx)) {
+                    Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, "Nu exista conexiune la internet!", Snackbar.LENGTH_LONG)
+                            .setDuration(Snackbar.LENGTH_INDEFINITE)
+                            .setAction("SETARI", new View.OnClickListener() {
+                                public void onClick(View view) {
+                                    Log.w("meniuu","sa dat click");
+                                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                                }
+                            });
+                    snackbar.show();
+                }
+                else
+                getNotification(prefs.getString("user_id", null));
+            }
+        }
 
         DataModel[] drawerItem = new DataModel[10];
         drawerItem[0] = new DataModel(1, "NOTIFICARI");
@@ -508,10 +554,13 @@ public class MainActivity extends AppCompatActivity {
                                 Review(modelNotification.getId(), modelNotification.getmHour(), modelNotification.getNr_car());
                         } else {
                             if (Integer.parseInt(answer.getString("estimated")) == 100) {
+                                Constants.isrunning=false;
+                                Constants.threadTimer=null;
                                 Log.w("meniuu", "nu vine la masina, feedback negativ si il trimitem la sumar");
                                 ReviewFalse(c.getString("create_date"),c.getString("vehicle"),answer.getString("answered_at"));
                             }else
-                            {
+                            {   Constants.isrunning=false;
+                                Constants.threadTimer=null;
                                 modelNotification.setTitle("Ai primit raspuns");
                                 modelNotification.setmMessage("Vin in aprox " + answer.getString("estimated") + " minute");
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -552,6 +601,7 @@ public class MainActivity extends AppCompatActivity {
                                 timer.putString("lat", modelNotification.getLng());
                                 timer.putString("lng", modelNotification.getLng());
                                 timer.putString("answered_at", answered_at);
+                                timer.putString("image", modelNotification.getPicture());
                                 timer.putString("extension_time", modelNotification.getExtension_time());
                                 fragment.setArguments(timer);
                                 FragmentManager fragmentManager = getSupportFragmentManager();
@@ -801,10 +851,15 @@ public class MainActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
                 } catch (Exception e) {
                     Log.w("meniuu", "este catchla get notificationAll");
-                    e.printStackTrace();
-                    Fragment   fragment = new ConnectFragment();
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
+                  try {
+                      e.printStackTrace();
+                      Fragment   fragment = new ConnectFragment();
+                      FragmentManager fragmentManager = getSupportFragmentManager();
+                      fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
+                  }catch (Exception e1){
+                      e.printStackTrace();
+                  }
+
                 }
             }
         }, ErrorListener) {
@@ -833,7 +888,7 @@ public class MainActivity extends AppCompatActivity {
                         harta.putString("feedback", "Nu poate veni la masina");
                         fragment.setArguments(harta);
                         FragmentManager fragmentManager = getSupportFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
