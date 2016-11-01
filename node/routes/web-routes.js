@@ -655,10 +655,11 @@ exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callbac
   //               "email"     : result.email
   //               };
   //       var response = {
-  //         "userID": result._id
+  //         "userID": result._id,
+  //         "zone": result.zone
   //       }
   //       if(result.password == hash){
-  //           res.redirect("/web-routes/dashboard");
+  //           res.send(response);
   //       }
   //       else 
   //           res.status(200).send({"error": "Invalid email or password"})

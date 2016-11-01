@@ -466,7 +466,6 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
       db.collection('notifications').findOne({"_id": o_id},
         function(err, result) {
               assert.equal(err, null);
-              console.log("Found notification "+req.params.notificationID);
               res.status(200).send(result)
               callback();
         });            
@@ -477,8 +476,7 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
         findNotification(db, function() {
             var senderID;
             findUsersByNotification(db, function(notificationSenderID){
-              console.log("notificationSenderID.sender_id: "+notificationSenderID);
-            senderID = null;
+            senderID = notificationSenderID.sender_id;
             }, req.params.notificationID);
             db.close();
         });
