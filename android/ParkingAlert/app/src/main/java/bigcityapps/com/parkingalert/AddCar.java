@@ -77,7 +77,7 @@ public class AddCar extends Activity implements View.OnClickListener {
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.adauga_masina);
+        setContentView(R.layout.add_car);
         ctx = this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);

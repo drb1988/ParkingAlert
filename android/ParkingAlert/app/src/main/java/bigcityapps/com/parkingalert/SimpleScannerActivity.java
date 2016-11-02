@@ -76,8 +76,8 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
             builder.setTitle("Codul QR nu este intr-un format acceptat de aplicatie");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-//                                Intent harta= new Intent(Scan.this, Map.class);
-//                                startActivity(harta);
+//                                Intent map= new Intent(Scan.this, Map.class);
+//                                startActivity(map);
                     finish();
                 }
             });

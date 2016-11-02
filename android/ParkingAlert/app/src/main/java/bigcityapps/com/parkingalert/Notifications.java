@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -113,40 +114,6 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
         queue = Volley.newRequestQueue(this);
         initComponents();
 
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                if(modelNotificationArrayList.get(i).getmType()==3) {
-//                    receiverRead(modelNotificationArrayList.get(i).getId());
-//                    Log.w(TAG,"intra in view, mType:"+modelNotificationArrayList.get(i).getmType());
-//                    Intent view_notification = new Intent(Notifications.this, ViewNotification.class);
-//                    view_notification.putExtra("mDetails", modelNotificationArrayList.get(i).getmDetails());
-//                    view_notification.putExtra("notification_id", modelNotificationArrayList.get(i).getId());
-//                    view_notification.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
-//                    startActivity(view_notification);
-//                } else
-//                if(modelNotificationArrayList.get(i).getmType()==2) {
-//                    Intent timer_sender = new Intent(Notifications.this, Timer.class);
-//                    timer_sender.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
-//                    timer_sender.putExtra("mHour", modelNotificationArrayList.get(i).getmHour());
-//                    timer_sender.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
-//                    startActivity(timer_sender);
-//                }else
-//                    if(modelNotificationArrayList.get(i).getmType()==1){
-//                        Intent harta = new Intent(Notifications.this, Map.class);
-//                        harta.putExtra("mHour", modelNotificationArrayList.get(i).getmHour());
-//                        harta.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
-//                        harta.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
-//                        startActivity(harta);
-//                    }else
-//                    if(modelNotificationArrayList.get(i).getmType()==4) {
-//                        Intent timer_sender = new Intent(Notifications.this, TimerSender.class);
-//                        timer_sender.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
-//                        timer_sender.putExtra("mHour", modelNotificationArrayList.get(i).getmHour());
-//                        timer_sender.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
-//                        startActivity(timer_sender);
-//                    }
-//            }
-//        });
         Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
         getNotifications(prefs.getString("user_id",""));
 //         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -520,7 +487,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView titlu, detalii, mesaj, ora;
-            ImageView poza;
+            ImageView poza, bagde;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -530,6 +497,7 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
                 mesaj=(TextView) view.findViewById(R.id.mesaj_listview);
                 ora=(TextView) view.findViewById(R.id.ora_listview);
                 poza=(ImageView) view.findViewById(R.id.poza_listview);
+                bagde=(ImageView) view.findViewById(R.id.badge_listview);
             }
         }
 
@@ -573,15 +541,15 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
 //                    }else
 //                    if(modelNotificationArrayList.get(position).getmType()==1){
 //                        Log.w("meniuu","map");
-//                        Intent harta = new Intent(Notifications.this, Map.class);
-//                        harta.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
-//                        harta.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
-//                        harta.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
-//                        harta.putExtra("lat", modelNotificationArrayList.get(position).getLat());
-//                        harta.putExtra("lng", modelNotificationArrayList.get(position).getLng());
-//                        harta.putExtra("image", modelNotificationArrayList.get(position).getPicture());
+//                        Intent map = new Intent(Notifications.this, Map.class);
+//                        map.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
+//                        map.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
+//                        map.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
+//                        map.putExtra("lat", modelNotificationArrayList.get(position).getLat());
+//                        map.putExtra("lng", modelNotificationArrayList.get(position).getLng());
+//                        map.putExtra("image", modelNotificationArrayList.get(position).getPicture());
 //
-//                        startActivity(harta);
+//                        startActivity(map);
 //                    }else
 //                    if(modelNotificationArrayList.get(position).getmType()==4) {
 //                        Log.w("meniuu","timersend");
@@ -617,40 +585,40 @@ public class Notifications extends AppCompatActivity implements View.OnClickList
             }
             else
                 holder.poza.setImageResource(R.drawable.default_image_profile_round);
-//            if(item.getmType()==2) {
-//                if(item.isSenderRead()==false) {
-//                    holder.bagde.setImageResource(R.drawable.cerculet_notif);
-//                    holder.titlu.setTypeface(null, Typeface.BOLD);
-//                    holder.itemView.setBackgroundColor(Color.WHITE);
-//                }
-//                else {
-//                    holder.bagde.setImageResource(android.R.color.transparent);
-//                    holder.titlu.setTypeface(null, Typeface.NORMAL);
-//                    holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
-//                }
-//            }
-//            if(item.getmType()==3) {
-//                if(item.isReceiverRead()==false) {
-//                    holder.bagde.setImageResource(R.drawable.cerculet_notif);
-//                    holder.titlu.setTypeface(null, Typeface.BOLD);
-//                    holder.itemView.setBackgroundColor(Color.WHITE);
-//                }
-//                else {
-//                    holder.bagde.setImageResource(android.R.color.transparent);
-//                    holder.titlu.setTypeface(null, Typeface.NORMAL);
-//                    holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
-//                }
-//            }
-//            if(item.getmType()==1 ) {
-//                holder.bagde.setImageResource(android.R.color.transparent);
-//                holder.titlu.setTypeface(null, Typeface.NORMAL);
-//                holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
-//            }
-//            if(item.getmType()==4) {
-//                holder.bagde.setImageResource(R.drawable.ic_back);
-//                holder.titlu.setTypeface(null, Typeface.NORMAL);
-//                holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
-//            }
+            if(item.getmType()==2) {
+                if(item.isSenderRead()==false) {
+                    holder.bagde.setImageResource(R.drawable.cerculet_notif);
+                    holder.titlu.setTypeface(null, Typeface.BOLD);
+                    holder.itemView.setBackgroundColor(Color.WHITE);
+                }
+                else {
+                    holder.bagde.setImageResource(android.R.color.transparent);
+                    holder.titlu.setTypeface(null, Typeface.NORMAL);
+                    holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
+                }
+            }
+            if(item.getmType()==3) {
+                if(item.isReceiverRead()==false) {
+                    holder.bagde.setImageResource(R.drawable.cerculet_notif);
+                    holder.titlu.setTypeface(null, Typeface.BOLD);
+                    holder.itemView.setBackgroundColor(Color.WHITE);
+                }
+                else {
+                    holder.bagde.setImageResource(android.R.color.transparent);
+                    holder.titlu.setTypeface(null, Typeface.NORMAL);
+                    holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
+                }
+            }
+            if(item.getmType()==1 ) {
+                holder.bagde.setImageResource(android.R.color.transparent);
+                holder.titlu.setTypeface(null, Typeface.NORMAL);
+                holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
+            }
+            if(item.getmType()==4) {
+                holder.bagde.setImageResource(R.drawable.ic_back);
+                holder.titlu.setTypeface(null, Typeface.NORMAL);
+                holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
+            }
 
 //            Date myDate = simpleDateFormat.parse(answer.getString("answered_at"));
 //            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");

@@ -160,7 +160,8 @@ public class ConnectFragment extends Fragment implements SwipeRefreshLayout.OnRe
                         intent.putExtra("lat", latitude + "");
                         intent.putExtra("lng", longitude + "");
                         startActivity(intent);
-                    }
+                    }else
+                        Log.w("meniuu","latitude sau long sunt 0");
                     }else
                     {
                         Intent addCar= new Intent(getActivity(), Cars.class);

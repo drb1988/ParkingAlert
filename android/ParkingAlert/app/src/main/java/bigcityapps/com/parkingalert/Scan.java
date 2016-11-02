@@ -183,8 +183,8 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
                         builder.setTitle(plates+" a fost notificat cu succes");
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-//                                Intent harta= new Intent(Scan.this, Map.class);
-//                                startActivity(harta);
+//                                Intent map= new Intent(Scan.this, Map.class);
+//                                startActivity(map);
                                 finish();
                             }
                         });
@@ -192,8 +192,8 @@ public class Scan extends FragmentActivity implements ZXingScannerView.ResultHan
                         AlertDialog alert1 = builder.create();
                         alert1.show();
                         Log.w("meniuu", "response:post notification" + response);
-//                        Intent harta= new Intent(Scan.this, Map.class);
-//                        startActivity(harta);
+//                        Intent map= new Intent(Scan.this, Map.class);
+//                        startActivity(map);
 //                        finish();
                     }
                 }, ErrorListener) {

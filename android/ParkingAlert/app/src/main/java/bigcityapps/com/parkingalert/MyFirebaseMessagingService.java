@@ -193,40 +193,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent.putExtra("lat", latitude);
             intent.putExtra("lng", longitude);
             intent.putExtra("notification_type", notification_type);
-//        if (notification_type.equals("sender")) {
-//            intent = new Intent(this, ViewNotification.class);
-//            intent.putExtra("notification_id", notification_id);
-//            intent.putExtra("mPlates", nr_car);
-//        } else if (notification_type.equals("receiver")) {
-//            intent = new Intent(this, Timer.class);
-//            intent.putExtra("time", estimated_time);
-//            intent.putExtra("mHour", answered_at);
-//            intent.putExtra("mPlates", nr_car);
-//            intent.putExtra("notification_id", notification_id);
-//            intent.putExtra("lat", latitude);
-//            intent.putExtra("lng", longitude);
-//            Log.w("meniuu"," in timer_sender: time:"+estimated_time+" mhour:"+answered_at+" mplates:"+nr_car+" notif_id:"+notification_id+" lat:"+latitude+" lng:"+longitude);
-//        } else if (notification_type.equals("extended")) {
-//            intent = new Intent(this, Timer.class);
-//            intent.putExtra("time", estimated_time);
-//            intent.putExtra("mHour", answered_at);
-//            intent.putExtra("mPlates", nr_car);
-//            intent.putExtra("notification_id", notification_id);
-//            intent.putExtra("lat", latitude);
-//            intent.putExtra("lng", longitude);
-//        } else if (notification_type.equals("review")) {
-//            intent = new Intent(this, Review.class);
-//            intent.putExtra("notification_id", notification_id);
-//            intent.putExtra("mPlates", nr_car);
-//        }
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.com_facebook_button_icon)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
-                .setContentText(messageBody)
+                .setContentText(notification_type.equals("extended")?"Ajung in 5 minute":messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);

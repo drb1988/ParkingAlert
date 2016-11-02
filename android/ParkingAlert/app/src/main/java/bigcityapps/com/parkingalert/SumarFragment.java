@@ -97,8 +97,8 @@ public void inicomponents(View rootview){
 //                        Fragment  fragment = new MapFragment();
 //                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 //                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-////                        Intent harta= new Intent(Scan.this, Map.class);
-////                        startActivity(harta);
+////                        Intent map= new Intent(Scan.this, Map.class);
+////                        startActivity(map);
 ////                        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
 //                    }
 //                }, ErrorListener) {

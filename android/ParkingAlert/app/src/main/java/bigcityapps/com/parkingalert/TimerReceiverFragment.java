@@ -55,6 +55,7 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
     public TimerReceiverFragment() {
     }
     public void onResume() {
+        isActiv=true;
         Log.w("meniuu","on resume timerreceiver");
         MainActivity.active=true;
         super.onResume();
@@ -88,10 +89,11 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
                 notification_id = (String) b.get("notification_id");
                 image = b.getString("image");
                 answered_at = b.getString("answered_at");
+                Log.w("meniuu","answeerd_at in timerreceiver:"+answered_at+" ora:"+ora);
                 try {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
-                    Date myDate = simpleDateFormat.parse(ora);
+                    Date myDate = simpleDateFormat.parse(answered_at);
                     time = myDate.getTime();
                     Log.w("meniuu", "extendet_time:" + extented_time);
                     estimetedTime = (long) timer * 60 * 1000 + ((long) extented_time * 60 * 1000);
@@ -148,7 +150,7 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
     public void dosomething() {
         new Thread(new Runnable() {
             public void run() {
-                while (mProgressStatus > 0 && isActiv) {
+                while (mProgressStatus > 0 ) {
                     Log.w("meniuu","thread-ul din timerreceiverfr ruleaza");
 //                    if (run == false)
 //                        mProgressStatus = 1;
@@ -156,10 +158,11 @@ public class TimerReceiverFragment extends Fragment implements View.OnClickListe
                     // Update the progress bar
                     mHandler.post(new Runnable() {
                         public void run() {
-                            if (mProgressStatus < 21 && extented_time==0)  {
+                            if (mProgressStatus < 61 && extented_time==0)  {
                                 if (extended.getVisibility() == View.INVISIBLE)
                                     extended.setVisibility(View.VISIBLE);
                             }
+                            Log.w("meniuu","isactiv");
                             if (mProgressStatus == 0 && isActiv) {
                                 getActivity().getSupportFragmentManager().beginTransaction().remove(TimerReceiverFragment.this).commit();
                                 Fragment fragment = new SumarFragment();

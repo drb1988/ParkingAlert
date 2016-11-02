@@ -146,13 +146,13 @@ public class TimerSender extends Activity implements View.OnClickListener {
                                     extended.setVisibility(View.VISIBLE);
                             }
 //                            if(mProgressStatus==0){
-//                                Intent harta = new Intent(TimerSender.this, Map.class);
-//                                harta.putExtra("mHour", ora);
-//                                harta.putExtra("mPlates", nr_carString);
-//                                harta.putExtra("time", timer);
-//                                harta.putExtra("lat", mLat);
-//                                harta.putExtra("lng", mLng);
-//                                startActivity(harta);
+//                                Intent map = new Intent(TimerSender.this, Map.class);
+//                                map.putExtra("mHour", ora);
+//                                map.putExtra("mPlates", nr_carString);
+//                                map.putExtra("time", timer);
+//                                map.putExtra("lat", mLat);
+//                                map.putExtra("lng", mLng);
+//                                startActivity(map);
 //                                finish();
 //                            }
                             progBar.setProgress(mProgressStatus);
@@ -218,8 +218,8 @@ public class TimerSender extends Activity implements View.OnClickListener {
                     public void onResponse(String response) {
                         String json = response;
                         Log.w("meniuu", "response:post answer" + response);
-//                        Intent harta= new Intent(Scan.this, Map.class);
-//                        startActivity(harta);
+//                        Intent map= new Intent(Scan.this, Map.class);
+//                        startActivity(map);
                         finish();
                     }
                 }, ErrorListener) {

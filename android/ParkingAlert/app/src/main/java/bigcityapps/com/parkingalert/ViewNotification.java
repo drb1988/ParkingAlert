@@ -113,8 +113,8 @@ public class ViewNotification extends Activity implements View.OnClickListener{
                     public void onResponse(String response) {
                         String json = response;
                         Log.w("meniuu", "response:post answer" + response);
-//                        Intent harta= new Intent(Scan.this, Map.class);
-//                        startActivity(harta);
+//                        Intent map= new Intent(Scan.this, Map.class);
+//                        startActivity(map);
                         finish();
                     }
                 }, ErrorListener) {

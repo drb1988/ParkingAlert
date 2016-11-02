@@ -90,8 +90,8 @@ public class AddQR extends Activity implements ZBarScannerView.ResultHandler {
                         builder.setTitle("BH12ZEU a fost notificat cu succes");
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-//                                Intent harta= new Intent(Scan.this, Map.class);
-//                                startActivity(harta);
+//                                Intent map= new Intent(Scan.this, Map.class);
+//                                startActivity(map);
                                 finish();
                             }
                         });
@@ -99,8 +99,8 @@ public class AddQR extends Activity implements ZBarScannerView.ResultHandler {
                         AlertDialog alert1 = builder.create();
                         alert1.show();
                         Log.w("meniuu", "response:post notification" + response);
-//                        Intent harta= new Intent(Scan.this, Map.class);
-//                        startActivity(harta);
+//                        Intent map= new Intent(Scan.this, Map.class);
+//                        startActivity(map);
 //                        finish();
                     }
                 }, ErrorListener) {

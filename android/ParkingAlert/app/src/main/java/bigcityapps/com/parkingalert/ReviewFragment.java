@@ -154,6 +154,7 @@ public class ReviewFragment extends Fragment implements View.OnClickListener {
             protected java.util.Map<String, String> getParams() {
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("feedback",feedback+"");
+                params.put("is_ontime",feedback+"");
                 return params;
             }
             public java.util.Map<String, String> getHeaders() throws AuthFailureError {

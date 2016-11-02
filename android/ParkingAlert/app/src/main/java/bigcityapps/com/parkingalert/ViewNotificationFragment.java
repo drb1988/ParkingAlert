@@ -30,6 +30,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 import Util.Constants;
@@ -48,6 +50,7 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
     double latitude, longitude;
     LocationManager locationManager;
     String mPlates, mHour;
+    String answered_at;
     public ViewNotificationFragment() {
     }
     public void onResume() {
@@ -158,6 +161,9 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
                     public void onResponse(String response) {
                         String json = response;
                         Log.w("meniuu", "response:post answer" + response);
+                        try {
+                            JSONObject answ = new JSONObject(json);
+
                         getActivity().getSupportFragmentManager().beginTransaction().remove(ViewNotificationFragment.this).commit();
                         Fragment  fragment = new TimerReceiverFragment();
                         Bundle timerSender = new Bundle();
@@ -165,15 +171,14 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
                         timerSender.putString("mHour", mHour);
                         timerSender.putString("mPlates", mPlates);
                         timerSender.putString("notification_id", notification_id);
-                        timerSender.putString("lat",latitude+"");
-                        timerSender.putString("lng", longitude+"");
-//                        timerSender.putString("image", modelNotification.getPicture());
+                        timerSender.putString("answered_at",answ.getString("answered_at"));
                         fragment.setArguments(timerSender);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-//                        Intent harta= new Intent(Scan.this, Map.class);
-//                        startActivity(harta);
-//                        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+//                       getNotificationForAnsweredTime(notification_id, time,json);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
@@ -275,7 +280,7 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
-                        Log.w("meniuu", "response: receiveranswer" + response);
+                        Log.w("meniuu", "response: receiverread" + response);
                     }
                 }, ErrorListener) {
 //                protected java.util.Map getParams() {
@@ -288,6 +293,46 @@ public class ViewNotificationFragment extends Fragment implements View.OnClickLi
             public java.util.Map getHeaders() throws AuthFailureError {
                 String auth_token_string = prefs.getString("token", "");
                 java.util.Map params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer "+auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
+    public void getNotificationForAnsweredTime(final String id, final String time, String json){
+        String url = Constants.URL+"users/getNotification/"+id;
+        Log.w("meniuu","url in getnotif:"+url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                Log.w("meniuu","response getnotification:"+response);
+                try {
+                    ModelNotification modelNotification = new ModelNotification();
+                    JSONObject c = new JSONObject(json);
+                    modelNotification.setId(c.getString("_id"));
+                    JSONObject answer = new JSONObject(c.getString("answer"));
+                    answered_at=answer.getString("answered_at");
+                    getActivity().getSupportFragmentManager().beginTransaction().remove(ViewNotificationFragment.this).commitAllowingStateLoss();
+                    Fragment  fragment = new TimerReceiverFragment();
+                    Bundle timerSender = new Bundle();
+                    timerSender.putString("time", time);
+                    timerSender.putString("mHour", mHour);
+                    timerSender.putString("mPlates", mPlates);
+                    timerSender.putString("notification_id", notification_id);
+                    timerSender.putString("answered_at",json);
+                    fragment.setArguments(timerSender);
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                }catch (Exception e)
+                {Log.w("meniuu","este catch");
+                    e.printStackTrace();
+                }
+            }
+        }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("Authorization", "Bearer "+auth_token_string);
                 return params;
             }

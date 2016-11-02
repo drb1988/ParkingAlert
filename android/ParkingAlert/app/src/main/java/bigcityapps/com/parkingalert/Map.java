@@ -117,7 +117,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.harta);
+        setContentView(R.layout.map);
         initComponents();
         Intent iin = getIntent();
         Bundle b = iin.getExtras();

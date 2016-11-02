@@ -50,7 +50,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -86,13 +85,13 @@ public class MapFragment extends Fragment {
     boolean isActiv=true;
     RequestQueue queue;
     SharedPreferences prefs;
-    int timeToWait=40;
+    int timeToWait=60;
     public MapFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.harta, container, false);
+        View rootView = inflater.inflate(R.layout.map, container, false);
         MainActivity.active=true;
         initComponents(rootView);
         ((MainActivity) getActivity()).setTitle("Notificari");
@@ -323,6 +322,15 @@ public class MapFragment extends Fragment {
         return adresa;
     }
 
+    @Override
+    public void onResume() {
+        if(mProgressStatus==0) {
+            Intent main = new Intent(getActivity(), MainActivity.class);
+            startActivity(main);
+        }
+        super.onResume();
+    }
+
     class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         //        private final View myContentsView;
         LayoutInflater inflater = null;
@@ -354,9 +362,9 @@ public class MapFragment extends Fragment {
                 tvTitle.setText("Notificat " + mPlates);
                 Log.w("meniu", "image in harta:" + marker.getTitle() + " im:" + imageString);
 //                    Picasso.with(ctx).load(imageString).into(image);
-                Glide.with(ctx).load("http://82.76.188.13:3000/file-1476958406884.jpg").asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
+                Glide.with(ctx).load(imageString).asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
                     protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
                         circularBitmapDrawable.setCircular(true);
                         image.setImageDrawable(circularBitmapDrawable);
                         Log.w("meniuu","in glide:"+imageString);
@@ -437,6 +445,7 @@ public class MapFragment extends Fragment {
             protected java.util.Map<String, String> getParams() {
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("feedback",false+"");
+                params.put("is_ontime",false+"");
                 return params;
             }
             public java.util.Map<String, String> getHeaders() throws AuthFailureError {

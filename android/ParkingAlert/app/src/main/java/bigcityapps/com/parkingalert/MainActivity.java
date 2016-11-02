@@ -71,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
     Fragment fragment;
     FrameLayout container;
     String notif_type;
-
-CoordinatorLayout coordinatorLayout;
+    CoordinatorLayout coordinatorLayout;
 
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -317,19 +316,19 @@ CoordinatorLayout coordinatorLayout;
     @Override
     protected void onPause() {
         Log.w("meniuu", "onpauza mainactivity implicit si actife e false");
-        active = false;
+//        active = false;
         super.onPause();
     }
 
     /**
      * onstop method
      */
-    @Override
-    protected void onStop() {
-        active = false;
-        Log.w("meniuu", "onstop mainactivity implicit si actife e false");
-        super.onStop();
-    }
+//    @Override
+//    protected void onStop() {
+//        active = false;
+//        Log.w("meniuu", "onstop mainactivity implicit si actife e false");
+//        super.onStop();
+//    }
 
     @Override
     public void onStart() {
@@ -669,7 +668,7 @@ CoordinatorLayout coordinatorLayout;
                             timerSender.putString("image", modelNotification.getPicture());
                             timerSender.putString("answered_at", answered_at);
                             timerSender.putString("extension_time", modelNotification.getExtension_time());
-                            Log.w("meniuu","extensiontimein mainact:"+modelNotification.getExtension_time());
+                            Log.w("meniuu","extensiontimein mainact:"+modelNotification.getExtension_time()+" answered_at:"+answered_at);
                             fragment.setArguments(timerSender);
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commitAllowingStateLoss();
@@ -809,7 +808,7 @@ CoordinatorLayout coordinatorLayout;
     ///getnotifictaion false/true
     public void getNotificationAll(final String id ) {
         String url = Constants.URL + "notifications/getNotification/" + id;
-        Log.w("meniuu", "url in getnotif:" + url);
+        Log.w("meniuu", "url in getnotifall:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             public void onResponse(String response) {
                 String json = response;
@@ -894,6 +893,7 @@ CoordinatorLayout coordinatorLayout;
             protected java.util.Map<String, String> getParams() {
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("feedback", false + "");
+                params.put("is_ontime", false + "");
                 return params;
             }
 
