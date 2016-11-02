@@ -33,6 +33,11 @@ var toLocalTime = function(time) {
 };
 
 var sendNotification = function(token, notification, car, type, time, lat, longit, ontime, review){
+      /**
+      * Function to send notifications,
+      * @name sendNotification
+      * @param {String} token, notification, car, type, time, lat, longit, ontime, review
+      */ 
         var serverKey = 'AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4';
         var fcm = new FCM("AIzaSyA0PfeFcDYeQOhx6HPo1q4r2mD7xY4BJD4");
         if(review)  {
@@ -234,7 +239,7 @@ MongoClient.connect(dbConfig.url, function(err, db) {
 
 router.get('/receiverRead/:notificationID', function(req, res, next) {
     /**
-    * Route to mark notifications as read,
+    * Route to mark notifications as read by the receiver,
     * @name /receiverRead/:notificationID
     * @param {String} :notificationID
     */
@@ -305,7 +310,7 @@ router.get('/senderRead/:notificationID', function(req, res, next) {
 
 router.post('/receiverAnswered/:notificationID', function(req, res, next) {
     /**
-    * Route to set answers,
+    * Route to set a notification as answered,
     * @name /receiverRead/:notificationID
     * @param {String} :notificationID
     */
