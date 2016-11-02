@@ -1,0 +1,16 @@
+include map
+include chart
+include users
+block content
+    // only to connect the map and char
+block script
+    script.
+        $(".chart-cosen").removeClass(' active');
+        $(".map-cosen").removeClass(' active');
+        $(".users-cosen").addClass(' active');
+        $("#map-content").fadeOut();
+        $(document).ready(function() {
+            console.log("aici docuredy");
+            makeAjaxCall();
+        })
+
