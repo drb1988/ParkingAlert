@@ -317,12 +317,13 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
   var vehicle = "";
   var sender_token = "";
   if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
+  var answered_at = toLocalTime(new Date());
   var deleteCar = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
                       "sender_read": false,
-                      "answer.answered_at": toLocalTime(new Date()),
+                      "answer.answered_at": answered_at,
                       "answer.estimated": req.body.estimated
                     },
               $push:{
@@ -348,7 +349,7 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
         vehicle=sender.vehicle;
         deleteCar(db, function() {
           db.close();
-          res.status(200).send(req.params.notificationID)
+          res.status(200).send({"answered_at": answered_at})
           console.log("estimated "+req.body.estimated);
           sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "receiver", req.body.estimated, 0, 0)
         });
@@ -356,7 +357,7 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
     });
   }
   else {
-    res.status(200).send("invalid notificationID")
+    res.status(201).send("invalid notificationID")
   }
 })
 
