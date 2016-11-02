@@ -11,5 +11,8 @@ block script
         $("#map-content").fadeOut();
         $(".chart-container").removeClass(' content-hidden');
         $(".chart-container").fadeIn(1000);
-        makeAjaxCall();
+        $(document).ready(function() {
+                console.log("aici docuredy");
+                makeAjaxCall();
+        })
 

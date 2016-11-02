@@ -41,6 +41,10 @@ $( "input[name='daterange']" ).change(function() {
   console.log($( "input[name='daterange']" ).val());
   });
   $(function() {
+  $('input[name="daterange"]').change(function(){
+    console.log("daterange changed");
+    makeAjaxCall();
+  });
   $('input[name="daterange"]').daterangepicker({
   timePicker: true,
   timePickerIncrement: 30,
@@ -48,12 +52,12 @@ $( "input[name='daterange']" ).change(function() {
   format: 'YYYY-MM-DD HH:mm:00'
   },
   ranges: {
-  'Azi': [moment(), moment()],
-  'Ieri': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-  'Ultimele 7 zile': [moment().subtract(6, 'days'), moment()],
-  'Ultimele 30 de zile': [moment().subtract(29, 'days'), moment()],
-  'Aceasta luna': [moment().startOf('month'), moment().endOf('month')],
-  'Luna trecuta': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+  'Today': [moment().subtract(1, 'days'), moment()],
+  'Yesterday': [moment().subtract(2, 'days'), moment().subtract(1, 'days')],
+  'The last 7 days': [moment().subtract(6, 'days'), moment()],
+  'Last 30 days': [moment().subtract(29, 'days'), moment()],
+  'This month': [moment().startOf('month'), moment().endOf('month')],
+  'Last month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
   }
   });
   $(window).scroll(function() {
