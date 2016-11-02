@@ -38,7 +38,7 @@ var sendNotification = function(token, notification, car, type, time, lat, longi
         if(review)  {
           console.log("time ", time);
         }
-        if (time && review){
+        if (ontime && review){
           console.log("aici ar trebui sa intre la review")
           var message = {
           to: token, 
