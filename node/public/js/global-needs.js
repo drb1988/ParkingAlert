@@ -97,27 +97,27 @@ function makeAjaxCall() {
                lng: String(parseFloat(circle.getCenter().lng()) + parseFloat((Math.random() * (0.002 - 0.001) + 0.001).toFixed(4)))
              })
            }
-           if(prevArrMarkers) {
-             console.log(prevArrMarkers);
-             for (var i = 0; i < prevArrMarkers.length; i++)
-               prevArrMarkers[i].setMap(null);
-             prevArrMarkers= '';
-           }
-
-           if(typeOfMap)
-             prevArrMarkers = reinitMarker(result);
-           else
-             reinit(result);
-
-           if(prevArr) {
-             prevArr = theArr;
-             theArr = result;
-           }
-           else {
-             prevArr = result;
-           }
-           console.log("Circle map fake result: ", result);
          }
+         if(prevArrMarkers) {
+           console.log(prevArrMarkers);
+           for (var i = 0; i < prevArrMarkers.length; i++)
+             prevArrMarkers[i].setMap(null);
+           prevArrMarkers= '';
+         }
+
+         if(typeOfMap)
+           prevArrMarkers = reinitMarker(result);
+         else
+           reinit(result);
+
+         if(prevArr) {
+           prevArr = theArr;
+           theArr = result;
+         }
+         else {
+           prevArr = result;
+         }
+         console.log("Circle map fake result: ", result);
       }   
       });
 
