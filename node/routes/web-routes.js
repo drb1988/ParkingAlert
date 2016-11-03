@@ -282,13 +282,15 @@ MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, databas
     users = db.collection('parking');
     notifications = db.collection('notifications');
     
-    adminRouter.get('/AdminsAjaxCallback', isAuthenticated, function(req, res, next) {
+    adminRouter.post('/AdminsAjaxCallback', isAuthenticated, function(req, res, next) {
     admins.find({}).toArray(function (err, items) {
      if(items){
-         console.log('admins', items);
+         res.status(200).send(items);
+     }
+     else {
+      res.status(201).send("no admins");
      }
     });
-    res.status(200).send(items);
   });
  
     users.find({}).toArray(function (err, items) {
@@ -591,7 +593,6 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
                     }
                 }
               }
-              console.log("filtrat ",filteredResult)
                res.status(200).send(filteredResult)
             }
 
@@ -681,7 +682,6 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
                       user_ids.push(new ObjectId(doc.reciver_id));
                   }
                 if(req.body.circle) {
-                  console.log("req.body", req.body);
                   var circle = [parseFloat(req.body.circle.center.lat), parseFloat(req.body.circle.center.lng)],
                   radius =  parseFloat(req.body.circle.radius),
                   point = [doc.location.coordinates[0], doc.location.coordinates[1]]
