@@ -417,7 +417,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
                   no_feedback: []
                 }
               for (var i in result){
-                console.log("result "+i,result[i])
+              //  console.log("result "+i,result[i])
                 // var objName = result[i].year+"-"+result[i].month+"-"+result[i].day+"_"+result[i].hour;
                 var objName = Date.UTC(result[i].year, result[i].month, result[i].day, result[i].hour)
                 if(result[i].feedback == true || result[i].feedback == 'true')
@@ -507,6 +507,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
         }
     }
       var user_ids = [];
+      console.log("in users callback")
         var findNotifications = function(db, callback) {
       var o_id = new ObjectId(req.params.userID);
         var result = [];
@@ -546,7 +547,8 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
                             result.push(doc);
                         } else {
                             callback();
-                      //      console.log("result user in finduser", result);
+                            console.log("users callback result ", result)
+                            res.status(200).send(result);
                         }
                     });
                 };

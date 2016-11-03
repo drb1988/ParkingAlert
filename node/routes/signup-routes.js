@@ -195,6 +195,7 @@ router.post('/verifyEmail/:userID', function(req, res, next) {
       * @name /getUser/:userID
       * @param {String} :userId
       */
+    if(/[a-f0-9]{24}/.test(req.params.userID)) {
     var findUser = function(db, callback) {   
     var o_id = new ObjectId(req.params.userID);
       db.collection('tempUsers').findOne({"_id": o_id},
@@ -216,6 +217,10 @@ router.post('/verifyEmail/:userID', function(req, res, next) {
             db.close();
         });
       });
+    }
+    else {
+      res.status(201).send("Invalid verification ID")
+    }
 });
 
 router.get('/login/:email&:password', function(req, res, next) {

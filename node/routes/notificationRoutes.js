@@ -38,7 +38,7 @@ var sendNotification = function(token, notification, car, type, time, lat, longi
         if(review)  {
           console.log("time ", time);
         }
-        if (time && review){
+        if (ontime && review){
           console.log("aici ar trebui sa intre la review")
           var message = {
           to: token, 
@@ -180,8 +180,8 @@ router.post('/notification', function(req, res, next) {
       "location": {
           "type": "Point",
           "coordinates": [
-            req.body.latitude,
-            req.body.longitude
+            parseFloat(req.body.latitude),
+            parseFloat(req.body.longitude)
           ]
       },
       "reverse_geocode": req.body.reverse_geocode,
@@ -197,8 +197,8 @@ router.post('/notification', function(req, res, next) {
         {"sender": {
           "type": "Point",
           "coordinates": [
-            req.body.latitude,
-            req.body.longitude
+            parseFloat(req.body.latitude),
+            parseFloat(req.body.longitude)
           ]}}
       ],
       "receiver_token": notificationReceiverToken,
@@ -326,8 +326,8 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
                       "receiver": {
                           "type": "Point",
                           "coordinates": [
-                            req.body.latitude,
-                            req.body.longitude
+                            parseFloat(req.body.latitude),
+                            parseFloat(req.body.longitude)
                           ]}
                     }   
               }
