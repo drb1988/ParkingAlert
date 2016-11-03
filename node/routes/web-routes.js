@@ -330,7 +330,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
     callback({'ok': 200});
 };
 
-  adminRouter.post('/MapAjaxCallback2', isAuthenticated, function(req, res, next) {
+  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
       * @MapAjaxCallback /
@@ -349,8 +349,18 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
     if(req.user) {
-        console.log("req.user",req.user.zone[0]);
+      //  console.log("req.user",req.user.zone[0]);
       if(!req.body.polygon && !req.body.circle){
+          if(!req.user.zone)
+            {
+              req.body.circle = {
+                  "center": {
+                    "lat": "47.08742303288898",
+                    "lng": "21.9237596"
+                  },
+                  "radius": "0.029807642305365648"
+              } 
+            }
         if(req.user.zone[0].type == "circle"){  
           req.body.circle = {
             "center": {
@@ -361,10 +371,14 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
           } 
         }
         if(req.user.zone[0].type == "polygon"){
+          console.log("in poligon");
+          var temporaryPoly = [];
           for(var i=0;i<req.user.zone[0].center.length;i++) {
-              req.body.polygon[i][0]=parseFloat(req.user.zone[0].center[i][0]);
-              req.body.polygon[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
+              temporaryPoly.push([0, 0]);
+              temporaryPoly[i][0]=parseFloat(req.user.zone[0].center[i][0]);
+              temporaryPoly[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
             }
+          req.body.polygon=temporaryPoly;
           }
         }
     }
@@ -436,8 +450,18 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
     if(req.user) {
-        console.log("req.user",req.user.zone[0]);
+   //     console.log("req.user",req.user.zone[0]);
       if(!req.body.polygon && !req.body.circle){
+          if(!req.user.zone)
+            {
+              req.body.circle = {
+                  "center": {
+                    "lat": "47.08742303288898",
+                    "lng": "21.9237596"
+                  },
+                  "radius": "0.029807642305365648"
+              } 
+            }
         if(req.user.zone[0].type == "circle"){  
           req.body.circle = {
             "center": {
@@ -448,10 +472,14 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
           } 
         }
         if(req.user.zone[0].type == "polygon"){
+          console.log("in poligon");
+          var temporaryPoly = [];
           for(var i=0;i<req.user.zone[0].center.length;i++) {
-              req.body.polygon[i][0]=parseFloat(req.user.zone[0].center[i][0]);
-              req.body.polygon[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
+              temporaryPoly.push([0, 0]);
+              temporaryPoly[i][0]=parseFloat(req.user.zone[0].center[i][0]);
+              temporaryPoly[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
             }
+          req.body.polygon=temporaryPoly;
           }
         }
     }
@@ -588,14 +616,26 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
       req.body.endDateTime = new Date();
       req.body.startDateTime = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
     }    
-    if(req.body.polygon)
+    if(req.body.polygon){
+      console.log("req.body", req.body);
       for(var i=0;i<req.body.polygon.length;i++) {
         req.body.polygon[i][0]=parseFloat(req.body.polygon[i][0]);
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
+    }
     if(req.user) {
-        console.log("req.user",req.user.zone[0]);
+   //     console.log("req.user",req.user.zone[0]);
       if(!req.body.polygon && !req.body.circle){
+      if(!req.user.zone)
+          {
+            req.body.circle = {
+                  "center": {
+                    "lat": "47.08742303288898",
+                    "lng": "21.9237596"
+                  },
+                  "radius": "0.029807642305365648"
+              } 
+          }
         if(req.user.zone[0].type == "circle"){  
           req.body.circle = {
             "center": {
@@ -606,10 +646,14 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
           } 
         }
         if(req.user.zone[0].type == "polygon"){
+          console.log("in poligon");
+          var temporaryPoly = [];
           for(var i=0;i<req.user.zone[0].center.length;i++) {
-              req.body.polygon[i][0]=parseFloat(req.user.zone[0].center[i][0]);
-              req.body.polygon[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
+              temporaryPoly.push([0, 0]);
+              temporaryPoly[i][0]=parseFloat(req.user.zone[0].center[i][0]);
+              temporaryPoly[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
             }
+          req.body.polygon=temporaryPoly;
           }
         }
     }
