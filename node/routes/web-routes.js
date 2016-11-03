@@ -867,7 +867,8 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
                },
   	    	function(err, result) {
   					    assert.equal(err, null);
-  					    res.status(200).send(result)
+  					    // res.status(200).send(result)
+                        res.redirect("../");
   					    callback();
   				});            
   		}
@@ -894,7 +895,8 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
                },
   	    	function(err, result) {
   					    assert.equal(err, null);
-  					    res.status(200).send(result)
+  					    // res.status(200).send(result)
+                        res.redirect("../");
   					    callback();
   				});            
   		}
