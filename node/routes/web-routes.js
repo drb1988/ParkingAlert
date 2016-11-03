@@ -355,12 +355,13 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
             {
               req.body.circle = {
                   "center": {
-                    "lat": "47.08742303288898",
-                    "lng": "21.9237596"
+                    "lat": 47.08742303288898,
+                    "lng": 21.92375963288898
                   },
-                  "radius": "0.029807642305365648"
+                  "radius": 0.029807642305365648
               } 
             }
+        else{
         if(req.user.zone[0].type == "circle"){  
           req.body.circle = {
             "center": {
@@ -379,7 +380,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
               temporaryPoly[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
             }
           req.body.polygon=temporaryPoly;
-          }
+          }}
         }
     }
     var findNotifications = function(db, callback) {   
@@ -457,11 +458,12 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
               req.body.circle = {
                   "center": {
                     "lat": "47.08742303288898",
-                    "lng": "21.9237596"
+                    "lng": "21.92375963288898"
                   },
                   "radius": "0.029807642305365648"
               } 
             }
+          else{
         if(req.user.zone[0].type == "circle"){  
           req.body.circle = {
             "center": {
@@ -480,6 +482,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
               temporaryPoly[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
             }
           req.body.polygon=temporaryPoly;
+          }   
           }
         }
     }
@@ -617,7 +620,6 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
       req.body.startDateTime = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
     }    
     if(req.body.polygon){
-      console.log("req.body", req.body);
       for(var i=0;i<req.body.polygon.length;i++) {
         req.body.polygon[i][0]=parseFloat(req.body.polygon[i][0]);
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
@@ -630,12 +632,14 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
           {
             req.body.circle = {
                   "center": {
-                    "lat": "47.08742303288898",
-                    "lng": "21.9237596"
+                    "lat": 47.08742303288898,
+                    "lng": 21.92375963288898
                   },
-                  "radius": "0.029807642305365648"
+                  "radius": 0.029807642305365648
               } 
+            console.log("body", req.body);
           }
+        else{
         if(req.user.zone[0].type == "circle"){  
           req.body.circle = {
             "center": {
@@ -655,6 +659,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
             }
           req.body.polygon=temporaryPoly;
           }
+        }
         }
     }
       var user_ids = [];
@@ -676,6 +681,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
                       user_ids.push(new ObjectId(doc.reciver_id));
                   }
                 if(req.body.circle) {
+                  console.log("req.body", req.body);
                   var circle = [parseFloat(req.body.circle.center.lat), parseFloat(req.body.circle.center.lng)],
                   radius =  parseFloat(req.body.circle.radius),
                   point = [doc.location.coordinates[0], doc.location.coordinates[1]]
@@ -698,7 +704,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
                             result.push(doc);
                         } else {
                             callback();
-                            console.log("users callback result ", result)
+                        //    console.log("users callback result ", result)
                             res.status(200).send(result);
                         }
                     });
