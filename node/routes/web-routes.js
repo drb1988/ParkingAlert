@@ -266,7 +266,7 @@ exports.getSendersByLocation = function (lat, lon, callback) {
     var rad = req.body.rad;
     var poly = req.body.polygonPoints;
  
-    saveCoordinates(type, lat, lon, rad, poly, function(callback) {
+    saveCoordinates(type, lat, lon, rad, poly, req.user._id, function(callback) {
         res.send(callback);
     });
   });
@@ -281,12 +281,15 @@ MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, databas
     admins = db.collection('parkingAdmins');
     users = db.collection('parking');
     notifications = db.collection('notifications');
- 
+    
+    adminRouter.get('/AdminsAjaxCallback', isAuthenticated, function(req, res, next) {
     admins.find({}).toArray(function (err, items) {
      if(items){
          console.log('admins', items);
      }
     });
+    res.status(200).send(items);
+  });
  
     users.find({}).toArray(function (err, items) {
         if(items){
@@ -297,8 +300,8 @@ MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, databas
  
  
  
-var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
-    var zone;
+var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callback) {
+    var zone
     switch (gtype) {
         case 'circle':
              zone = {
@@ -318,7 +321,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
             break;
     }
     console.log('zone', zone);
-    admins.update({'_id': new ObjectId('57fceaa64521512290f2b37b')},
+    admins.update({'_id': new ObjectId(user)},
         {$push: {
            zone: zone
            }
@@ -327,7 +330,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
     callback({'ok': 200});
 };
 
-  adminRouter.post('/MapAjaxCallback', isAuthenticated, function(req, res, next) {
+  adminRouter.post('/MapAjaxCallback2', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
       * @MapAjaxCallback /
