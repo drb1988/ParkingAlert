@@ -760,6 +760,34 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
   			});
   });
 
+  adminRouter.post('/UserShapes', isAuthenticated, function(req, res, next) {
+      /**
+        * Route to get all notification points,
+        * @name /getNotifications
+        */
+
+      var findShapes = function(db, callback) {   
+      var o_id = new ObjectId(req.user._id);
+      db.collection('parkingAdmins').findOne({"_id": o_id},
+        function(err, result) {
+              assert.equal(err, null);
+              if(result.zone){
+                res.status(200).send(result.zone);   
+              }
+              else{
+                res.status(201).send({"error": "No zone defined"});
+              }
+              callback();
+        });            
+    }
+    MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findShapes(db, function() {
+            db.close();
+        });
+      });
+  });
+
   adminRouter.get('/getNotificationsExtended/:offset&:limit', function(req, res, next) {
       /**
         * Route to get notification with offset and limit,
