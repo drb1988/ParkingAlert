@@ -260,7 +260,6 @@ exports.getSendersByLocation = function (lat, lon, callback) {
     * Base route,
     * @SaveShape /
     */
-    console.log("body", req.body)
     var type = req.body.type;
     var lat = req.body.lat;
     var lng = req.body.log;
@@ -766,14 +765,19 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
         * Route to get all notification points,
         * @name /getNotifications
         */
-
       var findShapes = function(db, callback) {   
       var o_id = new ObjectId(req.user._id);
       db.collection('parkingAdmins').findOne({"_id": o_id},
         function(err, result) {
               assert.equal(err, null);
               if(result.zone){
-                res.status(200).send(result.zone);   
+                  if(req.body && req.body.index_number){
+                //     console.log(result.zone[parseInt(req.body.index_number)-1]);
+                      res.status(200).send(result.zone[parseInt(req.body.index_number)-1])
+                  }
+                  else{
+                    res.status(200).send(result.zone);
+                  }    
               }
               else{
                 res.status(201).send({"error": "No zone defined"});
