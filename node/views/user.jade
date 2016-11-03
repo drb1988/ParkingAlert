@@ -80,10 +80,14 @@ block scripts
         else
           var answer = confirm('Are you sure that you want to ban this user?');
         if (answer) {
-          if (is_banned)
+          if (is_banned) {
             document.location.href = "/web-routes/users/unban/" + id;
-          else
+            makeAjaxCall();
+          }
+          else {
             document.location.href = "/web-routes/users/ban/" + id;
+            makeAjaxCall();
+          }
         }
       };
     script(src = '/plugins/jQuery/jquery-2.2.3.min.js')
@@ -130,7 +134,10 @@ block scripts
         url: "/web-routes/AdminsAjaxCallback",
         data: [],
         success: function (result) {
-          console.log("AdminsAjaxCallback with response, but is empty.");
+          console.log("AdminsAjaxCallback", result);
+          /*
+        }
+        }
           firstNameArray = ['AdminIon', 'AdminGigel', 'AdminArdelean', 'AdminBorsa'];
           lastNameNameArray = ['Ana', 'Maria', 'Alexandra', 'Diana', 'Don'];
           result = [];
@@ -144,7 +151,7 @@ block scripts
             );
           console.log("fake result: ", result);
           console.log("merge admins result in ajax", result);
-
+          */
           var content = '';
           for (var i = 0; i < result.length; i++) {
             content += '<tr>';
@@ -158,31 +165,34 @@ block scripts
 
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-          console.log("AdminsAjaxCallback without response, not my problem.");
-          firstNameArray = ['AdminIon', 'AdminGigel', 'AdminArdelean', 'AdminBorsa'];
-          lastNameNameArray = ['Ana', 'Maria', 'Alexandra', 'Diana', 'Don'];
-          result = [];
-          for (var i = 0; i <= 7; i++)
-            result.push(
-                    {
-                      first_name: firstNameArray[Math.floor(Math.random() * firstNameArray.length)],
-                      last_name: lastNameNameArray[Math.floor(Math.random() * lastNameNameArray.length)],
-                      email: firstNameArray[Math.floor(Math.random() * firstNameArray.length)] + '_' + lastNameNameArray[Math.floor(Math.random() * firstNameArray.length)] + '@alert.com'
-                    }
-            );
-          console.log("fake result: ", result);
-          console.log("merge admins result in ajax", result);
-
-            var content = '';
-            for (var i = 0; i < result.length; i++) {
-              content += '<tr>';
-              content += '<td>' + result[i].first_name + '</td>';
-              content += '<td>' + result[i].last_name + '</td>';
-              content += '<td>' + result[i].email + '</td>';
-              content += '</tr>';
-              // <a href="javascript: ConfirmDialog("5808767737a04d27c0d4a7fc", "false")" class="btn btn-xs btn-danger"></a>
-            }
-            $('#dataTables-content tbody').html(content);
-
+          console.log("AdminsAjaxCallback" + "\nStatus: " + textStatus + "\nError: " + errorThrown);
         }
       });
+
+    //          firstNameArray = ['AdminIon', 'AdminGigel', 'AdminArdelean', 'AdminBorsa'];
+    //          lastNameNameArray = ['Ana', 'Maria', 'Alexandra', 'Diana', 'Don'];
+    //          result = [];
+    //          for (var i = 0; i <= 7; i++)
+    //            result.push(
+    //                    {
+    //                      first_name: firstNameArray[Math.floor(Math.random() * firstNameArray.length)],
+    //                      last_name: lastNameNameArray[Math.floor(Math.random() * lastNameNameArray.length)],
+    //                      email: firstNameArray[Math.floor(Math.random() * firstNameArray.length)] + '_' + lastNameNameArray[Math.floor(Math.random() * firstNameArray.length)] + '@alert.com'
+    //                    }
+    //            );
+    //          console.log("fake result: ", result);
+    //          console.log("merge admins result in ajax", result);
+    //
+    //            var content = '';
+    //            for (var i = 0; i < result.length; i++) {
+    //              content += '<tr>';
+    //              content += '<td>' + result[i].first_name + '</td>';
+    //              content += '<td>' + result[i].last_name + '</td>';
+    //              content += '<td>' + result[i].email + '</td>';
+    //              content += '</tr>';
+    //              // <a href="javascript: ConfirmDialog("5808767737a04d27c0d4a7fc", "false")" class="btn btn-xs btn-danger"></a>
+    //            }
+    //            $('#dataTables-content tbody').html(content);
+
+    //       }
+

@@ -61,8 +61,7 @@ function makeAjaxCall() {
         url: "/web-routes/MapAjaxCallback", 
         data: json,
         success: function(result) {
-          console.log("merge map result in ajax");
-          console.log("map result", result);
+          console.log("MapAjaxCallback\n", result);
           // $("#div1").text("The map has changed"); // alert user 
           // reinit(result);
           if(prevArrMarkers) {
@@ -87,37 +86,37 @@ function makeAjaxCall() {
        },
        error: function(XMLHttpRequest, textStatus, errorThrown) { 
         // alert("Status: " + textStatus); alert("Error: " + errorThrown);
-         console.log("MapAjaxCallback without response, not my problem.")
-         result = [];
-         if(circle)
-         {
-           for(var i=0; i<=30; i++) {
-             result.push({
-               lat: String(parseFloat(circle.getCenter().lat()) + parseFloat((Math.random() * (0.002 - 0.001) + 0.001).toFixed(4))),
-               lng: String(parseFloat(circle.getCenter().lng()) + parseFloat((Math.random() * (0.002 - 0.001) + 0.001).toFixed(4)))
-             })
-           }
-         }
-         if(prevArrMarkers) {
-           console.log(prevArrMarkers);
-           for (var i = 0; i < prevArrMarkers.length; i++)
-             prevArrMarkers[i].setMap(null);
-           prevArrMarkers= '';
-         }
-
-         if(typeOfMap)
-           prevArrMarkers = reinitMarker(result);
-         else
-           reinit(result);
-
-         if(prevArr) {
-           prevArr = theArr;
-           theArr = result;
-         }
-         else {
-           prevArr = result;
-         }
-         console.log("Circle map fake result: ", result);
+         console.log("MapAjaxCallback" + "\nStatus: " + textStatus+"\nError: " + errorThrown);
+         // result = [];
+         // if(circle)
+         // {
+         //   for(var i=0; i<=30; i++) {
+         //     result.push({
+         //       lat: String(parseFloat(circle.getCenter().lat()) + parseFloat((Math.random() * (0.002 - 0.001) + 0.001).toFixed(4))),
+         //       lng: String(parseFloat(circle.getCenter().lng()) + parseFloat((Math.random() * (0.002 - 0.001) + 0.001).toFixed(4)))
+         //     })
+         //   }
+         // }
+         // if(prevArrMarkers) {
+         //   console.log(prevArrMarkers);
+         //   for (var i = 0; i < prevArrMarkers.length; i++)
+         //     prevArrMarkers[i].setMap(null);
+         //   prevArrMarkers= '';
+         // }
+         //
+         // if(typeOfMap)
+         //   prevArrMarkers = reinitMarker(result);
+         // else
+         //   reinit(result);
+         //
+         // if(prevArr) {
+         //   prevArr = theArr;
+         //   theArr = result;
+         // }
+         // else {
+         //   prevArr = result;
+         // }
+         // console.log("Circle map fake result: ", result);
       }   
       });
 
@@ -129,23 +128,23 @@ function makeAjaxCall() {
         url: "/web-routes/UsersAjaxCallback", 
         data: json,
         success: function(result) {
-          console.log("UsersAjaxCallback with response, but is empty.");
-          firstNameArray = ['Ion', 'Gigel', 'Ardelean', 'Agarici', 'Borsa'];
-          lastNameNameArray = ['Ana', 'Maria', 'Alexandra', 'Diana', 'Don'];
-          ciryArray = ['Oradea', 'Cluj-Napoca', 'Arad', 'Alesd', 'Marghita'];
-          result = [];
-          for(var i=0; i<=15; i++)
-            result.push(
-                {
-                  first_name: firstNameArray[Math.floor(Math.random() * ciryArray.length)],
-                  last_name: lastNameNameArray[Math.floor(Math.random() * ciryArray.length)],
-                  email: firstNameArray[Math.floor(Math.random() * ciryArray.length)]+'_'+lastNameNameArray[Math.floor(Math.random() * ciryArray.length)]+'@alert.com',
-                  city: ciryArray[Math.floor(Math.random() * ciryArray.length)],
-                  is_banned: Math.random() >= 0.5
-                }
-            );
-          console.log("fake result: ", result);
-          console.log("merge users result in ajax", result);
+          console.log("UsersAjaxCallback\n", result);
+          // firstNameArray = ['Ion', 'Gigel', 'Ardelean', 'Agarici', 'Borsa'];
+          // lastNameNameArray = ['Ana', 'Maria', 'Alexandra', 'Diana', 'Don'];
+          // ciryArray = ['Oradea', 'Cluj-Napoca', 'Arad', 'Alesd', 'Marghita'];
+          // result = [];
+          // for(var i=0; i<=15; i++)
+          //   result.push(
+          //       {
+          //         first_name: firstNameArray[Math.floor(Math.random() * ciryArray.length)],
+          //         last_name: lastNameNameArray[Math.floor(Math.random() * ciryArray.length)],
+          //         email: firstNameArray[Math.floor(Math.random() * ciryArray.length)]+'_'+lastNameNameArray[Math.floor(Math.random() * ciryArray.length)]+'@alert.com',
+          //         city: ciryArray[Math.floor(Math.random() * ciryArray.length)],
+          //         is_banned: Math.random() >= 0.5
+          //       }
+          //   );
+          // console.log("fake result: ", result);
+          // console.log("merge users result in ajax", result);
           $(function () {
             var content = '';
             for (var i = 0; i < result.length; i++) {
@@ -167,37 +166,38 @@ function makeAjaxCall() {
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) { 
           // alert("Status: " + textStatus); alert("Error: " + errorThrown);
-          console.log("UsersAjaxCallback without response, not my problem.");
-          firstNameArray = ['Ion', 'Gigel', 'Ardelean', 'Agarici', 'Borsa'];
-          lastNameNameArray = ['Ana', 'Maria', 'Alexandra', 'Diana', 'Don'];
-          ciryArray = ['Oradea', 'Cluj-Napoca', 'Arad', 'Alesd', 'Marghita'];
-          result = [];
-          for(var i=0; i<=15; i++)
-            result.push(
-                {
-                  first_name: firstNameArray[Math.floor(Math.random() * ciryArray.length)],
-                  last_name: lastNameNameArray[Math.floor(Math.random() * ciryArray.length)],
-                  email: firstNameArray[Math.floor(Math.random() * ciryArray.length)]+'_'+lastNameNameArray[Math.floor(Math.random() * ciryArray.length)]+'@alert.com',
-                  city: ciryArray[Math.floor(Math.random() * ciryArray.length)],
-                  is_banned: Math.random() >= 0.5
-                }
-            );
-          console.log("fake result: ", result);
-          var content = '';
-          for (var i = 0; i < result.length; i++) {
-            content += '<tr>';
-            content += '<td>' + result[i].first_name +' '+ result[i].last_name + '</td>';
-            content += '<td>' + result[i].email + '</td>';
-            var displayCity = result[i].city ? result[i].city : ' ';
-            content += '<td>' + displayCity + '</td>';
-            var displayText= result[i].is_banned ? 'Unban' : 'Ban',
-                displayType = result[i].is_banned ? 'btn-warning' : 'btn-danger';
-            content += '<td><a href="javascript: ConfirmDialog("'+result[i]._id +'", "'+result[i].is_banned+'")" class="btn btn-xs '+displayType+'">'+displayText+'</a></td>';
-            content += '</tr>';
-
-            // <a href="javascript: ConfirmDialog("5808767737a04d27c0d4a7fc", "false")" class="btn btn-xs btn-danger"></a>
-          }
-          $('#dataTables-content tbody').html(content);
+          console.log("UsersAjaxCallback" + "\nStatus: " + textStatus+"\nError: " + errorThrown);
+          // firstNameArray = ['Ion', 'Gigel', 'Ardelean', 'Agarici', 'Borsa'];
+          // lastNameNameArray = ['Ana', 'Maria', 'Alexandra', 'Diana', 'Don'];
+          // ciryArray = ['Oradea', 'Cluj-Napoca', 'Arad', 'Alesd', 'Marghita'];
+          // result = [];
+          // for(var i=0; i<=15; i++)
+          //   result.push(
+          //       {
+          //         _id: "FAKEID21",
+          //         first_name: firstNameArray[Math.floor(Math.random() * ciryArray.length)],
+          //         last_name: lastNameNameArray[Math.floor(Math.random() * ciryArray.length)],
+          //         email: firstNameArray[Math.floor(Math.random() * ciryArray.length)]+'_'+lastNameNameArray[Math.floor(Math.random() * ciryArray.length)]+'@alert.com',
+          //         city: ciryArray[Math.floor(Math.random() * ciryArray.length)],
+          //         is_banned: Math.random() >= 0.5
+          //       }
+          //   );
+          // console.log("fake result: ", result);
+          // var content = '';
+          // for (var i = 0; i < result.length; i++) {
+          //   content += '<tr>';
+          //   content += '<td>' + result[i].first_name +' '+ result[i].last_name + '</td>';
+          //   content += '<td>' + result[i].email + '</td>';
+          //   var displayCity = result[i].city ? result[i].city : ' ';
+          //   content += '<td>' + displayCity + '</td>';
+          //   var displayText= result[i].is_banned ? 'Unban' : 'Ban',
+          //       displayType = result[i].is_banned ? 'btn-warning' : 'btn-danger';
+          //   content += '<td><a href="javascript: ConfirmDialog("'+result[i]._id +'", "'+result[i].is_banned+'")" class="btn btn-xs '+displayType+'">'+displayText+'</a></td>';
+          //   content += '</tr>';
+          //
+          //   // <a href="javascript: ConfirmDialog("5808767737a04d27c0d4a7fc", "false")" class="btn btn-xs btn-danger"></a>
+          // }
+          // $('#dataTables-content tbody').html(content);
         }   
       });
 
@@ -207,29 +207,29 @@ function makeAjaxCall() {
         url: "/web-routes/StatisticsAjaxCallback",
         data: json,
         success: function(result) {
-          console.log("StatisticsAjaxCallback with response, but is empty.");
+          console.log("StatisticsAjaxCallback\n", result);
           chart.series[0].setData(result.positive_feedback);
           chart.series[1].setData(result.negative_feedback);
           chart.series[2].setData(result.no_feedback);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-          console.log("StatisticsAjaxCallback without response, not my problem.");
+          console.log("StatisticsAjaxCallback" + "\nStatus: " + textStatus+"\nError: " + errorThrown);
           // alert(errMsg);
-          var result = {
-            positive_feedback: [],
-            negative_feedback: [],
-            no_feedback: []
-          };
-          for(var i=1; i<=30; i++) {
-            result.positive_feedback.push([Date.UTC(2016, 10, i), Math.floor(Math.random() * (10 - 0 + 1)) + 0]);
-            result.negative_feedback.push([Date.UTC(2016, 10, i), Math.floor(Math.random() * (10 - 0 + 1)) + 0]);
-            result.no_feedback.push([Date.UTC(2016, 10, i), Math.floor(Math.random() * (10 - 0 + 1)) + 0]);
-          }
-          chart.series[0].setData(result.positive_feedback);
-          chart.series[1].setData(result.negative_feedback);
-          chart.series[2].setData(result.no_feedback);
-          console.log("StatisticsAjaxCallback without response, not my problem.");
-          console.log("Fake result", result);
+          // var result = {
+          //   positive_feedback: [],
+          //   negative_feedback: [],
+          //   no_feedback: []
+          // };
+          // for(var i=1; i<=30; i++) {
+          //   result.positive_feedback.push([Date.UTC(2016, 10, i), Math.floor(Math.random() * (10 - 0 + 1)) + 0]);
+          //   result.negative_feedback.push([Date.UTC(2016, 10, i), Math.floor(Math.random() * (10 - 0 + 1)) + 0]);
+          //   result.no_feedback.push([Date.UTC(2016, 10, i), Math.floor(Math.random() * (10 - 0 + 1)) + 0]);
+          // }
+          // chart.series[0].setData(result.positive_feedback);
+          // chart.series[1].setData(result.negative_feedback);
+          // chart.series[2].setData(result.no_feedback);
+          // console.log("StatisticsAjaxCallback without response, not my problem.");
+          // console.log("Fake result", result);
         }
       });
 
