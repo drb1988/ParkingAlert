@@ -1,7 +1,11 @@
 script(src='/js/highcarts/highcharts.js')
 script(src='/js/highcarts/exporting.js')
 script(src='/js/highcarts/main.js')
-
+script.
+    $(document).ready(function () {
+        console.log("statuu clicked");
+        makeAjaxCall()
+    });
 .row
   .row.chart-container(style='display:none')
    .col-md-12

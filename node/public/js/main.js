@@ -87,7 +87,8 @@ function activeAjaxMap() {
           }
        },
        error: function(XMLHttpRequest, textStatus, errorThrown) { 
-        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+        // alert("Status: " + textStatus); alert("Error: " + errorThrown);
+         console.log("Status: " + textStatus+", Error: " + errorThrown);
        }   
       });
     }

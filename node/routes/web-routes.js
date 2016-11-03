@@ -755,7 +755,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
   		      } else {
   		          callback();
   		         //res.status(200).send(result);
-                res.render('users', { 
+                res.render('default-users', {
                   title: 'Express',
                   users: result
                 });

@@ -31,7 +31,7 @@ block content
                 .modal-footer
                   button.btn.btn-default(type='button', data-dismiss='modal') Close 
         // ./col
-        .col-lg-3.col-xs-6
+        .col-lg-3.col-xs-6#ChartModalClick
           // small box
           .small-box.bg-green(data-toggle='modal', data-target='#ChartModal')
             .inner
@@ -100,7 +100,7 @@ block content
               .modal-content
                 .modal-header
                   button.close(type='button', data-dismiss='modal') ×
-                  h4.modal-title Utilizatori Friendly
+                  h4.modal-title Friendly's users
                 .modal-body
                   iframe(src="/web-routes/users" style='width:100%;height:100%' frameBorder="0")
                     p Your browser does not support iframes./p
@@ -369,4 +369,5 @@ block scripts
     script(src='/dist/js/pages/dashboard.js')
     // AdminLTE for demo purposes
     script(src='/dist/js/demo.js')
+
     

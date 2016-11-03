@@ -9,7 +9,7 @@ block content
     button.btn.btn-info(onclick='changeOpacity()') Schimba opacititatea
   input#pac-input.controls(type='text', placeholder='Search Box')
   button.btn.btn-default#SaveFigure Save figure!
-  select
+  select#SavedShapes
     option Shape 1
     option Shape 2
     option Shape 3
@@ -26,16 +26,298 @@ block scripts
         $( "#floating-panel" ).fadeIn( "slow");
       });
     script.
+        $(document).ready(function(){
+            $.ajax({
+                async: true,
+                type: "POST",
+                data: [],
+                url: "/web-routes/UserShapes",
+                success: function (result) {
+                    var select = $("#SavedShapes");
+                    var result = [
+                        {
+                            type: "circle",
+                            radius: 1461.5543966715109,
+                            center: {
+                                lat: 47.080646,
+                                lng: 21.9242443
+                            }
+                        },
+                        {
+                            type: "circle",
+                            radius: 1421.5543966715109,
+                            center: {
+                                lat: 47.080646,
+                                lng: 21.9242443
+                            }
+                        },
+                        {
+                            type: "circle",
+                            radius: 1411.5543966715109,
+                            center: {
+                                lat: 47.080646,
+                                lng: 21.9242443
+                            }
+                        }
+                    ];
+                    console.log("fake result UserShapes");
+                    select.empty();
+                    select.append('<option value="">Select Shape.</option>');
+                    for (var i = 0; i <= 2; i++)
+                        select.append('<option value="' + i + '">Shape ' + parseInt(i + 1) + '.</option>');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("UserShapes Status: " + textStatus+", Error: " + errorThrown);
+                    var select = $("#SavedShapes");
+                    var result = [
+                        {
+                            type: "circle",
+                            radius: 1461.5543966715109,
+                            center: {
+                                lat: 47.080646,
+                                lng: 21.9242443
+                            }
+                        },
+                        {
+                            type: "circle",
+                            radius: 1421.5543966715109,
+                            center: {
+                                lat: 47.080646,
+                                lng: 21.9242443
+                            }
+                        },
+                        {
+                            type: "polygon",
+                            polygon: [
+                                {
+                                    lat: 47.0670818420858,
+                                    lng: 22.0450973510742
+                                },
+                                {
+                                    lat: 47.0883580733382,
+                                    lng: 22.0450973510742
+                                },
+                                {
+                                    lat: 47.0883580733382,
+                                    lng: 21.9820976257324
+                                },
+                                {
+                                    lat: 47.0670818420858,
+                                    lng: 21.9820976257324
+                                }
+                            ]
+                        }
+                    ];
+                    console.log("fake result UserShapes");
+                    select.empty();
+                    select.append('<option value="">Select Shape</option>');
+                    for(var i=0; i<=2; i++)
+                        select.append('<option value="'+i+'">Shape '+parseInt(i+1)+'</option>');
+                }
+            });
+        });
+        $("#SavedShapes").change(function() {
+            console.log("was changed", this.value);
+            var json = {
+                index_number: this.value
+            }
+            console.log("json pentru zona aleasa", json);
+            $.ajax({
+                async: true,
+                type: "POST",
+                data: json,
+                url: "/web-routes/UserShapes",
+                success: function (result) {
+                    var jsonFakeResult = [
+                        {
+                            type: "circle",
+                            radius: 1461.5543966715109,
+                            center: {
+                                lat: 47.080646,
+                                lng: 21.9242443
+                            }
+                        },
+                        {
+                            type: "circle",
+                            radius: 121.5543966715109,
+                            center: {
+                                lat: 47.080646,
+                                lng: 21.9242443
+                            }
+                        },
+                        {
+                            type: "polygon",
+                            polygon: [
+                                {
+                                    lat: 47.0670818420858,
+                                    lng: 22.0450973510742
+                                },
+                                {
+                                    lat: 47.0883580733382,
+                                    lng: 22.0450973510742
+                                },
+                                {
+                                    lat: 47.0883580733382,
+                                    lng: 21.9820976257324
+                                },
+                                {
+                                    lat: 47.0670818420858,
+                                    lng: 21.9820976257324
+                                }
+                            ]
+                        }
+                    ];
+                    var select = $("#SavedShapes");
+                    var result = jsonFakeResult[json.index_number];
+                    var setDrowingToolNull = function (shape) {
+                        console.log("aici");
+                        if (rectangle != null) {
+                            rectangle.setMap(null);
+                            rectangle = null;
+                        }
+                        if (circle != null) {
+                            circle.setMap(null);
+                            circle = null;
+                        }
+                        if (polygon != null) {
+                            polygon.setMap(null);
+                            polygon = null;
+                        }
+                        return null;
+                    }
+                    if (result.type == "circle") {
+                        console.log("type is circle for: " + 1);
+                        circle = setDrowingToolNull(circle);
+                        circle = new google.maps.Circle({
+                            strokeColor: '#FF0000',
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: '#FF0000',
+                            fillOpacity: 0.35,
+                            map: map,
+                            center: result.center,
+                            radius: result.radius// Math.sqrt(citymap[city].population) * 100
+                        });
+                        makeAjaxCall();
+                    }
+                    if (result.type == "polygon") {
+                        console.log("type is polygon for: " + 1);
+                        polygon = setDrowingToolNull(polygon);
+                        polygon = new google.maps.Polygon({
+                            paths: result.polygon,
+                            strokeColor: '#FF0000',
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: '#FF0000',
+                            fillOpacity: 0.35,
+                            map: map
+                        });
+                        makeAjaxCall();
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("UserShapes Status: " + textStatus + ", Error: " + errorThrown);
+                    var jsonFakeResult = [
+                        {
+                            type: "circle",
+                            radius: 1461.5543966715109,
+                            center: {
+                                lat: 47.080646,
+                                lng: 21.9242443
+                            }
+                        },
+                        {
+                            type: "circle",
+                            radius: 121.5543966715109,
+                            center: {
+                                lat: 47.080646,
+                                lng: 21.9242443
+                            }
+                        },
+                        {
+                            type: "polygon",
+                            polygon: [
+                                {
+                                    lat: 47.0670818420858,
+                                    lng: 22.0450973510742
+                                },
+                                {
+                                    lat: 47.0883580733382,
+                                    lng: 22.0450973510742
+                                },
+                                {
+                                    lat: 47.0883580733382,
+                                    lng: 21.9820976257324
+                                },
+                                {
+                                    lat: 47.0670818420858,
+                                    lng: 21.9820976257324
+                                }
+                            ]
+                        }
+                    ];
+                    var select = $("#SavedShapes");
+                    var result = jsonFakeResult[json.index_number];
+                    var setDrowingToolNull = function (shape) {
+                        console.log("aici");
+                        if (rectangle != null) {
+                            rectangle.setMap(null);
+                            rectangle = null;
+                        }
+                        if (circle != null) {
+                            circle.setMap(null);
+                            circle = null;
+                        }
+                        if (polygon != null) {
+                            polygon.setMap(null);
+                            polygon = null;
+                        }
+                        return null;
+                    }
+                    if(result.type=="circle") {
+                        console.log("type is circle for: "+ 1);
+                        circle = setDrowingToolNull(circle);
+                        circle = new google.maps.Circle({
+                            strokeColor: '#FF0000',
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: '#FF0000',
+                            fillOpacity: 0.35,
+                            map: map,
+                            center: result.center,
+                            radius: result.radius// Math.sqrt(citymap[city].population) * 100
+                        });
+                        makeAjaxCall();
+                    }
+                    if(result.type=="polygon") {
+                        console.log("type is polygon for: "+ 1);
+                        polygon = setDrowingToolNull(polygon);
+                        polygon = new google.maps.Polygon({
+                            paths: result.polygon,
+                            strokeColor: '#FF0000',
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: '#FF0000',
+                            fillOpacity: 0.35,
+                            map: map
+                        });
+                        makeAjaxCall();
+                    }
+                }
+            });
+        })
         $('#SaveFigure').click(function () {
             if (!polygon && !circle && !rectangle)
                 alert("You need to draw a shape to save!");
             else {
+                var answer = confirm("Do you want to set this shape as default?");
                 var json = {
                     type: null,
                     lat: null,
                     lon: null,
                     rad: null,
-                    polygonPoints: []
+                    polygonPoints: [],
+                    is_default: false
                 };
 
                 if (polygon) {
@@ -63,6 +345,9 @@ block scripts
                     json.log = circle.getCenter().lng();
                     json.rad = circle.getRadius() / 63781;
                 }
+                if(answer)
+                   json.is_default = true;
+
                 if (circle || rectangle || polygon)
                     $.ajax({
                         async: true,
@@ -73,9 +358,7 @@ block scripts
                             alert("The shape was set.");
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            // alert("Status: " + textStatus);
-                            // alert("Error: " + errorThrown);
-                            alert("Something wrong happened. Please try again.");
+                            console.log("Something wrong happened. Please try again.");
                         }
                     });
             }
