@@ -260,9 +260,10 @@ exports.getSendersByLocation = function (lat, lon, callback) {
     * Base route,
     * @SaveShape /
     */
+    console.log("body", req.body)
     var type = req.body.type;
     var lat = req.body.lat;
-    var lng = req.body.lng;
+    var lng = req.body.log;
     var rad = req.body.rad;
     var poly = req.body.polygonPoints;
  
