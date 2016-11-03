@@ -155,7 +155,11 @@ function makeAjaxCall() {
               content += '<td>' + displayCity + '</td>';
               var displayText = result[i].is_banned ? 'Unban' : 'Ban',
                   displayType = result[i].is_banned ? 'btn-warning' : 'btn-danger';
-              content += '<td><a href="javascript: ConfirmDialog("' + result[i]._id + '", "' + result[i].is_banned + '")" class="btn btn-xs ' + displayType + '">' + displayText + '</a></td>';
+              if(result[i].is_banned)
+                content += '<td><a href="/web-routes/users/unban/'+result[i]._id+'" class="btn btn-xs ' + displayType + '">' + displayText + '</a></td>';
+              else
+                content += '<td><a href="/web-routes/users/ban/'+result[i]._id+'" class="btn btn-xs ' + displayType + '">' + displayText + '</a></td>';
+              // content += '<td><a href="javascript: ConfirmDialog("' + String(result[i]._id) + '", ' + result[i].is_banned + ')" class="btn btn-xs ' + displayType + '">' + displayText + '</a></td>';
               content += '</tr>';
             }
               // <a href="javascript: ConfirmDialog("5808767737a04d27c0d4a7fc", "false")" class="btn btn-xs btn-danger"></a>
