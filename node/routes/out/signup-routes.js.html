@@ -34,28 +34,53 @@ var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId; 
 var jwt = require('json-web-token');
-var config = require(__dirname + '/../config.js')
+var config = require(__dirname + '/../config.js');
+var nodemailer = require('nodemailer');
+var Crypto = require('crypto');
+var Chance = require('chance');
+var chance = new Chance();
 
+var findUserID = function(db, callback, email) {
+    /**
+    * Function to get userID by email address,
+    * @name findUserToken
+    * @param {String} :userId
+    */ 
+      db.collection('parking').findOne({"email": email},
+        function(err, result) {
+              assert.equal(err, null);
+              if(result != null){
+              callback(result._id);
+              }
+              else {
+                callback("404")
+              }
+        });            
+    }
 
 router.post('/user', function(req, res, next) {
     /**
-    * Route to get users by ID,
+    * Route to add a user,
     * @name /users/:userId
-    * @param {String} :userId
     */
   var userID ="";
+      const secret = 'Friendly';
+      const hash = Crypto.createHmac('sha256', secret).update(req.body.password).digest('hex');
   var insertDocument = function(db, callback) {
    db.collection('parking').insertOne( {
       "first_name": req.body.first_name,
       "last_name": req.body.last_name,
-      "nickname": req.body.nickname,
+      // "nickname": req.body.nickname,
       "email": req.body.email,
       "cars": [],
       "security": [],
-      "driver_license": req.body.driver_license,
-      "photo": req.body.photo,
+      "password": hash,
+      "is_banned": false,
+      "phone_number": req.body.phone_number,
+      // "driver_license": req.body.driver_license,
+      // "photo": req.body.photo,
       "platform": req.body.platform,
-      "user_city": req.body.user_city
+      // "user_city": req.body.user_city
    }, function(err, result) {
     assert.equal(err, null);
     userID = result.insertedId;
@@ -81,6 +106,241 @@ MongoClient.connect(dbConfig.url, function(err, db) {
 });
 });
 
+router.post('/facebookLogin', function(req, res, next) {
+    /**
+    * Route for facebook login,
+    * @name /facebookLogin
+    */
+  var userID ="";
+  var insertDocument = function(db, callback) {
+   db.collection('parking').insertOne( {
+      "first_name": req.body.first_name,
+      "last_name": req.body.last_name,
+      "email": req.body.email,
+      "facebookID": req.body.facebookID,
+      "cars": [],
+      "security": [],
+      "is_banned": false,
+      "platform": req.body.platform
+   }, function(err, result) {
+    assert.equal(err, null);
+    userID = result.insertedId;
+    console.log("Inserted a user in the users collection. "+result.insertedId);
+    callback();
+  });
+};
+MongoClient.connect(dbConfig.url, function(err, db) {
+  assert.equal(null, err);
+  findUserID(db, function(user){console.log(user); 
+      if(user != "404") {
+        var payload = {
+              "user_id"   : user,
+              "email"     : req.body.email
+          };
+        var token = jwt.encode( config.jwt.secret, payload);
+        var result = {
+          "userID": user,
+          "token": token
+        }
+        res.status(200).send(result)
+      }
+      else {
+          insertDocument(db, function() {
+              db.close();
+              var payload = {
+                "user_id"   : userID,
+                "email"     : req.body.email
+            };
+          var token = jwt.encode( config.jwt.secret, payload);
+          var result = {
+            "userID": userID,
+            "token": token
+          }
+              res.status(200).send(result)
+          });
+      }
+  }, req.body.email);
+});
+});
+
+router.post('/sendEmailVerification', function(req, res, next) {
+    /**
+    * Route to send email verification,
+    * @name /sendEmailVerification
+    */
+  var userID ="";
+  var token ="";
+  Crypto.randomBytes(3, function(err, buffer) {
+      token = buffer.toString('hex');
+  });
+  var insertDocument = function(db, callback) {
+   db.collection('tempUsers').insertOne( {
+      "email": req.body.email,
+      "token": token
+      }, function(err, result) {
+    assert.equal(err, null);
+    userID = result.insertedId;
+    console.log("Inserted a temporary user"+result.insertedId);
+    callback();
+  });
+};
+MongoClient.connect(dbConfig.url, function(err, db) {
+  assert.equal(null, err);
+  insertDocument(db, function() {
+      db.close();
+  var result = {
+    "verificationID": userID
+  }   
+  var transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+              user: 'mugurel.mitrut@gmail.com', // Your email id
+              pass: 'banana1!' // Your password
+            }
+          });
+  var mailOptions = {
+            from: '"Parking Alert" &lt;mugurel.mitrut@gmail.com>', // sender address
+            to: req.body.email,// list of receivers
+            subject: 'Notification', // Subject line
+            text: token // plaintext body
+          };
+  transporter.sendMail(mailOptions, function(error, info){if(error){
+              return console.log(error);  
+            } else {
+              return console.log(info);  
+            }});   
+      res.status(200).send(result)
+  });
+});
+});
+
+router.post('/verifyEmail/:userID', function(req, res, next) {
+    /**
+      * Route to verify an email address,
+      * @name /verifyEmail/:userID
+      * @param {String} :userId
+      */
+    if(/[a-f0-9]{24}/.test(req.params.userID)) {
+    var findUser = function(db, callback) {   
+    var o_id = new ObjectId(req.params.userID);
+      db.collection('tempUsers').findOne({"_id": o_id},
+        function(err, result) {
+              console.log(result)
+              assert.equal(err, null);
+              if(result.email==req.body.email &amp;&amp; result.token==req.body.token){
+                res.status(200).send("Success")
+              }
+              else{
+                res.status(200).send("Email verification failure")
+              }
+              callback();
+        });            
+    }
+    MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findUser(db, function() {
+            db.close();
+        });
+      });
+    }
+    else {
+      res.status(201).send("Invalid verification ID")
+    }
+});
+
+router.get('/login/:email&amp;:password', function(req, res, next) {
+    /**
+      * Route to login,
+      * @name /login/:email&amp;:password
+      * @param {String} :email&amp;:password
+      */
+      const secret = 'Friendly';
+      const hash = Crypto.createHmac('sha256', secret).update(req.params.password).digest('hex');
+      var findUser = function(db, callback) {
+      db.collection('parking').findOne({"email": req.params.email},
+        function(err, result) {
+          if(result){
+              assert.equal(err, null);
+              var payload = {
+              "user_id"   : result._id,
+              "email"     : result.email
+              };
+      var token = jwt.encode( config.jwt.secret, payload);
+      var response = {
+        "token": token,
+        "userID": result._id,
+        "user": result
+      }
+      if(result.password == hash){
+          res.status(200).send(response)
+      }
+      else 
+          res.status(202).send({"error": "Invalid password"})
+      callback();
+        }
+      else {
+          res.status(201).send({"error": "Invalid email"})
+      }
+      });            
+    }
+    MongoClient.connect(dbConfig.url, function(err, db) {
+        assert.equal(null, err);
+        findUser(db, function() {
+            db.close();
+        });
+      });
+});
+
+router.get('/resetPassword/:email', function(req, res, next) {
+    /**
+      * Route to reset password,
+      * @name /resetPassword/:email
+      * @param {String} :email
+      */
+      const secret = 'Friendly';
+      var password = chance.integer({min: 100000, max: 999999}).toString();
+      const hash = Crypto.createHmac('sha256', secret).update(password).digest('hex');
+      var resetPassword = function(db, callback) {
+      db.collection('parking').update({"email": req.params.email}, 
+                 {$set: { 
+                          "password": hash    
+                        }
+                 },function(err, result) {
+                assert.equal(err, null);
+                console.log("Inserted the password "+hash);
+                callback();
+          });            
+      }
+      MongoClient.connect(dbConfig.url, function(err, db) {
+          assert.equal(null, err);
+          resetPassword(db, function() {
+              db.close();
+              var result = {
+                "result": "Mail Sent"
+              }   
+              var transporter = nodemailer.createTransport({
+                      service: 'Gmail',
+                      auth: {
+                          user: 'mugurel.mitrut@gmail.com', // Your email id
+                          pass: 'banana1!' // Your password
+                        }
+                      });
+              var mailOptions = {
+                        from: '"Parking Alert" &lt;mugurel.mitrut@gmail.com>', // sender address
+                        to: req.params.email,// list of receivers
+                        subject: 'Notification', // Subject line
+                        text: password // plaintext body
+                      };
+              transporter.sendMail(mailOptions, function(error, info){if(error){
+                          return console.log(error);  
+                        } else {
+                          return console.log(info);  
+                        }});   
+                          res.status(200).send(result)
+                      });
+        });
+});
+
 module.exports = router</code></pre>
         </article>
     </section>
@@ -91,13 +351,13 @@ module.exports = router</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#/users/:userId">/users/:userId</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#/facebookLogin">/facebookLogin</a></li><li><a href="global.html#/login/:email&:password">/login/:email&:password</a></li><li><a href="global.html#/resetPassword/:email">/resetPassword/:email</a></li><li><a href="global.html#/sendEmailVerification">/sendEmailVerification</a></li><li><a href="global.html#/users/:userId">/users/:userId</a></li><li><a href="global.html#/verifyEmail/:userID">/verifyEmail/:userID</a></li><li><a href="global.html#findUserToken">findUserToken</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.1</a> on Thu Oct 06 2016 14:51:02 GMT+0300 (GTB Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.1</a> on Wed Nov 02 2016 13:23:33 GMT+0200 (GTB Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -26,22 +26,104 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>var express = require('express');
+            <pre class="prettyprint source linenums"><code>
+var express = require('express');
 var router = express.Router();
 var dbConfig = require('../db');
 var db = require('mongoskin').db(dbConfig.url);
 var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId; 
+var jwt = require('json-web-token');
+var Chance = require('chance');
+var chance = new Chance();
+var multer = require('multer');
+var nodemailer = require('nodemailer');
+var QRCode = require('qrcode-npm');
+var qr = require('qr-image');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+var storage =   multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './uploads');
+  },
+  filename: function (req, file, callback) {
+  	var i = file.originalname.lastIndexOf('.');
+    var file_extension= (i &lt; 0) ? '' : file.originalname.substr(i);
+    callback(null, file.fieldname + '-' + Date.now()+ file_extension);
+  }
 });
 
-router.get('/chart', function(req, res, next) {
-  res.send('respond with a resource');
-});
+var sendMail = function(email, QRString){
+	/**
+    * Function to send a svg qr code via email,
+    * @name sendMail
+    * @param {String} :email, :QRString
+    */
+	var qr_svg = qr.image(QRString, { type: 'svg' });
+	qr_svg.pipe(require('fs').createWriteStream('uploads/'+email+'carQR.svg'));
+ 	var svg_string = qr.imageSync(QRString, { type: 'svg' });
+	var transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+              user: 'mugurel.mitrut@gmail.com', // Your email id
+              pass: 'banana1!' // Your password
+            }
+          });
+  	var mailOptions = {
+            from: '"Parking Alert" &lt;mugurel.mitrut@gmail.com>', // sender address
+            to: email,// list of receivers
+            subject: 'Notification', // Subject line
+            attachments: [  
+		        {   
+		            filename: email+'carQR.svg',    
+		            path: 'http://82.76.188.13:3000/'+email+'carQR.svg'   
+		          //  cid: cid    
+		        }   
+	        ]   
+          };
+  	transporter.sendMail(mailOptions, function(error, info){if(error){
+              return console.log(error);  
+            } else {
+              return console.log(info);  
+            }});   
+}
+
+var decodeJwt = function (token) {
+	/**
+    * Function to decode a web token,
+    * @name decodeJwt
+    * @param {String} :token
+    */
+	var secret = "Friendly2016";
+	jwt.decode(secret, token, function(err, decode){
+    if (err) {
+      return(err.message);
+    } else {
+      console.log("decode: ",decode);
+     return(decode);
+    }
+  });
+}
+
+var generateCode = function (user)
+ {	
+ 	/**
+    * Function to gemerate a web token,
+    * @name generateCode
+    * @param {String} :user
+    */
+ 	var secret = "Friendly2016"
+ 	var seed = chance.integer({min: 100000, max: 999999}).toString();
+ 	var payload = {
+        "user_id"   : user,
+        "seed"     : seed,
+        "usage": "QRCode"
+    };
+    var result = jwt.encode( secret, payload);
+    return result.value;
+ }
+
+
 
 router.post('/addCar/:userID', function(req, res, next) {
     /**
@@ -59,7 +141,10 @@ router.post('/addCar/:userID', function(req, res, next) {
       								"make": req.body.make,
       								"model": req.body.model,
       								"year": req.body.year,
-      								"enable_notifications": true 
+      								"enable_notifications": req.body.enable_notifications,
+      								"is_owner": true,
+      								"qr_code": req.body.qr_code,
+      								"enable_others": req.body.enable_others 
       							} 
                       }
              },function(err, result) {
@@ -86,7 +171,7 @@ router.post('/addSecurity/:userID', function(req, res, next) {
     var insertSecurity = function(db, callback) {   
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id}, 
-             {$push: { 
+             {$set: { 
                          "security":{ 	
                         			"device_token": req.body.device_token,
                         			"password": req.body.password,
@@ -146,11 +231,13 @@ router.get('/getNotifications/:userID', function(req, res, next) {
     	var findNotifications = function(db, callback) {   
 	 	var o_id = new ObjectId(req.params.userID);
 	 		var result = [];
-		    var cursor =db.collection('notifications').find({$or: [{"receiver_id": o_id}, {"sender_id": o_id}]}).sort([['_id', -1]]);
+		    var cursor =db.collection('notifications').find({$or: [
+		    										{"receiver_id": o_id, "receiver_deleted": false}, 
+		    										{"sender_id": o_id, "sender_deleted": false}]
+		    										}).sort([['_id', -1]]);
 		    cursor.each(function(err, doc) {
 		      assert.equal(err, null);
 		      if (doc != null) {
-		         console.log("doc "+doc);
 		         result.push(doc);
 		      } else {
 		         callback();
@@ -162,6 +249,39 @@ router.get('/getNotifications/:userID', function(req, res, next) {
 		MongoClient.connect(dbConfig.url, function(err, db) {
 			  assert.equal(null, err);
 			  findNotifications(db, function() {
+			      db.close();
+			  });
+			});
+});
+
+router.get('/getNotification/:userID', function(req, res, next) {
+		/**
+    	* Route to get all notifications for a user ID,
+    	* @name /getNotifications/:userID
+    	* @param {String} :userId
+    	*/
+
+    	var findNotification = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	 		var result = [];
+		    var cursor =db.collection('notifications').find({$or: [
+		    										{"receiver_id": o_id, "receiver_deleted": false, "is_active": true}, 
+		    										{"sender_id": o_id, "sender_deleted": false, "is_active": true}]
+		    										}).sort({"create_date": -1}).limit(1);
+		    cursor.each(function(err, doc) {
+		      assert.equal(err, null);
+		      if (doc != null) {
+		         result = doc;
+		      } else {
+		         callback();
+		         res.status(200).send(result)
+		      }
+		   });
+		};	
+
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findNotification(db, function() {
 			      db.close();
 			  });
 			});
@@ -232,12 +352,13 @@ router.post('/updateUser/:userID', function(req, res, next) {
 	    	 {$set: { 
                       "first_name": req.body.first_name,
       				  "last_name": req.body.last_name,
-				      "nickname": req.body.nickname,
+				      // "nickname": req.body.nickname,
 				      "email": req.body.email,
-				      "driver_license": req.body.driver_license,
-				      "photo": req.body.photo,
+				      "phone_number": req.body.phone_number,
+				      // "driver_license": req.body.driver_license,
+				      // "photo": req.body.photo,
 				      "platform": req.body.platform,
-				      "user_city": req.body.user_city
+				      // "user_city": req.body.user_city
                       }
              },
 	    	function(err, result) {
@@ -255,6 +376,48 @@ router.post('/updateUser/:userID', function(req, res, next) {
 			});
 });
 
+var upload = multer({ storage : storage}).single('file');
+
+router.post('/setPicture/:userID', function(req, res) {
+	/**
+    * Route to set a picture for a user,
+    * @name /setPicture/:userID
+    * @param {String} :userId
+    */
+
+    var uploadPicture = function(db, profilePic, callback) {   
+	var o_id = new ObjectId(req.params.userID);
+	    db.collection('parking').update({"_id": o_id},
+	    	 {$set: { 
+                    "profile_picture": "http://82.76.188.13:3000/"+profilePic	
+                    }
+             },
+	    	function(err, result) {
+					    assert.equal(err, null);
+					    console.log("Found user "+req.params.userID);
+					    callback();
+				});            
+		}
+
+	upload(req,res,function(err) {
+		console.log(req.file)
+        if(err) {
+            return res.end("Error uploading file.");
+        }
+        else {
+        	MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  uploadPicture(db, req.file.filename, function() {
+			      db.close();
+			  });
+			});
+        res.send({ 
+                    "profile_picture": "http://82.76.188.13:3000/"+req.file.filename	
+                });
+        }
+    });
+});
+
 router.post('/editCar/:userID&amp;:plates', function(req, res, next) {
     /**
     * Route to edit car information,
@@ -265,18 +428,41 @@ router.post('/editCar/:userID&amp;:plates', function(req, res, next) {
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
              {$set: { 
-                         "cars":[{ 	
-                        			"plates": req.body.plates,
-      								"given_name": req.body.given_name,
-      								"make": req.body.make,
-      								"model": req.body.model,
-      								"year": req.body.year,
-      								"enable_notifications": req.body.enable_notifications 
-      							}]  
+                        "cars.$.plates": req.body.plates,
+      					"cars.$.given_name": req.body.given_name,
+      					"cars.$.make": req.body.make,
+      					"cars.$.model": req.body.model,
+      					"cars.$.year": req.body.year,
                       }
              },function(err, result) {
 				    assert.equal(err, null);
 				    console.log("Inserted a car for the user "+req.params.userID);
+				    callback();
+			});            
+	}
+	MongoClient.connect(dbConfig.url, function(err, db) {
+		  assert.equal(null, err);
+		  deleteCar(db, function() {
+		      db.close();
+		      res.status(200).send(req.params.userID)
+		  });
+		});
+})
+
+router.post('/chanceQR/:userID&amp;:plates', function(req, res, next) {
+    /**
+    * Route to change the QR code for a car,
+    * @name /chanceQR/:userID&amp;:plates
+    * @param {String} :userID&amp;:plates
+    */
+    var deleteCar = function(db, callback) {   
+ 	var o_id = new ObjectId(req.params.userID);
+    db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+             {$set: { 
+                        "cars.$.qr_code": req.body.qr_code 
+                    }
+             },function(err, result) {
+				    assert.equal(err, null);
 				    callback();
 			});            
 	}
@@ -292,17 +478,15 @@ router.post('/editCar/:userID&amp;:plates', function(req, res, next) {
 router.get('/enableNotifications/:userID&amp;:plates', function(req, res, next) {
     /**
     * Route to enable notifications for a car,
-    * @name /editCar/:userID&amp;:plates
+    * @name /enableNotifications/:userID&amp;:plates
     * @param {String} :userID&amp;:plates
     */
     var deleteCar = function(db, callback) {   
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
              {$set: { 
-                         "cars":{ 	
-                        			"enable_notifications": true 
-      							}  
-                      }
+                        "cars.$.enable_notifications": true 
+                    }
              },function(err, result) {
 				    assert.equal(err, null);
 				    console.log("Inserted a car for the user "+req.params.userID);
@@ -318,20 +502,60 @@ router.get('/enableNotifications/:userID&amp;:plates', function(req, res, next) 
 		});
 })
 
+
+
+router.get('/allowOthers/:userID&amp;:plates&amp;:action', function(req, res, next) {
+    /**
+    * Route to enable others for using a car,
+    * @name /allowOthers/:userID&amp;:plates&amp;:action
+    * @param {String} :userID&amp;:plates
+    */
+    var allowOthers = function(db, callback) {   
+ 	var o_id = new ObjectId(req.params.userID);
+ 	if((req.params.action == true) || (req.params.action == "true")){
+ 		console.log("in if");
+ 		db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+             {$set: { 
+                        "cars.$.enable_others": true
+                    }
+             },function(err, result) {
+				    assert.equal(err, null);
+				    callback();
+			});  
+ 	}
+ 	else {
+ 		console.log("in else")
+ 		db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+             {$set: { 
+                        "cars.$.enable_others": false
+                    }
+             },function(err, result) {
+				    assert.equal(err, null);
+				    callback();
+			});  
+ 	}              
+	}
+	MongoClient.connect(dbConfig.url, function(err, db) {
+		  assert.equal(null, err);
+		  allowOthers(db, function() {
+		      db.close();
+		      res.status(200).send(req.params.userID)
+		  });
+		});
+})
+
 router.get('/disableNotifications/:userID&amp;:plates', function(req, res, next) {
     /**
-    * Route to enable notifications for a car,
-    * @name /editCar/:userID&amp;:plates
+    * Route to disable notifications for a car,
+    * @name /disableNotifications/:userID&amp;:plates
     * @param {String} :userID&amp;:plates
     */
     var deleteCar = function(db, callback) {   
  	var o_id = new ObjectId(req.params.userID);
     db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
              {$set: { 
-                         "cars":{ 	
-                        			"enable_notifications": false 
-      							}  
-                      }
+                        "cars.$.enable_notifications": false 
+                    }
              },function(err, result) {
 				    assert.equal(err, null);
 				    console.log("Inserted a car for the user "+req.params.userID);
@@ -346,6 +570,79 @@ router.get('/disableNotifications/:userID&amp;:plates', function(req, res, next)
 		  });
 		});
 })
+
+router.get('/getUsersForCode/:token', function(req, res, next) {
+		/**
+    	* Route to get all users for a QR code,
+    	* @name /getUsersForCode/:token
+    	* @param {String} :token
+    	*/
+
+    	var findNotifications = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	 		var result = [];
+		    var cursor =db.collection('parking').find({"cars.qr_code": req.params.token});
+		    cursor.each(function(err, doc) {
+		      assert.equal(err, null);
+		      if (doc != null) {
+		      	var foundCar = {
+		      		"userID": "",
+		      		"car": "disabled"
+		      	};
+		         foundCar.userID = doc._id;
+		         for (var i = doc.cars.length - 1; i >= 0; i--) {
+		         	console.log(doc.cars[i].enable_notifications + " " + doc.cars[i].qr_code);
+		         	if((doc.cars[i].qr_code == req.params.token) &amp;&amp; ((doc.cars[i].enable_notifications == true) || (doc.cars[i].enable_notifications == "true")))
+		         	{
+		         		foundCar.car = doc.cars[i];
+		         	}
+		         };
+		         result.push(foundCar);
+		      } else {
+		         callback();
+		         res.status(200).send(result)
+		      }
+		   });
+		};	
+
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findNotifications(db, function() {
+			      db.close();
+			  });
+			});
+});
+
+router.get('/generateCarCode/:userID', function(req, res, next) {
+	/**
+    * Route to generate a car code for a user,
+    * @name /generateCarCode/:userID
+    * @param {String} :userID
+    */
+	var carCode = generateCode(req.params.userID);
+	var findUser = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	    db.collection('parking').findOne({"_id": o_id},
+	    	function(err, result) {
+					    assert.equal(err, null);
+					    console.log("Found user "+req.params.userID);
+					    callback(result);
+				});            
+		}
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findUser(db, function(user) {
+			  	console.log(user.email);
+			  	if (user.email){
+			  		sendMail(user.email, carCode);
+			  	}
+			      db.close();
+			  });
+			});
+	res.status(200).send({
+		"carCode": carCode 
+	})
+});
 
 module.exports = router;
 </code></pre>
@@ -358,13 +655,13 @@ module.exports = router;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#/addCar/:userID">/addCar/:userID</a></li><li><a href="global.html#/addSecurity/:userID">/addSecurity/:userID</a></li><li><a href="global.html#/editCar/:userID&:plates">/editCar/:userID&:plates</a></li><li><a href="global.html#/getCars/:userID">/getCars/:userID</a></li><li><a href="global.html#/getNotifications/:userID">/getNotifications/:userID</a></li><li><a href="global.html#/getUser/:userID">/getUser/:userID</a></li><li><a href="global.html#/removeCar/:userID">/removeCar/:userID</a></li><li><a href="global.html#/updateUser/:userID">/updateUser/:userID</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#/addCar/:userID">/addCar/:userID</a></li><li><a href="global.html#/addSecurity/:userID">/addSecurity/:userID</a></li><li><a href="global.html#/allowOthers/:userID&:plates&:action">/allowOthers/:userID&:plates&:action</a></li><li><a href="global.html#/chanceQR/:userID&:plates">/chanceQR/:userID&:plates</a></li><li><a href="global.html#/disableNotifications/:userID&:plates">/disableNotifications/:userID&:plates</a></li><li><a href="global.html#/editCar/:userID&:plates">/editCar/:userID&:plates</a></li><li><a href="global.html#/enableNotifications/:userID&:plates">/enableNotifications/:userID&:plates</a></li><li><a href="global.html#/generateCarCode/:userID">/generateCarCode/:userID</a></li><li><a href="global.html#/getCars/:userID">/getCars/:userID</a></li><li><a href="global.html#/getNotifications/:userID">/getNotifications/:userID</a></li><li><a href="global.html#/getUser/:userID">/getUser/:userID</a></li><li><a href="global.html#/getUsersForCode/:token">/getUsersForCode/:token</a></li><li><a href="global.html#/removeCar/:userID">/removeCar/:userID</a></li><li><a href="global.html#/setPicture/:userID">/setPicture/:userID</a></li><li><a href="global.html#/updateUser/:userID">/updateUser/:userID</a></li><li><a href="global.html#decodeJwt">decodeJwt</a></li><li><a href="global.html#generateCode">generateCode</a></li><li><a href="global.html#sendMail">sendMail</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.1</a> on Thu Oct 06 2016 14:50:55 GMT+0300 (GTB Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.1</a> on Wed Nov 02 2016 13:23:45 GMT+0200 (GTB Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

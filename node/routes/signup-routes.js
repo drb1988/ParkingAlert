@@ -32,9 +32,8 @@ var findUserID = function(db, callback, email) {
 
 router.post('/user', function(req, res, next) {
     /**
-    * Route to get users by ID,
+    * Route to add a user,
     * @name /users/:userId
-    * @param {String} :userId
     */
   var userID ="";
       const secret = 'Friendly';
@@ -82,8 +81,7 @@ MongoClient.connect(dbConfig.url, function(err, db) {
 router.post('/facebookLogin', function(req, res, next) {
     /**
     * Route for facebook login,
-    * @name /users/:userId
-    * @param {String} :userId
+    * @name /facebookLogin
     */
   var userID ="";
   var insertDocument = function(db, callback) {
@@ -139,9 +137,8 @@ MongoClient.connect(dbConfig.url, function(err, db) {
 
 router.post('/sendEmailVerification', function(req, res, next) {
     /**
-    * Route to get users by ID,
-    * @name /users/:userId
-    * @param {String} :userId
+    * Route to send email verification,
+    * @name /sendEmailVerification
     */
   var userID ="";
   var token ="";
@@ -191,8 +188,8 @@ MongoClient.connect(dbConfig.url, function(err, db) {
 
 router.post('/verifyEmail/:userID', function(req, res, next) {
     /**
-      * Route to get and user by ID,
-      * @name /getUser/:userID
+      * Route to verify an email address,
+      * @name /verifyEmail/:userID
       * @param {String} :userId
       */
     if(/[a-f0-9]{24}/.test(req.params.userID)) {
@@ -226,8 +223,8 @@ router.post('/verifyEmail/:userID', function(req, res, next) {
 router.get('/login/:email&:password', function(req, res, next) {
     /**
       * Route to login,
-      * @name /getUser/:userID
-      * @param {String} :userId
+      * @name /login/:email&:password
+      * @param {String} :email&:password
       */
       const secret = 'Friendly';
       const hash = Crypto.createHmac('sha256', secret).update(req.params.password).digest('hex');
@@ -268,9 +265,9 @@ router.get('/login/:email&:password', function(req, res, next) {
 
 router.get('/resetPassword/:email', function(req, res, next) {
     /**
-      * Route to login,
-      * @name /getUser/:userID
-      * @param {String} :userId
+      * Route to reset password,
+      * @name /resetPassword/:email
+      * @param {String} :email
       */
       const secret = 'Friendly';
       var password = chance.integer({min: 100000, max: 999999}).toString();

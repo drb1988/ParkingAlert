@@ -26,6 +26,11 @@ var storage =   multer.diskStorage({
 });
 
 var sendMail = function(email, QRString){
+	/**
+    * Function to send a svg qr code via email,
+    * @name sendMail
+    * @param {String} :email, :QRString
+    */
 	var qr_svg = qr.image(QRString, { type: 'svg' });
 	qr_svg.pipe(require('fs').createWriteStream('uploads/'+email+'carQR.svg'));
  	var svg_string = qr.imageSync(QRString, { type: 'svg' });
@@ -56,6 +61,11 @@ var sendMail = function(email, QRString){
 }
 
 var decodeJwt = function (token) {
+	/**
+    * Function to decode a web token,
+    * @name decodeJwt
+    * @param {String} :token
+    */
 	var secret = "Friendly2016";
 	jwt.decode(secret, token, function(err, decode){
     if (err) {
@@ -69,6 +79,11 @@ var decodeJwt = function (token) {
 
 var generateCode = function (user)
  {	
+ 	/**
+    * Function to gemerate a web token,
+    * @name generateCode
+    * @param {String} :user
+    */
  	var secret = "Friendly2016"
  	var seed = chance.integer({min: 100000, max: 999999}).toString();
  	var payload = {
@@ -337,8 +352,8 @@ var upload = multer({ storage : storage}).single('file');
 
 router.post('/setPicture/:userID', function(req, res) {
 	/**
-    * Route to update user information,
-    * @name /updateUser/:userID
+    * Route to set a picture for a user,
+    * @name /setPicture/:userID
     * @param {String} :userId
     */
 
@@ -503,7 +518,7 @@ router.get('/allowOthers/:userID&:plates&:action', function(req, res, next) {
 
 router.get('/disableNotifications/:userID&:plates', function(req, res, next) {
     /**
-    * Route to enable notifications for a car,
+    * Route to disable notifications for a car,
     * @name /disableNotifications/:userID&:plates
     * @param {String} :userID&:plates
     */
@@ -530,9 +545,9 @@ router.get('/disableNotifications/:userID&:plates', function(req, res, next) {
 
 router.get('/getUsersForCode/:token', function(req, res, next) {
 		/**
-    	* Route to get all notifications for a user ID,
-    	* @name /getNotifications/:userID
-    	* @param {String} :userId
+    	* Route to get all users for a QR code,
+    	* @name /getUsersForCode/:token
+    	* @param {String} :token
     	*/
 
     	var findNotifications = function(db, callback) {   
@@ -571,6 +586,11 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 });
 
 router.get('/generateCarCode/:userID', function(req, res, next) {
+	/**
+    * Route to generate a car code for a user,
+    * @name /generateCarCode/:userID
+    * @param {String} :userID
+    */
 	var carCode = generateCode(req.params.userID);
 	var findUser = function(db, callback) {   
 	 	var o_id = new ObjectId(req.params.userID);

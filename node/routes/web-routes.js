@@ -31,7 +31,7 @@ var storage =   multer.diskStorage({
 
 var findUserZone = function(db, callback, email) {
     /**
-    * Function to get userID by email address,
+    * Function find user zone,
     * @name findUserToken
     * @param {String} :userId
     */ 
@@ -114,7 +114,7 @@ module.exports = function(passport){
   adminRouter.get('/heatmaps_ajax', isAuthenticated, function(req, res, next) {
   /**
     * Base route,
-    * @name /
+    * @heatmaps_ajax /
     */
 //     describe('Array', function() {
 //     describe('#indexOf()', function() {
@@ -155,45 +155,30 @@ module.exports = function(passport){
   // message_type: null });
 });
 
-  adminRouter.post('/SaveShape/',isAuthenticated, function(req, res) {
-    var type = req.body.type;
+  adminRouter.post('/map/', function(req, res) {var type = req.body.type;
     var lat = req.body.lat;
     var lon = req.body.lon;
     var rad = req.body.rad;
     var poly = req.body.polygonPoints;
+    var isDefault = req.body.isDefault;
  
-    saveCoordinates(type, lat, lon, rad, poly, function(callback) {
+    requests.saveCoordinates(type, lat, lon, rad, poly, isDefault, function(callback) {
         res.send(callback);
     });
-  });
-
-    var notifications;
-    var admins;
-    var users;
+});
  
-MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, database) {
-    if(err) throw err;
-    db = database;
-    admins = db.collection('parkingAdmins');
-    users = db.collection('parking');
-    notifications = db.collection('notifications');
+adminRouter.post('/map/senders', function(req, res) {
+    var lat = req.body.lat;
+    var lon = req.body.lon;
  
-    admins.find({}).toArray(function (err, items) {
-     if(items){
-         console.log('admins', items);
-     }
-    });
- 
-    users.find({}).toArray(function (err, items) {
-        if(items){
-            console.log('users', items);
-        }
+    requests.getSendersByLocation(lat, lon, function(callback) {
+        res.send(callback);
     });
 });
  
  
+exports.saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, isDefault, callback) {
  
-var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
     var zone;
     switch (gtype) {
         case 'circle':
@@ -214,7 +199,129 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
             break;
     }
     console.log('zone', zone);
-    admins.update({'_id': new ObjectId('57fceaa64521512290f2b37b')},
+ 
+ 
+    admins.find({}).toArray(function (err, items) {
+        var x = 0;
+        while (x < items.length) {
+            var xid = items[x]["_id"];
+            x++;
+            console.log(xid);
+            admins.update({'_id': new ObjectId(xid)}, { $set: { isDefault:0}})
+        }
+        admins.update({'_id': new ObjectId('57fceaa64521512290f2b37b')},  { $set: { isDefault:1}},
+            {$push: {
+                zone: zone
+            }
+            }
+        );
+        callback({'success': 200});
+    });
+};
+ 
+function unique(arr) {
+    var hash = {}, result = [];
+    for ( var i = 0, l = arr.length; i < l; ++i ) {
+        if ( !hash.hasOwnProperty(arr[i]) ) {
+            hash[ arr[i] ] = true;
+            result.push(arr[i]);
+        }
+    }
+    return result;
+}
+ 
+exports.getSendersByLocation = function (lat, lon, callback) {
+    notifications.find(
+        { location :
+        { $geoIntersects :
+        {
+            $geometry : {
+                type : "Point" ,
+                coordinates : [parseFloat(lat), parseFloat(lon)] }
+        }
+        }
+        }
+    ).toArray(function (err, locations) {
+        if (err) {
+            callback(err);
+        }
+        if (locations) {
+            var senders = [];
+            for (var i = 0; i < locations.length; i++) {
+                senders.push(locations[i].sender_id);
+            }
+            callback(unique(senders));
+        }
+    });
+};
+
+  adminRouter.post('/SaveShape/',isAuthenticated, function(req, res) {
+    /**
+    * Base route,
+    * @SaveShape /
+    */
+    var type = req.body.type;
+    var lat = req.body.lat;
+    var lon = req.body.lon;
+    var rad = req.body.rad;
+    var poly = req.body.polygonPoints;
+ 
+    saveCoordinates(type, lat, lon, rad, poly, req.user._id, function(callback) {
+        res.send(callback);
+    });
+  });
+
+    var notifications;
+    var admins;
+    var users;
+ 
+MongoClient.connect('mongodb://192.168.0.185:27017/local', function(err, database) {
+    if(err) throw err;
+    db = database;
+    admins = db.collection('parkingAdmins');
+    users = db.collection('parking');
+    notifications = db.collection('notifications');
+    
+    adminRouter.get('/AdminsAjaxCallback', isAuthenticated, function(req, res, next) {
+    admins.find({}).toArray(function (err, items) {
+     if(items){
+         console.log('admins', items);
+     }
+    });
+    res.status(200).send(items);
+  });
+ 
+    users.find({}).toArray(function (err, items) {
+        if(items){
+            console.log('users', items);
+        }
+    });
+});
+ 
+ 
+ 
+var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callback) {
+    var zone
+    switch (gtype) {
+        case 'circle':
+             zone = {
+                    'center': new Object({
+                        'lat': lat,
+                        'lng': lon,
+                        'radius': rad
+                    }),
+                 type: gtype
+            };
+            break;
+        case 'polygon':
+             zone = {
+                    'center': polygonPoints,
+                 type: gtype
+            };
+            break;
+    }
+    console.log('zone', zone);
+    admins.update({'_id': new ObjectId(user)},
         {$push: {
            zone: zone
            }
@@ -242,8 +349,19 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
     if(req.user) {
-        console.log("req.user",req.user.zone[0]);
+      //  console.log("req.user",req.user.zone[0]);
       if(!req.body.polygon && !req.body.circle){
+          if(!req.user.zone)
+            {
+              req.body.circle = {
+                  "center": {
+                    "lat": 47.08742303288898,
+                    "lng": 21.92375963288898
+                  },
+                  "radius": 0.029807642305365648
+              } 
+            }
+        else{
         if(req.user.zone[0].type == "circle"){  
           req.body.circle = {
             "center": {
@@ -254,11 +372,15 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
           } 
         }
         if(req.user.zone[0].type == "polygon"){
+          console.log("in poligon");
+          var temporaryPoly = [];
           for(var i=0;i<req.user.zone[0].center.length;i++) {
-              req.body.polygon[i][0]=parseFloat(req.user.zone[0].center[i][0]);
-              req.body.polygon[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
+              temporaryPoly.push([0, 0]);
+              temporaryPoly[i][0]=parseFloat(req.user.zone[0].center[i][0]);
+              temporaryPoly[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
             }
-          }
+          req.body.polygon=temporaryPoly;
+          }}
         }
     }
     var findNotifications = function(db, callback) {   
@@ -313,7 +435,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
   adminRouter.post('/StatisticsAjaxCallback', isAuthenticated, function(req, res, next) {
     /**
       * Base route,
-      * @MapAjaxCallback /
+      * @/StatisticsAjaxCallback
       */
     if(req.body.startDateTime && req.body.endDateTime){
       req.body.startDateTime = new Date(req.body.startDateTime);
@@ -329,8 +451,19 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
     if(req.user) {
-        console.log("req.user",req.user.zone[0]);
+   //     console.log("req.user",req.user.zone[0]);
       if(!req.body.polygon && !req.body.circle){
+          if(!req.user.zone)
+            {
+              req.body.circle = {
+                  "center": {
+                    "lat": "47.08742303288898",
+                    "lng": "21.92375963288898"
+                  },
+                  "radius": "0.029807642305365648"
+              } 
+            }
+          else{
         if(req.user.zone[0].type == "circle"){  
           req.body.circle = {
             "center": {
@@ -341,10 +474,15 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
           } 
         }
         if(req.user.zone[0].type == "polygon"){
+          console.log("in poligon");
+          var temporaryPoly = [];
           for(var i=0;i<req.user.zone[0].center.length;i++) {
-              req.body.polygon[i][0]=parseFloat(req.user.zone[0].center[i][0]);
-              req.body.polygon[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
+              temporaryPoly.push([0, 0]);
+              temporaryPoly[i][0]=parseFloat(req.user.zone[0].center[i][0]);
+              temporaryPoly[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
             }
+          req.body.polygon=temporaryPoly;
+          }   
           }
         }
     }
@@ -471,7 +609,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
   adminRouter.post('/UsersAjaxCallback', function(req, res, next) {
     /**
       * Base route,
-      * @MapAjaxCallback /
+      * @UsersAjaxCallback /
       */
     if(req.body.startDateTime && req.body.endDateTime){
       req.body.startDateTime = new Date(req.body.startDateTime);
@@ -481,14 +619,27 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
       req.body.endDateTime = new Date();
       req.body.startDateTime = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
     }    
-    if(req.body.polygon)
+    if(req.body.polygon){
       for(var i=0;i<req.body.polygon.length;i++) {
         req.body.polygon[i][0]=parseFloat(req.body.polygon[i][0]);
         req.body.polygon[i][1]=parseFloat(req.body.polygon[i][1]);
       }
+    }
     if(req.user) {
-        console.log("req.user",req.user.zone[0]);
+   //     console.log("req.user",req.user.zone[0]);
       if(!req.body.polygon && !req.body.circle){
+      if(!req.user.zone)
+          {
+            req.body.circle = {
+                  "center": {
+                    "lat": 47.08742303288898,
+                    "lng": 21.92375963288898
+                  },
+                  "radius": 0.029807642305365648
+              } 
+            console.log("body", req.body);
+          }
+        else{
         if(req.user.zone[0].type == "circle"){  
           req.body.circle = {
             "center": {
@@ -499,11 +650,16 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
           } 
         }
         if(req.user.zone[0].type == "polygon"){
+          console.log("in poligon");
+          var temporaryPoly = [];
           for(var i=0;i<req.user.zone[0].center.length;i++) {
-              req.body.polygon[i][0]=parseFloat(req.user.zone[0].center[i][0]);
-              req.body.polygon[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
+              temporaryPoly.push([0, 0]);
+              temporaryPoly[i][0]=parseFloat(req.user.zone[0].center[i][0]);
+              temporaryPoly[i][1]=parseFloat(req.user.zone[0].center[i][1]);  
             }
+          req.body.polygon=temporaryPoly;
           }
+        }
         }
     }
       var user_ids = [];
@@ -525,6 +681,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
                       user_ids.push(new ObjectId(doc.reciver_id));
                   }
                 if(req.body.circle) {
+                  console.log("req.body", req.body);
                   var circle = [parseFloat(req.body.circle.center.lat), parseFloat(req.body.circle.center.lng)],
                   radius =  parseFloat(req.body.circle.radius),
                   point = [doc.location.coordinates[0], doc.location.coordinates[1]]
@@ -547,7 +704,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
                             result.push(doc);
                         } else {
                             callback();
-                            console.log("users callback result ", result)
+                        //    console.log("users callback result ", result)
                             res.status(200).send(result);
                         }
                     });
@@ -577,7 +734,6 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
   		/**
       	* Route to get all notification points,
       	* @name /getNotifications
-      	* @param {String} :userId
       	*/
 
       var findNotifications = function(db, callback) {   
@@ -607,8 +763,8 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
   adminRouter.get('/getNotificationsExtended/:offset&:limit', function(req, res, next) {
       /**
         * Route to get notification with offset and limit,
-        * @name /getNotifications
-        * @param {String} :userId
+        * @name /getNotificationsExtended
+        * @param {String} :offset&:limit
         */
 
       var findNotifications = function(db, callback) {   
@@ -638,8 +794,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
   adminRouter.get('/users', function(req, res, next) {
   		/**
       	* Route to get all users,
-      	* @name /getNotifications
-      	* @param {String} :userId
+      	* @name /users
       	*/
 
       var findUsers = function(db, callback) {   
@@ -672,7 +827,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
   adminRouter.get('/users/ban/:userID', function(req, res, next) {
   	/**
       * Route to ban a user,
-      * @name /updateUser/:userID
+      * @name /users/ban/:userID
       * @param {String} :userId
       */
   	var findUser = function(db, callback) {   
@@ -698,8 +853,8 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
 
   adminRouter.get('/users/unban/:userID', function(req, res, next) {
   	/**
-      * Route to ban a user,
-      * @name /updateUser/:userID
+      * Route to unban a user,
+      * @name /users/unban/:userID
       * @param {String} :userId
       */
   	var findUser = function(db, callback) {   
@@ -764,8 +919,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
   adminRouter.post('/addUser', isAuthenticated, function(req, res, next) {
       /**
       * Route to get users by ID,
-      * @name /users/:userId
-      * @param {String} :userId
+      * @name /addUser
       */
     var userID ="";
         const secret = 'Friendly';
@@ -892,7 +1046,7 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, callback) {
 adminRouter.post('/setPicture/:userID', function(req, res) {
   /**
     * Route to update user information,
-    * @name /updateUser/:userID
+    * @name /setPicture/:userID
     * @param {String} :userId
     */
 
