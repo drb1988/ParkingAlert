@@ -262,11 +262,11 @@ exports.getSendersByLocation = function (lat, lon, callback) {
     */
     var type = req.body.type;
     var lat = req.body.lat;
-    var lon = req.body.lon;
+    var lng = req.body.lng;
     var rad = req.body.rad;
     var poly = req.body.polygonPoints;
  
-    saveCoordinates(type, lat, lon, rad, poly, req.user._id, function(callback) {
+    saveCoordinates(type, lat, lng, rad, poly, req.user._id, function(callback) {
         res.send(callback);
     });
   });
