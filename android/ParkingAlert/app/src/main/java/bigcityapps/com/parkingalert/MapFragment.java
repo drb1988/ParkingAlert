@@ -50,6 +50,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -96,8 +98,7 @@ public class MapFragment extends Fragment {
         initComponents(rootView);
         ((MainActivity) getActivity()).setTitle("Notificari");
         Constants.isActivMap=true;
-        Bundle b = this.getArguments();
-        ctx = getContext();
+        Bundle b = this.getArguments();        ctx = getContext();
         prefs = new SecurePreferences(getContext());
         queue = Volley.newRequestQueue(getContext());
         Log.w("meniuu", "oncreate mapfragment");
@@ -324,6 +325,7 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onResume() {
+        MainActivity.active=true;
         if(mProgressStatus==0) {
             Intent main = new Intent(getActivity(), MainActivity.class);
             startActivity(main);
@@ -350,7 +352,7 @@ public class MapFragment extends Fragment {
         }
 
         @Override
-        public View getInfoWindow(Marker marker) {
+        public View getInfoWindow(final Marker marker) {
             ContextThemeWrapper cw = new ContextThemeWrapper(ctx, R.style.Transparent);
             LayoutInflater inflater = (LayoutInflater) cw.getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
             View v = inflater.inflate(R.layout.infoview, null);
@@ -360,16 +362,16 @@ public class MapFragment extends Fragment {
                 final ImageView image = (ImageView) v.findViewById(R.id.image_info_view);
                 TextView tvTitle = ((TextView) v.findViewById(R.id.nr_masina_infoview));
                 tvTitle.setText("Notificat " + mPlates);
-                Log.w("meniu", "image in harta:" + marker.getTitle() + " im:" + imageString);
-//                    Picasso.with(ctx).load(imageString).into(image);
-                Glide.with(ctx).load(imageString).asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        image.setImageDrawable(circularBitmapDrawable);
-                        Log.w("meniuu","in glide:"+imageString);
-                    }
-                });
+                Log.w("meniuu", "image in harta:" + marker.getTitle() + " im:" + imageString);
+                    Picasso.with(cw).load(imageString).error(R.drawable.add_button).into(image, new MarkerCallback(marker,imageString,image));
+//                    Glide.with(ctx).load(imageString).asBitmap().centerCrop().into(new BitmapImageViewTarget(image) {
+//                        protected void setResource(Bitmap resource) {
+//                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+//                            circularBitmapDrawable.setCircular(true);
+//                            image.setImageDrawable(circularBitmapDrawable);
+//                            Log.w("meniuu","in glide:"+imageString);
+//                        }
+//                    });
             }catch (Exception e){
                     Log.w("meniuu","catch la infoview");
                     e.printStackTrace();
@@ -462,4 +464,34 @@ public class MapFragment extends Fragment {
             Log.w("meniuu", "error: errorlistener:" + error);
         }
     };
+
+    public class MarkerCallback implements Callback {
+        Marker marker = null;
+        String URL;
+        ImageView userPhoto;
+
+
+        MarkerCallback(Marker marker, String URL, ImageView userPhoto) {
+            this.marker = marker;
+            this.URL = URL;
+            this.userPhoto = userPhoto;
+        }
+
+        @Override
+        public void onError() {
+            //Log.e(getClass().getSimpleName(), "Error loading thumbnail!");
+        }
+
+        @Override
+        public void onSuccess() {
+            if (marker != null && marker.isInfoWindowShown()) {
+                marker.hideInfoWindow();
+
+                Picasso.with(getActivity())
+                        .load(URL)
+                        .into(userPhoto);
+                marker.showInfoWindow();
+            }
+        }
+    }
 }

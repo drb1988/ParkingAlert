@@ -55,7 +55,6 @@ public class Signup extends Activity implements View.OnClickListener {
         queue = Volley.newRequestQueue(this);
         initComponents();
         FluiEdittext();
-
     }
 
     public void FluiEdittext() {

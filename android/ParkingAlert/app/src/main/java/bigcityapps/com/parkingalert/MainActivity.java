@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         Log.w("meniuu", "onpauza mainactivity implicit si actife e false");
-//        active = false;
+        active = false;
         super.onPause();
     }
 

@@ -1,19 +1,23 @@
 package bigcityapps.com.parkingalert;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -68,12 +72,13 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
     FloatingActionButton fab;
     ArrayList<CarModel> carModelArrayList = new ArrayList<>();
     TextView tvExistQr, tvNoExistQr, tvCancel;
-
+    Activity act;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cars);
         initcomponents();
         ctx = this;
+        act=this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
 //        getCars(prefs.getString("user_id", ""));
@@ -187,8 +192,33 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                 break;
             case R.id.exist_qr:
                 Constants.change=true;
-                Intent addQr = new Intent(Cars.this, AddQR.class);
-                startActivity(addQr);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                        // Should we show an explanation?
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(act, android.Manifest.permission.CAMERA)) {
+
+                            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ctx);
+                            builder.setTitle("Acces locatie");
+                            builder.setPositiveButton(android.R.string.ok, null);
+                            builder.setMessage("Te rog confirma accesul la locatie");//TODO put real question
+                            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                public void onDismiss(DialogInterface dialog) {
+                                    requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 1);
+                                }
+                            });
+                            builder.show();
+                        } else {
+                            ActivityCompat.requestPermissions(act, new String[]{android.Manifest.permission.CAMERA}, 1);
+                        }
+                    } else {
+                        Intent addQr = new Intent(Cars.this, AddQR.class);
+                        startActivity(addQr);
+                    }
+                }
+                else {
+                    Intent addQr = new Intent(Cars.this, AddQR.class);
+                    startActivity(addQr);
+                }
                 break;
             case R.id.no_exist_qr:
                 Constants.change=true;
@@ -494,5 +524,35 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
         };
         queue.add(stringRequest);
     }
+////
+@Override
+public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    switch (requestCode) {
+        case 1: {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                {
+                    Intent addQr = new Intent(Cars.this, AddQR.class);
+                    startActivity(addQr);
+                }
+            } else {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                builder.setTitle("Permisiune");
+                builder.setMessage("Pentru a putea adauga o masina e nevoie de permisiunea la camera. Multumesc");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert1 = builder.create();
+                alert1.show();
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+            }
+            return;
+        }
 
+        // other 'switch' lines to check for other
+        // permissions this app might request
+    }
+}
 }

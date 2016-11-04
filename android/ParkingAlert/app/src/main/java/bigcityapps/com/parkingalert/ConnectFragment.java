@@ -1,5 +1,6 @@
 package bigcityapps.com.parkingalert;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -54,6 +56,8 @@ public class ConnectFragment extends Fragment implements SwipeRefreshLayout.OnRe
     boolean hasCar=false;
     RequestQueue queue;
     private SwipeRefreshLayout swipeRefreshLayout;
+    Context ctx;
+    Activity act;
     public ConnectFragment() {
     }
 
@@ -105,6 +109,12 @@ public class ConnectFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 }
                 return;
             }
+            case 2:
+                Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
+                intent.putExtra("lat", latitude + "");
+                intent.putExtra("lng", longitude + "");
+                startActivity(intent);
+                break;
 
             // other 'switch' lines to check for other
             // permissions this app might request
@@ -117,6 +127,8 @@ public class ConnectFragment extends Fragment implements SwipeRefreshLayout.OnRe
         queue = Volley.newRequestQueue(getContext());
         getCars(prefs.getString("user_id", ""));
         MainActivity.active=true;
+        ctx=getContext();
+        act=getActivity();
         coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinatorLayout);
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
@@ -155,13 +167,43 @@ public class ConnectFragment extends Fragment implements SwipeRefreshLayout.OnRe
                         return;
                     }
                     if(hasCar)
-                    {  if(latitude!=0 && longitude!=0) {
-                        Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
-                        intent.putExtra("lat", latitude + "");
-                        intent.putExtra("lng", longitude + "");
-                        startActivity(intent);
+                    {
+                        if(latitude!=0 && longitude!=0)
+                        {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                                // Should we show an explanation?
+                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, android.Manifest.permission.CAMERA)) {
+
+                                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ctx);
+                                    builder.setTitle("Acces locatie");
+                                    builder.setPositiveButton(android.R.string.ok, null);
+                                    builder.setMessage("Te rog confirma accesul la locatie");//TODO put real question
+                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                        public void onDismiss(DialogInterface dialog) {
+                                            requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 1);
+                                        }
+                                    });
+                                    builder.show();
+                                } else {
+                                    ActivityCompat.requestPermissions(act, new String[]{android.Manifest.permission.CAMERA}, 1);
+                                }
+                            } else {
+                                Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
+                                intent.putExtra("lat", latitude + "");
+                                intent.putExtra("lng", longitude + "");
+                                startActivity(intent);
+                            }
+                        }
+                        else {
+                            Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
+                            intent.putExtra("lat", latitude + "");
+                            intent.putExtra("lng", longitude + "");
+                            startActivity(intent);
+                        }
+
                     }else
-                        Log.w("meniuu","latitude sau long sunt 0");
+                            Toast.makeText(ctx,"Nu exista coordonate, Va rugam asteptati!", Toast.LENGTH_LONG).show();
                     }else
                     {
                         Intent addCar= new Intent(getActivity(), Cars.class);

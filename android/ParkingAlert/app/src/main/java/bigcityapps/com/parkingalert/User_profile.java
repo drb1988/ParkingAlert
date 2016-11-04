@@ -1,8 +1,6 @@
 package bigcityapps.com.parkingalert;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -19,7 +17,6 @@ import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
@@ -62,7 +59,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -223,24 +222,9 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
             TextView biblioteca = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.biblioteca);
             take_photo.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (ContextCompat.checkSelfPermission(ctx, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(act, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                                builder.setTitle("WRITE_EXTERNAL_STORAGE");
-                                builder.setPositiveButton(android.R.string.ok, null);
-                                builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
-                                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                    @TargetApi(Build.VERSION_CODES.M)
-                                    public void onDismiss(DialogInterface dialog) {
-                                        requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                    }
-                                });
-                                builder.show();
-                            } else {
-                                ActivityCompat.requestPermissions(act, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                            }
-                        }else{
+
+                    if(checkRequestPermissions(1))
+                    {
                             String fileName = "Camera_Example.jpg";
                             ContentValues values = new ContentValues();
                             values.put(MediaStore.Images.Media.TITLE, fileName);
@@ -250,51 +234,88 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                             dialog.dismiss();
-                        }
                     }
-                    else{
-                        String fileName = "Camera_Example.jpg";
-                        ContentValues values = new ContentValues();
-                        values.put(MediaStore.Images.Media.TITLE, fileName);
-                        values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
-                        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                        dialog.dismiss();
-                    }
+
+
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        if (ContextCompat.checkSelfPermission(ctx, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                            if (ActivityCompat.shouldShowRequestPermissionRationale(act, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+//                                builder.setTitle("WRITE_EXTERNAL_STORAGE");
+//                                builder.setPositiveButton(android.R.string.ok, null);
+//                                builder.setMessage("Va rugam confirmati salvarea imaginii");//TODO put real question
+//                                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                                    @TargetApi(Build.VERSION_CODES.M)
+//                                    public void onDismiss(DialogInterface dialog) {
+//                                        requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                    }
+//                                });
+//                                builder.show();
+//                            } else {
+//                                ActivityCompat.requestPermissions(act, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                            }
+//                        }else{
+//                            String fileName = "Camera_Example.jpg";
+//                            ContentValues values = new ContentValues();
+//                            values.put(MediaStore.Images.Media.TITLE, fileName);
+//                            values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+//                            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//                            dialog.dismiss();
+//                        }
+//                    }
+//                    else{
+//                        String fileName = "Camera_Example.jpg";
+//                        ContentValues values = new ContentValues();
+//                        values.put(MediaStore.Images.Media.TITLE, fileName);
+//                        values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+//                        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//                        dialog.dismiss();
+//                    }
                 }
             });
             biblioteca.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (ContextCompat.checkSelfPermission(ctx, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(act, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                                builder.setTitle("WRITE_EXTERNAL_STORAGE");
-                                builder.setPositiveButton(android.R.string.ok, null);
-                                builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
-                                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                    @TargetApi(Build.VERSION_CODES.M)
-                                    public void onDismiss(DialogInterface dialog) {requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                    }
-                                });
-                                builder.show();
-                            } else {
-                                ActivityCompat.requestPermissions(act, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                            }
-                        }else{
-                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                            intent.setType("image/*");
-                            startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
-                            dialog.dismiss();
-                        }
-                    }else {
+                    if(checkRequestPermissions(2))
+                    {
                         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         intent.setType("image/*");
                         startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
                         dialog.dismiss();
                     }
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        if (ContextCompat.checkSelfPermission(ctx, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                            if (ActivityCompat.shouldShowRequestPermissionRationale(act, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+//                                builder.setTitle("WRITE_EXTERNAL_STORAGE");
+//                                builder.setPositiveButton(android.R.string.ok, null);
+//                                builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
+//                                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                                    @TargetApi(Build.VERSION_CODES.M)
+//                                    public void onDismiss(DialogInterface dialog) {requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                    }
+//                                });
+//                                builder.show();
+//                            } else {
+//                                ActivityCompat.requestPermissions(act, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                            }
+//                        }else{
+//                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                            intent.setType("image/*");
+//                            startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
+//                            dialog.dismiss();
+//                        }
+//                    }else {
+//                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                        intent.setType("image/*");
+//                        startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
+//                        dialog.dismiss();
+//                    }
                 }
             });
             TextView dialogButton = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.anuler);
@@ -306,6 +327,22 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
             dialog.show();
             break;
 }
+    }
+    public boolean checkRequestPermissions(int check) {
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int permissionWrite = ContextCompat.checkSelfPermission(ctx, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int permissionCamera = ContextCompat.checkSelfPermission(ctx, android.Manifest.permission.CAMERA);
+        if (permissionWrite != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (permissionCamera != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.CAMERA);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), check);
+            return false;
+        }
+        return true;
     }
     public void getUser(String id){
         String url = Constants.URL+"users/getUser/"+id;
@@ -658,7 +695,6 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
         }
         return bitmap;
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -691,9 +727,47 @@ public class User_profile extends Activity implements View.OnClickListener , Sin
                 }
                 return;
             }
-
-            // other 'switch' lines to check for other
-            // permissions this app might request
+            case 2:{
+                Map<String, Integer> perms = new HashMap<>();
+                // Initialize the map with both permissions
+                perms.put(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(android.Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+                // Fill with actual results from user
+                if (grantResults.length > 0) {
+                    for (int i = 0; i < permissions.length; i++)
+                        perms.put(permissions[i], grantResults[i]);
+                    // Check for both permissions
+                    if (perms.get(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && perms.get(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
+                    } else {
+                        //permission is denied (this is the first time, when "never ask again" is not checked) so ask again explaining the usage of permission
+//                        // shouldShowRequestPermissionRationale will return true
+                        //show the dialog or snackbar saying its necessary and try again otherwise proceed with setup.
+//                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.CAMERA)) {
+//                            showDialogOK("E nevoie de permisiunea pentru Camera si Salvarea imaginii in telefon.",
+//                                    new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            switch (which) {
+//                                                case DialogInterface.BUTTON_POSITIVE:
+//                                                    checkAndRequestPermissions();
+//                                                    break;
+//                                                case DialogInterface.BUTTON_NEGATIVE:
+//                                                    // proceed with logic by disabling the related features or quit the app.
+//                                                    break;
+//                                            }
+//                                        }
+//                                    });
+//                        }
+//                        else {
+//                            Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG).show();
+//                        }
+                    }
+                }
+                return;
+            }
         }
+
     }
 }

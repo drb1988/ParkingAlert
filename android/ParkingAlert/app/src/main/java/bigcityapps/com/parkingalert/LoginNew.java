@@ -225,9 +225,9 @@ public class LoginNew extends Activity implements View.OnClickListener {
                             } catch (Exception e) {
                                 try {
                                     JSONObject obj = new JSONObject(json);
-                                    Toast.makeText(ctx, obj.getString("error"), Toast.LENGTH_LONG).show();
+//                                    Toast.makeText(ctx, obj.getString("error"), Toast.LENGTH_LONG).show();
                                     final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                                    builder.setTitle("Email sau parola gresita");
+                                    builder.setTitle(obj.getString("error"));
                                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             dialog.dismiss();
