@@ -431,6 +431,7 @@ block scripts
                         data: json,
                         success: function (result) {
                             alert("The shape was set.");
+                            location.reload();
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
                             console.log("Something wrong happened. Please try again.");
