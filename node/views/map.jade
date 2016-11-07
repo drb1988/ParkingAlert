@@ -30,9 +30,40 @@ block scripts
                 type: "POST",
                 data: [],
                 url: "/web-routes/UserShapes",
-                success: function (result) {
-                    console.log("UserShapes\n", result);
+                success: function (shapesResult) {
+                    console.log("UserShapes\n", shapesResult);
                     var select = $("#SavedShapes");
+                    var jsonEdited = [];
+                    shapesResult.forEach(function(shape){
+                        if(shape.type)
+                            if(shape.type=="circle")
+                                jsonEdited.push({
+                                    type: "circle",
+                                    radius: shape.center.radius,
+                                    center: {
+                                        lat: shape.center.lat,
+                                        lng: shape.center.lng
+                                    }
+                                });
+                            else
+                                jsonEdited.push({
+                                    type: "polygon",
+                                    polygon: shape.center
+                                })
+                    });
+                    var result = jsonEdited;
+                    /*
+                    if(result.type=="circle") {
+                        var jsonEdited = {
+                         type: "circle",
+                         radius: 1461.5543966715109,
+                         center: {
+                         lat: 47.080646,
+                         lng: 21.9242443
+                         }
+                         }
+                    }
+                    */
                     /*
                     var result = [
                         {
@@ -64,7 +95,7 @@ block scripts
                     // console.log("fake result UserShapes");
                     select.empty();
                     select.append('<option value="">Select Shape</option>');
-                    for (var i = 0; i <= result.length; i++)
+                    for (var i = 0; i < result.length; i++)
                         select.append('<option value="' + i + '">Shape ' + parseInt(i + 1) + '.</option>');
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -128,9 +159,43 @@ block scripts
             $.ajax({
                 async: true,
                 type: "POST",
-                data: json,
+                data: [],
                 url: "/web-routes/UserShapes",
-                success: function (result) {
+                success: function (shapesResult) {
+                    console.log("UserShapes\n", shapesResult);
+                    var select = $("#SavedShapes");
+                    var jsonEdited = [];
+                    shapesResult.forEach(function (shape) {
+                        console.log("shapeee", shape);
+                        if (shape.type == "circle")
+                            jsonEdited.push({
+                                type: "circle",
+                                radius: parseFloat(shape.center.radius)*63781,
+                                center: {
+                                    lat: parseFloat(shape.center.lat),
+                                    lng: parseFloat(shape.center.lng)
+                                }
+                            });
+                        else {
+                            var polygonPoints = [];
+                            shape.center.forEach(function (point) {
+                                polygonPoints.push({
+                                    lat: parseFloat(point[0]),
+                                    lng: parseFloat(point[1])
+                                })
+                            });
+
+                            jsonEdited.push({
+                                type: "polygon",
+                                polygon: polygonPoints
+                            });
+                        }
+                    });
+                    console.log("jsonEdited",jsonEdited);
+                    var index = parseInt($("#SavedShapes").val());
+                    var result = jsonEdited[index];
+                    console.log("result typeee final", result);
+                    console.log("result typeee final index", index);
                     /*
                     var jsonFakeResult = [
                         {
@@ -174,7 +239,7 @@ block scripts
                     var select = $("#SavedShapes");
                     var result = jsonFakeResult[json.index_number];
                     */
-                    var setDrowingToolNull = function (shape) {
+                    var setDrowingToolNull = function () {
                         console.log("aici");
                         if (rectangle != null) {
                             rectangle.setMap(null);
@@ -193,6 +258,7 @@ block scripts
                     if (result.type == "circle") {
                         console.log("type is circle for: " + 1);
                         circle = setDrowingToolNull(circle);
+                        console.log("circle pt map", result.circle);
                         circle = new google.maps.Circle({
                             strokeColor: '#FF0000',
                             strokeOpacity: 0.8,
@@ -208,6 +274,8 @@ block scripts
                     if (result.type == "polygon") {
                         console.log("type is polygon for: " + 1);
                         polygon = setDrowingToolNull(polygon);
+                        rectangle = setDrowingToolNull(rectangle);
+                        console.log("polygon pt map", result.polygon);
                         polygon = new google.maps.Polygon({
                             paths: result.polygon,
                             strokeColor: '#FF0000',
@@ -363,6 +431,7 @@ block scripts
                         data: json,
                         success: function (result) {
                             alert("The shape was set.");
+                            location.reload();
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
                             console.log("Something wrong happened. Please try again.");
