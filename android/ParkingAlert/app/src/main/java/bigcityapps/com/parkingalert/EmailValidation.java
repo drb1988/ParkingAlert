@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,14 +28,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -45,7 +45,6 @@ import java.util.HashMap;
 
 import Util.Constants;
 import Util.SecurePreferences;
-import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Sistem1 on 10/10/2016.
@@ -60,14 +59,12 @@ public class EmailValidation extends Activity implements View.OnClickListener {
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     TextInputLayout inputLayout;
-    String mFirstName, mEmail, mFacebookId, mLastName;
+    String mFirstName, mEmail, mFacebookId, mLastName, mPhoneNumber;
     String nume, prenume, parola, verificationId, email;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        Fabric.with(this, new Crashlytics());
-        AppEventsLogger.activateApp(this);
         setContentView(R.layout.email_validation);
         ctx = this;
         prefs = new SecurePreferences(ctx);
@@ -80,6 +77,8 @@ public class EmailValidation extends Activity implements View.OnClickListener {
             parola = (String) b.get("parola");
             verificationId = (String) b.get("verificationId");
             email = (String) b.get("email");
+            mPhoneNumber=b.getString("phone_number");
+            Log.w("meniuu","email in getbundle:"+email+" verificationID:"+verificationId);
         }
 
         initComponents();
@@ -117,7 +116,8 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                                     finish();
                                 }
                             });
-
+                            AlertDialog alert1 = builder.create();
+                            alert1.show();
                             e.printStackTrace();
                         }
 
@@ -216,7 +216,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
     }
 
     public void verifyEmail(final String email, final String token) {
-        String url = Constants.URL + "signup/sendEmailVerification";
+        String url = Constants.URL + "signup/verifyEmail/"+token;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
@@ -227,8 +227,9 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
                 java.util.Map<String, String> params = new HashMap<String, String>();
+                Log.w("meniuu","email:"+email+" token:"+token);
                 params.put("email", email);
-                params.put("token", token);
+                params.put("token", edValidationCode.getText().toString());
                 return params;
             }
         };
@@ -245,6 +246,8 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                     dialog.dismiss();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
 
@@ -260,6 +263,8 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                             JSONObject token = new JSONObject(obj.getString("token"));
                             prefs.edit().putString("user_id", obj.getString("userID")).commit();
                             prefs.edit().putString("token", token.getString("value")).commit();
+                            Log.w("meniuu","response de la signp");
+                            postToken( obj.getString("userID"),token.getString("value"));
                             Intent mainactivity = new Intent(EmailValidation.this, MainActivity.class);
                             mainactivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(mainactivity);
@@ -269,17 +274,14 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                             Toast.makeText(ctx, "erro", Toast.LENGTH_LONG).show();
                         }
                         Log.w("meniuu", "response:post user" + response);
-
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("first_name", nume);
                 params.put("last_name", prenume);
-                params.put("edNickname", nume + prenume);
                 params.put("email", email);
                 params.put("password", parola);
-//                    params.put("photo", "photo");
                 params.put("platform", "Android");
                 return params;
             }
@@ -328,7 +330,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
     }
 
     public void facebookLogin(final String fname, final String lname, final String facebookID, final String email) {
-        String url = Constants.URL + "signup/facebookLogin";
+        String url = Constants.URL  + "signup/facebookLogin";
         Log.w("meniuu", "fname:" + fname + " lname:" + lname + " facebookid:" + facebookID + " email:" + email);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -340,6 +342,7 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                             JSONObject token = new JSONObject(obj.getString("token"));
                             prefs.edit().putString("user_id", obj.getString("userID")).commit();
                             prefs.edit().putString("token", token.getString("value")).commit();
+                            postToken( obj.getString("userID"),token.getString("value"));
                             Intent continuare = new Intent(EmailValidation.this, MainActivity.class);
                             startActivity(continuare);
                             finish();
@@ -362,6 +365,35 @@ public class EmailValidation extends Activity implements View.OnClickListener {
                 String auth_token_string = prefs.getString("token", "");
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    public void postToken(String user_id, final String token) {
+        Log.w("meniuu","user_id:"+user_id+" token:"+token+" device_token:"+prefs.getString("phone_token", ""));
+        prefs = new SecurePreferences(ctx);
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        String url = Constants.URL + "users/addSecurity/"+user_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+//                        postUser();
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("device_token", prefs.getString("phone_token", ""));
+                params.put("password", "nuamideecepltrebeaici");
+                params.put("reg_ip", ip);
+                return params;
+            }
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ token);
                 return params;
             }
         };

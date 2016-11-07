@@ -6,8 +6,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:orientation="horizontal"
+        android:layout_marginTop="2dp"
         android:weightSum="5">
 
         <RelativeLayout
@@ -16,12 +17,12 @@
             android:layout_weight="2">
 
             <ImageView
-                android:layout_marginLeft="10dp"
                 android:id="@+id/poza_listview"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
                 android:src="@drawable/default_image_profile_round" />
 
             <ImageView
@@ -29,12 +30,14 @@
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_marginLeft="5dp"
-                android:src="@drawable/table" />
+                android:layout_marginTop="5dp"
+                />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:layout_weight="1">
 
             <TextView
@@ -53,24 +56,25 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title_listview"
                 android:ellipsize="end"
-                android:singleLine="true"
+                android:maxLines="2"
                 android:text="Scuzama, vin cate de repede pot"
                 android:textColor="@color/gri"
                 android:textSize="15dp" />
 
-            <TextView
-                android:id="@+id/detalii_listview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/mesaj_listview"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="Astepti: 3 minute si 22 secunde"
-                android:textColor="@android:color/black"
-                android:textSize="18dp" />
+            <!--<TextView-->
+                <!--android:id="@+id/detalii_listview"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/mesaj_listview"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="Astepti: 3 minute si 22 secunde"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:textSize="18dp" />-->
         </RelativeLayout>
 
         <RelativeLayout
+            android:padding="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
@@ -90,4 +94,9 @@
                 android:src="@drawable/sageata_dreapta" />
         </RelativeLayout>
     </LinearLayout>
+    <TextView
+        android:id="@+id/txtprenom"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#cccccc" />
 </LinearLayout>

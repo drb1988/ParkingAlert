@@ -1,5 +1,6 @@
 package bigcityapps.com.parkingalert;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,12 +9,14 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -42,7 +46,7 @@ import Util.Utils;
  *
  * Created by fasu on 1 19/09/2016.
  */
-public class ConnectFragment extends Fragment {
+public class ConnectFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     RelativeLayout notificaProprietar;
     double latitude, longitude;
     TextView notify_maker;
@@ -51,11 +55,15 @@ public class ConnectFragment extends Fragment {
     LocationManager locationManager;
     boolean hasCar=false;
     RequestQueue queue;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
+    Context ctx;
+    Activity act;
     public ConnectFragment() {
     }
 
     public void onResume() {
+        Log.w("meniuu","on resume connectfragment");
+        MainActivity.active=true;
         super.onResume();
     }
 
@@ -67,6 +75,7 @@ public class ConnectFragment extends Fragment {
                         .setDuration(Snackbar.LENGTH_INDEFINITE)
                         .setAction("SETARI", new View.OnClickListener() {
                             public void onClick(View view) {
+                                Log.w("meniuu","sa dat click");
                                 startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
                             }
                         });
@@ -75,37 +84,133 @@ public class ConnectFragment extends Fragment {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, 0, locationListenerNetwork);
+                    // permission was granted, yay! do the
+                    // calendar task you need to do.
 
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Permisiune");
+                    builder.setMessage("Ca sa poti folosi aplicatia trebuie sa dai permisiunea la accesul locatiei. Multumesc");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert1 = builder.create();
+                    alert1.show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            case 2:
+                Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
+                intent.putExtra("lat", latitude + "");
+                intent.putExtra("lng", longitude + "");
+                startActivity(intent);
+                break;
+
+            // other 'switch' lines to check for other
+            // permissions this app might request
+        }
+    }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(bigcityapps.com.parkingalert.R.layout.notifica_proprietar, container, false);
+        View rootView = inflater.inflate(R.layout.notifica_proprietar, container, false);
         notify_maker=(TextView)rootView.findViewById(R.id.notify_maker);
         prefs = new SecurePreferences(getContext());
         queue = Volley.newRequestQueue(getContext());
         getCars(prefs.getString("user_id", ""));
+        MainActivity.active=true;
+        ctx=getContext();
+        act=getActivity();
         coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinatorLayout);
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return rootView;
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+                    builder.setTitle("Acces locatie");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setMessage("Te rog confirma accesul la locatie");//TODO put real question
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        public void onDismiss(DialogInterface dialog) {
+                            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                        }
+                    });
+                    builder.show();
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
+            } else {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, 0, locationListenerNetwork);
+            }
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 10, locationListenerNetwork);
+        else
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, 0, locationListenerNetwork);
         notificaProprietar=(RelativeLayout) rootView.findViewById(bigcityapps.com.parkingalert.R.id.relative_notifica_proprietarul);
         notificaProprietar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                Log.w("meniuu","click pe notifica proprietar");
                 if (Utils.isNetworkAvailable(getContext())) {
-                    if (!checkLocation())
+                    if (!checkLocation()) {
+                        Log.w("meniuu","nu are locatie");
                         return;
+                    }
                     if(hasCar)
-                    {  Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
-                        intent.putExtra("lat",latitude+"");
-                        intent.putExtra("lng",longitude+"");
-                        startActivity(intent);
+                    {
+                        if(latitude!=0 && longitude!=0)
+                        {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                                // Should we show an explanation?
+                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, android.Manifest.permission.CAMERA)) {
+
+                                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ctx);
+                                    builder.setTitle("Acces locatie");
+                                    builder.setPositiveButton(android.R.string.ok, null);
+                                    builder.setMessage("Te rog confirma accesul la locatie");//TODO put real question
+                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                        public void onDismiss(DialogInterface dialog) {
+                                            requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 1);
+                                        }
+                                    });
+                                    builder.show();
+                                } else {
+                                    ActivityCompat.requestPermissions(act, new String[]{android.Manifest.permission.CAMERA}, 1);
+                                }
+                            } else {
+                                Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
+                                intent.putExtra("lat", latitude + "");
+                                intent.putExtra("lng", longitude + "");
+                                startActivity(intent);
+                            }
+                        }
+                        else {
+                            Intent intent = new Intent(getActivity(), SimpleScannerActivity.class);
+                            intent.putExtra("lat", latitude + "");
+                            intent.putExtra("lng", longitude + "");
+                            startActivity(intent);
+                        }
+
+                    }else
+                            Toast.makeText(ctx,"Nu exista coordonate, Va rugam asteptati!", Toast.LENGTH_LONG).show();
                     }else
                     {
                         Intent addCar= new Intent(getActivity(), Cars.class);
                         startActivity(addCar);
                     }
                 }else
-                {
+                { Log.w("meniuu","nu este net");
                     Snackbar snackbar = Snackbar
                             .make(coordinatorLayout, "Nu exista conexiune la internet!", Snackbar.LENGTH_LONG)
                             .setDuration(Snackbar.LENGTH_INDEFINITE)
@@ -216,4 +321,13 @@ public class ConnectFragment extends Fragment {
             Log.w("meniuu", "error: errorlistener:" + error);
         }
     };
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+      Intent main= new Intent(getActivity(), MainActivity.class);
+        startActivity(main);
+        swipeRefreshLayout.setRefreshing(false);
+
+    }
 }

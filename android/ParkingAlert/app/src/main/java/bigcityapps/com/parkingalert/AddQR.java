@@ -70,7 +70,6 @@ public class AddQR extends Activity implements ZBarScannerView.ResultHandler {
 //        Log.v(TAG, rawResult.getContents()); // Prints scan results
 //        Log.v(TAG, rawResult.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
 //        postNotification(rawResult.getContents());
-
         Intent harta = new Intent(AddQR.this, ShowQRCode.class);
         harta.putExtra("qrcode", rawResult.getContents());
         startActivity(harta);
@@ -91,8 +90,8 @@ public class AddQR extends Activity implements ZBarScannerView.ResultHandler {
                         builder.setTitle("BH12ZEU a fost notificat cu succes");
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-//                                Intent harta= new Intent(Scan.this, Map.class);
-//                                startActivity(harta);
+//                                Intent map= new Intent(Scan.this, Map.class);
+//                                startActivity(map);
                                 finish();
                             }
                         });
@@ -100,8 +99,8 @@ public class AddQR extends Activity implements ZBarScannerView.ResultHandler {
                         AlertDialog alert1 = builder.create();
                         alert1.show();
                         Log.w("meniuu", "response:post notification" + response);
-//                        Intent harta= new Intent(Scan.this, Map.class);
-//                        startActivity(harta);
+//                        Intent map= new Intent(Scan.this, Map.class);
+//                        startActivity(map);
 //                        finish();
                     }
                 }, ErrorListener) {
@@ -141,6 +140,8 @@ public class AddQR extends Activity implements ZBarScannerView.ResultHandler {
                     finish();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
 }

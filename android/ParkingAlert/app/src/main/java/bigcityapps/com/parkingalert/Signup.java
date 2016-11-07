@@ -55,7 +55,6 @@ public class Signup extends Activity implements View.OnClickListener {
         queue = Volley.newRequestQueue(this);
         initComponents();
         FluiEdittext();
-
     }
 
     public void FluiEdittext() {
@@ -113,7 +112,6 @@ public class Signup extends Activity implements View.OnClickListener {
                     showKeyboard(edEmail);
             }
         });
-
     }
 
     public void initComponents() {
@@ -284,6 +282,8 @@ public class Signup extends Activity implements View.OnClickListener {
                     dialog.dismiss();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
 }

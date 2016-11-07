@@ -9,22 +9,32 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.*;
 
+import Util.Constants;
 import Util.SecurePreferences;
 
 /**
@@ -141,10 +151,13 @@ public class ViewQr extends Activity implements View.OnClickListener {
                 layout_dialog.setVisibility(View.VISIBLE);
                 break;
             case R.id.exist_qr:
-
+                Constants.change=false;
+                Intent addQr = new Intent(ViewQr.this, AddQR.class);
+                startActivity(addQr);
                 break;
             case R.id.no_exist_qr:
-
+                Constants.change=false;
+                generateQr(prefs.getString("user_id",""));
                 break;
 
             case R.id.cancel:
@@ -152,4 +165,38 @@ public class ViewQr extends Activity implements View.OnClickListener {
                 break;
         }
     }
+    public void generateQr(String id) {
+        String url = Constants.URL + "users/generateCarCode/" + id;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            public void onResponse(String response) {
+                String json = response;
+                Log.w("meniuu", "response:generateQR" + response);
+                try {
+                    JSONObject obj = new JSONObject(json);
+                    String carCode = obj.getString("carCode");
+                    Intent showQr=new Intent(ViewQr.this, ShowQRCode.class);
+                    showQr.putExtra("qrcode",carCode);
+                    startActivity(showQr);
+                    finish();
+                } catch (Throwable t) {
+                    Log.w("meniuu", "cacth get questions");
+                    t.printStackTrace();
+                }
+            }
+        }, ErrorListener) {
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                Log.w("meniuu", "token:" + auth_token_string);
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    Response.ErrorListener ErrorListener = new Response.ErrorListener() {
+        public void onErrorResponse(VolleyError error) {
+            Log.w("meniuu", "error: errorlistener:" + error);
+        }
+    };
 }

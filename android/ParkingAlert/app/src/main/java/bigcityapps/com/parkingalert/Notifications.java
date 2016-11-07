@@ -11,10 +11,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,6 +39,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -53,7 +58,7 @@ import Util.SecurePreferences;
 /**
  * Created by fasu on 14/09/2016.
  */
-public class Notificari extends AppCompatActivity implements View.OnClickListener{
+public class Notifications extends AppCompatActivity implements View.OnClickListener{
     static boolean active = false;
 //    ListView listView;
     private CoordinatorLayout coordinatorLayout;
@@ -109,40 +114,6 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
         queue = Volley.newRequestQueue(this);
         initComponents();
 
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                if(modelNotificationArrayList.get(i).getmType()==3) {
-//                    receiverRead(modelNotificationArrayList.get(i).getId());
-//                    Log.w(TAG,"intra in view, mType:"+modelNotificationArrayList.get(i).getmType());
-//                    Intent view_notification = new Intent(Notificari.this, ViewNotification.class);
-//                    view_notification.putExtra("mDetails", modelNotificationArrayList.get(i).getmDetails());
-//                    view_notification.putExtra("notification_id", modelNotificationArrayList.get(i).getId());
-//                    view_notification.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
-//                    startActivity(view_notification);
-//                } else
-//                if(modelNotificationArrayList.get(i).getmType()==2) {
-//                    Intent timer = new Intent(Notificari.this, Timer.class);
-//                    timer.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
-//                    timer.putExtra("mHour", modelNotificationArrayList.get(i).getmHour());
-//                    timer.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
-//                    startActivity(timer);
-//                }else
-//                    if(modelNotificationArrayList.get(i).getmType()==1){
-//                        Intent harta = new Intent(Notificari.this, Map.class);
-//                        harta.putExtra("mHour", modelNotificationArrayList.get(i).getmHour());
-//                        harta.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
-//                        harta.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
-//                        startActivity(harta);
-//                    }else
-//                    if(modelNotificationArrayList.get(i).getmType()==4) {
-//                        Intent timer = new Intent(Notificari.this, TimerSender.class);
-//                        timer.putExtra("time", modelNotificationArrayList.get(i).getEstimeted_time());
-//                        timer.putExtra("mHour", modelNotificationArrayList.get(i).getmHour());
-//                        timer.putExtra("mPlates", modelNotificationArrayList.get(i).getNr_car());
-//                        startActivity(timer);
-//                    }
-//            }
-//        });
         Log.w("meniuu","user_id:"+prefs.getString("user_id",""));
         getNotifications(prefs.getString("user_id",""));
 //         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -177,14 +148,14 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.inapoi:
-                Intent mainactivity= new Intent(Notificari.this, MainActivity.class);
+                Intent mainactivity= new Intent(Notifications.this, MainActivity.class);
                 mainactivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(mainactivity);
                 finish();
                 break;
 
             case R.id.istoric:
-                Intent istoric= new Intent(Notificari.this, History.class);
+                Intent istoric= new Intent(Notifications.this, History.class);
                 istoric.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(istoric);
 //                finish();
@@ -198,7 +169,11 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
         getNotifications(prefs.getString("user_id",""));
         super.onPostResume();
     }
-
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(myReceiver);
+        super.onDestroy();
+    }
     /**
      * notificareAdapter class for listview notificari
      */
@@ -314,9 +289,26 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                         modelNotification.setId(c.getString("_id"));
                         JSONObject answer= new JSONObject(c.getString("answer"));
                         modelNotification.setNr_car(c.getString("vehicle"));
+                        JSONObject location= new JSONObject(c.getString("location"));
+                        try {
+                            JSONObject review = new JSONObject(c.getString("review"));
+                            modelNotification.setFeedback(review.getBoolean("feedback"));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        JSONArray coordinates=new JSONArray(location.getString("coordinates"));
+                        modelNotification.setLat(coordinates.get(0).toString());
+                        modelNotification.setLng(coordinates.get(1).toString());
+                        Log.w("meniuu","lat:"+coordinates.get(0).toString());
 
                         if(c.getString("sender_id").equals(id))
-                        {
+                        {  try {
+                            modelNotification.setPicture(c.getString("receiver_picture"));
+                        }catch (Exception e){
+                            Log.w("meniuu","receiverul nu are poza");
+                            e.printStackTrace();
+                            modelNotification.setPicture("null");
+                        }
                             if(answer.getString("estimated").equals("null"))
                             {
                                 modelNotification.setTitle("Ai trimis notificare");
@@ -325,21 +317,30 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
                                 Date myDate = simpleDateFormat.parse(c.getString("create_date"));
-                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
-                                String data=format1.format(myDate);
-                                modelNotification.setmHour(data);
+                                Log.w("meniuu","data in get:"+myDate);
+//                                Log.w("meniuu","datetime in milisec:"+myDate.getTime());
+//                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+//                                String data=format1.format(myDate);
+                                modelNotification.setmHour(c.getString("create_date"));
                             }else
                             {
                                 modelNotification.setTitle("Ai primit raspuns");
                                 modelNotification.setmMessage("Vin in aprox "+answer.getString("estimated")+" minute");
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
-                                Date myDate = simpleDateFormat.parse(answer.getString("answered_at"));
                                 modelNotification.setEstimeted_time(answer.getString("estimated"));
+                                try{
+                                    JSONArray extesions=new JSONArray(answer.getString("extesions"));
+                                    JSONObject extesions1 = obj.getJSONObject(0);
+                                    modelNotification.setExtended(true);
+                                    modelNotification.setEstimeted_time(extesions1.getString("extension_time"));
+                                    modelNotification.setExtension_time(extesions1.getString("extended_at"));
+                                }catch (Exception e){
+                                    modelNotification.setExtended(false);
+                                    e.printStackTrace();
+                                }
                                 modelNotification.setmType(2);
-                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
-                                String data=format1.format(myDate);
-                                modelNotification.setmHour(data);
+                                modelNotification.setmHour(answer.getString("answered_at"));
                                 if(c.getBoolean("sender_read"))
                                     modelNotification.setSenderRead(true);
                                 else
@@ -347,7 +348,13 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                             }
                         }else
                         if(c.getString("receiver_id").equals(id))
-                        {
+                        { try {
+                            modelNotification.setPicture(c.getString("sender_picture"));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            Log.w("meniuu","senderul nu are poza");
+                            modelNotification.setPicture("null");
+                        }
                             if(answer.getString("estimated").equals("null")) {
                                 modelNotification.setmType(3);
                                 if(c.getBoolean("receiver_read"))
@@ -359,9 +366,11 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
                                 Date myDate = simpleDateFormat.parse(c.getString("create_date"));
-                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
-                                String data=format1.format(myDate);
-                                modelNotification.setmHour(data);
+                                Log.w("meniuu","data in get:"+myDate);
+//                                Log.w("meniuu","datetime in milisec:"+myDate.getTime());
+//                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+//                                String data=format1.format(myDate);
+                                modelNotification.setmHour(c.getString("create_date"));
                         }else
                         {
                             modelNotification.setmType(4);
@@ -369,18 +378,18 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                             modelNotification.setmMessage("Vin in aprox "+answer.getString("estimated")+" minute");
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
-                            try {
-                                Log.w(TAG,"asnwertime:"+answer.getString("answered_at"));
-                                Date myDate = simpleDateFormat.parse(answer.getString("answered_at"));
-                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
-                                String data=format1.format(myDate);
-                                modelNotification.setmHour(data);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                                Log.w("meniuu","catch la date");
-                            }
+                            modelNotification.setmHour(answer.getString("answered_at"));
                             modelNotification.setEstimeted_time(answer.getString("estimated"));
-
+                            try{
+                                JSONArray extesions=new JSONArray(answer.getString("extesions"));
+                                JSONObject extesions1 = obj.getJSONObject(0);
+                                modelNotification.setExtended(true);
+                                modelNotification.setEstimeted_time(extesions1.getString("extension_time"));
+                                modelNotification.setExtension_time(extesions1.getString("extended_at"));
+                            }catch (Exception e){
+                                modelNotification.setExtended(false);
+                                e.printStackTrace();
+                            }
                         }
                         }
                         modelNotificationArrayList.add(modelNotification);
@@ -484,13 +493,11 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                 super(view);
 
                 titlu=(TextView) view.findViewById(R.id.title_listview);
-                detalii=(TextView) view.findViewById(R.id.detalii_listview);
+//                detalii=(TextView) view.findViewById(R.id.detalii_listview);
                 mesaj=(TextView) view.findViewById(R.id.mesaj_listview);
                 ora=(TextView) view.findViewById(R.id.ora_listview);
                 poza=(ImageView) view.findViewById(R.id.poza_listview);
                 bagde=(ImageView) view.findViewById(R.id.badge_listview);
-
-                poza=(ImageView) view.findViewById(R.id.poza_lista_masini);
             }
         }
 
@@ -505,82 +512,131 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
             return new MyViewHolder(itemView);
         }
 
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, final int position) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    if(modelNotificationArrayList.get(position).getmType()==3) {
-                        receiverRead(modelNotificationArrayList.get(position).getId());
-                        Log.w(TAG,"intra in view, mType:"+modelNotificationArrayList.get(position).getmType());
-                        Intent view_notification = new Intent(Notificari.this, ViewNotification.class);
-                        view_notification.putExtra("mDetails", modelNotificationArrayList.get(position).getmDetails());
-                        view_notification.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
-                        view_notification.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
-                        startActivity(view_notification);
-                    } else
-                    if(modelNotificationArrayList.get(position).getmType()==2) {
-                        senderRead(modelNotificationArrayList.get(position).getId());
-                        Intent timer = new Intent(Notificari.this, Timer.class);
-                        timer.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
-                        timer.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
-                        timer.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
-                        startActivity(timer);
-                    }else
-                    if(modelNotificationArrayList.get(position).getmType()==1){
-                        Intent harta = new Intent(Notificari.this, Map.class);
-                        harta.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
-                        harta.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
-                        harta.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
-                        startActivity(harta);
-                    }else
-                    if(modelNotificationArrayList.get(position).getmType()==4) {
-                        Intent timer = new Intent(Notificari.this, TimerSender.class);
-                        timer.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
-                        timer.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
-                        timer.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
-                        timer.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
-                        startActivity(timer);
-                    }
-                }
-            });
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+//            holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                public void onClick(View view) {
+//                    if(modelNotificationArrayList.get(position).getmType()==3) {
+//                        Log.w("meniuu","view notification");
+//                        receiverRead(modelNotificationArrayList.get(position).getId());
+//                        Intent view_notification = new Intent(Notifications.this, ViewNotification.class);
+//                        view_notification.putExtra("mDetails", modelNotificationArrayList.get(position).getmDetails());
+//                        view_notification.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
+//                        view_notification.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
+//                        startActivity(view_notification);
+//                        NotificationManager notifManager= (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+//                        notifManager.cancelAll();
+//                    } else
+//                    if(modelNotificationArrayList.get(position).getmType()==2) {
+//                        senderRead(modelNotificationArrayList.get(position).getId());
+//                        Log.w("meniuu","timer_sender");
+//                        Intent timer_sender = new Intent(Notifications.this, Timer.class);
+//                        timer_sender.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
+//                        timer_sender.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
+//                        timer_sender.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
+//                        timer_sender.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
+//                        timer_sender.putExtra("lat", modelNotificationArrayList.get(position).getLat());
+//                        timer_sender.putExtra("lng", modelNotificationArrayList.get(position).getLng());
+//                        timer_sender.putExtra("image", modelNotificationArrayList.get(position).getPicture());
+//                        startActivity(timer_sender);
+//                    }else
+//                    if(modelNotificationArrayList.get(position).getmType()==1){
+//                        Log.w("meniuu","map");
+//                        Intent map = new Intent(Notifications.this, Map.class);
+//                        map.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
+//                        map.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
+//                        map.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
+//                        map.putExtra("lat", modelNotificationArrayList.get(position).getLat());
+//                        map.putExtra("lng", modelNotificationArrayList.get(position).getLng());
+//                        map.putExtra("image", modelNotificationArrayList.get(position).getPicture());
+//
+//                        startActivity(map);
+//                    }else
+//                    if(modelNotificationArrayList.get(position).getmType()==4) {
+//                        Log.w("meniuu","timersend");
+//                        Intent timer_sender = new Intent(Notifications.this, TimerSender.class);
+//                        timer_sender.putExtra("time", modelNotificationArrayList.get(position).getEstimeted_time());
+//                        timer_sender.putExtra("mHour", modelNotificationArrayList.get(position).getmHour());
+//                        timer_sender.putExtra("mPlates", modelNotificationArrayList.get(position).getNr_car());
+//                        timer_sender.putExtra("notification_id", modelNotificationArrayList.get(position).getId());
+//                        timer_sender.putExtra("lat", modelNotificationArrayList.get(position).getLat());
+//                        timer_sender.putExtra("lng", modelNotificationArrayList.get(position).getLng());
+//                        timer_sender.putExtra("image", modelNotificationArrayList.get(position).getPicture());
+//                        Log.w("meniuu","image:"+ modelNotificationArrayList.get(position).getPicture());
+//                        startActivity(timer_sender);
+//                    }
+//                }
+//            });
             final ModelNotification item = moviesList.get(position);
             holder.titlu.setText(item.getTitle());
-            holder.detalii.setText(item.getmDetails());
-            holder.mesaj.setText(item.getmMessage());
-
+//            holder.detalii.setText(item.getmDetails());
+            if(item.isFeedback())
+                holder.mesaj.setText("Notificare rezolvata");
+            else
+                holder.mesaj.setText("Notificare nerezolvata");
+            if(!item.getPicture().equals("null")) {
+                Log.w("meniuu","picture:"+item.getPicture());
+                Glide.with(ctx).load(item.getPicture()).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.poza) {
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        holder.poza.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+            }
+            else
+                holder.poza.setImageResource(R.drawable.default_image_profile_round);
             if(item.getmType()==2) {
                 if(item.isSenderRead()==false) {
                     holder.bagde.setImageResource(R.drawable.cerculet_notif);
-                    Log.w("meniuu","cerc");
+                    holder.titlu.setTypeface(null, Typeface.BOLD);
+                    holder.itemView.setBackgroundColor(Color.WHITE);
                 }
                 else {
                     holder.bagde.setImageResource(android.R.color.transparent);
-                    Log.w("meniuu","transarent");
+                    holder.titlu.setTypeface(null, Typeface.NORMAL);
+                    holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
                 }
             }
             if(item.getmType()==3) {
                 if(item.isReceiverRead()==false) {
                     holder.bagde.setImageResource(R.drawable.cerculet_notif);
-                    Log.w("meniuu","cerc");
+                    holder.titlu.setTypeface(null, Typeface.BOLD);
+                    holder.itemView.setBackgroundColor(Color.WHITE);
                 }
                 else {
                     holder.bagde.setImageResource(android.R.color.transparent);
-                    Log.w("meniuu","transarent");
+                    holder.titlu.setTypeface(null, Typeface.NORMAL);
+                    holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
                 }
             }
-            if(item.getmType()==1 )
+            if(item.getmType()==1 ) {
                 holder.bagde.setImageResource(android.R.color.transparent);
-            if(item.getmType()==4)
+                holder.titlu.setTypeface(null, Typeface.NORMAL);
+                holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
+            }
+            if(item.getmType()==4) {
                 holder.bagde.setImageResource(R.drawable.ic_back);
-            Log.w("meniu","item.getora:"+item.getmHour());
+                holder.titlu.setTypeface(null, Typeface.NORMAL);
+                holder.itemView.setBackgroundColor(Color.parseColor("#eaeaea"));
+            }
 
-//            String [] split= item.getmHour().split("T");
-//            Log.w("meniuu","split:"+split.length);
-            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
+//            Date myDate = simpleDateFormat.parse(answer.getString("answered_at"));
+//            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+//             String data=format1.format(myDate);
+
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EEST"));
+            try {
+            Date myDate = simpleDateFormat.parse(item.getmHour());
+                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                String data=format1.format(myDate);
+
+//            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
             SimpleDateFormat format2 = new SimpleDateFormat("HH:mm");
             Date date = null;
-            try {
-                date = format1.parse(item.getmHour());
+
+                date = format1.parse(data);
                 String ora=format2.format(date);
                 holder.ora.setText(ora);
             } catch (Exception e) {
@@ -594,8 +650,17 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
 
         }
         public void removeItem(int position) {
-
             deleteNotificationSender(modelNotificationArrayList.get(position).getId());
+            moviesList.remove(position);
+            if (moviesList.size() == 0) {
+                notifRecyclerView.setVisibility(View.INVISIBLE);
+            } else {
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, moviesList.size());
+            }
+        }
+        public void removeItemReceiver(int position) {
+            deleteNotificationReceiver(modelNotificationArrayList.get(position).getId());
             moviesList.remove(position);
             if (moviesList.size() == 0) {
                 notifRecyclerView.setVisibility(View.INVISIBLE);
@@ -610,8 +675,34 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    public void deleteNotificationSender(final String id){
+    public void deleteNotificationReceiver(final String id){
         String url = Constants.URL+"notifications/receiverDeleted/"+id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+                        Log.w("meniuu", "response:delete notificationSender" + response);
+                        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Notificarea a fost stearsa!", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                    }
+                }, ErrorListener) {
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("plates", plates);
+//                return params;
+//            }
+
+            public java.util.Map getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer "+  auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    public void deleteNotificationSender(final String id){
+        String url = Constants.URL+"notifications/senderDeleted/"+id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
@@ -646,9 +737,10 @@ public class Notificari extends AppCompatActivity implements View.OnClickListene
                 int position = viewHolder.getAdapterPosition();
 
                 if (direction == ItemTouchHelper.LEFT){
-                    if(modelNotificationArrayList.get(position).getmType()==3||modelNotificationArrayList.get(position).getmType()==4) {
+                    if(modelNotificationArrayList.get(position).getmType()==1 || modelNotificationArrayList.get(position).getmType()==2) {
                         adapter.removeItem(position);
-                    }
+                    }else
+                        adapter.removeItemReceiver(position);
                 } else {
 //                    removeView();
 //                    edit_position = position;

@@ -13,6 +13,44 @@ public class ModelNotification {
     boolean extended;
     boolean receiverRead;
 
+    public boolean isFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(boolean feedback) {
+        this.feedback = feedback;
+    }
+
+    boolean feedback;
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    String picture;
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
+
+    String lat, lng;
+
     public boolean isSenderRead() {
         return senderRead;
     }

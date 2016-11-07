@@ -1,37 +1,28 @@
 package bigcityapps.com.parkingalert;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -69,7 +60,8 @@ public class ModifyCar extends Activity implements View.OnClickListener{
     final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
     final int ACTIVITY_SELECT_IMAGE = 1234;
     RequestQueue queue;
-    Switch receive_notification, all_drive;
+    String mPLatesOriginal;
+    TextInputLayout inputCar;
 
     /**
      *
@@ -83,35 +75,132 @@ public class ModifyCar extends Activity implements View.OnClickListener{
         queue = Volley.newRequestQueue(this);
         act=this;
         initComponents();
+        FluiEdittext();
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
-            edname.setText(b.getString("edname"));
-            edNr.setText(b.getString("edNr"));
-            edMaker.setText(b.getString("edMaker"));
-            edModel.setText(b.getString("edModel"));
-            edYear.setText(b.getString("edYear"));
-            edYear.setText(b.getString("edYear"));
+
+            if(!b.getString("edNr").equals("null")) {
+                edNr.setText(b.getString("edNr"));
+                mPLatesOriginal=b.getString("edNr");
+            }
+
+            if(!b.getString("edMaker").equals("null"))
+                edMaker.setText(b.getString("edMaker"));
+            if(!b.getString("edModel").equals("null"))
+                edModel.setText(b.getString("edModel"));
+            if(!b.getString("edYear").equals("null"))
+                edYear.setText(b.getString("edYear"));
+            if(!b.getString("edname").equals("null"))
+                edname.setText(b.getString("edname"));
         }
     }
+    private boolean validateNr() {
+        String email = edNr.getText().toString().trim();
+        if (email.isEmpty() || email.length()<6) {
+            inputCar.setError(getString(R.string.err_msg_car_nr));
+            requestFocus(edNr);
+            return false;
+        } else {
+            inputCar.setErrorEnabled(false);
+        }
+        return true;
+    }
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+    private class MyTextWatcher implements TextWatcher {
+        private View view;
 
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()) {
+                case R.id.et_nr:
+                    validateNr();
+                    break;
+            }
+        }
+    }
     /**
      * initializing components
      */
     public void initComponents(){
-        rlBack =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.inapoi_adauga_masina);
-        rlOk =(RelativeLayout)findViewById(bigcityapps.com.parkingalert.R.id.gata_adauga_masina);
+        inputCar=(TextInputLayout)findViewById(R.id.input_nr);
+        rlBack =(RelativeLayout)findViewById(R.id.inapoi_adauga_masina);
+        rlOk =(RelativeLayout)findViewById(R.id.gata_adauga_masina);
         rlOk.setOnClickListener(this);
         rlBack.setOnClickListener(this);
-        edname =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_numele_masina);
-        edNr =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_nr);
-        edMaker =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_producator);
-        edModel =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_model);
-        edYear =(EditText) findViewById(bigcityapps.com.parkingalert.R.id.et_an_productie);
-        ivImageCar =(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
-        ivImageCar.setOnClickListener(this);
-        receive_notification=(Switch)findViewById(R.id.all_drive);
-        all_drive=(Switch)findViewById(R.id.all_drive);
+        edname =(EditText) findViewById(R.id.et_numele_masina);
+        edNr =(EditText) findViewById(R.id.et_nr);
+        edNr.addTextChangedListener(new MyTextWatcher(edNr));
+        edMaker =(EditText) findViewById(R.id.et_producator);
+        edModel =(EditText) findViewById(R.id.et_model);
+        edYear =(EditText) findViewById(R.id.et_an_productie);
+//        ivImageCar =(ImageView)findViewById(bigcityapps.com.parkingalert.R.id.poza_masina);
+//        ivImageCar.setOnClickListener(this);
+    }
+
+    public void  FluiEdittext() {
+        edname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edname);
+            }
+        });
+        edNr.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edNr);
+            }
+        });
+        edMaker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edMaker);
+            }
+        });
+        edModel.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edModel);
+            }
+        });
+        edYear.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else
+                    showKeyboard(edYear);
+            }
+        });
+    }
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public void showKeyboard(EditText ed) {
+        InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboard.showSoftInput(ed, 0);
     }
 
     /**
@@ -126,98 +215,98 @@ public class ModifyCar extends Activity implements View.OnClickListener{
             case R.id.gata_adauga_masina:
                 UpdateCar(prefs.getString("user_id",""));
                 break;
-            case R.id.poza_masina:
-                final Dialog dialog = new Dialog(ctx);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                dialog.setContentView(bigcityapps.com.parkingalert.R.layout.dialog_user_profile);
-
-                TextView take_photo = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.take_photo);
-                TextView biblioteca = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.biblioteca);
-                take_photo.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View view) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
-                                    builder.setPositiveButton(android.R.string.ok, null);
-                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
-                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                        @TargetApi(Build.VERSION_CODES.M)
-                                        public void onDismiss(DialogInterface dialog) {
-                                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                        }
-                                    });
-                                    builder.show();
-                                } else {
-                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                }
-                            }else{
-                                String fileName = "Camera_Example.jpg";
-                                ContentValues values = new ContentValues();
-                                values.put(MediaStore.Images.Media.TITLE, fileName);
-                                values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
-                                imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                                dialog.dismiss();
-                            }
-                        }
-                        else{
-                            String fileName = "Camera_Example.jpg";
-                            ContentValues values = new ContentValues();
-                            values.put(MediaStore.Images.Media.TITLE, fileName);
-                            values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
-                            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                biblioteca.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View view) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
-                                    builder.setPositiveButton(android.R.string.ok, null);
-                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
-                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                        @TargetApi(Build.VERSION_CODES.M)
-                                        public void onDismiss(DialogInterface dialog) {requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                        }
-                                    });
-                                    builder.show();
-                                } else {
-                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                }
-                            }else{
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType("image/*");
-                                startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
-                                dialog.dismiss();
-                            }
-                        }else {
-                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                            intent.setType("image/*");
-                            startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                TextView dialogButton = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.anuler);
-                dialogButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-                break;
+//            case R.id.poza_masina:
+//                final Dialog dialog = new Dialog(ctx);
+//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//                dialog.setContentView(bigcityapps.com.parkingalert.R.layout.dialog_user_profile);
+//
+//                TextView take_photo = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.take_photo);
+//                TextView biblioteca = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.biblioteca);
+//                take_photo.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View view) {
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+//                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
+//                                    builder.setPositiveButton(android.R.string.ok, null);
+//                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
+//                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                                        @TargetApi(Build.VERSION_CODES.M)
+//                                        public void onDismiss(DialogInterface dialog) {
+//                                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                        }
+//                                    });
+//                                    builder.show();
+//                                } else {
+//                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                }
+//                            }else{
+//                                String fileName = "Camera_Example.jpg";
+//                                ContentValues values = new ContentValues();
+//                                values.put(MediaStore.Images.Media.TITLE, fileName);
+//                                values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+//                                imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//                                dialog.dismiss();
+//                            }
+//                        }
+//                        else{
+//                            String fileName = "Camera_Example.jpg";
+//                            ContentValues values = new ContentValues();
+//                            values.put(MediaStore.Images.Media.TITLE, fileName);
+//                            values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+//                            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//                            dialog.dismiss();
+//                        }
+//                    }
+//                });
+//                biblioteca.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View view) {
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                                if (ActivityCompat.shouldShowRequestPermissionRationale(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+//                                    builder.setTitle("WRITE_EXTERNAL_STORAGE");
+//                                    builder.setPositiveButton(android.R.string.ok, null);
+//                                    builder.setMessage("please confirm WRITE_EXTERNAL_STORAGE");//TODO put real question
+//                                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                                        @TargetApi(Build.VERSION_CODES.M)
+//                                        public void onDismiss(DialogInterface dialog) {requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                        }
+//                                    });
+//                                    builder.show();
+//                                } else {
+//                                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                                }
+//                            }else{
+//                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                                intent.setType("image/*");
+//                                startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
+//                                dialog.dismiss();
+//                            }
+//                        }else {
+//                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                            intent.setType("image/*");
+//                            startActivityForResult(intent, ACTIVITY_SELECT_IMAGE);
+//                            dialog.dismiss();
+//                        }
+//                    }
+//                });
+//                TextView dialogButton = (TextView) dialog.findViewById(bigcityapps.com.parkingalert.R.id.anuler);
+//                dialogButton.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View v) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                dialog.show();
+//                break;
         }
     }
 
@@ -226,8 +315,9 @@ public class ModifyCar extends Activity implements View.OnClickListener{
      * @param id
      */
     public void UpdateCar(final String id){
-        String url = Constants.URL + "users/editCar/" + id + "&" + edNr;
-        if( edNr.getText().length()==0 )
+        String url = Constants.URL + "users/editCar/" + id + "&" + mPLatesOriginal;
+        Log.w("meniuu","url:"+url);
+        if( edNr.getText().toString().trim().length()<6 )
             Toast.makeText(ctx,"Trebuie sa completezi numarul de inmatriculare",Toast.LENGTH_LONG).show();
         else{
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -235,18 +325,19 @@ public class ModifyCar extends Activity implements View.OnClickListener{
                         public void onResponse(String response) {
                             String json = response;
                             Log.w("meniuu", "response:post user" + response);
+                            Intent cars=new Intent(ModifyCar.this,Cars.class);
+                            cars.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(cars);
                             finish();
                         }
                     }, ErrorListener) {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("plates", edNr.getText().toString());
+                    params.put("plates", edNr.getText().toString().trim());
                     params.put("given_name", edname.getText().toString().length()>0?edname.getText().toString():"Masina lui");
                     params.put("make", edMaker.getText().toString().length()>0?edMaker.getText().toString():"");
-                    params.put("edModel", edModel.getText().toString().length()>0?edModel.getText().toString():"");
+                    params.put("model", edModel.getText().toString().length()>0?edModel.getText().toString():"");
                     params.put("year", edYear.getText().toString().length()>0?edYear.getText().toString():"");
-                    params.put("enable_notifications", receive_notification.isChecked()+"");
-                    params.put("enable_others", all_drive.isChecked()+"");
                     return params;
                 }
 
@@ -426,5 +517,41 @@ public class ModifyCar extends Activity implements View.OnClickListener{
         }
         return directory.getAbsolutePath();
     }
-
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+//        switch (requestCode) {
+//            case 1: {
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    String fileName = "Camera_Example.jpg";
+//                    ContentValues values = new ContentValues();
+//                    values.put(MediaStore.Images.Media.TITLE, fileName);
+//                    values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+//                    imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//                    // permission was granted, yay! do the
+//                    // calendar task you need to do.
+//
+//                } else {
+//                    final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ctx);
+//                    builder.setTitle("Permisiune");
+//                    builder.setMessage("Ca sa poti folosi aplicatia trebuie sa dai permisiunea la accesul locatiei. Multumesc");
+//                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    android.support.v7.app.AlertDialog alert1 = builder.create();
+//                    alert1.show();
+//                    // permission denied, boo! Disable the
+//                    // functionality that depends on this permission.
+//                }
+//                return;
+//            }
+//
+//            // other 'switch' lines to check for other
+//            // permissions this app might request
+//        }
+//    }
 }

@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -28,14 +30,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.appindexing.AppIndex;
@@ -49,7 +49,6 @@ import java.util.HashMap;
 
 import Util.Constants;
 import Util.SecurePreferences;
-import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Sistem1 on 08/10/2016.
@@ -74,8 +73,6 @@ public class LoginNew extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        Fabric.with(this, new Crashlytics());
-        AppEventsLogger.activateApp(this);
         setContentView(R.layout.intra_in_cont);
         queue = Volley.newRequestQueue(this);
         ctx = this;
@@ -117,6 +114,8 @@ public class LoginNew extends Activity implements View.OnClickListener {
                                     dialog.dismiss();
                                 }
                             });
+                            AlertDialog alert1 = builder.create();
+                            alert1.show();
                             Log.w("meniuu", "catch");
                             e.printStackTrace();
                         }
@@ -219,20 +218,23 @@ public class LoginNew extends Activity implements View.OnClickListener {
                                 JSONObject token = new JSONObject(obj.getString("token"));
                                 prefs.edit().putString("user_id", obj.getString("userID")).commit();
                                 prefs.edit().putString("token", token.getString("value")).commit();
+                                postToken( obj.getString("userID"),token.getString("value"));
                                 Intent continuare = new Intent(LoginNew.this, MainActivity.class);
                                 startActivity(continuare);
                                 finish();
                             } catch (Exception e) {
                                 try {
                                     JSONObject obj = new JSONObject(json);
-                                    Toast.makeText(ctx, obj.getString("error"), Toast.LENGTH_LONG).show();
+//                                    Toast.makeText(ctx, obj.getString("error"), Toast.LENGTH_LONG).show();
                                     final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                                    builder.setTitle("Email sau parola gresita");
+                                    builder.setTitle(obj.getString("error"));
                                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             dialog.dismiss();
                                         }
                                     });
+                                    AlertDialog alert1 = builder.create();
+                                    alert1.show();
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
                                 }
@@ -270,6 +272,8 @@ public class LoginNew extends Activity implements View.OnClickListener {
                     dialog.dismiss();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
 
@@ -330,6 +334,7 @@ public class LoginNew extends Activity implements View.OnClickListener {
                             JSONObject token = new JSONObject(obj.getString("token"));
                             prefs.edit().putString("user_id", obj.getString("userID")).commit();
                             prefs.edit().putString("token", token.getString("value")).commit();
+                            postToken( obj.getString("userID"),token.getString("value"));
                             Intent continuare = new Intent(LoginNew.this, MainActivity.class);
                             startActivity(continuare);
                             finish();
@@ -352,6 +357,34 @@ public class LoginNew extends Activity implements View.OnClickListener {
                 String auth_token_string = prefs.getString("token", "");
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("Authorization", "Bearer " + auth_token_string);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+    public void postToken(String user_id, final String token) {
+        prefs = new SecurePreferences(ctx);
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        String url = Constants.URL + "users/addSecurity/"+user_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        String json = response;
+//                        postUser();
+                    }
+                }, ErrorListener) {
+            protected java.util.Map<String, String> getParams() {
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("device_token", prefs.getString("phone_token", ""));
+                params.put("password", "nuamideecepltrebeaici");
+                params.put("reg_ip", ip);
+                return params;
+            }
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                String auth_token_string = prefs.getString("token", "");
+                java.util.Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","Bearer "+ token);
                 return params;
             }
         };

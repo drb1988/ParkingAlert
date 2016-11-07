@@ -116,7 +116,7 @@ public class History extends AppCompatActivity implements View.OnClickListener{
                 v = inflater.inflate(bigcityapps.com.parkingalert.R.layout.custom_listview_notification, null);
                 holder = new ViewHolder();
                 holder.titlu=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.title_listview);
-                holder.detalii=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.detalii_listview);
+//                holder.detalii=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.detalii_listview);
                 holder.mesaj=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.mesaj_listview);
                 holder.ora=(TextView) v.findViewById(bigcityapps.com.parkingalert.R.id.ora_listview);
                 holder.poza=(ImageView) v.findViewById(bigcityapps.com.parkingalert.R.id.poza_listview);
@@ -128,7 +128,7 @@ public class History extends AppCompatActivity implements View.OnClickListener{
             }
             final ModelNotification item = _data.get(position);
             holder.titlu.setText(item.getTitle());
-            holder.detalii.setText(item.getmDetails());
+//            holder.detalii.setText(item.getmDetails());
             holder.mesaj.setText(item.getmMessage());
             holder.ora.setText(item.getmHour());
             if(item.mType ==1)

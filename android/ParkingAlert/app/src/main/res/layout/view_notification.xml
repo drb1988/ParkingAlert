@@ -5,37 +5,37 @@
     android:background="@color/blue_dark"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/blue_dark"
-        android:gravity="center_vertical">
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:background="@color/blue_dark"-->
+        <!--android:gravity="center_vertical">-->
 
-        <RelativeLayout
-            android:id="@+id/inapoi_notificare"
-            style="?android:borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center">
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/inapoi_notificare"-->
+            <!--style="?android:borderlessButtonStyle"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="center">-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Inapoi"
-                android:textColor="@color/alb"
-                android:textSize="17dp" />
-        </RelativeLayout>
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Inapoi"-->
+                <!--android:textColor="@color/alb"-->
+                <!--android:textSize="17dp" />-->
+        <!--</RelativeLayout>-->
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:text="Raspunde"
-            android:textColor="@android:color/white"
-            android:textSize="18dp" />
-    </RelativeLayout>
+        <!--<TextView-->
+            <!--android:id="@+id/title"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:gravity="center"-->
+            <!--android:text="Raspunde"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:textSize="18dp" />-->
+    <!--</RelativeLayout>-->
 
     <TextView
         android:id="@+id/txtprenom"
@@ -67,7 +67,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/gradient_time"

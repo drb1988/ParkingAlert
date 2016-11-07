@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
     android:weightSum="1">
 
     <RelativeLayout
@@ -34,7 +35,7 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:text="Modifica"
-            android:textColor="@android:color/white"
+            android:textColor="@color/alb"
             android:textSize="18dp" />
 
         <RelativeLayout
@@ -49,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Salvare"
-                android:textColor="@android:color/white"
+                android:textColor="@color/alb"
                 android:textSize="17dp" />
         </RelativeLayout>
     </RelativeLayout>
@@ -74,62 +75,32 @@
                 android:layout_gravity="center"
                 android:background="@color/alb">
 
-                <RelativeLayout
-                    android:id="@+id/rel_poza"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_car"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center">
+                    android:layout_height="wrap_content">
 
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/view2"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_marginLeft="10dp"
-                        android:shape="ring"
-                        app:cardCornerRadius="40dp">
-
-                        <ImageView
-                            android:id="@+id/poza_masina"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_centerHorizontal="true"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/com_facebook_profile_picture_blank_square"></ImageView>
-                    </android.support.v7.widget.CardView>
-
-                    <!--<ImageView-->
-                    <!--android:id="@+id/poza_masina"-->
-                    <!--android:layout_width="80dp"-->
-                    <!--android:layout_height="80dp"-->
-                    <!--android:layout_marginLeft="10dp"-->
-                    <!--android:src="@drawable/default_image_profile_round" />-->
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_masina"
+                    <EditText
+                        android:id="@+id/et_numele_masina"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/view2">
-
-                        <EditText
-                            android:id="@+id/et_numele_masina"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:background="@android:color/transparent"
-                            android:gravity="center"
-
-                            android:hint="Numele masinii"
-                            android:imeOptions="actionNext"
-                            android:singleLine="true"
-                            android:textSize="@dimen/txt_size" />
-                    </android.support.design.widget.TextInputLayout>
-                </RelativeLayout>
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@android:color/transparent"
+                        android:hint="Numele masinii"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapCharacters"
+                        android:padding="20dp"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/txt_size" />
+                </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/input_nr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/rel_poza">
+                    android:layout_below="@+id/input_car">
 
                     <EditText
                         android:id="@+id/et_nr"
@@ -218,6 +189,7 @@
                         android:hint="An de productie"
                         android:imeOptions="actionDone"
                         android:inputType="date"
+                        android:maxLength="4"
                         android:padding="20dp"
                         android:singleLine="true"
                         android:textColor="@color/blue_white"
@@ -225,53 +197,52 @@
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:background="#EFEFF4"
-                android:padding="10dp"
-                android:text="Optiuni de notificare." />
-
+            <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_alignParentStart="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:background="#EFEFF4"-->
+            <!--android:padding="10dp"-->
+            <!--android:text="Optiuni de notificare." />-->
             <!--<RelativeLayout-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:background="@color/alb">-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@color/alb">-->
 
-                <!--<TextView-->
-                    <!--android:id="@+id/notif"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:padding="10dp"-->
-                    <!--android:text="Primeste notificari"-->
-                    <!--android:textSize="@dimen/txt_size" />-->
+            <!--<TextView-->
+            <!--android:id="@+id/notif"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:padding="10dp"-->
+            <!--android:text="Primeste notificari"-->
+            <!--android:textSize="@dimen/txt_size" />-->
 
-                <!--<Switch-->
-                    <!--android:id="@+id/receive_notification"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentRight="true"-->
-                    <!--android:checked="true"-->
-                    <!--android:padding="10dp" />-->
+            <!--<Switch-->
+            <!--android:id="@+id/receive_notification"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:checked="true"-->
+            <!--android:padding="10dp" />-->
 
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_below="@+id/receive_notification"-->
-                    <!--android:padding="10dp"-->
-                    <!--android:text="Masina e condusa si de altii"-->
-                    <!--android:textSize="@dimen/txt_size" />-->
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/receive_notification"-->
+            <!--android:padding="10dp"-->
+            <!--android:text="Masina e condusa si de altii"-->
+            <!--android:textSize="@dimen/txt_size" />-->
 
-                <!--<Switch-->
-                    <!--android:id="@+id/all_drive"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentRight="true"-->
-                    <!--android:layout_below="@+id/receive_notification"-->
-                    <!--android:checked="false"-->
-                    <!--android:padding="10dp" />-->
+            <!--<Switch-->
+            <!--android:id="@+id/all_drive"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_below="@+id/receive_notification"-->
+            <!--android:checked="false"-->
+            <!--android:padding="10dp" />-->
             <!--</RelativeLayout>-->
         </LinearLayout>
     </ScrollView>

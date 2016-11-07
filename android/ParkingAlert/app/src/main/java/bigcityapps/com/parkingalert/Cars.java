@@ -1,18 +1,24 @@
 package bigcityapps.com.parkingalert;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +39,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,15 +72,16 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
     FloatingActionButton fab;
     ArrayList<CarModel> carModelArrayList = new ArrayList<>();
     TextView tvExistQr, tvNoExistQr, tvCancel;
-
+    Activity act;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.masini);
+        setContentView(R.layout.cars);
         initcomponents();
         ctx = this;
+        act=this;
         prefs = new SecurePreferences(ctx);
         queue = Volley.newRequestQueue(this);
-        getCars(prefs.getString("user_id", ""));
+//        getCars(prefs.getString("user_id", ""));
 //        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //            Intent vizualizare= new Intent(Cars.this,ViewCar.class);
@@ -180,10 +191,37 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                 rlLayoutDialog.setVisibility(View.VISIBLE);
                 break;
             case R.id.exist_qr:
-                Intent addQr = new Intent(Cars.this, AddQR.class);
-                startActivity(addQr);
+                Constants.change=true;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                        // Should we show an explanation?
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(act, android.Manifest.permission.CAMERA)) {
+
+                            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ctx);
+                            builder.setTitle("Acces locatie");
+                            builder.setPositiveButton(android.R.string.ok, null);
+                            builder.setMessage("Te rog confirma accesul la locatie");//TODO put real question
+                            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                public void onDismiss(DialogInterface dialog) {
+                                    requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 1);
+                                }
+                            });
+                            builder.show();
+                        } else {
+                            ActivityCompat.requestPermissions(act, new String[]{android.Manifest.permission.CAMERA}, 1);
+                        }
+                    } else {
+                        Intent addQr = new Intent(Cars.this, AddQR.class);
+                        startActivity(addQr);
+                    }
+                }
+                else {
+                    Intent addQr = new Intent(Cars.this, AddQR.class);
+                    startActivity(addQr);
+                }
                 break;
             case R.id.no_exist_qr:
+                Constants.change=true;
                 generateQr(prefs.getString("user_id",""));
                 break;
 
@@ -247,17 +285,21 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                 try {
                     JSONArray obj = new JSONArray(json);
                     for (int i = 0; i < obj.length(); i++) {
-                        JSONObject c = obj.getJSONObject(i);
-                        CarModel carModel = new CarModel();
-                        carModel.setNr(c.getString("plates"));
-                        carModel.setmCarName(c.getString("given_name"));
-                        carModel.setModel(c.getString("model"));
-                        carModel.setAn(c.getString("year"));
-                        carModel.setProducator(c.getString("make"));
-                        carModel.setEnable_notifications(c.getBoolean("enable_notifications"));
-                        carModel.setEnable_others(c.getBoolean("enable_others"));
-                        carModel.setQrcode(c.getString("qr_code"));
-                        carModelArrayList.add(carModel);
+                        try {
+                            JSONObject c = obj.getJSONObject(i);
+                            CarModel carModel = new CarModel();
+                            carModel.setNr(c.getString("plates"));
+                            carModel.setmCarName(c.getString("given_name"));
+                            carModel.setModel(c.getString("model"));
+                            carModel.setAn(c.getString("year"));
+                            carModel.setProducator(c.getString("make"));
+                            carModel.setEnable_notifications(c.getBoolean("enable_notifications"));
+                            carModel.setEnable_others(c.getBoolean("enable_others"));
+                            carModel.setQrcode(c.getString("qr_code"));
+                            carModelArrayList.add(carModel);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                     if (carModelArrayList.size() > 0) {
                         adapter = new NotificareAdapter(carModelArrayList);
@@ -353,7 +395,24 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
             CarModel item = moviesList.get(position);
             holder.proprietar.setText(item.getmCarName());
             holder.nr.setText(item.getNr());
-//            Picasso.with(ctx).load(item.getmImage()).into(holder.poza);
+            Log.w("meniuu","item.getimage:"+item.getQrcode());
+            QRCodeWriter writer = new QRCodeWriter();
+            try {
+                BitMatrix bitMatrix = writer.encode(item.getQrcode(), BarcodeFormat.QR_CODE, 512, 512);
+                int width = bitMatrix.getWidth();
+                int height = bitMatrix.getHeight();
+              Bitmap  bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                    }
+                }
+                holder.poza.setImageBitmap(bmp);
+//                Picasso.with(ctx).load(bmp).into(holder.poza);
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+
             if (item.isEnable_notifications())
                 holder.tvOnOff.setText("Pornit");
             else
@@ -361,17 +420,35 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
 
         }
 
-        public void removeItem(int position) {
-            deleteCar(prefs.getString("user_id", ""), moviesList.get(position).getNr());
-            moviesList.remove(position);
-            if (moviesList.size() == 0) {
-                recyclerView.setVisibility(View.INVISIBLE);
-                tvTitle.setVisibility(View.VISIBLE);
-                tvMessage.setVisibility(View.VISIBLE);
-            } else {
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, moviesList.size());
-            }
+        public void removeItem(final int position) {
+            AlertDialog.Builder b=  new  AlertDialog.Builder(ctx)
+                    .setTitle("Esti sigur ca doresti sa stergi aceasta masina?")
+                    .setPositiveButton("Da",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    deleteCar(prefs.getString("user_id", ""), moviesList.get(position).getNr());
+                                    moviesList.remove(position);
+                                    if (moviesList.size() == 0) {
+                                        recyclerView.setVisibility(View.INVISIBLE);
+                                        tvTitle.setVisibility(View.VISIBLE);
+                                        tvMessage.setVisibility(View.VISIBLE);
+                                    } else {
+                                        notifyItemRemoved(position);
+                                        notifyItemRangeChanged(position, moviesList.size());
+                                    }
+                                }
+                            }
+                    )
+                    .setNegativeButton("Nu",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    notifyDataSetChanged();
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
+            b.show();
+
         }
 
         @Override
@@ -415,6 +492,7 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
 
 
     public void generateQr(String id) {
+        Log.w("meniuu","start");
         String url = Constants.URL + "users/generateCarCode/" + id;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             public void onResponse(String response) {
@@ -424,10 +502,12 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
                 try {
                     JSONObject obj = new JSONObject(json);
                     String carCode = obj.getString("carCode");
+                    Constants.change=true;
                     Intent showQr=new Intent(Cars.this, ShowQRCode.class);
                     showQr.putExtra("qrcode",carCode);
                     startActivity(showQr);
                     finish();
+                    Log.w("meniuu","end");
                 } catch (Throwable t) {
                     Log.w("meniuu", "cacth get questions");
                     t.printStackTrace();
@@ -444,5 +524,35 @@ public class Cars extends AppCompatActivity implements View.OnClickListener {
         };
         queue.add(stringRequest);
     }
+////
+@Override
+public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    switch (requestCode) {
+        case 1: {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                {
+                    Intent addQr = new Intent(Cars.this, AddQR.class);
+                    startActivity(addQr);
+                }
+            } else {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                builder.setTitle("Permisiune");
+                builder.setMessage("Pentru a putea adauga o masina e nevoie de permisiunea la camera. Multumesc");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert1 = builder.create();
+                alert1.show();
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+            }
+            return;
+        }
 
+        // other 'switch' lines to check for other
+        // permissions this app might request
+    }
+}
 }

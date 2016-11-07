@@ -4,53 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/blue_dark"
-        android:gravity="center_vertical">
-
-        <RelativeLayout
-            android:id="@+id/inapoi_review"
-            style="?android:borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Inapoi"
-                android:textColor="@color/alb"
-                android:textSize="17dp" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:text="Feedback"
-            android:textColor="@android:color/white"
-            android:textSize="18dp" />
-
-        <RelativeLayout
-            android:id="@+id/anuleaza_review"
-            style="?android:borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Anuleaza"
-                android:textColor="@android:color/white"
-                android:textSize="17dp" />
-        </RelativeLayout>
-    </RelativeLayout>
 
     <TextView
         android:id="@+id/txtprenom"
@@ -69,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:gravity="center"
-            android:text="A venit bh 12 abc?"
+            android:text="hardcodat?"
             android:textColor="@color/alb"
             android:textSize="@dimen/txt_size_bigger1" />
 

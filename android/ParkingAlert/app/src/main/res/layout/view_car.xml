@@ -76,6 +76,7 @@
                     android:id="@+id/rel_poza"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
+                    android:gravity="center"
                     android:layout_marginTop="10dp">
 
                     <ImageView
@@ -86,6 +87,7 @@
                         android:src="@drawable/default_image_profile_round" />
 
                     <TextView
+                        android:gravity="center_vertical"
                         android:id="@+id/et_numele_masina"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -165,6 +167,7 @@
 
 
             <TextView
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="#EFEFF4"
@@ -173,10 +176,11 @@
                 android:text="Fiecare masina are un cod QR" />
 
             <RelativeLayout
+                android:visibility="gone"
                 android:id="@+id/view_qr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp">
+                android:padding="10dp">
 
                 <ImageView
                     android:id="@+id/poza"

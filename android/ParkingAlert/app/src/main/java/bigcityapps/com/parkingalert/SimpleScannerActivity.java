@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -21,7 +20,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.HashMap;
 
 import Util.Constants;
 import Util.SecurePreferences;
@@ -71,6 +70,21 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
     @Override
     public void handleResult(Result rawResult) {
         Log.w("meniuu","resultat");
+        if(rawResult.getContents().contains(" ")){
+            setContentView(R.layout.test);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+            builder.setTitle("Codul QR nu este intr-un format acceptat de aplicatie");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+//                                Intent map= new Intent(Scan.this, Map.class);
+//                                startActivity(map);
+                    finish();
+                }
+            });
+//                        builder.setmMessage(rawResult.getText());
+            AlertDialog alert1 = builder.create();
+            alert1.show();
+        }else
         getUsersForCode(rawResult.getContents());
     }
     public void postNotification(final String receiver_id){
@@ -79,35 +93,21 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
                         String json = response;
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                        builder.setTitle(plates+" a fost notificat cu succes");
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-//                                Intent harta= new Intent(Scan.this, Map.class);
-//                                startActivity(harta);
-                                finish();
-                            }
-                        });
-//                        builder.setmMessage(rawResult.getText());
-                        AlertDialog alert1 = builder.create();
-                        alert1.show();
                         Log.w("meniuu", "response:post notification" + response);
-//                        Intent harta= new Intent(Scan.this, Map.class);
-//                        startActivity(harta);
-//                        finish();
+                        Intent harta= new Intent(SimpleScannerActivity.this, MainActivity.class);
+                        startActivity(harta);
+                        finish();
                     }
                 }, ErrorListener) {
             protected java.util.Map<String, String> getParams() {
                 java.util.Map<String, String> params = new HashMap<String, String>();
                 params.put("status", "1");
                 params.put("is_active", "false");
-                params.put("mLatitude",latitude);
-                params.put("mLongitude",longitude);
-                params.put("vehicle", "edNr masina");
+                params.put("latitude",latitude);
+                params.put("longitude",longitude);
+                params.put("vehicle", plates);
                 params.put("sender_id", prefs.getString("user_id",""));
-                params.put("sender_nickname", "sender_nickname");
                 params.put("receiver_id", receiver_id);
-                params.put("receiver_nickname", "nick_name_Receiver");
                 Log.w("meniuu","lat+"+latitude+" lang:"+longitude);
                 return params;
             }
@@ -122,8 +122,8 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
     }
     Response.ErrorListener ErrorListener = new Response.ErrorListener() {
         public void onErrorResponse(VolleyError error) {
+            setContentView(R.layout.test);
             Log.w("meniuu","error volley:"+error.getMessage());
-            Toast.makeText(ctx,"Something went wrong",Toast.LENGTH_LONG ).show();
             final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
             builder.setTitle("A aparut o eroare" + "Va rog sa reincercati");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -131,6 +131,8 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                     finish();
                 }
             });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
         }
     };
     public void getUsersForCode(String qrcode) {
@@ -143,16 +145,43 @@ public class SimpleScannerActivity extends Activity implements ZBarScannerView.R
                 Log.w("meniuu", "response: getusersforcode" + response);
                 try {
                     JSONArray obj = new JSONArray(json);
-                    for (int i = 0; i < obj.length(); i++) {
-                        JSONObject c = obj.getJSONObject(i);
-                        JSONObject car = new JSONObject(c.getString("car"));
-                        user_id = c.getString("userID");
-                        plates = car.getString("plates");
-                        Log.w("meniuu", "user_id:" + user_id + " se apeleaza postnotification");
-                        postNotification(user_id);
+                    if(obj.length()!=0) {
+                        for (int i = 0; i < obj.length(); i++) {
+                            JSONObject c = obj.getJSONObject(i);
+                            JSONObject car = new JSONObject(c.getString("car"));
+                            user_id = c.getString("userID");
+                            plates = car.getString("plates");
+                            Log.w("meniuu", "user_id:" + user_id + " se apeleaza postnotification");
+                            postNotification(user_id);
+                        }
+                    }else {
+                        Log.w("meniuu","nu exista userul");
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                        builder.setTitle("Aceasta masina nu poate fi notificata");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                        AlertDialog alert1 = builder.create();
+                        alert1.show();
                     }
                 } catch (Throwable t) {
                     Log.w("meniuu", "cacth get questions");
+                    if(plates.equals("disabled"))
+                    {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                        builder.setTitle("Aceasta masina nu poate fi notificata");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                        AlertDialog alert1 = builder.create();
+                        alert1.show();
+                    }
                     t.printStackTrace();
                 }
             }

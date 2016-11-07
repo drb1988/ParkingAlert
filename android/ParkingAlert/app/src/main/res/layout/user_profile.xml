@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -33,7 +35,7 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:text="Profil personal"
-            android:textColor="@android:color/white"
+            android:textColor="@color/alb"
             android:textSize="18dp" />
 
         <RelativeLayout
@@ -48,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Salvare"
-                android:textColor="@android:color/white"
+                android:textColor="@color/alb"
                 android:textSize="17dp" />
         </RelativeLayout>
     </RelativeLayout>
@@ -68,7 +70,9 @@
             <RelativeLayout
                 android:id="@+id/mDetails"
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="200dp"
+                android:clickable="true"
+                android:focusableInTouchMode="true">
 
                 <ImageView
                     android:id="@+id/poza_patrata_user_profile"
@@ -94,19 +98,55 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/default_image_profile_round" />
 
+            </RelativeLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@+id/poza_rotunda_user_profile">
+
                 <EditText
                     android:id="@+id/numele_user_profile"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@+id/poza_rotunda_user_profile"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
                     android:background="@null"
-                    android:hint="nume si prenume"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/txt_size_bigger"
-                    android:textStyle="bold" />
-            </RelativeLayout>
+                    android:hint="nume"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#cccccc" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@+id/poza_rotunda_user_profile">
+
+                <EditText
+                    android:id="@+id/prenume_user_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:background="@null"
+                    android:hint="prenume"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:id="@+id/txtprenom"
@@ -115,31 +155,24 @@
                 android:layout_marginTop="5dp"
                 android:background="#cccccc" />
 
-            <EditText
-                android:id="@+id/nick_name"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginLeft="10dp"
-                android:background="@null"
-                android:hint="nickname"
-                android:maxLines="1" />
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/txtcodepostal"
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="#cccccc" />
-
-            <EditText
-                android:id="@+id/mobile_user_profile"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:background="@null"
-                android:hint="nr tel"
-                android:inputType="number"
-                android:maxLines="1" />
+                <EditText
+                    android:id="@+id/mobile_user_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:background="@null"
+                    android:hint="nr tel"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:id="@+id/txtpays"
@@ -147,16 +180,24 @@
                 android:layout_height="1dp"
                 android:background="#cccccc" />
 
-            <EditText
-                android:id="@+id/email"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputEmail"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:background="@null"
-                android:hint="email"
-                android:maxLines="1"
-                android:spinnerMode="dialog" />
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:background="@null"
+                    android:hint="email"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:spinnerMode="dialog" />
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:id="@+id/txtgender"
@@ -164,36 +205,6 @@
                 android:layout_height="1dp"
                 android:background="#cccccc" />
 
-            <EditText
-                android:id="@+id/driver_license_user_profile"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginLeft="10dp"
-                android:background="@null"
-                android:hint=" driver license"
-                android:maxLines="1" />
-
-            <TextView
-                android:id="@+id/txtdata"
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="#cccccc" />
-
-            <EditText
-                android:id="@+id/city_user_profile"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:background="@null"
-                android:hint="oras"
-                android:maxLines="1" />
-
-            <TextView
-                android:id="@+id/txtprofesie"
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="#cccccc" />
 
         </LinearLayout>
     </ScrollView>
