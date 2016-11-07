@@ -166,20 +166,30 @@ block scripts
                     var select = $("#SavedShapes");
                     var jsonEdited = [];
                     shapesResult.forEach(function (shape) {
+                        console.log("shapeee", shape);
                         if (shape.type == "circle")
                             jsonEdited.push({
                                 type: "circle",
-                                radius: shape.center.radius,
+                                radius: parseFloat(shape.center.radius)*63781,
                                 center: {
-                                    lat: shape.center.lat,
-                                    lng: shape.center.lng
+                                    lat: parseFloat(shape.center.lat),
+                                    lng: parseFloat(shape.center.lng)
                                 }
                             });
-                        else
+                        else {
+                            var polygonPoints = [];
+                            shape.center.forEach(function (point) {
+                                polygonPoints.push({
+                                    lat: parseFloat(point[0]),
+                                    lng: parseFloat(point[1])
+                                })
+                            });
+
                             jsonEdited.push({
                                 type: "polygon",
-                                polygon: shape.center
-                            })
+                                polygon: polygonPoints
+                            });
+                        }
                     });
                     console.log("jsonEdited",jsonEdited);
                     var index = parseInt($("#SavedShapes").val());
@@ -247,8 +257,8 @@ block scripts
                     }
                     if (result.type == "circle") {
                         console.log("type is circle for: " + 1);
-                        if(circle)
-                            circle = setDrowingToolNull(circle);
+                        circle = setDrowingToolNull(circle);
+                        console.log("circle pt map", result.circle);
                         circle = new google.maps.Circle({
                             strokeColor: '#FF0000',
                             strokeOpacity: 0.8,
@@ -263,11 +273,9 @@ block scripts
                     }
                     if (result.type == "polygon") {
                         console.log("type is polygon for: " + 1);
-                        if (polygon)
-                            polygon = setDrowingToolNull(polygon);
-                        if (rectangle)
-                            rectangle = setDrowingToolNull(rectangle);
-
+                        polygon = setDrowingToolNull(polygon);
+                        rectangle = setDrowingToolNull(rectangle);
+                        console.log("polygon pt map", result.polygon);
                         polygon = new google.maps.Polygon({
                             paths: result.polygon,
                             strokeColor: '#FF0000',
