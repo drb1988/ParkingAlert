@@ -229,10 +229,10 @@ router.get('/getNotifications/:userID', function(req, res, next) {
 router.get('/getNotification/:userID', function(req, res, next) {
 		/**
     	* Route to get all notifications for a user ID,
-    	* @name /getNotifications/:userID
+    	* @name /getNotification/:userID
     	* @param {String} :userId
     	*/
-
+    	if(/[a-f0-9]{24}/.test(req.params.userID)) {
     	var findNotification = function(db, callback) {   
 	 	var o_id = new ObjectId(req.params.userID);
 	 		var result = [];
@@ -257,6 +257,10 @@ router.get('/getNotification/:userID', function(req, res, next) {
 			      db.close();
 			  });
 			});
+	}
+	else {
+      res.status(201).send("Invalid notification ID")
+    }
 });
 
 router.get('/getCars/:userID', function(req, res, next) {

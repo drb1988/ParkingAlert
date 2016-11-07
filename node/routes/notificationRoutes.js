@@ -488,12 +488,6 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
     MongoClient.connect(dbConfig.url, function(err, db) {
         assert.equal(null, err);
         findNotification(db, function() {
-            var senderID;
-            findUsersByNotification(db, function(notificationSenderID){
-              if(notificationSenderID.sender_id){
-                senderID = notificationSenderID.sender_id;
-              }
-            }, req.params.notificationID);
             db.close();
         });
       });
