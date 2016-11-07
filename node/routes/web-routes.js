@@ -983,7 +983,8 @@ var saveCoordinates = function (gtype, lat, lon, rad, polygonPoints, user, callb
     var result = {
       "userID": userID
     }
-        res.status(200).send("The admin user was inserted")
+        //res.status(200).send("The admin user was inserted")
+        res.redirect("../web-routes/add/admin");
     });
   });
   });
