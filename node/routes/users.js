@@ -446,24 +446,36 @@ router.post('/chanceQR/:userID&:plates', function(req, res, next) {
     * @name /chanceQR/:userID&:plates
     * @param {String} :userID&:plates
     */
-    var deleteCar = function(db, callback) {   
- 	var o_id = new ObjectId(req.params.userID);
-    db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
-             {$set: { 
-                        "cars.$.qr_code": req.body.qr_code 
-                    }
-             },function(err, result) {
-				    assert.equal(err, null);
-				    callback();
-			});            
-	}
-	MongoClient.connect(dbConfig.url, function(err, db) {
-		  assert.equal(null, err);
-		  deleteCar(db, function() {
-		      db.close();
-		      res.status(200).send(req.params.userID)
-		  });
-		});
+     jwt.decode('Friendly2016', req.body.qr_code, function (err, decode) {
+      if (err) {
+        res.status(201).send({"error": "invalid token"});
+      } else {
+      	if(decode.usage=="QRCode"){
+      		var deleteCar = function(db, callback) {   
+		 	var o_id = new ObjectId(req.params.userID);
+		    db.collection('parking').update({"_id": o_id, "cars.plates":req.params.plates}, 
+		             {$set: { 
+		                        "cars.$.qr_code": req.body.qr_code 
+		                    }
+		             },function(err, result) {
+						    assert.equal(err, null);
+						    callback();
+					});            
+			}
+			MongoClient.connect(dbConfig.url, function(err, db) {
+				  assert.equal(null, err);
+				  deleteCar(db, function() {
+				      db.close();
+				      res.status(200).send(req.params.userID)
+				  });
+				});
+      	}
+      	else {
+      	res.status(201).send({"error": "invalid token"});	
+      	}
+      }
+  	});
+    
 })
 
 router.get('/enableNotifications/:userID&:plates', function(req, res, next) {
