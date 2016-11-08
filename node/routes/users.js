@@ -138,7 +138,7 @@ router.post('/addCar/:userID', function(req, res, next) {
 				  assert.equal(null, err);
 				  insertCar(db, function() {
 				      db.close();
-				      res.status(200).send(req.params.userID)
+				      res.status(200).send({"success": req.params.userID})
 				  });
 				});
       	}
@@ -466,7 +466,7 @@ router.post('/chanceQR/:userID&:plates', function(req, res, next) {
 				  assert.equal(null, err);
 				  deleteCar(db, function() {
 				      db.close();
-				      res.status(200).send(req.params.userID)
+				      res.status(200).send({"success": req.params.userID})
 				  });
 				});
       	}
