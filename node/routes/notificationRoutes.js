@@ -245,7 +245,7 @@ router.get('/receiverRead/:notificationID', function(req, res, next) {
     */
   var vehicle = "";
   var sender_token = "";   
-  if(/[a-f0-9]{24}/.test(req.params.id)) {
+  if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
   var deleteCar = function(db, callback) {
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
