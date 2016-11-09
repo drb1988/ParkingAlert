@@ -245,7 +245,7 @@ router.get('/receiverRead/:notificationID', function(req, res, next) {
     */
   var vehicle = "";
   var sender_token = "";   
-  if(/[a-f0-9]{24}/.test(req.params.id)) {
+  if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
   var deleteCar = function(db, callback) {
   var o_id = new ObjectId(req.params.notificationID);
     db.collection('notifications').update({"_id": o_id}, 
@@ -320,7 +320,8 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
   var answered_at = toLocalTime(new Date());
   var deleteCar = function(db, callback) {   
   var o_id = new ObjectId(req.params.notificationID);
-    db.collection('notifications').update({"_id": o_id}, 
+    if(req.body.estimated != "100"){
+     db.collection('notifications').update({"_id": o_id}, 
              {$set: { 
                       "sender_read": false,
                       "answer.answered_at": answered_at,
@@ -341,7 +342,36 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
             assert.equal(err, null);
             console.log("Receiver has read "+req.params.notificationID);
             callback();
-      });            
+      });    
+    }
+    else {
+      db.collection('notifications').update({"_id": o_id}, 
+             {$set: { 
+                      "sender_read": false,
+                      "answer.answered_at": answered_at,
+                      "answer.estimated": req.body.estimated,
+                      "is_active": false,
+                      "is_ontime": false,
+                      "review.feedback": false,
+                      "review.answered_at": toLocalTime(new Date())
+                    },
+              $push:{
+                    "estimated": req.body.estimated,
+                    "estimations": {
+                      "receiver": {
+                          "type": "Point",
+                          "coordinates": [
+                            parseFloat(req.body.latitude),
+                            parseFloat(req.body.longitude)
+                          ]}
+                    }   
+              }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Receiver has read "+req.params.notificationID);
+            callback();
+      });    
+    }             
   }
    MongoClient.connect(dbConfig.url, function(err, db) {
       assert.equal(null, err);
@@ -351,7 +381,12 @@ router.post('/receiverAnswered/:notificationID', function(req, res, next) {
           db.close();
           res.status(200).send({"answered_at": answered_at})
           console.log("estimated "+req.body.estimated);
-          sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "receiver", req.body.estimated, 0, 0)
+          if(req.body.estimated != "100"){
+            sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "receiver", req.body.estimated, 0, 0)
+          }
+          else {
+            sendNotification(notificationSenderToken, req.params.notificationID, vehicle, "review", req.body.estimated, "false", "false")
+          }
         });
         }, req.params.notificationID);     
     });
