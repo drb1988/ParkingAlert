@@ -591,11 +591,10 @@ router.post('/sendReview/:notificationID', function(req, res, next) {
                       "is_ontime": req.body.is_ontime,
                       "review.feedback": req.body.feedback,
                       "review.answered_at": toLocalTime(new Date()),
-
+                      "receiver_read": false
                     }
              },function(err, result) {
             assert.equal(err, null);
-            console.log("Receiver has read "+req.params.notificationID);
             callback();
       });            
   }

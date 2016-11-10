@@ -241,6 +241,43 @@ router.get('/getNotifications/:userID', function(req, res, next) {
 			});
 });
 
+router.get('/getNotificationCount/:userID', function(req, res, next) {
+		/**
+    	* Route to get unread notification count for a user ID,
+    	* @name /getNotifications/:userID
+    	* @param {String} :userId
+    	*/
+    	if(/[a-f0-9]{24}/.test(req.params.userID)) {
+    	var findNotifications = function(db, callback) {   
+	 	var o_id = new ObjectId(req.params.userID);
+	 		var result = [];
+		    var cursor =db.collection('notifications').find({$or: [
+		    										{"receiver_id": o_id, "receiver_deleted": false, "receiver_read": false}, 
+		    										{"sender_id": o_id, "sender_deleted": false, "sender_read": false}]
+		    										}).sort([['_id', -1]]);
+		    cursor.each(function(err, doc) {
+		      assert.equal(err, null);
+		      if (doc != null) {
+		         result.push(doc);
+		      } else {
+		         callback();
+		         res.status(200).send({"count": result.length})
+		      }
+		   });
+		};	
+
+		MongoClient.connect(dbConfig.url, function(err, db) {
+			  assert.equal(null, err);
+			  findNotifications(db, function() {
+			      db.close();
+			  });
+			});
+	}
+	else {
+		res.status(200).send({"error": "invalid user ID"})
+	}
+});
+
 router.get('/getNotification/:userID', function(req, res, next) {
 		/**
     	* Route to get all notifications for a user ID,
