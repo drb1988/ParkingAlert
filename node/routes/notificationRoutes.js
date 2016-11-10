@@ -308,6 +308,46 @@ router.get('/senderRead/:notificationID', function(req, res, next) {
   });
   });
 
+router.get('/enableNotification/:notificationID', function(req, res, next) {
+    /**
+    * Route to mark notifications as read by the sender,
+    * @name /receiverRead/:notificationID
+    * @param {String} :notificationID
+    */
+  var vehicle = "";
+  var sender_token = "";
+  if(/[a-f0-9]{24}/.test(req.params.notificationID)) {
+  var deleteCar = function(db, callback) {   
+  var o_id = new ObjectId(req.params.notificationID);
+    db.collection('notifications').update({"_id": o_id}, 
+             {$set: { 
+                      "is_active": true,
+                      "is_ontime": true,
+                      "review.feedback": null
+                    }
+             },function(err, result) {
+            assert.equal(err, null);
+            console.log("Receiver has read "+req.params.notificationID);
+            callback();
+      });            
+  }
+  MongoClient.connect(dbConfig.url, function(err, db) {
+    assert.equal(null, err);
+    console.log(req.params.notificationID);
+    findUsersByNotification(db, function(sender){console.log(sender); notificationSenderToken=sender.receiver_token;
+      vehicle=sender.vehicle;
+      deleteCar(db, function() {
+        db.close();
+        res.status(200).send({"OK": req.params.notificationID})
+      });
+      }, req.params.notificationID);      
+  });
+  }
+  else {
+    res.status(201).send({"error": "invalid notificationID"})
+  }
+  });
+
 router.post('/receiverAnswered/:notificationID', function(req, res, next) {
     /**
     * Route to set a notification as answered,
