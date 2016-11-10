@@ -93,3 +93,23 @@ request(app)
   .end(function(err, res) {
     if (err) throw err;
   });
+
+   request(app)
+  .get('/signup/login/mugurel.mitrut@gmail.com&plm')
+  .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM')
+  .expect('Content-Type', 'application/json; charset=utf-8')
+ // .expect('Content-Length', '2015')
+  .expect(201)
+  .end(function(err, res) {
+    if (err) throw err;
+  });
+
+   request(app)
+  .get('/signup/login/bogdandrb@gmail.com&plm')
+  .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM')
+  .expect('Content-Type', 'application/json; charset=utf-8')
+ // .expect('Content-Length', '2015')
+  .expect(202)
+  .end(function(err, res) {
+    if (err) throw err;
+  });
