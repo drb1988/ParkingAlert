@@ -271,7 +271,7 @@ router.get('/receiverRead/:notificationID', function(req, res, next) {
   });
   }
   else {
-    res.status(200).send("invalid notification ID")
+    res.status(201).send("invalid notification ID")
     }
   });
 
@@ -528,7 +528,7 @@ router.get('/getNotification/:notificationID', function(req, res, next) {
       });
   }
   else {
-    res.status(200).send("invalid notificationID")
+    res.status(201).send("invalid notificationID")
   }
 });
 
