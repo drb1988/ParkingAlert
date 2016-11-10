@@ -582,7 +582,6 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
     	*/
 
     	var findNotifications = function(db, callback) {   
-	 	var o_id = new ObjectId(req.params.userID);
 	 		var result = [];
 		    var cursor =db.collection('parking').find({"cars.qr_code": req.params.token});
 		    cursor.each(function(err, doc) {
