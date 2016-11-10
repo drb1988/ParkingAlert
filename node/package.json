@@ -39,5 +39,8 @@
     "point-in-polygon": "~1.0.1",
     "point-circle-collision": "~1.0.3",
     "qr-image": "~3.1.0"
+  },
+  "devDependencies": {
+    "supertest": "^2.0.1"
   }
 }
