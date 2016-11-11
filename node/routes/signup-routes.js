@@ -200,10 +200,10 @@ router.post('/verifyEmail/:userID', function(req, res, next) {
               console.log(result)
               assert.equal(err, null);
               if(result.email==req.body.email && result.token==req.body.token){
-                res.status(200).send("Success")
+                res.status(200).send({"OK": "Success"})
               }
               else{
-                res.status(200).send("Email verification failure")
+                res.status(201).send({"Error": "Email verification failure"})
               }
               callback();
         });            
