@@ -2,7 +2,7 @@ var request = require('supertest');
 var express = require('express');
 var app = require('../app.js');
 
-//var app = express();
+  //var app = express();
 
 request(app)
   .get('/users/getUser/5820a1665624760c68f8e039')
@@ -137,7 +137,7 @@ request(app)
    request(app)
   .get('/notifications/receiverRead/582478d6fed0ed1d401d')
   .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM')
-  .expect('Content-Type', 'application/json; charset=utf-8')
+  .expect('Content-Type', 'text/html; charset=utf-8')
  // .expect('Content-Length', '2015')
   .expect(201)
   .end(function(err, res) {
@@ -167,7 +167,7 @@ request(app)
  request(app)
   .get('/notifications/getNotification/582478d6fed0ed1d401d')
   .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM')
-  .expect('Content-Type', 'application/json; charset=utf-8')
+ // .expect('Content-Type', 'application/json; charset=utf-8')
  // .expect('Content-Length', '2015')
   .expect(201)
   .end(function(err, res) {
@@ -182,4 +182,25 @@ request(app)
   .expect(401)
   .end(function(err, res) {
     if (err) throw err;
+  });
+
+
+ var notificationData = {
+        sender_id: '5821a3b5a1d05213408fb884',
+        receiver_id: '5821d90db2453a175c7cd0c8',
+        receiver_nickname: 'Fasie',
+        latitude:  '47.0806636',
+        longitude: '21.9242613', 
+        vehicle: 'Caruta din Tileagd'
+      };
+
+request(app)
+  .post('/notifications/notification')
+  .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM')
+  .expect('Content-Type', 'application/json; charset=utf-8')
+ // .expect('Content-Length', '2015')
+  .expect(200)
+  .end(function(err, res) {
+    if (err) throw err;
+    if (res) console.log("res test",res);
   });
