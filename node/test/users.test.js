@@ -127,7 +127,7 @@ request(app)
    request(app)
   .get('/notifications/receiverRead/582478d6fed0ed1d409a1db8')
   .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM')
-  .expect('Content-Type', 'application/json; charset=utf-8')
+  //.expect('Content-Type', 'application/json; charset=utf-8')
  // .expect('Content-Length', '2015')
   .expect(200)
   .end(function(err, res) {
@@ -191,16 +191,18 @@ request(app)
         receiver_nickname: 'Fasie',
         latitude:  '47.0806636',
         longitude: '21.9242613', 
-        vehicle: 'Caruta din Tileagd'
+        vehicle: 'Caruta din Tileagd',
+        status: 1
       };
 
 request(app)
   .post('/notifications/notification')
   .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTdlM2Q3MmNjNmMyMzcxMTM4OTAyNTUxIiwiZW1haWwiOiJib2dkYW5kcmJAZ21haWwuY29tIn0.3OCqudkE0JXwjVZJrnmwylfKabp7iD4q1Wft0kMP8pM')
+  .send(notificationData)
   .expect('Content-Type', 'application/json; charset=utf-8')
  // .expect('Content-Length', '2015')
   .expect(200)
   .end(function(err, res) {
     if (err) throw err;
-    if (res) console.log("res test",res);
+    if (res) console.log("res test",res.body);
   });
