@@ -25,6 +25,28 @@ var storage =   multer.diskStorage({
   }
 });
 
+var verifyUniqueCode = function(db, callback, token, plates) {
+    /**
+    * Function to get tokens by userID,
+    * @name findUserToken
+    * @param {String} :userId
+    */ 
+    var valid = false;
+      db.collection('parking').findOne({"cars.qr_code": token},
+        function(err, result) {
+              assert.equal(err, null);
+              if(!result)
+              	valid = true;
+              else {
+              	for(var i in result.cars)
+              if(result && result.cars[i].plates == plates && result.cars[i].enable_others == true){
+              	valid = true;
+              	}
+              }
+            callback(valid);  
+        });   
+    }
+
 var sendMail = function(email, QRString){
 	/**
     * Function to send a svg qr code via email,
@@ -112,6 +134,7 @@ router.post('/addCar/:userID', function(req, res, next) {
       } else {
       	if(decode.usage=="QRCode")
       	{
+      		
       		var insertCar = function(db, callback) {   
 		 	var o_id = new ObjectId(req.params.userID);
 		    db.collection('parking').update({"_id": o_id}, 
@@ -136,10 +159,17 @@ router.post('/addCar/:userID', function(req, res, next) {
 			}
 			MongoClient.connect(dbConfig.url, function(err, db) {
 				  assert.equal(null, err);
-				  insertCar(db, function() {
+				  verifyUniqueCode(db, function(validation){console.log("validation", validation)
+				  	if(validation == true) {
+				  		insertCar(db, function() {
 				      db.close();
 				      res.status(200).send({"success": req.params.userID})
-				  });
+				  		});
+				  	}
+				  	else {
+				  	  res.status(201).send({"error": "invalid token"})
+				  	}
+				}, req.body.qr_code, req.body.plates);
 				});
       	}
       	else{

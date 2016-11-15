@@ -119,7 +119,6 @@ var findUsersByNotification = function(db, callback, notificationID) {
               }
             else
               response = null;  
-
             callback(response);
         }); 
       }
@@ -223,6 +222,7 @@ router.post('/notification', function(req, res, next) {
 };
 MongoClient.connect(dbConfig.url, function(err, db) {
   assert.equal(null, err);
+  if(req.body.receiver_id != req.body.sender_id){
   findUserToken(db, function(receiver){console.log(receiver); notificationReceiverToken=receiver.token;
         if(receiver.profile_picture) {receiverPicture = receiver.profile_picture; }
         }, req.body.receiver_id);
@@ -230,10 +230,14 @@ MongoClient.connect(dbConfig.url, function(err, db) {
     if(sender.profile_picture) {senderPicture = sender.profile_picture; }
     insertDocument(db, function() {
       db.close();
-      res.status(200).send(notificationID)
+      res.status(200).send({"notificationID": notificationID})
       sendNotification(notificationReceiverToken, notificationID, car_id, "sender", 0, req.body.latitude, req.body.longitude)
     });
   }, req.body.sender_id);
+  }
+  else{
+    res.status(201).send({"error": "same sender as receiver"});
+  }
 });
 });
 
@@ -539,7 +543,9 @@ router.post('/senderDeleted/:notificationID', function(req, res, next) {
       });
     });
   }
-  res.status(200).send()
+  else {
+    res.status(201).send({"error": "invalid notificationID"})
+  }
 })
 
 router.get('/getNotification/:notificationID', function(req, res, next) {
