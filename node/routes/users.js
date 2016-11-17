@@ -656,7 +656,7 @@ router.get('/getUsersForCode/:token', function(req, res, next) {
 		      if (doc != null) {
 		      	var foundCar = {
 		      		"userID": "",
-		      		"car": "disabled"
+		      		"car": {"plates": "disabled"}
 		      	};
 		         foundCar.userID = doc._id;
 		         for (var i = doc.cars.length - 1; i >= 0; i--) {
